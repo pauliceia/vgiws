@@ -109,42 +109,68 @@ class PGSQLConnection:
         # FORMAT OF QUERY - WKT or GEOJSON
         ######################################################################
 
+        if format == "geojson":
+            return self.get_elements_geojson(element, where)
+
         # if format == "wkt":  # default
+        return self.get_elements_wkt(element, where)
+
+    def get_elements_wkt(self, element, where):
+
         query_text = """SELECT p.id, ST_AsText(p.geom) as geom, p.visible, 
                         p.version, p.fk_id_changeset 
                         FROM {0} As p {1};""".format(element, where)
-
-        if format == "geojson":
-            query_text = """
-                SELECT row_to_json(fc)
-                FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features
-                    FROM (
-                        SELECT 'Feature' As type,  -- type field
-                        ST_AsGeoJSON(geom)::json As geometry,  -- geometry field
-                        row_to_json(
-                            (SELECT p FROM (SELECT p.id, p.visible, p.version, p.fk_id_changeset) As p)
-                            ) As properties  -- properties field
-                        FROM {0} As p {1}
-                    ) As f 
-                ) As fc;          
-            """.format(element, where)
-
-            # it is not necessary to return a list when was a GeoJSON,
-            # because there is already a list inside the GeoJSON when it is need
-            return_a_list = False
-
-        ######################################################################
-        # DO QUERY AND GET THE RESULT
-        ######################################################################
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
         # get the result of query
-        if return_a_list:
-            results_of_query = self.__PGSQL_CURSOR__.fetchall()
-        else:
-            results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.__PGSQL_CURSOR__.fetchall()
+
+        return results_of_query
+
+    def get_elements_geojson(self, element, where):
+
+        # node
+        query_text = """
+            SELECT jsonb_build_object(
+                'type',     'FeatureCollection',
+                'features', jsonb_agg(feature)
+            ) AS row_to_json
+            FROM (
+                SELECT jsonb_build_object(
+                    'type',       'Feature',
+                    'geometry',   ST_AsGeoJSON(row.geom)::jsonb,
+                    'properties', to_jsonb(row) - 'geom' - 'visible'  -- what attributes don't appear
+                ) AS feature
+                FROM (
+                    SELECT * FROM {0} As p
+                    {1}
+                ) row
+            ) features;
+        """.format(element, where)
+
+        # node_tag
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'tags', jsonb_agg(tags)
+        #         ) AS row_to_json
+        #     FROM (
+        #         SELECT to_jsonb(row_tags) - 'version' - 'fk_node_id' AS tags -- what attributes don't appear
+        #         FROM (
+        #             SELECT * FROM node_tag As pt
+        #             WHERE pt.fk_node_id = 1
+        #         ) row_tags
+        #     ) features;
+        # """.format(element, where)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = results_of_query["row_to_json"]
 
         return results_of_query
 

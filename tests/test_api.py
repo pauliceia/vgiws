@@ -42,16 +42,14 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = {
-            'row_to_json': {
-                'features': [
-                    {
-                        'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
-                        'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1, 'visible': True},
-                        'type': 'Feature',
-                    }
-                ],
-                'type': 'FeatureCollection'
-            }
+            'features': [
+                {
+                    'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
+                    'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1},
+                    'type': 'Feature',
+                }
+            ],
+            'type': 'FeatureCollection'
         }
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -81,27 +79,26 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = {
-            'row_to_json': {
-                'features': [
-                    {
-                        'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
-                        'properties': {'version': 1, 'fk_id_changeset': 1, 'visible': True, 'id': 1},
-                        'type': 'Feature',
-                    },
-                    {
-                        'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
-                        'properties': {'version': 1, 'fk_id_changeset': 2, 'visible': True, 'id': 2},
-                        'type': 'Feature'
-
-                    }
-                ],
-                'type': 'FeatureCollection'
-            }
+            'features': [
+                {
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
+                    'properties': {'version': 1, 'fk_id_changeset': 1, 'id': 1},
+                    'type': 'Feature',
+                },
+                {
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
+                    'properties': {'version': 1, 'fk_id_changeset': 2, 'id': 2},
+                    'type': 'Feature'
+                }
+            ],
+            'type': 'FeatureCollection'
         }
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
         self.assertEqual(expected, resulted)
+
+
 
     # def test_get_api_node_create(self):
     #     # do a GET call
