@@ -57,20 +57,19 @@ class APIElement(BaseHandler):
 
         arguments, parameters = self.get_aguments_and_parameters(element, param)
 
-        print("self.request.arguments: ", self.request.arguments)
-        print("arguments", arguments)
-        print("parameters: ", parameters)
+        # print("self.request.arguments: ", self.request.arguments)
+        # print("arguments", arguments)
+        # print("arguments['q']: ", arguments["q"])
+        # print("parameters: ", parameters)
+        # print("element: ", parameters["element"])
+        # print("self.PGSQLConn: ", self.PGSQLConn)
 
-        print("self.PGSQLConn(): ", self.PGSQLConn())
+        result_list = self.PGSQLConn.get_elements(parameters["element"],
+                                                  q=arguments["q"],
+                                                  format=arguments["format"])
 
-        obj = {
-            'foo': 'bar',
-            '1': 2,
-            'false': True
-        }
-
-        # self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(obj))
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(result_list))
 
 
 """

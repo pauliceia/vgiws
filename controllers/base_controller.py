@@ -18,16 +18,30 @@ class BaseHandler(RequestHandler):
     # Static list to be added the all valid urls to one handler
     urls = []
 
-    def PGSQLConn(self):
-        return self.application.PGSQLConn
+    # __init__ for Tornado subclasses
+    def initialize(self):
+        self.PGSQLConn = self.application.PGSQLConn
 
     def set_default_headers(self):
         # self.set_header('Content-Type', 'application/pdf; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
 
     def get_aguments_and_parameters(self, element, param):
+        """
+        Given the 'element' and 'param' passed in URL, create the 'arguments' and 'parameters' dictionaries.
+        :param element: is the main parameter of URL, describing the element, i.e. node, way or area.
+        :param param: others parameters of URL, like 'create' or 'history'.
+        :return: 'arguments' and 'parameters' dictionaries contained the arguments and parameters of URL,
+                in a easier way to work with them.
+        """
         arguments = {k: self.get_argument(k) for k in self.request.arguments}
-        arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
+
+        # "q" is the query argument, that have the fields of query
+        if "q" in arguments:
+            arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
+        else:
+            # if "q" is not in arguments, so put None value
+            arguments["q"] = None
 
         parameters = {
             "element": element.lower(),

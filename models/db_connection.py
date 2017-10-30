@@ -27,6 +27,7 @@
 
 
 from psycopg2 import connect, DatabaseError
+from psycopg2.extras import RealDictCursor
 
 from modules.design_pattern import Singleton
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
@@ -43,29 +44,109 @@ class PGSQLConnection:
         else:
             self.__DO_CONNECTION__(__PGSQL_CONNECTION_SETTINGS__)
 
+        # cursor_factory=RealDictCursor means that the "row" of the table will be
+        # represented by a dictionary in python
+        self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
 
-    def __DO_CONNECTION__(self, __PGSQL_CONNECTION_SETTINGS__):
+    def __DO_CONNECTION__(self, __pgsql_connection_settings__):
+        """
+        Do the DB connection with the '__pgsql_connection_settings__'
+        :param __pgsql_connection_settings__: the connection settings of PostgreSQL.
+        It can be for the normal DB or test DB
+        :return:
+        """
         if self.__ARGS__["__DEBUG_MODE__"]:
             print("\nConnecting in PostgreSQL with:"
-                  "\n- hostname: ", __PGSQL_CONNECTION_SETTINGS__["HOSTNAME"],
-                  "\n- port: ", __PGSQL_CONNECTION_SETTINGS__["PORT"],
-                  "\n- database: ", __PGSQL_CONNECTION_SETTINGS__["DATABASE"], "\n")
+                  "\n- hostname: ", __pgsql_connection_settings__["HOSTNAME"],
+                  "\n- port: ", __pgsql_connection_settings__["PORT"],
+                  "\n- database: ", __pgsql_connection_settings__["DATABASE"], "\n")
 
         try:
-            self.PGSQL_CONNECTION = connect(host=__PGSQL_CONNECTION_SETTINGS__["HOSTNAME"],
-                                            port=__PGSQL_CONNECTION_SETTINGS__["PORT"],
-                                            user=__PGSQL_CONNECTION_SETTINGS__["USERNAME"],
-                                            password=__PGSQL_CONNECTION_SETTINGS__["PASSWORD"],
-                                            dbname=__PGSQL_CONNECTION_SETTINGS__["DATABASE"])
-            print("PostgreSQL's connection was: successful!")
+            self.__PGSQL_CONNECTION__ = connect(host=__pgsql_connection_settings__["HOSTNAME"],
+                                                port=__pgsql_connection_settings__["PORT"],
+                                                user=__pgsql_connection_settings__["USERNAME"],
+                                                password=__pgsql_connection_settings__["PASSWORD"],
+                                                dbname=__pgsql_connection_settings__["DATABASE"])
+            print("PostgreSQL's connection was successful!")
         except (DatabaseError, Exception) as error:
-            print("PostgreSQL's connection was: failed! \n")
+            print("PostgreSQL's connection was failed! \n")
             print("Error: ", error)
             print("Closing web service!")
             exit(1)
 
     def close(self):
-        self.PGSQL_CONNECTION.close()
+        """
+        Close the PostgreSQL DB connection
+        :return:
+        """
+        self.__PGSQL_CONNECTION__.close()
+
+    def get_elements(self, element, q=None, format="wkt"):
+        """
+        Do a GET query in DB.
+
+        PS: 'p' inside queries means properties.
+        :param element: the element to search, i.e. node, way or area.
+        :param q: means query. It is the fields of query, like 'id'.
+        :param format: wkt or geojson.
+        :return: a list with the results, as WKT or GeoJSON.
+        """
+
+        # how the result will come back, if a list or only on result,
+        # by default is a list, but if is GeoJSON, it will be change to False
+        return_a_list = True
+
+        ######################################################################
+        # CREATE THE WHERE CLAUSE
+        ######################################################################
+
+        where = ""
+        if q is not None:
+            if "id" in q: # if the key "id" is in 'q'
+                where = "WHERE p.id = {0}".format(q["id"])
+
+        ######################################################################
+        # FORMAT OF QUERY - WKT or GEOJSON
+        ######################################################################
+
+        # if format == "wkt":  # default
+        query_text = """SELECT p.id, ST_AsText(p.geom) as geom, p.visible, 
+                        p.version, p.fk_id_changeset 
+                        FROM {0} As p {1};""".format(element, where)
+
+        if format == "geojson":
+            query_text = """
+                SELECT row_to_json(fc)
+                FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features
+                    FROM (
+                        SELECT 'Feature' As type,  -- type field
+                        ST_AsGeoJSON(geom)::json As geometry,  -- geometry field
+                        row_to_json(
+                            (SELECT p FROM (SELECT p.id, p.visible, p.version, p.fk_id_changeset) As p)
+                            ) As properties  -- properties field
+                        FROM {0} As p {1}
+                    ) As f 
+                ) As fc;          
+            """.format(element, where)
+
+            # it is not necessary to return a list when was a GeoJSON,
+            # because there is already a list inside the GeoJSON when it is need
+            return_a_list = False
+
+        ######################################################################
+        # DO QUERY AND GET THE RESULT
+        ######################################################################
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        if return_a_list:
+            results_of_query = self.__PGSQL_CURSOR__.fetchall()
+        else:
+            results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        return results_of_query
 
 
 

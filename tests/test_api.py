@@ -20,38 +20,110 @@ class TestAPI(TestCase):
     #     print("type(response.text): ", type(response.text))
     #     print("\n")
 
-    def test_get_api_node_id_1(self):
+    def test_get_api_node_id_1_wkt(self):
+        # do a GET call
+        response = get('http://localhost:8888/api/node/?q=[id=1]&format=wkt')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
+
+        expected = [
+            {'visible': True, 'version': 1, 'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
+        ]
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+    def test_get_api_node_id_1_geojson(self):
         # do a GET call
         response = get('http://localhost:8888/api/node/?q=[id=1]&format=geojson')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
-        expected = {'foo': 'bar', '1': 2, 'false': True}
+        expected = {
+            'row_to_json': {
+                'features': [
+                    {
+                        'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
+                        'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1, 'visible': True},
+                        'type': 'Feature',
+                    }
+                ],
+                'type': 'FeatureCollection'
+            }
+        }
+
         resulted = loads(response.text)  # convert string to dict/JSON
+
         self.assertEqual(expected, resulted)
 
-    def test_get_api_node_create(self):
+    def test_get_api_node_without_id_wkt(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/create/?q=[id=1]&format=geojson')
+        response = get('http://localhost:8888/api/node/?format=wkt')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
-        expected = {'foo': 'bar', '1': 2, 'false': True}
+        expected = [
+            {'fk_id_changeset': 1, 'version': 1, 'geom': 'MULTIPOINT(0 0)', 'visible': True, 'id': 1},
+            {'fk_id_changeset': 2, 'version': 1, 'geom': 'MULTIPOINT(1 1)', 'visible': True, 'id': 2}
+        ]
         resulted = loads(response.text)  # convert string to dict/JSON
+
         self.assertEqual(expected, resulted)
 
-    def test_get_api_node_history(self):
+    def test_get_api_node_without_id_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/history/?q=[id=1]&format=geojson')
+        response = get('http://localhost:8888/api/node/?format=geojson')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
-        expected = {'foo': 'bar', '1': 2, 'false': True}
+        expected = {
+            'row_to_json': {
+                'features': [
+                    {
+                        'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
+                        'properties': {'version': 1, 'fk_id_changeset': 1, 'visible': True, 'id': 1},
+                        'type': 'Feature',
+                    },
+                    {
+                        'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
+                        'properties': {'version': 1, 'fk_id_changeset': 2, 'visible': True, 'id': 2},
+                        'type': 'Feature'
+
+                    }
+                ],
+                'type': 'FeatureCollection'
+            }
+        }
+
         resulted = loads(response.text)  # convert string to dict/JSON
+
         self.assertEqual(expected, resulted)
+
+    # def test_get_api_node_create(self):
+    #     # do a GET call
+    #     response = get('http://localhost:8888/api/node/create/?q=[id=1]&format=geojson')
+    #
+    #     self.assertTrue(response.ok)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     expected = {'foo': 'bar', '1': 2, 'false': True}
+    #     resulted = loads(response.text)  # convert string to dict/JSON
+    #     self.assertEqual(expected, resulted)
+    #
+    # def test_get_api_node_history(self):
+    #     # do a GET call
+    #     response = get('http://localhost:8888/api/node/history/?q=[id=1]&format=geojson')
+    #
+    #     self.assertTrue(response.ok)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     expected = {'foo': 'bar', '1': 2, 'false': True}
+    #     resulted = loads(response.text)  # convert string to dict/JSON
+    #     self.assertEqual(expected, resulted)
 
 
 # It is not necessary to pyt the main() of unittest here,
