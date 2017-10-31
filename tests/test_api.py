@@ -28,7 +28,7 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'visible': True, 'version': 1, 'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
+            {'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
         ]
         resulted = loads(response.text)  # convert string to dict/JSON
 
@@ -41,15 +41,30 @@ class TestAPI(TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
+        # expected = {
+        #     'features': [
+        #         {
+        #             'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
+        #             'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1},
+        #             'type': 'Feature',
+        #         }
+        #     ],
+        #     'type': 'FeatureCollection'
+        # }
+
         expected = {
-            'features': [
+            "features": [
                 {
-                    'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
-                    'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1},
-                    'type': 'Feature',
+                    "tags": [
+                        {"v": "house", "id": 1, "k": "name", "fk_node_id": 1},
+                        {"v": "yes", "id": 2, "k": "building", "fk_node_id": 1}
+                    ],
+                    "type": "Feature",
+                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
+                    "properties": {"id": 1, "fk_id_changeset": 1}
                 }
             ],
-            'type': 'FeatureCollection'
+            "type": "FeatureCollection"
         }
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -64,8 +79,8 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1, 'version': 1, 'geom': 'MULTIPOINT(0 0)', 'visible': True, 'id': 1},
-            {'fk_id_changeset': 2, 'version': 1, 'geom': 'MULTIPOINT(1 1)', 'visible': True, 'id': 2}
+            {'fk_id_changeset': 1, 'geom': 'MULTIPOINT(0 0)', 'id': 1},
+            {'fk_id_changeset': 2, 'geom': 'MULTIPOINT(1 1)', 'id': 2}
         ]
         resulted = loads(response.text)  # convert string to dict/JSON
 
@@ -78,20 +93,44 @@ class TestAPI(TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
+        # expected = {
+        #     'features': [
+        #         {
+        #             'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
+        #             'properties': {'version': 1, 'fk_id_changeset': 1, 'id': 1},
+        #             'type': 'Feature',
+        #         },
+        #         {
+        #             'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
+        #             'properties': {'version': 1, 'fk_id_changeset': 2, 'id': 2},
+        #             'type': 'Feature'
+        #         }
+        #     ],
+        #     'type': 'FeatureCollection'
+        # }
+
         expected = {
-            'features': [
+            "features": [
                 {
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
-                    'properties': {'version': 1, 'fk_id_changeset': 1, 'id': 1},
-                    'type': 'Feature',
+                    "properties": {"fk_id_changeset": 1, "id": 1},
+                    "tags": [
+                        {"fk_node_id": 1, "v": "house", "k": "name", "id": 1},
+                        {"fk_node_id": 1, "v": "yes", "k": "building", "id": 2}
+                    ],
+                    "type": "Feature",
+                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"}
                 },
                 {
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
-                    'properties': {'version': 1, 'fk_id_changeset': 2, 'id': 2},
-                    'type': 'Feature'
+                    "properties": {"fk_id_changeset": 2, "id": 2},
+                    "tags": [
+                        {"fk_node_id": 2, "v": "a point", "k": "name", "id": 3},
+                        {"fk_node_id": 2, "v": "a awesome point on map", "k": "description", "id": 4}
+                    ],
+                    "type": "Feature",
+                    "geometry": {"coordinates": [[1, 1]], "type": "MultiPoint"}
                 }
             ],
-            'type': 'FeatureCollection'
+            "type": "FeatureCollection"
         }
 
         resulted = loads(response.text)  # convert string to dict/JSON

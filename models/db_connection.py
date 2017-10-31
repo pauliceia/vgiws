@@ -92,34 +92,35 @@ class PGSQLConnection:
         :return: a list with the results, as WKT or GeoJSON.
         """
 
-        # how the result will come back, if a list or only on result,
-        # by default is a list, but if is GeoJSON, it will be change to False
-        return_a_list = True
+        ######################################################################
+        # FORMAT OF QUERY - WKT or GEOJSON - CALL RESPECTED METHOD
+        ######################################################################
+
+        if format == "geojson":
+            return self.get_elements_geojson(element, q=q)
+
+        # if format == "wkt":  # default
+        return self.get_elements_wkt(element, q=q)
+
+    def get_elements_wkt(self, element, q=None):
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
         ######################################################################
 
+        # TODO: put 'visible=TRUE' in WHERE clause
         where = ""
+
         if q is not None:
-            if "id" in q: # if the key "id" is in 'q'
-                where = "WHERE p.id = {0}".format(q["id"])
+            if "id" in q:  # if the key "id" is in 'q'
+                where = "WHERE id = {0}".format(q["id"])
 
         ######################################################################
-        # FORMAT OF QUERY - WKT or GEOJSON
+        # CREATE THE QUERY AND EXECUTE IT
         ######################################################################
 
-        if format == "geojson":
-            return self.get_elements_geojson(element, where)
-
-        # if format == "wkt":  # default
-        return self.get_elements_wkt(element, where)
-
-    def get_elements_wkt(self, element, where):
-
-        query_text = """SELECT p.id, ST_AsText(p.geom) as geom, p.visible, 
-                        p.version, p.fk_id_changeset 
-                        FROM {0} As p {1};""".format(element, where)
+        query_text = """SELECT id, ST_AsText(geom) as geom, fk_id_changeset 
+                        FROM {0} {1};""".format(element, where)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -129,26 +130,43 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def get_elements_geojson(self, element, where):
+    def get_elements_geojson(self, element, q=None):
+
+        ######################################################################
+        # CREATE THE WHERE CLAUSE
+        ######################################################################
+
+        # TODO: put 'visible=TRUE' in WHERE clause
+        where_element = ""
+        where_tag = ""
+
+        if q is not None:
+            if "id" in q:  # if the key "id" is in 'q'
+                where_element = "WHERE id = {0}".format(q["id"])
+                where_tag = "WHERE fk_node_id = {0}".format(q["id"])
+
+        ######################################################################
+        # CREATE THE QUERY AND EXECUTE IT
+        ######################################################################
 
         # node
-        query_text = """
-            SELECT jsonb_build_object(
-                'type',     'FeatureCollection',
-                'features', jsonb_agg(feature)
-            ) AS row_to_json
-            FROM (
-                SELECT jsonb_build_object(
-                    'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(row.geom)::jsonb,
-                    'properties', to_jsonb(row) - 'geom' - 'visible'  -- what attributes don't appear
-                ) AS feature
-                FROM (
-                    SELECT * FROM {0} As p
-                    {1}
-                ) row
-            ) features;
-        """.format(element, where)
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type',     'FeatureCollection',
+        #         'features', jsonb_agg(feature)
+        #     ) AS row_to_json
+        #     FROM (
+        #         SELECT jsonb_build_object(
+        #             'type',       'Feature',
+        #             'geometry',   ST_AsGeoJSON(row.geom)::jsonb,
+        #             'properties', to_jsonb(row) - 'geom' - 'visible'  -- what attributes don't appear
+        #         ) AS feature
+        #         FROM (
+        #             SELECT * FROM {0} As p
+        #             {1}
+        #         ) row
+        #     ) features;
+        # """.format(element, where)
 
         # node_tag
         # query_text = """
@@ -163,6 +181,55 @@ class PGSQLConnection:
         #         ) row_tags
         #     ) features;
         # """.format(element, where)
+
+        # node + tag / it is "working", just return more tags than necessary
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type',     'FeatureCollection',
+        #         'features', jsonb_agg(feature)
+        #     ) AS row_to_json
+        #     FROM (
+        #         SELECT jsonb_build_object(
+        #             'type',       'Feature',
+        #             'geometry',   ST_AsGeoJSON(element.geom)::jsonb,
+        #             'properties', to_jsonb(element) - 'geom',  -- what attributes don't appear
+        #             'tags',       jsonb_agg(element_tag.tags)
+        #         ) AS feature
+        #         FROM (
+        #             SELECT id, geom, fk_id_changeset FROM {0} {1}
+        #         ) element,
+        #         (
+        #             SELECT to_jsonb(row_tag) -- what attributes don't appear
+        #                 AS tags
+        #             FROM (
+        #                 SELECT id, k, v, fk_node_id FROM {0}_tag {2}
+        #             ) row_tag
+        #         ) element_tag
+        #         GROUP BY element.geom, element
+        #         WHERE element.id = element_tag.fk_node_id
+        #     ) features;
+        # """.format(element, where_element, where_tag)
+
+        query_text = """
+SELECT jsonb_build_object(
+    'type',       'FeatureCollection',
+    'features',   jsonb_agg(jsonb_build_object(
+      'type',       'Feature',
+      'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
+      'properties', to_jsonb(node) - 'geom' - 'visible',
+      'tags',       tags.jsontags
+    ))
+) AS row_to_json
+FROM node
+CROSS JOIN LATERAL (
+	SELECT jsonb_agg(row_tag) -- what attributes don't appear
+	AS jsontags 
+    FROM (
+	SELECT id, k, v, fk_node_id FROM node_tag WHERE fk_node_id = node.id
+    ) row_tag
+) AS tags
+--WHERE id = 1;
+                """.format(element, where_element, where_tag)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
