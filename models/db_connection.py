@@ -104,16 +104,16 @@ class PGSQLConnection:
 
     def get_elements_wkt(self, element, q=None):
 
+        # TODO: if have time, to do in WKT return the tags together
+
         ######################################################################
         # CREATE THE WHERE CLAUSE
         ######################################################################
 
-        # TODO: put 'visible=TRUE' in WHERE clause
-        where = ""
-
+        where = "WHERE visible=TRUE"
         if q is not None:
             if "id" in q:  # if the key "id" is in 'q'
-                where = "WHERE id = {0}".format(q["id"])
+                where += " AND id = {0}".format(q["id"])
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
@@ -136,11 +136,11 @@ class PGSQLConnection:
         # CREATE THE WHERE CLAUSE
         ######################################################################
 
-        # TODO: put 'visible=TRUE' in WHERE clause
-        where = ""
+        # by default, get all results that are visible
+        where = "WHERE visible=TRUE"
         if q is not None:
             if "id" in q:  # if the key "id" is in 'q'
-                where = "WHERE id = {0}".format(q["id"])
+                where += " AND id = {0}".format(q["id"])
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT

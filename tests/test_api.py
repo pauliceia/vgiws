@@ -68,8 +68,11 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1, 'geom': 'MULTIPOINT(0 0)', 'id': 1},
-            {'fk_id_changeset': 2, 'geom': 'MULTIPOINT(1 1)', 'id': 2}
+            {'id': 1, 'geom': 'MULTIPOINT(0 0)', 'fk_id_changeset': 1},
+            {'id': 2, 'geom': 'MULTIPOINT(1 1)', 'fk_id_changeset': 2},
+            {'id': 3, 'geom': 'MULTIPOINT(2 2)', 'fk_id_changeset': 1},
+            {'id': 4, 'geom': 'MULTIPOINT(3 3)', 'fk_id_changeset': 2},
+            {'id': 5, 'geom': 'MULTIPOINT(5 5)', 'fk_id_changeset': 2}
         ]
         resulted = loads(response.text)  # convert string to dict/JSON
 
