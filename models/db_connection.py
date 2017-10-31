@@ -96,12 +96,6 @@ class PGSQLConnection:
         # FORMAT OF QUERY - WKT or GEOJSON - CALL RESPECTED METHOD
         ######################################################################
 
-        # if format == "geojson":
-        #     return self.get_elements_geojson(element, q=q)
-        #
-        # # if format == "wkt":  # default
-        # return self.get_elements_wkt(element, q=q)
-
         if format == "wkt":
             return self.get_elements_wkt(element, q=q)
 

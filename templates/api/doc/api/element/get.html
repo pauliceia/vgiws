@@ -1,78 +1,138 @@
 <ul class="list-group">
     <li class="list-group-item">
         <div class="section" id="api_element_get">
-            <h2> GET /api/[node|way|area]/?<PARAMETERS> <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--></h2>
+            <h2> GET /api/[node|way|area]/?{PARAMS} <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--></h2>
             <p>
-                description url
+                Get elements, like node, way or area.
             </p>
         </div>
     </li>
 
     <li class="list-group-item">
         <div class="section" id="parameters">
-            <h3>Parameters <!--<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a>--></h3>
 
+            <h3>Parameters (PARAMS) <!--<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a>--></h3>
             <div class="panel panel-default">
                 <table class="table">
                     <thead>
                         <tr>
-                            <!--<th>#</th> <th>First Name</th> <th>Last Name</th> <th>Username</th>-->
                             <th>Name</th> <th>Required</th> <th>Description</th> <th>Default Value</th> <th>Example</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <!--<th scope="row">1</th> <td>Mark</td> <td>Otto</td> <td>@mdo</td>-->
-                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
+                            <td>q</td> <td>False</td> <td>Query key, where put the fields of query. Receive a list of fields</td> <td></td> <td>q=[id=1]</td>
                         </tr>
                         <tr>
-                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
+                            <td>format</td> <td>False</td> <td>Format of response. It can be: {geojson, wkt} ("wkt" is in test fase)</td> <td>geojson</td> <td>format=geojson</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <h4> q parameter <!--<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a>--></h4>
+            <div class="panel panel-default">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th> <th>Required</th> <th>Description</th> <th>Default Value</th> <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td> <td>False</td> <td>The ID of a element</td> <td></td> <td>q=[id=1]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </li>
 
+    <!--Example 1-->
+
     <li class="list-group-item">
         <div class="section" id="example-request">
-            <h3> Example Request <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--> </h3>
-            <p>
-                <cite> GET http://localhost:8888/api/node/?format=wkt </cite>
-            </p>
+            <h3> 1º Example of Request <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--> </h3>
+            <p><cite> GET http://localhost:8888/api/node/ </cite></p>
+            <p><cite> GET http://localhost:8888/api/node/?format=geojson </cite></p>
         </div>
     </li>
 
     <li class="list-group-item">
         <div class="section" id="example-response">
-            <h3> Example Response<a class="headerlink" href="#example-response" title="Permalink to this headline">¶</a> </h3>
+            <h3> Example of Response <!--<a class="headerlink" href="#example-response" title="Permalink to this headline">¶</a> --></h3>
 
             <div class="code javascript highlight-default">
                 <div class="highlight">
-
                     <pre>
 {
-"features": [
-{
-    "tags": [
-        {"v": "house", "id": 1, "k": "name"},
-        {"v": "yes", "id": 2, "k": "building"}
+    "features": [
+        {
+            "properties": {"fk_id_changeset": 1, "id": 1},
+            "tags": [
+                {"v": "house", "k": "name", "id": 1},
+                {"v": "yes", "k": "building", "id": 2}
+            ],
+            "type": "Feature",
+            "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"}
+        },
+        {
+            "properties": {"fk_id_changeset": 2, "id": 2},
+            "tags": [
+                {"v": "a point", "k": "name", "id": 3},
+                {"v": "a awesome point on map", "k": "description", "id": 4}
+            ],
+            "type": "Feature",
+            "geometry": {"coordinates": [[1, 1]], "type": "MultiPoint"}
+        }
     ],
-    "type": "Feature",
-    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
-    "properties": {"id": 1, "fk_id_changeset": 1}
-}
-],
-"type": "FeatureCollection"
+    "type": "FeatureCollection"
 }
                     </pre>
-
                 </div>
             </div>
         </div>
     </li>
+
+    <!--Example 1-->
+
+    <!--Example 2-->
+
+    <li class="list-group-item">
+        <div class="section" id="example-request">
+            <h3> 2º Example of Request <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--> </h3>
+            <p><cite> GET http://localhost:8888/api/node/?q=[id=1] </cite></p>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="section" id="example-response">
+            <h3> Example of Response<!--<a class="headerlink" href="#example-response" title="Permalink to this headline">¶</a> --></h3>
+
+            <div class="code javascript highlight-default">
+                <div class="highlight">
+                    <pre>
+{
+    "features": [
+        {
+            "tags": [
+                {"v": "house", "id": 1, "k": "name"},
+                {"v": "yes", "id": 2, "k": "building"}
+            ],
+            "type": "Feature",
+            "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
+            "properties": {"id": 1, "fk_id_changeset": 1}
+        }
+    ],
+    "type": "FeatureCollection"
+}
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </li>
+
+    <!--Example 2-->
 
 </ul>

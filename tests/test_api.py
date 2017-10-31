@@ -36,7 +36,7 @@ class TestAPI(TestCase):
 
     def test_get_api_node_id_1_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1]&format=geojson')
+        response = get('http://localhost:8888/api/node/?q=[id=1]')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
