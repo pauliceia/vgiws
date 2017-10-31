@@ -137,99 +137,35 @@ class PGSQLConnection:
         ######################################################################
 
         # TODO: put 'visible=TRUE' in WHERE clause
-        where_element = ""
-        where_tag = ""
-
+        where = ""
         if q is not None:
             if "id" in q:  # if the key "id" is in 'q'
-                where_element = "WHERE id = {0}".format(q["id"])
-                where_tag = "WHERE fk_node_id = {0}".format(q["id"])
+                where = "WHERE id = {0}".format(q["id"])
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
         ######################################################################
 
-        # node
-        # query_text = """
-        #     SELECT jsonb_build_object(
-        #         'type',     'FeatureCollection',
-        #         'features', jsonb_agg(feature)
-        #     ) AS row_to_json
-        #     FROM (
-        #         SELECT jsonb_build_object(
-        #             'type',       'Feature',
-        #             'geometry',   ST_AsGeoJSON(row.geom)::jsonb,
-        #             'properties', to_jsonb(row) - 'geom' - 'visible'  -- what attributes don't appear
-        #         ) AS feature
-        #         FROM (
-        #             SELECT * FROM {0} As p
-        #             {1}
-        #         ) row
-        #     ) features;
-        # """.format(element, where)
-
-        # node_tag
-        # query_text = """
-        #     SELECT jsonb_build_object(
-        #         'tags', jsonb_agg(tags)
-        #         ) AS row_to_json
-        #     FROM (
-        #         SELECT to_jsonb(row_tags) - 'version' - 'fk_node_id' AS tags -- what attributes don't appear
-        #         FROM (
-        #             SELECT * FROM node_tag As pt
-        #             WHERE pt.fk_node_id = 1
-        #         ) row_tags
-        #     ) features;
-        # """.format(element, where)
-
-        # node + tag / it is "working", just return more tags than necessary
-        # query_text = """
-        #     SELECT jsonb_build_object(
-        #         'type',     'FeatureCollection',
-        #         'features', jsonb_agg(feature)
-        #     ) AS row_to_json
-        #     FROM (
-        #         SELECT jsonb_build_object(
-        #             'type',       'Feature',
-        #             'geometry',   ST_AsGeoJSON(element.geom)::jsonb,
-        #             'properties', to_jsonb(element) - 'geom',  -- what attributes don't appear
-        #             'tags',       jsonb_agg(element_tag.tags)
-        #         ) AS feature
-        #         FROM (
-        #             SELECT id, geom, fk_id_changeset FROM {0} {1}
-        #         ) element,
-        #         (
-        #             SELECT to_jsonb(row_tag) -- what attributes don't appear
-        #                 AS tags
-        #             FROM (
-        #                 SELECT id, k, v, fk_node_id FROM {0}_tag {2}
-        #             ) row_tag
-        #         ) element_tag
-        #         GROUP BY element.geom, element
-        #         WHERE element.id = element_tag.fk_node_id
-        #     ) features;
-        # """.format(element, where_element, where_tag)
-
         query_text = """
-SELECT jsonb_build_object(
-    'type',       'FeatureCollection',
-    'features',   jsonb_agg(jsonb_build_object(
-      'type',       'Feature',
-      'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
-      'properties', to_jsonb(node) - 'geom' - 'visible',
-      'tags',       tags.jsontags
-    ))
-) AS row_to_json
-FROM node
-CROSS JOIN LATERAL (
-	SELECT jsonb_agg(row_tag) -- what attributes don't appear
-	AS jsontags 
-    FROM (
-	SELECT id, k, v, fk_node_id FROM node_tag WHERE fk_node_id = node.id
-    ) row_tag
-) AS tags
---WHERE id = 1;
-                """.format(element, where_element, where_tag)
+            SELECT jsonb_build_object(
+                'type',       'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Feature',
+                    'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
+                    'properties', to_jsonb(node) - 'geom' - 'visible' - 'version',
+                    'tags',       tags.jsontags
+                ))
+            ) AS row_to_json
+            FROM {0}
+            CROSS JOIN LATERAL (
+                SELECT jsonb_agg(row_tag) AS jsontags 
+                FROM (
+                    SELECT id, k, v FROM {0}_tag 
+                    WHERE fk_{0}_id = {0}.id
+                ) row_tag
+            ) AS tags
+            {1}
+        """.format(element, where)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -237,7 +173,13 @@ CROSS JOIN LATERAL (
         # get the result of query
         results_of_query = self.__PGSQL_CURSOR__.fetchone()
 
-        results_of_query = results_of_query["row_to_json"]
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
 
         return results_of_query
 

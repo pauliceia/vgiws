@@ -41,23 +41,12 @@ class TestAPI(TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
-        # expected = {
-        #     'features': [
-        #         {
-        #             'geometry': {'coordinates': [[0, 0]], 'type': 'MultiPoint'},
-        #             'properties': {'id': 1, 'fk_id_changeset': 1, 'version': 1},
-        #             'type': 'Feature',
-        #         }
-        #     ],
-        #     'type': 'FeatureCollection'
-        # }
-
         expected = {
             "features": [
                 {
                     "tags": [
-                        {"v": "house", "id": 1, "k": "name", "fk_node_id": 1},
-                        {"v": "yes", "id": 2, "k": "building", "fk_node_id": 1}
+                        {"v": "house", "id": 1, "k": "name"},
+                        {"v": "yes", "id": 2, "k": "building"}
                     ],
                     "type": "Feature",
                     "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
@@ -93,29 +82,13 @@ class TestAPI(TestCase):
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
-        # expected = {
-        #     'features': [
-        #         {
-        #             'geometry': {'type': 'MultiPoint', 'coordinates': [[0, 0]]},
-        #             'properties': {'version': 1, 'fk_id_changeset': 1, 'id': 1},
-        #             'type': 'Feature',
-        #         },
-        #         {
-        #             'geometry': {'type': 'MultiPoint', 'coordinates': [[1, 1]]},
-        #             'properties': {'version': 1, 'fk_id_changeset': 2, 'id': 2},
-        #             'type': 'Feature'
-        #         }
-        #     ],
-        #     'type': 'FeatureCollection'
-        # }
-
         expected = {
             "features": [
                 {
                     "properties": {"fk_id_changeset": 1, "id": 1},
                     "tags": [
-                        {"fk_node_id": 1, "v": "house", "k": "name", "id": 1},
-                        {"fk_node_id": 1, "v": "yes", "k": "building", "id": 2}
+                        {"v": "house", "k": "name", "id": 1},
+                        {"v": "yes", "k": "building", "id": 2}
                     ],
                     "type": "Feature",
                     "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"}
@@ -123,8 +96,8 @@ class TestAPI(TestCase):
                 {
                     "properties": {"fk_id_changeset": 2, "id": 2},
                     "tags": [
-                        {"fk_node_id": 2, "v": "a point", "k": "name", "id": 3},
-                        {"fk_node_id": 2, "v": "a awesome point on map", "k": "description", "id": 4}
+                        {"v": "a point", "k": "name", "id": 3},
+                        {"v": "a awesome point on map", "k": "description", "id": 4}
                     ],
                     "type": "Feature",
                     "geometry": {"coordinates": [[1, 1]], "type": "MultiPoint"}
