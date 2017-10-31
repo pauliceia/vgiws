@@ -36,22 +36,47 @@ class IndexHandler(BaseHandler):
         # Some fictional context
         context = {"text": "Welcome"}
 
+        # to render HTML
+        self.set_header('Content-Type', 'text/html')
+
         # The ** before the context do that dictionary is "break" in the positions of the render method
         # The under line is like this: self.render("index.html", text = "Welcome")
         self.render("index.html", **context)
 
 
+# API Handlers
+
+class APIDocPage(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/doc", r"/api/doc/"]
+
+    def get(self):
+        # Some fictional context
+        # context = {"text": "API DOC"}
+
+        context = {
+            "text": "...",
+            "api_urls": [
+                {"method": "GET", "url": "/api/",
+                 "description": "", "example_geojson": ""},
+            ]
+        }
+
+        # to render HTML
+        self.set_header('Content-Type', 'text/html')
+
+        # The ** before the context do that dictionary is "break" in the positions of the render method
+        # The under line is like this: self.render("index.html", text = "Welcome")
+        self.render("api/doc/index.html", **context)
 
 
-# API
 class APIElement(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
 
     urls = [r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?",
             r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?/"]
-
-    # /api/[node|way|polygon]/#id
 
     def get(self, element, param=None):
 

@@ -23,7 +23,7 @@ class BaseHandler(RequestHandler):
         self.PGSQLConn = self.application.PGSQLConn
 
     def set_default_headers(self):
-        # self.set_header('Content-Type', 'application/pdf; charset="utf-8"')
+        # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
 
     def get_aguments_and_parameters(self, element, param):
@@ -42,6 +42,10 @@ class BaseHandler(RequestHandler):
         else:
             # if "q" is not in arguments, so put None value
             arguments["q"] = None
+
+        # if key "format" not in arguments, put a default value, the "geojson"
+        if "format" not in arguments:
+            arguments["format"] = "geojson"
 
         parameters = {
             "element": element.lower(),

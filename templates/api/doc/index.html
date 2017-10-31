@@ -1,0 +1,39 @@
+<!--
+    Responsible template to render the API document
+-->
+
+
+{% extends "../../base/base.html" %}
+
+{% block page_header %}
+    API DOC
+{% end %}
+
+{% block body %}
+
+    <div>
+        <h2>API Summary</h2>
+        <h4>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="#api_element_get">¶</a> GET /api/
+                </li>
+                <li class="list-group-item">
+                    <a href="#url_api">¶</a> GET /api/
+                </li>
+            </ul>
+        </h4>
+
+        {% include "api/element/get.html" %}
+
+        <ul class="list-group">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+            <li class="list-group-item">Porta ac consectetur ac</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+        </ul>
+
+    </div>
+
+{% end %}

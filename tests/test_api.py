@@ -69,22 +69,14 @@ class TestAPI(TestCase):
 
         expected = [
             {'id': 1, 'geom': 'MULTIPOINT(0 0)', 'fk_id_changeset': 1},
-            {'id': 2, 'geom': 'MULTIPOINT(1 1)', 'fk_id_changeset': 2},
-            {'id': 3, 'geom': 'MULTIPOINT(2 2)', 'fk_id_changeset': 1},
-            {'id': 4, 'geom': 'MULTIPOINT(3 3)', 'fk_id_changeset': 2},
-            {'id': 5, 'geom': 'MULTIPOINT(5 5)', 'fk_id_changeset': 2}
+            {'id': 2, 'geom': 'MULTIPOINT(1 1)', 'fk_id_changeset': 2}
         ]
+
         resulted = loads(response.text)  # convert string to dict/JSON
 
         self.assertEqual(expected, resulted)
 
     def test_get_api_node_without_id_geojson(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/node/?format=geojson')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
         expected = {
             "features": [
                 {
@@ -108,6 +100,22 @@ class TestAPI(TestCase):
             ],
             "type": "FeatureCollection"
         }
+
+        # do a GET call with default format (GeoJSON)
+        response = get('http://localhost:8888/api/node/')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+        # do a GET call putting explicit GeoJSON format
+        response = get('http://localhost:8888/api/node/?format=geojson')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 

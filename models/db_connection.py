@@ -81,7 +81,7 @@ class PGSQLConnection:
         """
         self.__PGSQL_CONNECTION__.close()
 
-    def get_elements(self, element, q=None, format="wkt"):
+    def get_elements(self, element, q=None, format="geojson"):
         """
         Do a GET query in DB.
 
@@ -96,11 +96,17 @@ class PGSQLConnection:
         # FORMAT OF QUERY - WKT or GEOJSON - CALL RESPECTED METHOD
         ######################################################################
 
-        if format == "geojson":
-            return self.get_elements_geojson(element, q=q)
+        # if format == "geojson":
+        #     return self.get_elements_geojson(element, q=q)
+        #
+        # # if format == "wkt":  # default
+        # return self.get_elements_wkt(element, q=q)
 
-        # if format == "wkt":  # default
-        return self.get_elements_wkt(element, q=q)
+        if format == "wkt":
+            return self.get_elements_wkt(element, q=q)
+
+        # if format == "geojson":  # default
+        return self.get_elements_geojson(element, q=q)
 
     def get_elements_wkt(self, element, q=None):
 

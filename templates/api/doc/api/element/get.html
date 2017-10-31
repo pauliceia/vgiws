@@ -1,0 +1,78 @@
+<ul class="list-group">
+    <li class="list-group-item">
+        <div class="section" id="api_element_get">
+            <h2> GET /api/[node|way|area]/?<PARAMETERS> <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--></h2>
+            <p>
+                description url
+            </p>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="section" id="parameters">
+            <h3>Parameters <!--<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a>--></h3>
+
+            <div class="panel panel-default">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <!--<th>#</th> <th>First Name</th> <th>Last Name</th> <th>Username</th>-->
+                            <th>Name</th> <th>Required</th> <th>Description</th> <th>Default Value</th> <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!--<th scope="row">1</th> <td>Mark</td> <td>Otto</td> <td>@mdo</td>-->
+                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
+                        </tr>
+                        <tr>
+                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
+                        </tr>
+                        <tr>
+                            <td>Mark</td> <td>Otto</td> <td>@mdo</td> <td>Otto</td> <td>@mdo</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="section" id="example-request">
+            <h3> Example Request <!--<a class="headerlink" href="#example-request" title="Permalink to this headline">¶</a>--> </h3>
+            <p>
+                <cite> GET http://localhost:8888/api/node/?format=wkt </cite>
+            </p>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="section" id="example-response">
+            <h3> Example Response<a class="headerlink" href="#example-response" title="Permalink to this headline">¶</a> </h3>
+
+            <div class="code javascript highlight-default">
+                <div class="highlight">
+
+                    <pre>
+{
+"features": [
+{
+    "tags": [
+        {"v": "house", "id": 1, "k": "name"},
+        {"v": "yes", "id": 2, "k": "building"}
+    ],
+    "type": "Feature",
+    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
+    "properties": {"id": 1, "fk_id_changeset": 1}
+}
+],
+"type": "FeatureCollection"
+}
+                    </pre>
+
+                </div>
+            </div>
+        </div>
+    </li>
+
+</ul>
