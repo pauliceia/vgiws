@@ -31,40 +31,105 @@ This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.
 
 To create a new virtualenv with Python 3:
 
+```
 $ mkvirtualenv pauliceia_webservice
-
 $ mkvirtualenv -p /usr/bin/python3 pauliceia_webservice
+```
 
 To switch the environment:
 
+```
 $ workon pauliceia_webservice
+```
 
 To install the dependencies:
 
+```
 $ pip install -r requirements.txt
+```
 
 To run the application:
 
+```
 $ python main.py
+```
+
+To run the application in Debug Mode:
+
+```
+$ python main.py --debug=True
+```
+
+
+## Database connection
+
+It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "db_pauliceia_test" does not exist".
+
+
+### Test fase of database
+
+Access postgres:
+
+```
+$ sudo -i -u postgres
+$ psql -d postgres
+```
+
+Remove the database, if it exists:
+
+```sql
+DROP DATABASE IF EXISTS db_pauliceia_test;
+```
+
+Create database:
+
+```sql
+CREATE DATABASE db_pauliceia_test;
+```
+
+Connect on database created before:
+
+```sql
+\c db_pauliceia_test
+```
+
+Active the PostGIS extension:
+
+```sql
+CREATE EXTENSION postgis;
+```
+
+Exit:
+```sql
+\q
+```
 
 
 ## Run the tests
 
 First of all, on console, run the application in Debug mode:
 
+```
 $ python main.py --debug=True
+```
 
 On other console, go to /webservice/tests/ folder. Example:
 
+```
 $ cd .../webservice/tests/
+```
 
 Turn on the environment:
 
+```
 $ workon pauliceia_webservice
+```
 
 Execute the tests:
 
+```
 $ python run_tests.py
+```
 
 
 ## To run this application in PyCharm
