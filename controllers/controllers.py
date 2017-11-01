@@ -104,15 +104,15 @@ Read: GET /api/0.6/changeset/#id?include_discussion=true
 Update: PUT /api/0.6/changeset/#id
 Close: PUT /api/0.6/changeset/#id/close
 Query: GET /api/0.6/changesets
-user=#uid, open=true, ...
+    user=#uid, open=true, ...
 Add comment: POST /api/0.6/changeset/#id/comment
 
+OK Read: GET /api/0.6/[node|way|relation]/#id
 Create: PUT /api/0.6/[node|way|relation]/create
-Read: GET /api/0.6/[node|way|relation]/#id
 Update: PUT /api/0.6/[node|way|relation]/#id
 Delete: DELETE /api/0.6/[node|way|relation]/#id
 History: GET /api/0.6/[node|way|relation]/#id/history
-Retrieves all old versions of an element.
+    Retrieves all old versions of an element.
 
 
 """
