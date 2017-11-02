@@ -20,47 +20,7 @@ class TestAPI(TestCase):
     #     print("type(response.text): ", type(response.text))
     #     print("\n")
 
-    def test_get_api_node_id_1_wkt(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1]&format=wkt')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
-        expected = [
-            {'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
-        ]
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
-    def test_get_api_node_id_1_geojson(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1]')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
-        expected = {
-            "features": [
-                {
-                    "tags": [
-                        {"v": "house", "id": 1, "k": "name"},
-                        {"v": "yes", "id": 2, "k": "building"}
-                    ],
-                    "type": "Feature",
-                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
-                    "properties": {"id": 1, "fk_id_changeset": 1}
-                }
-            ],
-            "type": "FeatureCollection"
-        }
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
-    def test_get_api_node_without_id_wkt(self):
+    def test_get_api_node_return_all_elements_as_wkt(self):
         # do a GET call
         response = get('http://localhost:8888/api/node/?format=wkt')
 
@@ -76,7 +36,7 @@ class TestAPI(TestCase):
 
         self.assertEqual(expected, resulted)
 
-    def test_get_api_node_without_id_geojson(self):
+    def test_get_api_node_return_all_elements_as_geojson(self):
         expected = {
             "features": [
                 {
@@ -116,6 +76,46 @@ class TestAPI(TestCase):
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+    def test_get_api_node_return_element_with_id_1_as_wkt(self):
+        # do a GET call
+        response = get('http://localhost:8888/api/node/?q=[id=1]&format=wkt')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
+
+        expected = [
+            {'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
+        ]
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+    def test_get_api_node_return_element_with_id_1_as_geojson(self):
+        # do a GET call
+        response = get('http://localhost:8888/api/node/?q=[id=1]')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
+
+        expected = {
+            "features": [
+                {
+                    "tags": [
+                        {"v": "house", "id": 1, "k": "name"},
+                        {"v": "yes", "id": 2, "k": "building"}
+                    ],
+                    "type": "Feature",
+                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
+                    "properties": {"id": 1, "fk_id_changeset": 1}
+                }
+            ],
+            "type": "FeatureCollection"
+        }
 
         resulted = loads(response.text)  # convert string to dict/JSON
 

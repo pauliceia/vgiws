@@ -157,12 +157,10 @@ class PGSQLConnection:
                 ))
             ) AS row_to_json
             FROM {0}
-            CROSS JOIN LATERAL (
-                SELECT jsonb_agg(row_tag) AS jsontags 
-                FROM (
-                    SELECT id, k, v FROM {0}_tag 
-                    WHERE fk_{0}_id = {0}.id
-                ) row_tag
+            CROSS JOIN LATERAL ( 
+                SELECT json_agg(json_build_object('id', id, 'k', k, 'v', v)) AS jsontags 
+                FROM {0}_tag 
+                WHERE fk_{0}_id = {0}.id                
             ) AS tags
             {1}
         """.format(element, where)
