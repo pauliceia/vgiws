@@ -14,7 +14,7 @@ from tornado.options import define, options, parse_command_line
 
 from settings import *
 # from settings.accounts import __COOKIE_SECRET__
-from controllers.controllers import __LIST_BASEHANDLER_SUBCLASSES__
+from controllers.main import __LIST_BASEHANDLER_SUBCLASSES__
 from models import PGSQLConnection
 
 
