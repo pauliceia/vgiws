@@ -95,6 +95,8 @@ class PGSQLConnection:
 
     # my methods
 
+    # GET elements
+
     def get_elements(self, element, q=None, format="geojson"):
         """
         Do a GET query in DB.
@@ -194,6 +196,29 @@ class PGSQLConnection:
             results_of_query = results_of_query["row_to_json"]
 
         return results_of_query
+
+    # changesets
+
+    def create_changeset(self):
+
+        create_at = "'2017-10-20'"
+        fk_project_id = 1
+        fk_user_id_owner = 1
+
+        query_text = """
+                INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
+                VALUES ({0}, {1}, {2}) RETURNING id;
+            """.format(create_at, fk_project_id, fk_user_id_owner)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        id_changeset = self.__PGSQL_CURSOR__.fetchone()
+
+        print("id_changeset: ", id_changeset)
+
+        return id_changeset
 
 
 

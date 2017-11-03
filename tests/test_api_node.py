@@ -28,8 +28,8 @@ class TestAPINode(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'id': 1},
-            {'fk_id_changeset': 2, 'geom': 'MULTIPOINT(-23.55045 -46.634272)', 'id': 2}
+            {'fk_id_changeset': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'id': 1001},
+            {'fk_id_changeset': 1002, 'geom': 'MULTIPOINT(-23.55045 -46.634272)', 'id': 1002}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -41,19 +41,19 @@ class TestAPINode(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'fk_id_changeset': 1, 'id': 1},
+                    'properties': {'fk_id_changeset': 1001, 'id': 1001},
                     'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
-                    'tags': [{'v': 'R. São José', 'k': 'address', 'id': 1},
-                             {'v': '1869', 'k': 'start_date', 'id': 2},
-                             {'v': '1869', 'k': 'end_date', 'id': 3}],
+                    'tags': [{'v': 'R. São José', 'k': 'address', 'id': 1001},
+                             {'v': '1869', 'k': 'start_date', 'id': 1002},
+                             {'v': '1869', 'k': 'end_date', 'id': 1003}],
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'fk_id_changeset': 2, 'id': 2},
+                    'properties': {'fk_id_changeset': 1002, 'id': 1002},
                     'geometry': {'coordinates': [[-23.55045, -46.634272]], 'type': 'MultiPoint'},
-                    'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address', 'id': 4},
-                             {'v': '1878', 'k': 'start_date', 'id': 5},
-                             {'v': '1910', 'k': 'end_date', 'id': 6}],
+                    'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address', 'id': 1004},
+                             {'v': '1878', 'k': 'start_date', 'id': 1005},
+                             {'v': '1910', 'k': 'end_date', 'id': 1006}],
                     'type': 'Feature'}
             ]
         }
@@ -80,13 +80,13 @@ class TestAPINode(TestCase):
 
     def test_get_api_node_return_element_with_id_1_as_wkt(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1]&format=wkt')
+        response = get('http://localhost:8888/api/node/?q=[id=1001]&format=wkt')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'id': 1, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'fk_id_changeset': 1}
+            {'id': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'fk_id_changeset': 1001}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -95,7 +95,7 @@ class TestAPINode(TestCase):
 
     def test_get_api_node_return_element_with_id_1_as_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1]')
+        response = get('http://localhost:8888/api/node/?q=[id=1001]')
 
         self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
@@ -104,11 +104,11 @@ class TestAPINode(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'tags': [{'id': 1, 'v': 'R. São José', 'k': 'address'},
-                             {'id': 2, 'v': '1869', 'k': 'start_date'},
-                             {'id': 3, 'v': '1869', 'k': 'end_date'}],
+                    'tags': [{'id': 1001, 'v': 'R. São José', 'k': 'address'},
+                             {'id': 1002, 'v': '1869', 'k': 'start_date'},
+                             {'id': 1003, 'v': '1869', 'k': 'end_date'}],
                     'type': 'Feature',
-                    'properties': {'id': 1, 'fk_id_changeset': 1},
+                    'properties': {'id': 1001, 'fk_id_changeset': 1001},
                     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
                 }
             ]

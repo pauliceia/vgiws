@@ -36,6 +36,20 @@ class APIElement(BaseHandler):
         self.write(json_encode(result_list))
 
 
+class APIChangeset(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+
+    urls = [r"/api/changeset/create", r"/api/changeset/create/"]
+
+    def get(self):
+
+        id_changeset = self.PGSQLConn.create_changeset()
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({"id_changeset": id_changeset}))
+
+
 """
 /api/0.6/[nodes|ways|relations]?#params
 Create: PUT /api/0.6/changeset/create

@@ -73,6 +73,7 @@ class FakeAuthLoginHandler(BaseHandler):
 
     def get(self):
 
+        # if in debug mode, create a fake login to tests
         if self.DEBUG_MODE:
             user = {"email": "test@fake.login"}
             self.login(user, type_login="fakelogin")
