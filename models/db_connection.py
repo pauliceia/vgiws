@@ -39,7 +39,7 @@ class PGSQLConnection:
     def __init__(self, args={}):
         self.__ARGS__ = args
 
-        if self.__ARGS__["__DEBUG_MODE__"]:
+        if self.__ARGS__["DEBUG_MODE"]:
             self.__DO_CONNECTION__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
         else:
             self.__DO_CONNECTION__(__PGSQL_CONNECTION_SETTINGS__)
@@ -55,7 +55,7 @@ class PGSQLConnection:
         It can be for the normal DB or test DB
         :return:
         """
-        if self.__ARGS__["__DEBUG_MODE__"]:
+        if self.__ARGS__["DEBUG_MODE"]:
             print("\nConnecting in PostgreSQL with:"
                   "\n- hostname: ", __pgsql_connection_settings__["HOSTNAME"],
                   "\n- port: ", __pgsql_connection_settings__["PORT"],

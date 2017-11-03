@@ -4,3 +4,4 @@
 # put all groups of controllers
 from .pages import *
 from .elements import *
+from .login import *

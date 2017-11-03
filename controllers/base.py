@@ -6,7 +6,10 @@
 """
 
 
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, HTTPError
+from tornado.escape import json_encode, json_decode
+
+from modules.user import get_new_user_struct_cookie
 
 
 class BaseHandler(RequestHandler):
@@ -18,13 +21,67 @@ class BaseHandler(RequestHandler):
     # Static list to be added the all valid urls to one handler
     urls = []
 
+    __AFTER_LOGGED_IN_REDIRECT_TO__ = "/auth/login/success/"
+    __AFTER_LOGGED_OUT_REDIRECT_TO__ = "/auth/logout/success/"
+
     # __init__ for Tornado subclasses
     def initialize(self):
         self.PGSQLConn = self.application.PGSQLConn
+        self.DEBUG_MODE = self.application.DEBUG_MODE
 
     def set_default_headers(self):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
+
+    # login
+    def login(self, user, type_login):
+        if self.DEBUG_MODE:
+            print("Logged in System")
+            print("user: ", user)
+            print("type_login: ", type_login, "\n")
+
+        # insert the user in cookie
+        self.set_current_user(email=user["email"], type_login=type_login, new_user=True)
+
+    # cookies
+    def set_current_user(self, email="", type_login="", new_user=True):
+        if new_user:
+            # if new user, so create a new cookie
+            user_cookie = get_new_user_struct_cookie()
+        else:
+            # if already exist, so get the cookie
+            user_cookie = json_decode(self.get_secure_cookie("user"))
+
+        # insert the information
+        user_cookie["login"]["email"] = email
+        user_cookie["login"]["type_login"] = type_login
+
+        # set the cookie (it needs to be separated)
+        # transform dictionary in JSON and add in cookie
+        encode = json_encode(user_cookie)
+        self.set_secure_cookie("user", encode)
+
+    def get_current_user(self):
+        user_cookie = self.get_secure_cookie("user")
+
+        if user_cookie:
+            return json_decode(user_cookie)
+        else:
+            return None
+
+    # status HTTP
+    def set_and_send_status(self, status=404, reason="", extra={}, raise_error=False):
+
+        response_json = {"status": status, "statusText": reason}
+
+        if extra != {}:
+            response_json["extra"] = extra
+
+        self.set_status(status, reason=reason)
+        self.write(json_encode(response_json))
+
+        if raise_error:
+            raise HTTPError(status, reason)
 
     def get_aguments_and_parameters(self, element, param):
         """

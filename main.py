@@ -86,9 +86,9 @@ class HttpServerApplication(Application):
         )
 
         # create a global variable to debug mode
-        self.__DEBUG_MODE__ = options.debug
+        self.DEBUG_MODE = options.debug
         # create the instance of DB passing arguments
-        self.PGSQLConn = PGSQLConnection.get_instance({"__DEBUG_MODE__": self.__DEBUG_MODE__})
+        self.PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
 
         # Pass the handlers and the settings created to the constructor of the super class (father class)
         Application.__init__(self, __handlers__, **__setting__s)
