@@ -74,12 +74,26 @@ class PGSQLConnection:
             print("Closing web service!")
             exit(1)
 
+    # "overwriting" some DB methods
+
     def close(self):
         """
         Close the PostgreSQL DB connection
         :return:
         """
         self.__PGSQL_CONNECTION__.close()
+
+    def execute(self, query_text):
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchall()
+
+        return results_of_query
+
+    # my methods
 
     def get_elements(self, element, q=None, format="geojson"):
         """
@@ -151,8 +165,8 @@ class PGSQLConnection:
                 'type',       'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
-                    'properties', to_jsonb(node) - 'geom' - 'visible' - 'version',
+                    'geometry',   ST_AsGeoJSON({0}.geom)::jsonb,
+                    'properties', to_jsonb({0}) - 'geom' - 'visible' - 'version',
                     'tags',       tags.jsontags
                 ))
             ) AS row_to_json

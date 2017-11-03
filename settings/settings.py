@@ -32,7 +32,7 @@ URL_APP = "https://" + IP_APP + ":" + str(PORT_APP)
 
 # By default is False, so run the application normally
 # True is just for Debug
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 
 # LIST_HOSTS_ALLOW = [

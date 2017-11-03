@@ -9,7 +9,7 @@ from requests import get
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-class TestAPI(TestCase):
+class TestAPINode(TestCase):
     # def tests(self):
     #     print("\n")
     #     print("response: ", response)
@@ -28,8 +28,8 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'id': 1, 'geom': 'MULTIPOINT(0 0)', 'fk_id_changeset': 1},
-            {'id': 2, 'geom': 'MULTIPOINT(1 1)', 'fk_id_changeset': 2}
+            {'fk_id_changeset': 1, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'id': 1},
+            {'fk_id_changeset': 2, 'geom': 'MULTIPOINT(-23.55045 -46.634272)', 'id': 2}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -38,27 +38,24 @@ class TestAPI(TestCase):
 
     def test_get_api_node_return_all_elements_as_geojson(self):
         expected = {
-            "features": [
+            'type': 'FeatureCollection',
+            'features': [
                 {
-                    "properties": {"fk_id_changeset": 1, "id": 1},
-                    "tags": [
-                        {"v": "house", "k": "name", "id": 1},
-                        {"v": "yes", "k": "building", "id": 2}
-                    ],
-                    "type": "Feature",
-                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"}
+                    'properties': {'fk_id_changeset': 1, 'id': 1},
+                    'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+                    'tags': [{'v': 'R. São José', 'k': 'address', 'id': 1},
+                             {'v': '1869', 'k': 'start_date', 'id': 2},
+                             {'v': '1869', 'k': 'end_date', 'id': 3}],
+                    'type': 'Feature'
                 },
                 {
-                    "properties": {"fk_id_changeset": 2, "id": 2},
-                    "tags": [
-                        {"v": "a point", "k": "name", "id": 3},
-                        {"v": "a awesome point on map", "k": "description", "id": 4}
-                    ],
-                    "type": "Feature",
-                    "geometry": {"coordinates": [[1, 1]], "type": "MultiPoint"}
-                }
-            ],
-            "type": "FeatureCollection"
+                    'properties': {'fk_id_changeset': 2, 'id': 2},
+                    'geometry': {'coordinates': [[-23.55045, -46.634272]], 'type': 'MultiPoint'},
+                    'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address', 'id': 4},
+                             {'v': '1878', 'k': 'start_date', 'id': 5},
+                             {'v': '1910', 'k': 'end_date', 'id': 6}],
+                    'type': 'Feature'}
+            ]
         }
 
         # do a GET call with default format (GeoJSON)
@@ -89,8 +86,9 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1, 'id': 1, 'geom': 'MULTIPOINT(0 0)'}
+            {'id': 1, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'fk_id_changeset': 1}
         ]
+
         resulted = loads(response.text)  # convert string to dict/JSON
 
         self.assertEqual(expected, resulted)
@@ -103,18 +101,17 @@ class TestAPI(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = {
-            "features": [
+            'type': 'FeatureCollection',
+            'features': [
                 {
-                    "tags": [
-                        {"v": "house", "id": 1, "k": "name"},
-                        {"v": "yes", "id": 2, "k": "building"}
-                    ],
-                    "type": "Feature",
-                    "geometry": {"coordinates": [[0, 0]], "type": "MultiPoint"},
-                    "properties": {"id": 1, "fk_id_changeset": 1}
+                    'tags': [{'id': 1, 'v': 'R. São José', 'k': 'address'},
+                             {'id': 2, 'v': '1869', 'k': 'start_date'},
+                             {'id': 3, 'v': '1869', 'k': 'end_date'}],
+                    'type': 'Feature',
+                    'properties': {'id': 1, 'fk_id_changeset': 1},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
                 }
-            ],
-            "type": "FeatureCollection"
+            ]
         }
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -123,27 +120,21 @@ class TestAPI(TestCase):
 
 
 
-    # def test_get_api_node_create(self):
+
+    # helper
+    # def test_helper_execute(self):
     #     # do a GET call
-    #     response = get('http://localhost:8888/api/node/create/?q=[id=1]&format=geojson')
+    #     response = get('http://localhost:8888/helper/execute/')
     #
     #     self.assertTrue(response.ok)
     #     self.assertEqual(response.status_code, 200)
     #
-    #     expected = {'foo': 'bar', '1': 2, 'false': True}
+    #     expected = []
+    #
     #     resulted = loads(response.text)  # convert string to dict/JSON
+    #
     #     self.assertEqual(expected, resulted)
-    #
-    # def test_get_api_node_history(self):
-    #     # do a GET call
-    #     response = get('http://localhost:8888/api/node/history/?q=[id=1]&format=geojson')
-    #
-    #     self.assertTrue(response.ok)
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     expected = {'foo': 'bar', '1': 2, 'false': True}
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #     self.assertEqual(expected, resulted)
+
 
 
 # It is not necessary to pyt the main() of unittest here,
