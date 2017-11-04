@@ -8,7 +8,10 @@ DELETE FROM user_;
 INSERT INTO user_ (id, username, email, password, name) VALUES (1001, 'admin', 'admin@admin.com', 'admin', 'Administrator');
 INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', 'Rodrigo');
 
--- SELECT * FROM user_;
+SELECT * FROM user_;
+SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
+
+SELECT id, username, name FROM user_ WHERE email='admin@admin.c';
 
 
 -- -----------------------------------------------------
@@ -38,7 +41,7 @@ INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1
 -- INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) VALUES ('2016-04-20', 1002, 1002) RETURNING id;
 
 -- SELECTs
---SELECT * FROM changeset;
+SELECT * FROM changeset;
 
 
 -- -----------------------------------------------------

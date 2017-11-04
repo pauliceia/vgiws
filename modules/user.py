@@ -7,12 +7,8 @@ from copy import deepcopy
 __USER_STRUCT_COOKIE__ = {
     # information of the user
     "login": {
-        "email": "",
-        "type_login": ""
-    },
-    "information": {
-        "id": -1,
-        "name": "",
+        "user": {},
+        "type_login": "",
     }
 }
 

@@ -76,6 +76,7 @@ class HttpServerApplication(Application):
             # cookie_secret=__COOKIE_SECRET__,
             cookie_secret="ACOOKIETEMPORARY",
             # login_url="/auth/login/",
+            login_url=LOGIN_URL,
 
             debug=options.debug,
             current_year=CURRENT_YEAR,

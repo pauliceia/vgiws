@@ -30,9 +30,15 @@ PORT_APP = int(os_environ_get("PORT", 8888))
 URL_APP = "https://" + IP_APP + ":" + str(PORT_APP)
 
 
+# Page of login
+# LOGIN_URL = "/auth/login/"
+LOGIN_URL = "/"
+
+
 # By default is False, so run the application normally
 # True is just for Debug
-DEBUG_MODE = False
+# DEBUG_MODE = False
+DEBUG_MODE = True
 
 
 # LIST_HOSTS_ALLOW = [

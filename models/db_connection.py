@@ -83,6 +83,13 @@ class PGSQLConnection:
         """
         self.__PGSQL_CONNECTION__.close()
 
+    def commit(self):
+        """
+            Just do the COMMIT operator in DB
+        """
+
+        self.__PGSQL_CONNECTION__.commit()
+
     def execute(self, query_text):
 
         # do the query in database
@@ -197,26 +204,65 @@ class PGSQLConnection:
 
         return results_of_query
 
+    # user
+
+    def get_user_in_db(self, email):
+
+        query_text = """
+            SELECT id, username, name, email FROM user_ WHERE email='{0}';
+            """.format(email)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_user_in_db(self, email):
+
+        query_text = """INSERT INTO user_ (email) VALUES ('{0}');""".format(email)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the user information (id, name, username, email, etc)
+        result = self.get_user_in_db(email)
+
+        self.commit()
+
+        return result
+
     # changesets
 
     def create_changeset(self):
 
         create_at = "'2017-10-20'"
-        fk_project_id = 1
-        fk_user_id_owner = 1
+        fk_project_id = 1001
+        fk_user_id_owner = 1001
 
         query_text = """
                 INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
                 VALUES ({0}, {1}, {2}) RETURNING id;
             """.format(create_at, fk_project_id, fk_user_id_owner)
 
+        print("query_text: ", query_text)
+
+
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
+
+
+        print("???")
+
 
         # get the result of query
         id_changeset = self.__PGSQL_CURSOR__.fetchone()
 
         print("id_changeset: ", id_changeset)
+
+        self.commit()
 
         return id_changeset
 
