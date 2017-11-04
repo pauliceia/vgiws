@@ -10,57 +10,65 @@ from requests import get
 
 
 
-# class TestAPI(TestCase):
-#
-#     def test(self):
-#         # do a GET call
-#         response = get('http://localhost:8888/api/changeset/create/')
-#
-#         response = get('http://localhost:8888/api/element/create/')
-#
-#         response = get('http://localhost:8888/api/element33/')
+class TestInvalidURLs(TestCase):
+
+    def test_invalid_urls(self):
+        response = get('http://localhost:8888/api/nodex/create/')
+
+        self.assertEqual(response.status_code, 404)
+
+        response = get('http://localhost:8888/api/element33/')
+
+        self.assertEqual(response.status_code, 404)
+
+        response = get('http://localhost:8888/api/nodi/')
+
+        self.assertEqual(response.status_code, 404)
+
+        response = get('http://localhost:8888/areaa/nodi/')
+
+        self.assertEqual(response.status_code, 404)
 
 
 
 
 
-# class TestAPI(TestCase):
+class TestAPI(TestCase):
 
-    # def test_get_api_create_changeset_without_login(self):
-    #     # do a GET call
-    #     response = get('http://localhost:8888/api/changeset/create/')
-    #
-    #     self.assertEqual(response.status_code, 400)
-    #
-    #     expected = {'statusText': 'There is no user logged', 'status': 400}
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.assertEqual(expected, resulted)
-
-    # def test_get_api_node_return_all_elements_as_wkt(self):
-    #
-    #     # first of all, do login
-    #
-    #     print("Doing login")
-    #     response = get('http://localhost:8888/auth/login/fake/')
-    #
-    #     print("Doing logout")
-    #     response = get('http://localhost:8888/auth/logout')
-    #
-    #
-    #     self.assertEqual(1, 1)
-
-
+    def test_get_api_create_changeset_without_login(self):
         # do a GET call
-        # response = get('http://localhost:8888/api/changeset/create/')
-        #
-        # self.assertEqual(response.status_code, 200)
-        #
-        # resulted = loads(response.text)  # convert string to dict/JSON
-        #
-        # print("resulted: ", resulted)
-        #
-        # self.assertIn("id_changeset", resulted)
+        response = get('http://localhost:8888/api/changeset/create/')
+
+        self.assertEqual(response.status_code, 403)
+
+        expected = {'status': 403, 'statusText': 'It needs a user looged to access this URL'}
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+    def test_get_api_create_changeset_without_login(self):
+        # First: do login
+        response = get('http://localhost:8888/auth/login/fake/')
+
+        self.assertEqual(response.status_code, 200)
+
+
+        # Create a changeset
+        response = get('http://localhost:8888/api/changeset/create/')
+
+        self.assertEqual(response.status_code, 403)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertIn("id_changeset", resulted)
+
+
+        # On the final: do logout
+
+        response = get('http://localhost:8888/auth/logout')
+
+        self.assertEqual(response.status_code, 200)
+
 
 
 

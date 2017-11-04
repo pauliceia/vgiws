@@ -13,7 +13,7 @@ from tornado.web import Application, StaticFileHandler
 from tornado.options import define, options, parse_command_line
 
 from settings import *
-# from settings.accounts import __COOKIE_SECRET__
+from settings.accounts import __COOKIE_SECRET__
 from controllers.main import __LIST_BASEHANDLER_SUBCLASSES__
 from models import PGSQLConnection
 
@@ -73,8 +73,7 @@ class HttpServerApplication(Application):
             xsrf_cookies=False,
 
             # how to generate: https://gist.github.com/didip/823887
-            # cookie_secret=__COOKIE_SECRET__,
-            cookie_secret="ACOOKIETEMPORARY",
+            cookie_secret=__COOKIE_SECRET__,
             # login_url="/auth/login/",
             login_url=LOGIN_URL,
 

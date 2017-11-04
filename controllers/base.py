@@ -4,15 +4,15 @@
 """
     Responsible module to create base handlers.
 """
-
-
+import tornado
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
 
 
-class BaseHandler(RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
+# class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
         It extends of the RequestHandler class.
@@ -70,7 +70,32 @@ class BaseHandler(RequestHandler):
         # set the cookie (it needs to be separated)
         # transform dictionary in JSON and add in cookie
         encode = json_encode(user_cookie)
-        self.set_secure_cookie("user", encode)
+        # self.set_secure_cookie("user", encode)
+
+
+
+
+
+        # self.set_secure_cookie("user", "a_user_saved")
+        #
+        # user_cookie = self.get_secure_cookie("user")
+
+
+
+
+
+        # self.set_cookie("_user_", "a_user_saved")
+        #
+        # user_cookie = self.get_cookie("_user_")
+
+
+
+
+        # print(">>> self.current_user: ", self.current_user)
+        #
+        # print(">>> user_cookie: ", user_cookie)
+        #
+        # print()
 
     def get_current_user(self):
         user_cookie = self.get_secure_cookie("user")

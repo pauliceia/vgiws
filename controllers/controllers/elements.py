@@ -12,51 +12,81 @@ from tornado.web import authenticated
 from tornado.escape import json_encode
 
 
+def auth_non_browser_based(method):
+    @functools.wraps(method)
+    def wrapper(self, *args, **kwargs):
 
-# def authenticated_non_browser_based(method):
-#     """Decorate methods with this to require that the user be logged in.
-#
-#     If the user is not logged in, they will be redirected to the configured
-#     `login url <RequestHandler.get_login_url>`.
-#
-#     If you configure a login url with a query parameter, Tornado will
-#     assume you know what you're doing and use it as-is.  If not, it
-#     will add a `next` parameter so the login page knows where to send
-#     you once you're logged in.
+        print(">>> self.current_user: ", self.current_user)
+        print(">>> self.get_current_user(): ", self.get_current_user())
+
+        # if user is not logged in, so return a 403 Forbidden
+        if not self.current_user:
+            # raise HTTPError(403)
+            self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
+            return
+
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+# def auth_non_browser_based(method):
 #     """
-#     @functools.wraps(method)
+#     Authentication to non browser based service
+#     :param method:
+#     :return:
+#     """
+#
 #     def wrapper(self, *args, **kwargs):
+#         print(">>> self.current_user: ", self.current_user)
+#         print(">>> self.get_current_user(): ", self.get_current_user())
+#
+#         # if user is not logged in, so return a 403 Forbidden
 #         if not self.current_user:
-#             if self.request.method in ("GET", "HEAD"):
-#                 url = self.get_login_url()
-#                 if "?" not in url:
-#                     if urlparse.urlsplit(url).scheme:
-#                         # if login url is absolute, make next absolute too
-#                         next_url = self.request.full_url()
-#                     else:
-#                         next_url = self.request.uri
-#                     url += "?" + urlencode(dict(next=next_url))
-#                 self.redirect(url)
-#                 return
-#             raise HTTPError(403)
+#             # raise HTTPError(403)
+#             self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
+#             return
+#
 #         return method(self, *args, **kwargs)
 #
 #     return wrapper
 
 
+class APIChangeset(BaseHandler):
 
-# class APIChangeset(BaseHandler):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#
-#     urls = [r"/api/changeset/create", r"/api/changeset/create/"]
-#
-#     # @authenticated_non_browser_based
-#     def get(self):
-#
-#         print("self.current_user: ", self.current_user)
-#
-#         self.set_and_send_status(status=200, reason="...")
+    # A list of URLs that can be use for the HTTP methods
+
+    urls = [r"/api/changeset/create", r"/api/changeset/create/"]
+
+    # @auth_non_browser_based
+    def get(self):
+
+        self.set_secure_cookie("a_cookie", "a_value")
+        a_cookie = self.get_secure_cookie("a_cookie")
+
+        print(">>> a_cookie ", a_cookie)
+
+        self.set_cookie("a_cookie", "a_value")
+        a_cookie = self.get_cookie("a_cookie")
+
+        print(">>> a_cookie ", a_cookie)
+
+
+
+
+        print(">>> self.current_user: ", self.current_user)
+        print(">>> self.get_current_user(): ", self.get_current_user())
+
+        # if user is not logged in, so return a 403 Forbidden
+        if not self.current_user:
+            # raise HTTPError(403)
+            self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
+            return
+
+
+        print("self.current_user: ", self.current_user)
+
+        self.set_and_send_status(status=200, reason="...")
 
 
 
