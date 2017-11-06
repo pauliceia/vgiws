@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS node (
   geom GEOMETRY(MULTIPOINT, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
   CONSTRAINT fk_tb_contribution_tb_project1
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -140,10 +140,10 @@ CREATE TABLE IF NOT EXISTS way (
   geom GEOMETRY(MULTILINESTRING, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
   CONSTRAINT fk_table1_changeset1
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -239,10 +239,10 @@ CREATE TABLE IF NOT EXISTS area (
   geom GEOMETRY(MULTIPOLYGON, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
   CONSTRAINT fk_area_change_set1
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -287,10 +287,10 @@ CREATE TABLE IF NOT EXISTS current_node (
   id SERIAL ,
   geom GEOMETRY(MULTIPOINT, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_contribution_tb_project10
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -306,10 +306,10 @@ CREATE TABLE IF NOT EXISTS current_area (
   id SERIAL ,
   geom GEOMETRY(MULTIPOLYGON, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_area_change_set10
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -331,10 +331,10 @@ CREATE TABLE IF NOT EXISTS current_way (
   id SERIAL ,
   geom GEOMETRY(MULTILINESTRING, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  fk_id_changeset INT NOT NULL,
+  fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_table1_changeset10
-    FOREIGN KEY (fk_id_changeset)
+    FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE

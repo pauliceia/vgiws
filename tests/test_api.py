@@ -60,16 +60,48 @@ class TestAPI(TestCase):
         # put the id received in the original JSON of changeset
         changeset["plc"]["changeset"]["properties"]["id"] = resulted["id"]
 
+        # get the id of changeset to use
+        fk_id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
 
+        ################################################################################
+        # ADD A NODE
+        ################################################################################
 
+        # send a JSON with the node to create a new one
+        node = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'tags': [{'k': 'event', 'v': 'robbery'},
+                             {'k': 'date', 'v': '1910'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
+                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
+                    'geometry': {
+                        'type': 'MultiPoint',
+                        'coordinates': [[-23.546421, -46.635722]],
+                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a node to add in DB
+        response = s.put('http://localhost:8888/api/node/create/', data=dumps(node), headers=headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertIn("id", resulted)
+        self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        node["features"][0]["properties"]["id"] = resulted["id"]
 
         ################################################################################
         # CLOSE THE CHANGESET
         ################################################################################
 
-        id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
-
-        response = s.get('http://localhost:8888/api/changeset/close/{0}'.format(id_changeset))
+        response = s.get('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
 
         self.assertEqual(response.status_code, 200)
 

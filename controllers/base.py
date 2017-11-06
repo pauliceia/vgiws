@@ -150,16 +150,9 @@ class BaseHandler(RequestHandler):
     # URLS
     ################################################################################
 
-    def GET_api_element(self, element, param):
+    def get_method_api_element(self, element, param):
 
         arguments, parameters = self.get_aguments_and_parameters(element, param)
-
-        # print("self.request.arguments: ", self.request.arguments)
-        # print("arguments", arguments)
-        # print("arguments['q']: ", arguments["q"])
-        # print("parameters: ", parameters)
-        # print("element: ", parameters["element"])
-        # print("self.PGSQLConn: ", self.PGSQLConn)
 
         result_list = self.PGSQLConn.get_elements(parameters["element"],
                                                   q=arguments["q"],
@@ -167,6 +160,25 @@ class BaseHandler(RequestHandler):
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result_list))
+
+    def put_method_api_element(self, element, param):
+
+        if param.lower() != "create":
+            self.set_and_send_status(status=400, reason="Invalid URL")
+            return
+
+        element_json = self.get_the_json_validated()
+
+        current_user_id = self.get_current_user_id()
+
+        json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(json_with_id))
+
+    ################################################################################
+    # URLS
+    ################################################################################
 
     # status HTTP
 

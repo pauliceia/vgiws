@@ -10,10 +10,6 @@ from ..base import *
 from tornado.escape import json_encode
 
 
-# base: http://wiki.openstreetmap.org/wiki/API_v0.6
-# http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2Fchangeset.2Fcreate
-# http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2F.5Bnode.7Cway.7Crelation.5D.2Fcreate
-
 class APIChangesetCreate(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
@@ -28,10 +24,10 @@ class APIChangesetCreate(BaseHandler):
 
         current_user_id = self.get_current_user_id()
 
-        __id__ = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+        json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
 
         # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode({"id": __id__}))
+        self.write(json_encode(json_with_id))
 
 
 class APIChangesetClose(BaseHandler):
@@ -58,8 +54,10 @@ class APIElementNode(BaseHandler):
             r"/api/node/?(?P<param>[A-Za-z0-9-]+)?/"]
 
     def get(self, param=None):
+        self.get_method_api_element("node", param)
 
-        self.GET_api_element("node", param)
+    def put(self, param=None):
+        self.put_method_api_element("node", param)
 
 
 class APIElementWay(BaseHandler):
@@ -69,7 +67,7 @@ class APIElementWay(BaseHandler):
             r"/api/way/?(?P<param>[A-Za-z0-9-]+)?/"]
 
     def get(self, param=None):
-        self.GET_api_element("way", param)
+        self.get_method_api_element("way", param)
 
 
 class APIElementArea(BaseHandler):
@@ -79,26 +77,30 @@ class APIElementArea(BaseHandler):
             r"/api/area/?(?P<param>[A-Za-z0-9-]+)?/"]
 
     def get(self, param=None):
-        self.GET_api_element("area", param)
+        self.get_method_api_element("area", param)
 
 
 """
-/api/0.6/[nodes|ways|relations]?#params
-Create: PUT /api/0.6/changeset/create
-Read: GET /api/0.6/changeset/#id?include_discussion=true
-Update: PUT /api/0.6/changeset/#id
-Close: PUT /api/0.6/changeset/#id/close
-Query: GET /api/0.6/changesets
-    user=#uid, open=true, ...
-Add comment: POST /api/0.6/changeset/#id/comment
+    /api/0.6/[nodes|ways|relations]?#params
+OK - Create: PUT /api/0.6/changeset/create
+    Read: GET /api/0.6/changeset/#id?include_discussion=true
+    Update: PUT /api/0.6/changeset/#id
+OK - Close: PUT /api/0.6/changeset/#id/close
+    Query: GET /api/0.6/changesets
+        user=#uid, open=true, ...
+    Add comment: POST /api/0.6/changeset/#id/comment
 
-OK Read: GET /api/0.6/[node|way|relation]/#id
-Create: PUT /api/0.6/[node|way|relation]/create
-Update: PUT /api/0.6/[node|way|relation]/#id
-Delete: DELETE /api/0.6/[node|way|relation]/#id
-History: GET /api/0.6/[node|way|relation]/#id/history
-    Retrieves all old versions of an element.
+OK - Read: GET /api/0.6/[node|way|relation]/#id
+    Create: PUT /api/0.6/[node|way|relation]/create
+    Update: PUT /api/0.6/[node|way|relation]/#id
+    Delete: DELETE /api/0.6/[node|way|relation]/#id
+    History: GET /api/0.6/[node|way|relation]/#id/history
+        Retrieves all old versions of an element.
 
+base: http://wiki.openstreetmap.org/wiki/API_v0.6
+http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2Fchangeset.2Fcreate
+http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2F.5Bnode.7Cway.7Crelation.5D.2Fcreate
+https://buildinginspector.nypl.org/data
 
 """
 

@@ -33,6 +33,7 @@ from psycopg2.extras import RealDictCursor
 from modules.design_pattern import Singleton
 from modules.common import get_current_datetime
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
+from tornado.escape import json_encode
 
 
 @Singleton
@@ -107,6 +108,10 @@ class PGSQLConnection:
 
     # my methods
 
+    ################################################################################
+    # ELEMENT
+    ################################################################################
+
     # GET elements
 
     def get_elements(self, element, q=None, format="geojson"):
@@ -160,6 +165,8 @@ class PGSQLConnection:
 
     def get_elements_geojson(self, element, q=None):
 
+        # TODO: when return the GeoJSON, returning with the CRS: "EPSG:4326"
+
         ######################################################################
         # CREATE THE WHERE CLAUSE
         ######################################################################
@@ -209,7 +216,85 @@ class PGSQLConnection:
 
         return results_of_query
 
-    # user
+    # add elements
+
+    def add_element_in_db(self, element, geometry, fk_id_changeset):
+        """
+        :param element:
+        :param element_json:
+        :param fk_id_changeset:
+        :return:
+        """
+
+        # encode the dict in JSON
+        geometry = json_encode(geometry)
+
+        query_text = """
+            INSERT INTO {0} (geom, fk_changeset_id) 
+            VALUES (ST_GeomFromGeoJSON('{1}'), {2})
+            RETURNING id;
+        """.format(element, geometry, fk_id_changeset)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        self.commit()
+
+        return result
+
+    def add_element_tag_in_db(self, k, v, element, fk_element_id, fk_element_version):
+        query_text = """
+            INSERT INTO {0}_tag (k, v, fk_{0}_id, fk_{0}_version) 
+            VALUES ('{1}', '{2}', {3}, {4});
+        """.format(element, k, v, fk_element_id, fk_element_version)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        # id_element_tag = self.__PGSQL_CURSOR__.fetchone()
+
+        # return id_element_tag
+
+    def create_element(self, element, element_json, fk_user_id_owner):
+        """
+        Add a element in DB
+        :param element_json:
+        :param fk_user_id_owner:
+        :return: the id of the element created
+        """
+
+        # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
+        # searching if the changeset is its by fk_user_id_owner. If the user is the owner of the changeset
+
+        # get the first feature/element to add
+        feature = element_json["features"][0]
+
+        # get the tags
+        tags = feature["tags"]
+
+        # remove the "tags" key from feature (it is not necessary)
+        del feature["tags"]
+
+        # get the id of changeset
+        fk_id_changeset = feature["properties"]["fk_id_changeset"]
+
+        # add the element in db and get the id of it
+        id_element_in_json = self.add_element_in_db(element, feature["geometry"], fk_id_changeset)
+
+        for tag in tags:
+            # add the element tag in db
+            # PS: how the element is new in db, so the fk_element_version = 1
+            self.add_element_tag_in_db(tag["k"], tag["v"], element, id_element_in_json["id"], 1)
+
+        return id_element_in_json
+
+    ################################################################################
+    # USER
+    ################################################################################
 
     def get_user_in_db(self, email):
 
@@ -239,14 +324,16 @@ class PGSQLConnection:
 
         return result
 
-    # changesets
+    ################################################################################
+    # CHANGESET
+    ################################################################################
 
     def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
         """
         Add a changeset in DB
         :param fk_project_id: id of the project associated with the changeset
         :param fk_user_id_owner: id of the user (owner) of the changeset
-        :return: the id of the changeset created
+        :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
         create_at = get_current_datetime()
@@ -264,7 +351,7 @@ class PGSQLConnection:
 
         self.commit()
 
-        return result["id"]
+        return result
 
     def add_changeset_tag_in_db(self, k, v, fk_changeset_id):
         query_text = """
@@ -288,16 +375,16 @@ class PGSQLConnection:
         fk_project_id = changeset["properties"]["fk_project_id"]
 
         # add the chengeset in db and get the id of it
-        id_changeset = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
+        id_changeset_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
 
         # add in DB the tags of changeset
         for tag in changeset["tags"]:
             # add the chengeset tag in db
-            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset)
+            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset_in_json["id"])
 
         self.commit()
 
-        return id_changeset
+        return id_changeset_in_json
 
     def close_changeset(self, id_changeset):
         """
