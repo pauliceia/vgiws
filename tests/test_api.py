@@ -3,34 +3,8 @@
 
 
 from unittest import TestCase
-from json import loads
-from requests import get
-
-
-
-
-
-class TestInvalidURLs(TestCase):
-
-    def test_invalid_urls(self):
-        response = get('http://localhost:8888/api/nodex/create/')
-
-        self.assertEqual(response.status_code, 404)
-
-        response = get('http://localhost:8888/api/element33/')
-
-        self.assertEqual(response.status_code, 404)
-
-        response = get('http://localhost:8888/api/nodi/')
-
-        self.assertEqual(response.status_code, 404)
-
-        response = get('http://localhost:8888/areaa/nodi/')
-
-        self.assertEqual(response.status_code, 404)
-
-
-
+from json import loads, dumps
+from requests import get, Session
 
 
 class TestAPI(TestCase):
@@ -46,28 +20,79 @@ class TestAPI(TestCase):
 
         self.assertEqual(expected, resulted)
 
-    def test_get_api_create_changeset_without_login(self):
-        # First: do login
-        response = get('http://localhost:8888/auth/login/fake/')
+    def test_get_api_create_changeset_with_login(self):
+        # create a session, simulating a browser. It is necessary to create cookies on server
+        s = Session()
+
+        ################################################################################
+        # DO LOGIN
+        ################################################################################
+
+        response = s.get('http://localhost:8888/auth/login/fake/')
 
         self.assertEqual(response.status_code, 200)
 
+        ################################################################################
+        # CREATE A CHANGESET
+        ################################################################################
 
-        # Create a changeset
-        response = get('http://localhost:8888/api/changeset/create/')
+        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 
-        self.assertEqual(response.status_code, 403)
+        # send a JSON with the changeset to create a new one
+        changeset = {
+            "plc": {
+                'changeset': {
+                    'tags': [{'k': 'created_by', 'v': 'test_api'},
+                             {'k': 'comment', 'v': 'testing create changeset'}],
+                    'properties': {'id': -1, "fk_project_id": 1001}
+                }
+            }
+        }
+
+        # do a GET call, sending a changeset to add in DB
+        response = s.get('http://localhost:8888/api/changeset/create/', data=dumps(changeset), headers=headers)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.assertIn("id_changeset", resulted)
+        self.assertIn("id", resulted)
+        self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        changeset["plc"]["changeset"]["properties"]["id"] = resulted["id"]
 
 
-        # On the final: do logout
 
-        response = get('http://localhost:8888/auth/logout')
+
+        ################################################################################
+        # CLOSE THE CHANGESET
+        ################################################################################
+
+        id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
+
+        response = s.get('http://localhost:8888/api/changeset/close/{0}'.format(id_changeset))
 
         self.assertEqual(response.status_code, 200)
+
+        ################################################################################
+        # DO LOGOUT
+        ################################################################################
+
+        response = s.get('http://localhost:8888/auth/logout')
+
+        self.assertEqual(response.status_code, 200)
+
+        ################################################################################
+        # TRY TO CREATE ANOTHER CHANGESET WITHOUT LOGIN
+        ################################################################################
+
+        # do a GET call, sending a changeset to add in DB
+        response = s.get('http://localhost:8888/api/changeset/create/', data=dumps(changeset), headers=headers)
+
+        # it is not possible to create a changeset without login, so get a 403 Forbidden
+        self.assertEqual(response.status_code, 403)
+
+
+
 
 
 

@@ -8,10 +8,9 @@ DELETE FROM user_;
 INSERT INTO user_ (id, username, email, password, name) VALUES (1001, 'admin', 'admin@admin.com', 'admin', 'Administrator');
 INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', 'Rodrigo');
 
-SELECT * FROM user_;
-SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
-
-SELECT id, username, name FROM user_ WHERE email='admin@admin.c';
+-- SELECT * FROM user_;
+-- SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
+-- SELECT id, username, name FROM user_ WHERE email='admin@admin.c';
 
 
 -- -----------------------------------------------------
@@ -35,13 +34,37 @@ DELETE FROM changeset;
 
 -- add changeset with pre-id
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002, 1002) RETURNING id;
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002, 1002);
 
 -- add changeset with SERIAL
 -- INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) VALUES ('2016-04-20', 1002, 1002) RETURNING id;
 
 -- SELECTs
-SELECT * FROM changeset;
+-- SELECT * FROM changeset;
+
+-- closing a changeset
+UPDATE changeset SET closed_at='2017-10-22' WHERE id=1001;
+
+
+-- -----------------------------------------------------
+-- Table changeset_tag
+-- -----------------------------------------------------
+-- clean changeset_tag table
+DELETE FROM changeset_tag;
+
+-- insert values in table changeset_tag
+-- SOURCE: -
+-- changeset 1001
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1001, 'created_by', 'pauliceia_portal', 1001);
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1002, 'comment', 'a changeset created', 1001);
+-- changeset 1002
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1003, 'created_by', 'test_postgresql', 1002);
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1004, 'comment', 'changeset test', 1002);
+
+-- SELECT * FROM changeset_tag;
+
+SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v 
+FROM changeset c, changeset_tag ct WHERE c.id = ct.fk_changeset_id;
 
 
 -- -----------------------------------------------------
@@ -69,23 +92,23 @@ DELETE FROM node_tag;
 
 -- insert values in table node_tag
 -- SOURCE: AialaLevy_theaters20170710.xlsx
--- node 1
+-- node 1001
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1001, 'address', 'R. São José', 1001, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1002, 'start_date', '1869', 1001, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1003, 'end_date', '1869', 1001, 1);
--- node 2
+-- node 1002
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1004, 'address', 'R. Marechal Deodoro', 1002, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1005, 'start_date', '1878', 1002, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1006, 'end_date', '1910', 1002, 1);
--- node 3
+-- node 1003
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1007, 'address', 'R. 11 de Junho, 9 = D. José de Barros', 1003, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1008, 'start_date', '1886', 1003, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1009, 'end_date', '1916', 1003, 1);
--- node 4
+-- node 1004
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1010, 'address', 'R. 15 de Novembro, 17A', 1004, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1011, 'start_date', '1890', 1004, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1012, 'end_date', '1911', 1004, 1);
--- node 5
+-- node 1005
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1013, 'address', 'R. Barra Funda, 74', 1005, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1014, 'start_date', '1897', 1005, 1);
 INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1015, 'end_date', '1897', 1005, 1);

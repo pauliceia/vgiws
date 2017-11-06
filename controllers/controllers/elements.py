@@ -4,105 +4,50 @@
 """
     Responsible module to create handlers.
 """
-import functools
 
 from ..base import *
 
-from tornado.web import authenticated
 from tornado.escape import json_encode
 
 
-def auth_non_browser_based(method):
-    @functools.wraps(method)
-    def wrapper(self, *args, **kwargs):
+# base: http://wiki.openstreetmap.org/wiki/API_v0.6
+# http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2Fchangeset.2Fcreate
+# http://wiki.openstreetmap.org/wiki/API_v0.6#Create:_PUT_.2Fapi.2F0.6.2F.5Bnode.7Cway.7Crelation.5D.2Fcreate
 
-        print(">>> self.current_user: ", self.current_user)
-        print(">>> self.get_current_user(): ", self.get_current_user())
-
-        # if user is not logged in, so return a 403 Forbidden
-        if not self.current_user:
-            # raise HTTPError(403)
-            self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
-            return
-
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
-
-# def auth_non_browser_based(method):
-#     """
-#     Authentication to non browser based service
-#     :param method:
-#     :return:
-#     """
-#
-#     def wrapper(self, *args, **kwargs):
-#         print(">>> self.current_user: ", self.current_user)
-#         print(">>> self.get_current_user(): ", self.get_current_user())
-#
-#         # if user is not logged in, so return a 403 Forbidden
-#         if not self.current_user:
-#             # raise HTTPError(403)
-#             self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
-#             return
-#
-#         return method(self, *args, **kwargs)
-#
-#     return wrapper
-
-
-class APIChangeset(BaseHandler):
+class APIChangesetCreate(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
 
     urls = [r"/api/changeset/create", r"/api/changeset/create/"]
 
-    # @auth_non_browser_based
+    @auth_non_browser_based
     def get(self):
 
-        self.set_secure_cookie("a_cookie", "a_value")
-        a_cookie = self.get_secure_cookie("a_cookie")
+        # get the JSON sent, to add in DB
+        changeset_json = self.get_the_json_validated()
 
-        print(">>> a_cookie ", a_cookie)
+        current_user_id = self.get_current_user_id()
 
-        self.set_cookie("a_cookie", "a_value")
-        a_cookie = self.get_cookie("a_cookie")
+        __id__ = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
 
-        print(">>> a_cookie ", a_cookie)
-
-
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({"id": __id__}))
 
 
-        print(">>> self.current_user: ", self.current_user)
-        print(">>> self.get_current_user(): ", self.get_current_user())
+class APIChangesetClose(BaseHandler):
 
-        # if user is not logged in, so return a 403 Forbidden
-        if not self.current_user:
-            # raise HTTPError(403)
-            self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
-            return
+    # A list of URLs that can be use for the HTTP methods
 
+    urls = [r"/api/changeset/close/(?P<id_changeset>[^\/]+)",
+            r"/api/changeset/close/(?P<id_changeset>[^\/]+)/"]
 
-        print("self.current_user: ", self.current_user)
+    @auth_non_browser_based
+    def get(self, id_changeset):
 
-        self.set_and_send_status(status=200, reason="...")
+        # close the changeset of id = id_changeset
+        self.PGSQLConn.close_changeset(id_changeset)
 
-
-
-        # current_user = self.get_current_user()
-        #
-        # # if there is a logged user, can create a changeset
-        # if current_user:
-        #
-        #     id_changeset = self.PGSQLConn.create_changeset()
-        #
-        #     # Default: self.set_header('Content-Type', 'application/json')
-        #     self.write(json_encode({"id_changeset": id_changeset}))
-        #
-        # else:
-        #     self.set_and_send_status(status=400, reason="There is no user logged")
-
+        self.set_and_send_status(status=200, reason="Changeset was closed!")
 
 
 class APIElementNode(BaseHandler):
@@ -135,78 +80,6 @@ class APIElementArea(BaseHandler):
 
     def get(self, param=None):
         self.GET_api_element("area", param)
-
-
-# class APIElement(BaseHandler):
-#     # A list of URLs that can be use for the HTTP methods
-#
-#     # urls = [r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?",
-#     #         r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?/"]
-#
-#     urls = [r"/api/(?P<element>[(node|way|area)]+)/?(?P<param>[A-Za-z0-9-]+)?",
-#             r"/api/(?P<element>[(node|way|area)]+)/?(?P<param>[A-Za-z0-9-]+)?/"]
-#
-#     def get(self, element, param=None):
-#         arguments, parameters = self.get_aguments_and_parameters(element, param)
-#
-#         # print("self.request.arguments: ", self.request.arguments)
-#         # print("arguments", arguments)
-#         # print("arguments['q']: ", arguments["q"])
-#         # print("parameters: ", parameters)
-#         # print("element: ", parameters["element"])
-#         # print("self.PGSQLConn: ", self.PGSQLConn)
-#
-#         result_list = self.PGSQLConn.get_elements(parameters["element"],
-#                                                   q=arguments["q"],
-#                                                   format=arguments["format"])
-#
-#         # Default: self.set_header('Content-Type', 'application/json')
-#         self.write(json_encode(result_list))
-
-
-
-
-# class APIElement(BaseHandler):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#
-#     urls = [r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?",
-#             r"/api/(?P<element>[^\/]+)/?(?P<param>[A-Za-z0-9-]+)?/"]
-#
-#     def get(self, element, param=None):
-#
-#         arguments, parameters = self.get_aguments_and_parameters(element, param)
-#
-#         # print("self.request.arguments: ", self.request.arguments)
-#         print("arguments", arguments)
-#         # print("arguments['q']: ", arguments["q"])
-#         print("parameters: ", parameters)
-#         # print("element: ", parameters["element"])
-#         # print("self.PGSQLConn: ", self.PGSQLConn)
-#
-#         # if the URL is something about changeset
-#         if parameters["element"] == "changeset":
-#             self.GET_api_changeset(arguments, parameters)
-#
-#         # if the URL is something about the elements
-#         elif parameters["element"] == "node" or parameters["element"] == "way" \
-#                 or parameters["element"] == "area":
-#             self.GET_api_element(arguments, parameters)
-#
-#         else:
-#             self.set_and_send_status(status=400, reason=("Bad element: {0}".format(parameters["element"])))
-#
-#
-#
-#
-#         # result_list = self.PGSQLConn.get_elements(parameters["element"],
-#         #                                           q=arguments["q"],
-#         #                                           format=arguments["format"])
-#         #
-#         # # Default: self.set_header('Content-Type', 'application/json')
-#         # self.write(json_encode(result_list))
-
-
 
 
 """

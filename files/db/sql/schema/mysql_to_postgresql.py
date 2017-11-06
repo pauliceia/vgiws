@@ -74,13 +74,11 @@ CREATE TABLE IF NOT EXISTS pauliceia.current_way_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,
   fk_current_way_id INT NOT NULL,
-  fk_current_way_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_way_tag_current_way1
-    FOREIGN KEY (fk_current_way_id, fk_current_way_version)
-    REFERENCES pauliceia.current_way (id, version)
+    FOREIGN KEY (fk_current_way_id)
+    REFERENCES pauliceia.current_way (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -93,13 +91,11 @@ CREATE TABLE IF NOT EXISTS pauliceia.current_node_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,
   fk_current_node_id INT NOT NULL,
-  fk_current_node_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_node_tag_current_node1
-    FOREIGN KEY (fk_current_node_id, fk_current_node_version)
-    REFERENCES pauliceia.current_node (id, version)
+    FOREIGN KEY (fk_current_node_id)
+    REFERENCES pauliceia.current_node (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -112,13 +108,11 @@ CREATE TABLE IF NOT EXISTS pauliceia.current_area_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,
   fk_current_area_id INT NOT NULL,
-  fk_current_area_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_area_tag_current_area1
-    FOREIGN KEY (fk_current_area_id, fk_current_area_version)
-    REFERENCES pauliceia.current_area (id, version)
+    FOREIGN KEY (fk_current_area_id)
+    REFERENCES pauliceia.current_area (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -340,7 +334,7 @@ def main():
         text = remove_bad_lines_and_put_default_values(text)        
 
         # add new lines
-        text = add_new_lines(text)
+        #text = add_new_lines(text)
 
         # add SERIAL number in ID
         text = add_serial_number_in_ID(text)

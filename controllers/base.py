@@ -4,15 +4,35 @@
 """
     Responsible module to create base handlers.
 """
-import tornado
+from json import loads
+
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
 
 
-class BaseHandler(tornado.web.RequestHandler):
-# class BaseHandler(RequestHandler):
+def auth_non_browser_based(method):
+    """
+    Authentication to non browser based service
+    :param method: the method decorated
+    :return: the method wrapped
+    """
+    def wrapper(self, *args, **kwargs):
+
+        # if user is not logged in, so return a 403 Forbidden
+        if not self.current_user:
+            # raise HTTPError(403)
+            self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
+            return
+
+        # if the user is logged in, so execute the method
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
         It extends of the RequestHandler class.
@@ -33,7 +53,41 @@ class BaseHandler(tornado.web.RequestHandler):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
 
-    # login
+    def get_the_json_validated(self):
+        """
+            Responsible method to validate the JSON received in the POST method.
+
+            Args:
+                Nothing until the moment.
+
+            Returns:
+                The JSON validated.
+
+            Raises:
+                - HTTPError (400 - Bad request): if don't receive a JSON.
+                - HTTPError (400 - Bad request): if the JSON received is empty or is None.
+        """
+
+        # Verify if the type of the content is JSON
+        if self.request.headers["Content-Type"].startswith("application/json"):
+            # Convert string to unicode in Python 2 or convert bytes to string in Python 3
+            # How string in Python 3 is unicode, so independent of version, both are converted in unicode
+            foo = self.request.body.decode("utf-8")
+
+            # Transform the string/unicode received to JSON (dictionary in Python)
+            search = loads(foo)
+        else:
+            raise HTTPError(400, "It is not a JSON...")  # 400 - Bad request
+
+        if search == {} or search is None:
+            raise HTTPError(400, "The search given is empty...")  # 400 - Bad request
+
+        return search
+
+    ################################################################################
+    # LOGIN
+    ################################################################################
+
     def login(self, user, type_login):
 
         # looking for a user in db, if not exist user, so create a new one
@@ -54,7 +108,10 @@ class BaseHandler(tornado.web.RequestHandler):
         # insert the user in cookie
         self.set_current_user(user=user_in_db, type_login=type_login, new_user=True)
 
-    # cookies
+    ################################################################################
+    # COOKIES
+    ################################################################################
+
     def set_current_user(self, user={}, type_login="", new_user=True):
         if new_user:
             # if new user, so create a new cookie
@@ -70,32 +127,7 @@ class BaseHandler(tornado.web.RequestHandler):
         # set the cookie (it needs to be separated)
         # transform dictionary in JSON and add in cookie
         encode = json_encode(user_cookie)
-        # self.set_secure_cookie("user", encode)
-
-
-
-
-
-        # self.set_secure_cookie("user", "a_user_saved")
-        #
-        # user_cookie = self.get_secure_cookie("user")
-
-
-
-
-
-        # self.set_cookie("_user_", "a_user_saved")
-        #
-        # user_cookie = self.get_cookie("_user_")
-
-
-
-
-        # print(">>> self.current_user: ", self.current_user)
-        #
-        # print(">>> user_cookie: ", user_cookie)
-        #
-        # print()
+        self.set_secure_cookie("user", encode)
 
     def get_current_user(self):
         user_cookie = self.get_secure_cookie("user")
@@ -105,28 +137,18 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             return None
 
-    # urls
+    def get_current_user_id(self):
+        user_cookie = self.get_secure_cookie("user")
 
-    def GET_api_changeset(self, arguments, parameters):
+        if user_cookie:
+            user = json_decode(user_cookie)
+            return user["login"]["user"]["id"]
+        else:
+            return None
 
-        print("self.current_user: ", self.current_user)
-
-        self.set_and_send_status(status=200, reason="...")
-
-
-
-        # current_user = self.get_current_user()
-        #
-        # # if there is a logged user, can create a changeset
-        # if current_user:
-        #
-        #     id_changeset = self.PGSQLConn.create_changeset()
-        #
-        #     # Default: self.set_header('Content-Type', 'application/json')
-        #     self.write(json_encode({"id_changeset": id_changeset}))
-        #
-        # else:
-        #     self.set_and_send_status(status=400, reason="There is no user logged")
+    ################################################################################
+    # URLS
+    ################################################################################
 
     def GET_api_element(self, element, param):
 
@@ -147,6 +169,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.write(json_encode(result_list))
 
     # status HTTP
+
     def set_and_send_status(self, status=404, reason="", extra={}, raise_error=False):
 
         response_json = {"status": status, "statusText": reason}

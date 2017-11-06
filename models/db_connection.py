@@ -27,9 +27,11 @@
 
 
 from psycopg2 import connect, DatabaseError
+from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
 
 from modules.design_pattern import Singleton
+from modules.common import get_current_datetime
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
 
 
@@ -95,8 +97,11 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchall()
+        try:
+            # get the result of query
+            results_of_query = self.__PGSQL_CURSOR__.fetchall()
+        except ProgrammingError:
+            return None
 
         return results_of_query
 
@@ -236,35 +241,76 @@ class PGSQLConnection:
 
     # changesets
 
-    def create_changeset(self):
+    def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
+        """
+        Add a changeset in DB
+        :param fk_project_id: id of the project associated with the changeset
+        :param fk_user_id_owner: id of the user (owner) of the changeset
+        :return: the id of the changeset created
+        """
 
-        create_at = "'2017-10-20'"
-        fk_project_id = 1001
-        fk_user_id_owner = 1001
+        create_at = get_current_datetime()
 
         query_text = """
-                INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
-                VALUES ({0}, {1}, {2}) RETURNING id;
-            """.format(create_at, fk_project_id, fk_user_id_owner)
-
-        print("query_text: ", query_text)
-
+            INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
+            VALUES ('{0}', {1}, {2}) RETURNING id;
+        """.format(create_at, fk_project_id, fk_user_id_owner)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
 
-        print("???")
+        self.commit()
 
+        return result["id"]
+
+    def add_changeset_tag_in_db(self, k, v, fk_changeset_id):
+        query_text = """
+            INSERT INTO changeset_tag (k, v, fk_changeset_id) 
+            VALUES ('{0}', '{1}', {2});
+        """.format(k, v, fk_changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
         # get the result of query
-        id_changeset = self.__PGSQL_CURSOR__.fetchone()
+        # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
 
-        print("id_changeset: ", id_changeset)
+        # return id_changeset_tag
+
+    def create_changeset(self, changeset_json, fk_user_id_owner):
+
+        changeset = changeset_json["plc"]["changeset"]
+
+        # get the fields to add in DB
+        fk_project_id = changeset["properties"]["fk_project_id"]
+
+        # add the chengeset in db and get the id of it
+        id_changeset = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
+
+        # add in DB the tags of changeset
+        for tag in changeset["tags"]:
+            # add the chengeset tag in db
+            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset)
 
         self.commit()
 
         return id_changeset
+
+    def close_changeset(self, id_changeset):
+        """
+        Close the changeset of id = id_changeset
+        :param id_changeset: id of changeset to be closed
+        :return: 
+        """
+
+        # get the closing time
+        closed_at = get_current_datetime()
+
+        self.execute("""UPDATE changeset SET closed_at='{0}' WHERE id={1};
+                    """.format(closed_at, id_changeset))
 
 
 

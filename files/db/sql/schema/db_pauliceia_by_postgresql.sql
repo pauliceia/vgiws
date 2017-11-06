@@ -1,12 +1,7 @@
 
 
-
-
-CREATE EXTENSION IF NOT EXISTS postgis; 
-
-
 -- -----------------------------------------------------
--- Table user
+-- Table user_
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS user_ CASCADE ;
 
@@ -292,9 +287,8 @@ CREATE TABLE IF NOT EXISTS current_node (
   id SERIAL ,
   geom GEOMETRY(MULTIPOINT, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
   fk_id_changeset INT NOT NULL,
-  PRIMARY KEY (id, version),
+  PRIMARY KEY (id),
   CONSTRAINT fk_tb_contribution_tb_project10
     FOREIGN KEY (fk_id_changeset)
     REFERENCES changeset (id)
@@ -312,9 +306,8 @@ CREATE TABLE IF NOT EXISTS current_area (
   id SERIAL ,
   geom GEOMETRY(MULTIPOLYGON, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
   fk_id_changeset INT NOT NULL,
-  PRIMARY KEY (id, version),
+  PRIMARY KEY (id),
   CONSTRAINT fk_area_change_set10
     FOREIGN KEY (fk_id_changeset)
     REFERENCES changeset (id)
@@ -338,9 +331,8 @@ CREATE TABLE IF NOT EXISTS current_way (
   id SERIAL ,
   geom GEOMETRY(MULTILINESTRING, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
   fk_id_changeset INT NOT NULL,
-  PRIMARY KEY (id, version),
+  PRIMARY KEY (id),
   CONSTRAINT fk_table1_changeset10
     FOREIGN KEY (fk_id_changeset)
     REFERENCES changeset (id)
@@ -370,9 +362,8 @@ CREATE TABLE IF NOT EXISTS changeset_tag (
   id SERIAL ,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_way_tag_copy1_changeset1
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
@@ -437,13 +428,11 @@ CREATE TABLE IF NOT EXISTS current_way_tag (
   id SERIAL ,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL DEFAULT 1,
   fk_current_way_id INT NOT NULL,
-  fk_current_way_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_way_tag_current_way1
-    FOREIGN KEY (fk_current_way_id, fk_current_way_version)
-    REFERENCES current_way (id, version)
+    FOREIGN KEY (fk_current_way_id)
+    REFERENCES current_way (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -453,13 +442,11 @@ CREATE TABLE IF NOT EXISTS current_node_tag (
   id SERIAL ,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL DEFAULT 1,
   fk_current_node_id INT NOT NULL,
-  fk_current_node_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_node_tag_current_node1
-    FOREIGN KEY (fk_current_node_id, fk_current_node_version)
-    REFERENCES current_node (id, version)
+    FOREIGN KEY (fk_current_node_id)
+    REFERENCES current_node (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -469,13 +456,11 @@ CREATE TABLE IF NOT EXISTS current_area_tag (
   id SERIAL ,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL DEFAULT 1,
   fk_current_area_id INT NOT NULL,
-  fk_current_area_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  PRIMARY KEY (id, k),
   CONSTRAINT fk_current_area_tag_current_area1
-    FOREIGN KEY (fk_current_area_id, fk_current_area_version)
-    REFERENCES current_area (id, version)
+    FOREIGN KEY (fk_current_area_id)
+    REFERENCES current_area (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
