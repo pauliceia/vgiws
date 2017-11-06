@@ -64,8 +64,8 @@ INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1004, 'comment', '
 
 -- SELECT * FROM changeset_tag;
 
-SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v 
-FROM changeset c, changeset_tag ct WHERE c.id = ct.fk_changeset_id;
+--SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v;
+--FROM changeset c, changeset_tag ct WHERE c.id = ct.fk_changeset_id;
 
 
 -- -----------------------------------------------------
@@ -81,10 +81,18 @@ INSERT INTO node (id, geom, visible, fk_changeset_id) VALUES (1003, ST_GeomFromT
 INSERT INTO node (id, geom, visible, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), FALSE, 1002);
 INSERT INTO node (id, geom, visible, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), FALSE, 1002);
 -- add node as GeoJSON
-INSERT INTO node (id, geom, fk_changeset_id) 
-VALUES (1006, ST_GeomFromText(ST_AsText(ST_GeomFromGeoJSON('{"type":"MultiPoint", "coordinates":[[-48, 20]]}')), 4326), 1001);
+INSERT INTO node (id, geom, visible, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPoint",
+		    "coordinates":[[-54, 33]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	FALSE, 1002);
 
-INSERT INTO node (id, geom, fk_changeset_id) 
+INSERT INTO node (id, geom, visible, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -93,47 +101,14 @@ VALUES (1007,
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-    1002);
-
-INSERT INTO node (id, geom, fk_changeset_id) 
-VALUES (1008, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiPoint",
-		    "coordinates":[[-54, 33]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}},
-		    "tags": [{"k": 1, "v": 2}]
-		}'
-	), 
-    1002);
-        
-
-/*
-INSERT INTO tablename (name, polygon)
-VALUES (
-    'Name',
-    ST_GeomFromGeoJSON(
-        '{
-            "type": "Polygon",
-            "coordinates": [
-                [7.734375,51.835777520452],
-                [3.8671875,48.341646172375],
-                [7.20703125,43.580390855608],
-                [18.6328125,43.834526782237],
-                [17.9296875,50.289339253292],
-                [13.7109375,54.059387886624],
-                [7.734375,51.835777520452]
-            ]
-        }'
-    )
-);
-*/
+	FALSE, 1002);
 
 
 -- SELECTs
--- SELECT id, ST_AsText(geom) as geom, visible, version, fk_changeset_id FROM node;
--- SELECT id, geom, visible, version, fk_id_changeset FROM node;
--- SELECT ST_AsText(ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48, 20]}')) As wkt;
+-- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id FROM node n;
+-- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, nt.id, nt.k, nt.v FROM node n, node_tag nt WHERE n.id = nt.fk_node_id;
+
+
 
 -- -----------------------------------------------------
 -- Table node_tag
@@ -174,15 +149,41 @@ INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1015, 'end_
 DELETE FROM way;
 
 -- add way
-INSERT INTO way (id, geom, version, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1, 1001);
-INSERT INTO way (id, geom, version, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1, 1002);
-INSERT INTO way (id, geom, version, visible, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1, FALSE, 1001);
-INSERT INTO way (id, geom, version, visible, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1, FALSE, 1002);
-INSERT INTO way (id, geom, version, visible, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1, FALSE, 1002);
+INSERT INTO way (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
+INSERT INTO way (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
+INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), FALSE, 1001);
+INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), FALSE, 1002);
+INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), FALSE, 1002);
+
+-- add way as GeoJSON
+INSERT INTO way (id, geom, visible, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiLineString",
+		    "coordinates":[[[-54, 33], [-32, 31], [-36, 89]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	FALSE, 1002);
+
+INSERT INTO way (id, geom, visible, fk_changeset_id) 
+VALUES (1007, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiLineString",
+		    "coordinates":[[[-21, 56], [-32, 31], [-23, 74]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	FALSE, 1002);
 
 -- SELECTs
 -- SELECT * FROM way;
 -- SELECT id, geom, visible, version, fk_changeset_id FROM way;
+-- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM way;
+-- SELECT w.id, ST_AsText(w.geom) as geom, w.version, w.fk_changeset_id, wt.id, wt.k, wt.v FROM way w, way_tag wt WHERE w.id = wt.fk_way_id;
+
 
 -- -----------------------------------------------------
 -- Table way_tag
@@ -217,13 +218,6 @@ INSERT INTO way_tag (id, k, v, fk_way_id, fk_way_version) VALUES (1015, 'end_dat
 
 
 
-
-
-
-
-
-
-
 -- -----------------------------------------------------
 -- Table area
 -- -----------------------------------------------------
@@ -231,12 +225,38 @@ INSERT INTO way_tag (id, k, v, fk_way_id, fk_way_version) VALUES (1015, 'end_dat
 DELETE FROM area;
 
 -- add area
-INSERT INTO area (id, geom, version, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1, 1001);
-INSERT INTO area (id, geom, version, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1, 1002);
+INSERT INTO area (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
+INSERT INTO area (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
+
+-- add area as GeoJSON 
+INSERT INTO area (id, geom, visible, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPolygon",
+		    "coordinates":[[[[-54, 33], [-32, 31], [-36, 89], [-54, 33]]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	FALSE, 1002);
+
+INSERT INTO area (id, geom, visible, fk_changeset_id) 
+VALUES (1007, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPolygon",
+		    "coordinates":[[[[-12, 32], [-21, 56], [-32, 31], [-23, 74], [-12, 32]]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	FALSE, 1002);
 
 -- SELECTs
 -- SELECT * FROM area;
 -- SELECT id, geom, visible, version, fk_changeset_id FROM area;
+SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM area;
+SELECT a.id, ST_AsText(a.geom) as geom, a.version, a.fk_changeset_id, at.id, at.k, at.v FROM area a, area_tag at WHERE a.id = at.fk_area_id;
+
 
 -- -----------------------------------------------------
 -- Table area_tag

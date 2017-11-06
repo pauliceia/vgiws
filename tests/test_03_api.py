@@ -94,8 +94,78 @@ class TestAPI(TestCase):
         self.assertIn("id", resulted)
         self.assertNotEqual(resulted["id"], -1)
 
-        # put the id received in the original JSON of changeset
+        # put the id received in the original JSON of node
         node["features"][0]["properties"]["id"] = resulted["id"]
+
+        ################################################################################
+        # ADD A WAY
+        ################################################################################
+
+        # send a JSON with the node to create a new one
+        way = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'tags': [{'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'},
+                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
+                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
+                    'geometry': {
+                        'type': 'MultiLineString',
+                        'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]],
+                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a node to add in DB
+        response = s.put('http://localhost:8888/api/way/create/', data=dumps(way), headers=headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertIn("id", resulted)
+        self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of way
+        way["features"][0]["properties"]["id"] = resulted["id"]
+
+        ################################################################################
+        # ADD A AREA
+        ################################################################################
+
+        # send a JSON with the node to create a new one
+        area = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'tags': [{'k': 'building', 'v': 'cathedral'},
+                             {'k': 'start_date', 'v': '1900-11-12'},
+                             {'k': 'end_date', 'v': '1915-12-25'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
+                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]],
+                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a area to add in DB
+        response = s.put('http://localhost:8888/api/area/create/', data=dumps(area), headers=headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertIn("id", resulted)
+        self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of area
+        area["features"][0]["properties"]["id"] = resulted["id"]
 
         ################################################################################
         # CLOSE THE CHANGESET
@@ -126,7 +196,7 @@ class TestAPI(TestCase):
 
 
 
-
+# TODO: create a test to remove the elements added
 
 
 # It is not necessary to pyt the main() of unittest here,

@@ -17,8 +17,8 @@ class TestAPIArea(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'id': 1001, 'fk_id_changeset': 1001, 'geom': 'MULTIPOLYGON(((0 0,1 1,2 2,3 3,0 0)))'},
-            {'id': 1002, 'fk_id_changeset': 1002, 'geom': 'MULTIPOLYGON(((2 2,3 3,4 4,5 5,2 2)))'}
+            {'id': 1001, 'fk_changeset_id': 1001, 'geom': 'MULTIPOLYGON(((0 0,1 1,2 2,3 3,0 0)))'},
+            {'id': 1002, 'fk_changeset_id': 1002, 'geom': 'MULTIPOLYGON(((2 2,3 3,4 4,5 5,2 2)))'}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -36,7 +36,7 @@ class TestAPIArea(TestCase):
                              {'id': 1003, 'v': '1900', 'k': 'end_date'}],
                     'type': 'Feature',
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]},
-                    'properties': {'id': 1001, 'fk_id_changeset': 1001}
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001}
                 },
                 {
                     'tags': [{'id': 1004, 'v': 'theater', 'k': 'building'},
@@ -44,7 +44,7 @@ class TestAPIArea(TestCase):
                              {'id': 1006, 'v': '1930', 'k': 'end_date'}],
                     'type': 'Feature',
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[2, 2], [3, 3], [4, 4], [5, 5], [2, 2]]]]},
-                    'properties': {'id': 1002, 'fk_id_changeset': 1002}
+                    'properties': {'id': 1002, 'fk_changeset_id': 1002}
                 }
             ]
         }
@@ -77,7 +77,7 @@ class TestAPIArea(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'geom': 'MULTIPOLYGON(((0 0,1 1,2 2,3 3,0 0)))', 'fk_id_changeset': 1001, 'id': 1001}
+            {'geom': 'MULTIPOLYGON(((0 0,1 1,2 2,3 3,0 0)))', 'fk_changeset_id': 1001, 'id': 1001}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -94,7 +94,7 @@ class TestAPIArea(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'id': 1001, 'fk_id_changeset': 1001},
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
                     'tags': [{'k': 'building', 'v': 'hotel', 'id': 1001},
                              {'k': 'start_date', 'v': '1870', 'id': 1002},
                              {'k': 'end_date', 'v': '1900', 'id': 1003}],

@@ -152,7 +152,7 @@ class PGSQLConnection:
         # CREATE THE QUERY AND EXECUTE IT
         ######################################################################
 
-        query_text = """SELECT id, ST_AsText(geom) as geom, fk_id_changeset 
+        query_text = """SELECT id, ST_AsText(geom) as geom, fk_changeset_id 
                         FROM {0} {1};""".format(element, where)
 
         # do the query in database
@@ -241,8 +241,6 @@ class PGSQLConnection:
         # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
 
-        self.commit()
-
         return result
 
     def add_element_tag_in_db(self, k, v, element, fk_element_id, fk_element_version):
@@ -290,39 +288,10 @@ class PGSQLConnection:
             # PS: how the element is new in db, so the fk_element_version = 1
             self.add_element_tag_in_db(tag["k"], tag["v"], element, id_element_in_json["id"], 1)
 
-        return id_element_in_json
-
-    ################################################################################
-    # USER
-    ################################################################################
-
-    def get_user_in_db(self, email):
-
-        query_text = """
-            SELECT id, username, name, email FROM user_ WHERE email='{0}';
-            """.format(email)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def create_user_in_db(self, email):
-
-        query_text = """INSERT INTO user_ (email) VALUES ('{0}');""".format(email)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the user information (id, name, username, email, etc)
-        result = self.get_user_in_db(email)
-
+        # put in DB the element and its tags
         self.commit()
 
-        return result
+        return id_element_in_json
 
     ################################################################################
     # CHANGESET
@@ -348,8 +317,6 @@ class PGSQLConnection:
 
         # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
-
-        self.commit()
 
         return result
 
@@ -382,6 +349,7 @@ class PGSQLConnection:
             # add the chengeset tag in db
             self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset_in_json["id"])
 
+        # put in DB the changeset and its tags
         self.commit()
 
         return id_changeset_in_json
@@ -398,6 +366,36 @@ class PGSQLConnection:
 
         self.execute("""UPDATE changeset SET closed_at='{0}' WHERE id={1};
                     """.format(closed_at, id_changeset))
+
+    ################################################################################
+    # USER
+    ################################################################################
+
+    def get_user_in_db(self, email):
+        query_text = """
+            SELECT id, username, name, email FROM user_ WHERE email='{0}';
+            """.format(email)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_user_in_db(self, email):
+        query_text = """INSERT INTO user_ (email) VALUES ('{0}');""".format(email)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the user information (id, name, username, email, etc)
+        result = self.get_user_in_db(email)
+
+        self.commit()
+
+        return result
 
 
 

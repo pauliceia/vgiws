@@ -17,8 +17,8 @@ class TestAPIWay(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1001, 'id': 1001, 'geom': 'MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))'},
-            {'fk_id_changeset': 1002, 'id': 1002, 'geom': 'MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))'}
+            {'fk_changeset_id': 1001, 'id': 1001, 'geom': 'MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))'},
+            {'fk_changeset_id': 1002, 'id': 1002, 'geom': 'MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))'}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -36,7 +36,7 @@ class TestAPIWay(TestCase):
                              {'k': 'start_date', 'id': 1002, 'v': '1930'},
                              {'k': 'end_date', 'id': 1003, 'v': '1930'}],
                     'type': 'Feature',
-                    'properties': {'fk_id_changeset': 1001, 'id': 1001}
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001}
                 },
                 {
                     'geometry': {'type': 'MultiLineString', 'coordinates': [[[333270.653184563, 7395036.74327773], [333244.47769325, 7395033.35326418], [333204.141105934, 7395028.41654752], [333182.467715735, 7395026.2492085]]]},
@@ -44,7 +44,7 @@ class TestAPIWay(TestCase):
                              {'k': 'start_date', 'id': 1005, 'v': '1930'},
                              {'k': 'end_date', 'id': 1006, 'v': '1930'}],
                     'type': 'Feature',
-                    'properties': {'fk_id_changeset': 1002, 'id': 1002}
+                    'properties': {'fk_changeset_id': 1002, 'id': 1002}
                 }
             ]
         }
@@ -77,7 +77,7 @@ class TestAPIWay(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'id': 1001, 'fk_id_changeset': 1001, 'geom': 'MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))'}
+            {'id': 1001, 'fk_changeset_id': 1001, 'geom': 'MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))'}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -99,7 +99,7 @@ class TestAPIWay(TestCase):
                     'tags': [{'v': 'rua boa vista', 'k': 'name', 'id': 1001},
                              {'v': '1930', 'k': 'start_date', 'id': 1002},
                              {'v': '1930', 'k': 'end_date', 'id': 1003}],
-                    'properties': {'id': 1001, 'fk_id_changeset': 1001}
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001}
                 }
             ],
             'type': 'FeatureCollection'

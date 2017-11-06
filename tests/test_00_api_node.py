@@ -28,8 +28,8 @@ class TestAPINode(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'fk_id_changeset': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'id': 1001},
-            {'fk_id_changeset': 1002, 'geom': 'MULTIPOINT(-23.55045 -46.634272)', 'id': 1002}
+            {'fk_changeset_id': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'id': 1001},
+            {'fk_changeset_id': 1002, 'geom': 'MULTIPOINT(-23.55045 -46.634272)', 'id': 1002}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -41,7 +41,7 @@ class TestAPINode(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'fk_id_changeset': 1001, 'id': 1001},
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
                     'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
                     'tags': [{'v': 'R. São José', 'k': 'address', 'id': 1001},
                              {'v': '1869', 'k': 'start_date', 'id': 1002},
@@ -49,7 +49,7 @@ class TestAPINode(TestCase):
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'fk_id_changeset': 1002, 'id': 1002},
+                    'properties': {'fk_changeset_id': 1002, 'id': 1002},
                     'geometry': {'coordinates': [[-23.55045, -46.634272]], 'type': 'MultiPoint'},
                     'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address', 'id': 1004},
                              {'v': '1878', 'k': 'start_date', 'id': 1005},
@@ -86,7 +86,7 @@ class TestAPINode(TestCase):
         self.assertEqual(response.status_code, 200)
 
         expected = [
-            {'id': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'fk_id_changeset': 1001}
+            {'id': 1001, 'geom': 'MULTIPOINT(-23.546421 -46.635722)', 'fk_changeset_id': 1001}
         ]
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -108,7 +108,7 @@ class TestAPINode(TestCase):
                              {'id': 1002, 'v': '1869', 'k': 'start_date'},
                              {'id': 1003, 'v': '1869', 'k': 'end_date'}],
                     'type': 'Feature',
-                    'properties': {'id': 1001, 'fk_id_changeset': 1001},
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
                     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
                 }
             ]

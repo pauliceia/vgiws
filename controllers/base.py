@@ -6,6 +6,7 @@
 """
 from json import loads
 
+from psycopg2._psycopg import DataError
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
@@ -98,11 +99,11 @@ class BaseHandler(RequestHandler):
 
         ############################################################
         # if on debug mode, so print...
-        if self.DEBUG_MODE:
-            print("Logged in System")
-            print("user: ", user)
-            print("user_in_db: ", user_in_db)
-            print("type_login: ", type_login, "\n")
+        # if self.DEBUG_MODE:
+        #     print("Logged in System")
+        #     print("user: ", user)
+        #     print("user_in_db: ", user_in_db)
+        #     print("type_login: ", type_login, "\n")
         ############################################################
 
         # insert the user in cookie
@@ -169,9 +170,18 @@ class BaseHandler(RequestHandler):
 
         element_json = self.get_the_json_validated()
 
+        if not self.is_element_type_valid(element, element_json):
+            self.set_and_send_status(status=400, reason="Invalid element type")
+            return
+
         current_user_id = self.get_current_user_id()
 
-        json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
+        try:
+            json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
+        except DataError:
+            self.set_and_send_status(status=400, reason="Problem when create a element. " +
+                                                        "Please, contact the administrator.")
+            return
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -243,3 +253,14 @@ class BaseHandler(RequestHandler):
             query[parts[0]] = parts[1]
 
         return query
+
+    ################################################################################
+    # AUXILIAR FUNCTION
+    ################################################################################
+
+    def is_element_type_valid(self, element, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+
+        return ((element == "node" and multi_element == "MultiPoint") or
+                (element == "way" and multi_element == "MultiLineString") or
+                (element == "area" and multi_element == "MultiPolygon"))

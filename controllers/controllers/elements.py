@@ -69,6 +69,9 @@ class APIElementWay(BaseHandler):
     def get(self, param=None):
         self.get_method_api_element("way", param)
 
+    def put(self, param=None):
+        self.put_method_api_element("way", param)
+
 
 class APIElementArea(BaseHandler):
     # A list of URLs that can be use for the HTTP methods
@@ -78,6 +81,9 @@ class APIElementArea(BaseHandler):
 
     def get(self, param=None):
         self.get_method_api_element("area", param)
+
+    def put(self, param=None):
+        self.put_method_api_element("area", param)
 
 
 """
