@@ -87,7 +87,7 @@ class HttpServerApplication(Application):
 
         # create a global variable to debug mode
         self.DEBUG_MODE = options.debug
-        # create the instance of DB passing arguments
+        # create a instance of DB passing arguments
         self.PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
 
         # Pass the handlers and the settings created to the constructor of the super class (father class)
@@ -136,5 +136,7 @@ def main():
 
 
 # If this file is the main application, so will execute the main function
+# If the file is run as Python script (main), so execute it
+# if the file is called as a module, so doesn't execute it
 if __name__ == "__main__":
     main()

@@ -85,6 +85,7 @@ class PGSQLConnection:
         :return:
         """
         self.__PGSQL_CONNECTION__.close()
+        print("Closed the PostgreSQL's connection!")
 
     def commit(self):
         """
@@ -93,16 +94,26 @@ class PGSQLConnection:
 
         self.__PGSQL_CONNECTION__.commit()
 
-    def execute(self, query_text):
+    def execute(self, query_text, modify_information=False):
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        try:
+            # do the query in database
+            self.__PGSQL_CURSOR__.execute(query_text)
+        except ProgrammingError as error:
+            print("Error when executing the query text")
+            print("Error: ", error, "\n")
+            raise ProgrammingError(error)
 
         try:
             # get the result of query
             results_of_query = self.__PGSQL_CURSOR__.fetchall()
         except ProgrammingError:
             return None
+
+        # if modify some information, so do commit
+        if modify_information:
+            # commit the modifications
+            self.commit()
 
         return results_of_query
 
