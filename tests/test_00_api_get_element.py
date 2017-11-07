@@ -6,8 +6,6 @@ from unittest import TestCase
 from json import loads
 from requests import get
 
-from tests.db_test_connection import prepare_test_db_before_tests
-
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
@@ -21,10 +19,6 @@ class TestAPINode(TestCase):
     #     print("response.text: ", response.text)
     #     print("type(response.text): ", type(response.text))
     #     print("\n")
-
-    @classmethod
-    def setUpClass(cls):
-        prepare_test_db_before_tests()
 
     ################################################################################
     # NODE

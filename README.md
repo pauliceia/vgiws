@@ -1,6 +1,6 @@
 # webservice
 
-Web Service for the Pauliceia's project.
+VGI's Web Service for the Pauliceia's project.
 
 <!---
 A basic project for Tornado application.
@@ -25,38 +25,34 @@ The meaning of the mainly folders and files are:
 
 -->
 
-## Running it
+## Running the server
 
 This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
+
+WARNING: It is necessary a database to run it, whether is not exist, create a new one as follow on next section.
 
 To create a new virtualenv with Python 3:
 
 ```
-$ mkvirtualenv pauliceia_webservice
 $ mkvirtualenv -p /usr/bin/python3 pauliceia_webservice
 ```
 
-To switch the environment:
+If the environment do not turn on automatically, so switch it:
 
 ```
 $ workon pauliceia_webservice
 ```
 
-To install the dependencies:
+Install the dependencies that are in requirements.txt file:
 
 ```
 $ pip install -r requirements.txt
 ```
 
-To run the application:
+Run the application normally or on Debug Mode::
 
 ```
 $ python main.py
-```
-
-To run the application in Debug Mode:
-
-```
 $ python main.py --debug=True
 ```
 
@@ -66,40 +62,31 @@ $ python main.py --debug=True
 It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "db_pauliceia_test" does not exist".
 
 
-### Test fase of database
 
-Access postgres:
+### Create the database of test
+
+First of all, access the postgres on command line:
 
 ```
 $ sudo -i -u postgres
 $ psql -d postgres
 ```
 
-Remove the database, if it exists:
+Remove the database, if it exists and create test database:
 
 ```sql
 DROP DATABASE IF EXISTS db_pauliceia_test;
-```
-
-Create database:
-
-```sql
 CREATE DATABASE db_pauliceia_test;
 ```
 
-Connect on database created before:
+Connect on database created before and active the PostGIS extension:
 
 ```sql
 \c db_pauliceia_test
-```
-
-Active the PostGIS extension:
-
-```sql
 CREATE EXTENSION postgis;
 ```
 
-Exit:
+To exit, use:
 ```sql
 \q
 ```
@@ -107,34 +94,37 @@ Exit:
 
 ## Run the tests
 
-First of all, on console, run the application in Debug mode:
+First of all, clean the DB of test. On console, go to root folder, turn on the environment and run the cleaning code:
+
+```
+$ workon pauliceia_webservice
+$ python tests/util/clean_test_db.py
+```
+
+
+After that, run the server in Debug mode:
 
 ```
 $ python main.py --debug=True
 ```
 
-On other console, go to /webservice/tests/ folder. Example:
+
+On another console, go to tests folder, turn on the environment and execute the tests:
 
 ```
-$ cd .../webservice/tests/
-```
-
-Turn on the environment:
-
-```
+$ cd tests/
 $ workon pauliceia_webservice
-```
-
-Execute the tests:
-
-```
 $ python run_tests.py
 ```
+
+Alright, the tests will be execute with a new test database.
+
 
 
 ## To run this application in PyCharm
 
 Just point the Python interpreter of Pycharm to the folder of the virtualenv was created
+
 
 
 ## To render it in Atom
