@@ -104,7 +104,6 @@ def start_application():
 
 
 def stop_application():
-    print("Stopping PostgreSQL")
     # Get the instance of the DB connection
     PGSQLConn = PGSQLConnection.get_instance()
     PGSQLConn.close()

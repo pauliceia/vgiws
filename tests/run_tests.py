@@ -16,8 +16,8 @@ if __name__ == '__main__':
     print("Running the tests \n")
 
     # Get all the files on current folder that have ,py in the final
-    # tests = TestLoader().discover(ROOT_PATH, "*.py")
-    tests = TestLoader().discover(ROOT_PATH, "test_01_api.py")
+    tests = TestLoader().discover(ROOT_PATH, "*.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_01_api.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_00_api_get_element.py")
     # PS: the numbers in test files means the order to execute
 

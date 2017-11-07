@@ -59,6 +59,9 @@ class APIElementNode(BaseHandler):
     def put(self, param=None):
         self.put_method_api_element("node", param)
 
+    def delete(self, param=None):
+        self.delete_method_api_element("node", param)
+
 
 class APIElementWay(BaseHandler):
     # A list of URLs that can be use for the HTTP methods
@@ -72,6 +75,9 @@ class APIElementWay(BaseHandler):
     def put(self, param=None):
         self.put_method_api_element("way", param)
 
+    def delete(self, param=None):
+        self.delete_method_api_element("way", param)
+
 
 class APIElementArea(BaseHandler):
     # A list of URLs that can be use for the HTTP methods
@@ -84,6 +90,9 @@ class APIElementArea(BaseHandler):
 
     def put(self, param=None):
         self.put_method_api_element("area", param)
+
+    def delete(self, param=None):
+        self.delete_method_api_element("area", param)
 
 
 """

@@ -85,7 +85,7 @@ class PGSQLConnection:
         :return:
         """
         self.__PGSQL_CONNECTION__.close()
-        print("Closed the PostgreSQL's connection!")
+        print("Closed the PostgreSQL's connection!\n")
 
     def commit(self):
         """
@@ -195,16 +195,25 @@ class PGSQLConnection:
         query_text = """
             SELECT jsonb_build_object(
                 'type',       'FeatureCollection',
+                'crs',  json_build_object(
+                    'type',      'name', 
+                    'properties', json_build_object(
+                        'name', 'EPSG:4326'
+                    )
+                ),
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Feature',
                     'geometry',   ST_AsGeoJSON({0}.geom)::jsonb,
-                    'properties', to_jsonb({0}) - 'geom' - 'visible' - 'version',
+                    'properties', json_build_object(
+                        'id',               id,
+                        'fk_changeset_id',  fk_changeset_id
+                    ),
                     'tags',       tags.jsontags
                 ))
             ) AS row_to_json
             FROM {0}
             CROSS JOIN LATERAL ( 
-                SELECT json_agg(json_build_object('id', id, 'k', k, 'v', v)) AS jsontags 
+                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
                 FROM {0}_tag 
                 WHERE fk_{0}_id = {0}.id                
             ) AS tags
@@ -229,7 +238,7 @@ class PGSQLConnection:
 
     # add elements
 
-    def add_element_in_db(self, element, geometry, fk_id_changeset):
+    def add_element_in_db(self, element, geometry, fk_changeset_id):
         """
         :param element:
         :param element_json:
@@ -244,7 +253,7 @@ class PGSQLConnection:
             INSERT INTO {0} (geom, fk_changeset_id) 
             VALUES (ST_GeomFromGeoJSON('{1}'), {2})
             RETURNING id;
-        """.format(element, geometry, fk_id_changeset)
+        """.format(element, geometry, fk_changeset_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -289,10 +298,13 @@ class PGSQLConnection:
         del feature["tags"]
 
         # get the id of changeset
-        fk_id_changeset = feature["properties"]["fk_id_changeset"]
+        fk_changeset_id = feature["properties"]["fk_changeset_id"]
+
+        # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
+        feature["geometry"]["crs"] = element_json["crs"]
 
         # add the element in db and get the id of it
-        id_element_in_json = self.add_element_in_db(element, feature["geometry"], fk_id_changeset)
+        id_element_in_json = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
 
         for tag in tags:
             # add the element tag in db
@@ -303,6 +315,18 @@ class PGSQLConnection:
         self.commit()
 
         return id_element_in_json
+
+    # delete elements
+
+    def delete_element_in_db(self, element, q=None):
+        query_text = """
+            UPDATE {0} SET visible = FALSE WHERE id={1};
+            """.format(element, q["id"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.commit()
 
     ################################################################################
     # CHANGESET

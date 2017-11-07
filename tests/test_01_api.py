@@ -7,6 +7,168 @@ from json import loads, dumps
 from requests import get, Session
 
 
+class UtilTester:
+
+    def __init__(self, ut_self):
+        # create a session, simulating a browser. It is necessary to create cookies on server
+        self.session = Session()
+        # headers
+        self.headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        # unittest self
+        self.ut_self = ut_self
+
+    def do_login(self):
+        response = self.session.get('http://localhost:8888/auth/login/fake/')
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def do_logout(self):
+        response = self.session.get('http://localhost:8888/auth/logout')
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def create_a_changeset(self):
+        # send a JSON with the changeset to create a new one
+        changeset = {
+            "plc": {
+                'changeset': {
+                    'tags': [{'k': 'created_by', 'v': 'test_api'},
+                             {'k': 'comment', 'v': 'testing create changeset'}],
+                    'properties': {'id': -1, "fk_project_id": 1001}
+                }
+            }
+        }
+
+        # do a GET call, sending a changeset to add in DB
+        response = self.session.get('http://localhost:8888/api/changeset/create/',
+                                    data=dumps(changeset), headers=self.headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        changeset["plc"]["changeset"]["properties"]["id"] = resulted["id"]
+
+        return changeset
+
+    def close_a_changeset(self, fk_id_changeset):
+        response = self.session.get('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def add_a_node(self, fk_id_changeset):
+        # send a JSON with the node to create a new one
+        node = {
+            'type': 'FeatureCollection',
+            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+            'features': [
+                {
+                    'tags': [{'k': 'event', 'v': 'robbery'},
+                             {'k': 'date', 'v': '1910'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'geometry': {
+                        'type': 'MultiPoint',
+                        'coordinates': [[-23.546421, -46.635722]]
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a node to add in DB
+        response = self.session.put('http://localhost:8888/api/node/create/',
+                                    data=dumps(node), headers=self.headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of node
+        node["features"][0]["properties"]["id"] = resulted["id"]
+
+        return node
+
+    def add_a_way(self, fk_id_changeset):
+        # send a JSON with the node to create a new one
+        way = {
+            'type': 'FeatureCollection',
+            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+            'features': [
+                {
+                    'tags': [{'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'},
+                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'geometry': {
+                        'type': 'MultiLineString',
+                        'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a node to add in DB
+        response = self.session.put('http://localhost:8888/api/way/create/',
+                                    data=dumps(way), headers=self.headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of way
+        way["features"][0]["properties"]["id"] = resulted["id"]
+
+        return way
+
+    def add_a_area(self, fk_id_changeset):
+        # send a JSON with the node to create a new one
+        area = {
+            'type': 'FeatureCollection',
+            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+            'features': [
+                {
+                    'tags': [{'k': 'building', 'v': 'cathedral'},
+                             {'k': 'start_date', 'v': '1900-11-12'},
+                             {'k': 'end_date', 'v': '1915-12-25'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
+                    },
+                }
+            ]
+        }
+
+        # do a PUT call, sending a area to add in DB
+        response = self.session.put('http://localhost:8888/api/area/create/',
+                                    data=dumps(area), headers=self.headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of area
+        area["features"][0]["properties"]["id"] = resulted["id"]
+
+        return area
+
+    def delete_element(self, element, id_element):
+        response = self.session.delete('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+
+# TODO: create cases of test:
+# TODO: DELETE A ELEMENT WITH ID THAT DOESN'T EXIST
+
+
 class TestAPI(TestCase):
 
     def test_get_api_create_changeset_without_login(self):
@@ -21,174 +183,62 @@ class TestAPI(TestCase):
         self.assertEqual(expected, resulted)
 
     def test_get_api_create_changeset_with_login(self):
-        # create a session, simulating a browser. It is necessary to create cookies on server
-        s = Session()
+        # create a tester passing the unittest self
+        tester = UtilTester(self)
 
-        ################################################################################
         # DO LOGIN
-        ################################################################################
+        tester.do_login()
 
-        response = s.get('http://localhost:8888/auth/login/fake/')
-
-        self.assertEqual(response.status_code, 200)
-
-        ################################################################################
         # CREATE A CHANGESET
-        ################################################################################
-
-        headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-
-        # send a JSON with the changeset to create a new one
-        changeset = {
-            "plc": {
-                'changeset': {
-                    'tags': [{'k': 'created_by', 'v': 'test_api'},
-                             {'k': 'comment', 'v': 'testing create changeset'}],
-                    'properties': {'id': -1, "fk_project_id": 1001}
-                }
-            }
-        }
-
-        # do a GET call, sending a changeset to add in DB
-        response = s.get('http://localhost:8888/api/changeset/create/', data=dumps(changeset), headers=headers)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertIn("id", resulted)
-        self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of changeset
-        changeset["plc"]["changeset"]["properties"]["id"] = resulted["id"]
+        changeset = tester.create_a_changeset()
 
         # get the id of changeset to use
         fk_id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
 
-        ################################################################################
-        # ADD A NODE
-        ################################################################################
+        # ADD ELEMENTS
+        node = tester.add_a_node(fk_id_changeset)
+        way = tester.add_a_way(fk_id_changeset)
+        area = tester.add_a_area(fk_id_changeset)
 
-        # send a JSON with the node to create a new one
-        node = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
-                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
-                    'geometry': {
-                        'type': 'MultiPoint',
-                        'coordinates': [[-23.546421, -46.635722]],
-                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
-                    },
-                }
-            ]
-        }
+        # SEARCH IN DB, IF THE ELEMENTS EXIST
 
-        # do a PUT call, sending a node to add in DB
-        response = s.put('http://localhost:8888/api/node/create/', data=dumps(node), headers=headers)
+        id_element = node["features"][0]["properties"]["id"]  # get the id of element
+
+        # do a GET call with default format (GeoJSON)
+        response = tester.session.get('http://localhost:8888/api/node/?q=[id={0}]'.format(id_element))
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.assertIn("id", resulted)
-        self.assertNotEqual(resulted["id"], -1)
+        self.assertEqual(node, resulted)
 
-        # put the id received in the original JSON of node
-        node["features"][0]["properties"]["id"] = resulted["id"]
 
-        ################################################################################
-        # ADD A WAY
-        ################################################################################
 
-        # send a JSON with the node to create a new one
-        way = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
-                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
-                    'geometry': {
-                        'type': 'MultiLineString',
-                        'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]],
-                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
-                    },
-                }
-            ]
-        }
+        # REMOVE THE ELEMENTS CREATED
+        id_element = node["features"][0]["properties"]["id"]  # get the id of element
+        tester.delete_element("node", id_element)
 
-        # do a PUT call, sending a node to add in DB
-        response = s.put('http://localhost:8888/api/way/create/', data=dumps(way), headers=headers)
+        id_element = way["features"][0]["properties"]["id"]
+        tester.delete_element("way", id_element)
 
-        resulted = loads(response.text)  # convert string to dict/JSON
+        id_element = area["features"][0]["properties"]["id"]
+        tester.delete_element("area", id_element)
 
-        self.assertIn("id", resulted)
-        self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of way
-        way["features"][0]["properties"]["id"] = resulted["id"]
-
-        ################################################################################
-        # ADD A AREA
-        ################################################################################
-
-        # send a JSON with the node to create a new one
-        area = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_id_changeset': fk_id_changeset,
-                                   'version': 1},  # version = 1, because I'm adding in DB, so the node is new
-                    'geometry': {
-                        'type': 'MultiPolygon',
-                        'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]],
-                        'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"}
-                    },
-                }
-            ]
-        }
-
-        # do a PUT call, sending a area to add in DB
-        response = s.put('http://localhost:8888/api/area/create/', data=dumps(area), headers=headers)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertIn("id", resulted)
-        self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of area
-        area["features"][0]["properties"]["id"] = resulted["id"]
-
-        ################################################################################
         # CLOSE THE CHANGESET
-        ################################################################################
+        tester.close_a_changeset(fk_id_changeset)
 
-        response = s.get('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
-
-        self.assertEqual(response.status_code, 200)
-
-        ################################################################################
         # DO LOGOUT
-        ################################################################################
-
-        response = s.get('http://localhost:8888/auth/logout')
-
-        self.assertEqual(response.status_code, 200)
+        tester.do_logout()
 
         ################################################################################
         # TRY TO CREATE ANOTHER CHANGESET WITHOUT LOGIN
         ################################################################################
 
         # do a GET call, sending a changeset to add in DB
-        response = s.get('http://localhost:8888/api/changeset/create/', data=dumps(changeset), headers=headers)
+        response = tester.session.get('http://localhost:8888/api/changeset/create/',
+                                      data=dumps(changeset), headers=tester.headers)
 
         # it is not possible to create a changeset without login, so get a 403 Forbidden
         self.assertEqual(response.status_code, 403)

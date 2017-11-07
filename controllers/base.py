@@ -178,13 +178,20 @@ class BaseHandler(RequestHandler):
 
         try:
             json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
-        except DataError:
+        except DataError as error:
+            print("Error: ", error)
             self.set_and_send_status(status=400, reason="Problem when create a element. " +
                                                         "Please, contact the administrator.")
             return
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
+
+    def delete_method_api_element(self, element, param):
+
+        arguments, parameters = self.get_aguments_and_parameters(element, param)
+
+        self.PGSQLConn.delete_element_in_db(parameters["element"], q=arguments["q"])
 
     ################################################################################
     # URLS

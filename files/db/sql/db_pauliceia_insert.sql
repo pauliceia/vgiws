@@ -103,10 +103,12 @@ VALUES (1007,
 	), 
 	FALSE, 1002);
 
-
--- SELECTs
--- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id FROM node n;
+-- SELECT
+SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM node n;
 -- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, nt.id, nt.k, nt.v FROM node n, node_tag nt WHERE n.id = nt.fk_node_id;
+
+-- DELETE
+-- UPDATE node SET visible = FALSE WHERE id=7;
 
 
 
@@ -323,6 +325,31 @@ CROSS JOIN LATERAL (
 WHERE id=1;
 */
 
+SELECT jsonb_build_object(
+    'type', 'FeatureCollection',
+    'crs',  json_build_object(
+        'type',      'name', 
+        'properties', json_build_object(
+            'name', 'EPSG:4326'
+        )
+    ),
+    'features',   jsonb_agg(jsonb_build_object(
+        'type',       'Feature',
+        'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
+        'properties', json_build_object(
+            'id', id,
+            'fk_changeset_id', fk_changeset_id
+        ),
+        'tags',       tags.jsontags
+    ))
+) AS row_to_json
+FROM node
+CROSS JOIN LATERAL (
+	SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+	FROM node_tag 
+	WHERE fk_node_id = node.id    
+) AS tags
+WHERE id=1;
 
 
 
