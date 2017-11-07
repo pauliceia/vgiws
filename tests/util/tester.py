@@ -6,6 +6,17 @@ from json import loads, dumps
 from requests import Session
 
 
+def by_multi_element_get_url_name(multi_element):
+    if multi_element == "MultiPoint":
+        return "node"
+    if multi_element == "MultiLineString":
+        return "way"
+    if multi_element == "MultiPolygon":
+        return "area"
+
+    raise Exception("Invalid multi element: {0}".format(multi_element))
+
+
 class UtilTester:
 
     def __init__(self, ut_self):
@@ -57,28 +68,13 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def add_a_node(self, fk_id_changeset):
-        # send a JSON with the node to create a new one
-        node = {
-            'type': 'FeatureCollection',
-            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
-            'features': [
-                {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
-                    'geometry': {
-                        'type': 'MultiPoint',
-                        'coordinates': [[-23.546421, -46.635722]]
-                    },
-                }
-            ]
-        }
+    def add_a_element(self, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
 
         # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/node/create/',
-                                    data=dumps(node), headers=self.headers)
+        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+                                    data=dumps(element_json), headers=self.headers)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
@@ -86,79 +82,50 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["id"], -1)
 
         # put the id received in the original JSON of node
-        node["features"][0]["properties"]["id"] = resulted["id"]
+        element_json["features"][0]["properties"]["id"] = resulted["id"]
 
-        return node
+        return element_json
 
-    def add_a_way(self, fk_id_changeset):
-        # send a JSON with the node to create a new one
-        way = {
-            'type': 'FeatureCollection',
-            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
-            'features': [
-                {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
-                    'geometry': {
-                        'type': 'MultiLineString',
-                        'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
-                    },
-                }
-            ]
-        }
+    def delete_element(self, element_json):
+        id_element = element_json["features"][0]["properties"]["id"]  # get the id of element
 
-        # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/way/create/',
-                                    data=dumps(way), headers=self.headers)
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of way
-        way["features"][0]["properties"]["id"] = resulted["id"]
-
-        return way
-
-    def add_a_area(self, fk_id_changeset):
-        # send a JSON with the node to create a new one
-        area = {
-            'type': 'FeatureCollection',
-            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
-            'features': [
-                {
-                    'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
-                    'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
-                    'geometry': {
-                        'type': 'MultiPolygon',
-                        'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
-                    },
-                }
-            ]
-        }
-
-        # do a PUT call, sending a area to add in DB
-        response = self.session.put('http://localhost:8888/api/area/create/',
-                                    data=dumps(area), headers=self.headers)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of area
-        area["features"][0]["properties"]["id"] = resulted["id"]
-
-        return area
-
-    def delete_element(self, element, id_element):
         response = self.session.delete('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    def verify_if_element_was_add_in_db(self, element_json_expected):
+        id_element = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
+
+        multi_element = element_json_expected["features"][0]["geometry"]["type"]
+
+        element = by_multi_element_get_url_name(multi_element)
+
+        # do a GET call with default format (GeoJSON)
+        response = self.session.get('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+
+        self.ut_self.assertTrue(response.ok)
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(element_json_expected, resulted)
+
+    def verify_if_element_was_not_add_in_db(self, element_json_expected):
+        id_element = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
+
+        multi_element = element_json_expected["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
+
+        # do a GET call with default format (GeoJSON)
+        response = self.session.get('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        expected = {'statusText': 'There is no element', 'status': 404}
+
+        self.ut_self.assertEqual(expected, resulted)

@@ -140,39 +140,39 @@ class PGSQLConnection:
         # FORMAT OF QUERY - WKT or GEOJSON - CALL RESPECTED METHOD
         ######################################################################
 
-        if format == "wkt":
-            return self.get_elements_wkt(element, q=q)
+        # if format == "wkt":
+        #     return self.get_elements_wkt(element, q=q)
 
         # if format == "geojson":  # default
         return self.get_elements_geojson(element, q=q)
 
-    def get_elements_wkt(self, element, q=None):
-
-        # TODO: if have time, to do in WKT return the tags together
-
-        ######################################################################
-        # CREATE THE WHERE CLAUSE
-        ######################################################################
-
-        where = "WHERE visible=TRUE"
-        if q is not None:
-            if "id" in q:  # if the key "id" is in 'q'
-                where += " AND id = {0}".format(q["id"])
-
-        ######################################################################
-        # CREATE THE QUERY AND EXECUTE IT
-        ######################################################################
-
-        query_text = """SELECT id, ST_AsText(geom) as geom, fk_changeset_id 
-                        FROM {0} {1};""".format(element, where)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchall()
-
-        return results_of_query
+    # def get_elements_wkt(self, element, q=None):
+    #
+    #     # TODO: if have time, to do in WKT return the tags together
+    #
+    #     ######################################################################
+    #     # CREATE THE WHERE CLAUSE
+    #     ######################################################################
+    #
+    #     where = "WHERE visible=TRUE"
+    #     if q is not None:
+    #         if "id" in q:  # if the key "id" is in 'q'
+    #             where += " AND id = {0}".format(q["id"])
+    #
+    #     ######################################################################
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     ######################################################################
+    #
+    #     query_text = """SELECT id, ST_AsText(geom) as geom, fk_changeset_id
+    #                     FROM {0} {1};""".format(element, where)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchall()
+    #
+    #     return results_of_query
 
     def get_elements_geojson(self, element, q=None):
 

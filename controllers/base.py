@@ -155,12 +155,16 @@ class BaseHandler(RequestHandler):
 
         arguments, parameters = self.get_aguments_and_parameters(element, param)
 
-        result_list = self.PGSQLConn.get_elements(parameters["element"],
-                                                  q=arguments["q"],
-                                                  format=arguments["format"])
+        result = self.PGSQLConn.get_elements(parameters["element"], q=arguments["q"],
+                                             format=arguments["format"])
+
+        # if there is no element
+        if result["features"] is None:
+            self.set_and_send_status(status=404, reason="There is no element")
+            return
 
         # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result_list))
+        self.write(json_encode(result))
 
     def put_method_api_element(self, element, param):
 
@@ -179,7 +183,7 @@ class BaseHandler(RequestHandler):
         try:
             json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
         except DataError as error:
-            print("Error: ", error)
+            # print("Error: ", error)
             self.set_and_send_status(status=400, reason="Problem when create a element. " +
                                                         "Please, contact the administrator.")
             return
@@ -191,7 +195,12 @@ class BaseHandler(RequestHandler):
 
         arguments, parameters = self.get_aguments_and_parameters(element, param)
 
-        self.PGSQLConn.delete_element_in_db(parameters["element"], q=arguments["q"])
+        try:
+            self.PGSQLConn.delete_element_in_db(parameters["element"], q=arguments["q"])
+        except DataError as error:
+            # print("Error: ", error)
+            self.set_and_send_status(status=400, reason="Invalid parameter")
+            return
 
     ################################################################################
     # URLS
