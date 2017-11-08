@@ -116,15 +116,6 @@ class BaseHandler(RequestHandler):
         if not user_in_db:
             user_in_db = self.PGSQLConn.create_user_in_db(user["email"])
 
-        ############################################################
-        # if on debug mode, so print...
-        # if self.DEBUG_MODE:
-        #     print("Logged in System")
-        #     print("user: ", user)
-        #     print("user_in_db: ", user_in_db)
-        #     print("type_login: ", type_login, "\n")
-        ############################################################
-
         # insert the user in cookie
         self.set_current_user(user=user_in_db, type_login=type_login, new_user=True)
 

@@ -13,24 +13,32 @@ from tornado.escape import json_encode
 
 # TODO: create project
 
-class APIProject(BaseHandler):
+# class APIProject(BaseHandler):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
+#             r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
 
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/project/", r"/api/project"]
+    # def get(self, param=None):
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode({"ok": 1}))
 
-    def get(self):
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode({"ok": 1}))
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     # get the JSON sent, to add in DB
+    #     project_json = self.get_the_json_validated()
+    #
+    #     current_user_id = self.get_current_user_id()
+    #
+    #     json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(json_with_id))
 
-    @auth_non_browser_based
-    def get(self):
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode({"ok": 1}))
-
-    @auth_non_browser_based
-    def get(self):
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode({"ok": 1}))
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode({"ok": 1}))
 
 
 class APIChangesetCreate(BaseHandler):

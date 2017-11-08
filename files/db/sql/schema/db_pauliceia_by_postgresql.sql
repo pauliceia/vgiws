@@ -28,8 +28,9 @@ DROP TABLE IF EXISTS project CASCADE ;
 
 CREATE TABLE IF NOT EXISTS project (
   id SERIAL ,
-  name TEXT NULL,
-  description TEXT NULL,
+  create_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_user_id_owner INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user1
@@ -287,6 +288,7 @@ CREATE TABLE IF NOT EXISTS current_node (
   id SERIAL ,
   geom GEOMETRY(MULTIPOINT, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
+  version INT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_contribution_tb_project10
@@ -306,6 +308,7 @@ CREATE TABLE IF NOT EXISTS current_area (
   id SERIAL ,
   geom GEOMETRY(MULTIPOLYGON, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
+  version INT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_area_change_set10
@@ -331,6 +334,7 @@ CREATE TABLE IF NOT EXISTS current_way (
   id SERIAL ,
   geom GEOMETRY(MULTILINESTRING, 4326) NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
+  version INT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_table1_changeset10
@@ -367,6 +371,25 @@ CREATE TABLE IF NOT EXISTS changeset_tag (
   CONSTRAINT fk_way_tag_copy1_changeset1
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table project_tag
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS project_tag CASCADE ;
+
+CREATE TABLE IF NOT EXISTS project_tag (
+  id SERIAL ,
+  k VARCHAR(255) NOT NULL,
+  v VARCHAR(255) NULL,
+  fk_project_id INT NOT NULL,
+  PRIMARY KEY (id, k),
+  CONSTRAINT fk_project_tag_project1
+    FOREIGN KEY (fk_project_id)
+    REFERENCES project (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

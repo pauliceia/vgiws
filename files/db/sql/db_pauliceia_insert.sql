@@ -21,10 +21,32 @@ INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo',
 DELETE FROM project;
 
 -- add project
-INSERT INTO project (id, name, description, fk_user_id_owner) VALUES (1001, 'default', 'default project', 1001);
-INSERT INTO project (id, name, description, fk_user_id_owner) VALUES (1002, 'test_project', 'test_project', 1002);
+INSERT INTO project (id, fk_user_id_owner) VALUES (1001, 1001);
+INSERT INTO project (id, fk_user_id_owner) VALUES (1002, 1002);
 
 -- SELECT * FROM project;
+
+
+-- -----------------------------------------------------
+-- Table project_tag
+-- -----------------------------------------------------
+-- clean project_tag table
+DELETE FROM project_tag;
+
+-- insert values in table changeset_tag
+-- SOURCE: -
+-- project 1001
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'default', 1001);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default project', 1001);
+-- project 1002
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1003, 'name', 'test_project', 1002);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1004, 'description', 'test_project', 1002);
+
+-- SELECT * FROM project_tag;
+
+--SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v;
+--FROM changeset c, project_tag ct WHERE c.id = ct.fk_project_id;
+
 
 
 -- -----------------------------------------------------
@@ -44,7 +66,7 @@ INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1
 -- SELECT * FROM changeset;
 
 -- closing a changeset
-UPDATE changeset SET closed_at='2017-10-22' WHERE id=1001;
+-- UPDATE changeset SET closed_at='2017-10-22' WHERE id=1001;
 
 
 -- -----------------------------------------------------
@@ -68,6 +90,92 @@ INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1004, 'comment', '
 --FROM changeset c, changeset_tag ct WHERE c.id = ct.fk_changeset_id;
 
 
+
+-- -----------------------------------------------------
+-- Table current_node
+-- -----------------------------------------------------
+-- clean current_node table
+DELETE FROM current_node;
+
+-- add node
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1001);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1002);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1002);
+-- add node as GeoJSON
+INSERT INTO current_node (id, geom, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPoint",
+		    "coordinates":[[-54, 33]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+INSERT INTO current_node (id, geom, fk_changeset_id) 
+VALUES (1007, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPoint",
+		    "coordinates":[[-21, 42]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+
+
+-- -----------------------------------------------------
+-- Table current_node_tag
+-- -----------------------------------------------------
+-- clean current_node_tag table
+DELETE FROM current_node_tag;
+
+-- insert values in table node_tag
+-- SOURCE: AialaLevy_theaters20170710.xlsx
+-- node 1001
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1001, 'address', 'R. São José', 1001);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1002, 'start_date', '1869', 1001);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1003, 'end_date', '1869', 1001);
+-- node 1002
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1004, 'address', 'R. Marechal Deodoro', 1002);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1005, 'start_date', '1878', 1002);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1006, 'end_date', '1910', 1002);
+-- node 1003
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1007, 'address', 'R. 11 de Junho, 9 = D. José de Barros', 1003);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1008, 'start_date', '1886', 1003);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1009, 'end_date', '1916', 1003);
+-- node 1004
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1010, 'address', 'R. 15 de Novembro, 17A', 1004);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1011, 'start_date', '1890', 1004);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1012, 'end_date', '1911', 1004);
+-- node 1005
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1013, 'address', 'R. Barra Funda, 74', 1005);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1014, 'start_date', '1897', 1005);
+INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_date', '1897', 1005);
+
+
+-- -----------------------------------------------------
+-- Operations with current_node
+-- -----------------------------------------------------
+
+-- get just the valid nodes
+-- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
+
+-- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, nt.id, nt.k, nt.v FROM current_node n, node_tag nt WHERE n.id = nt.fk_node_id;
+
+--SELECT * FROM current_node_tag;
+
+-- "remove" some nodes
+UPDATE current_node SET visible = FALSE WHERE id>=1003 AND id<=1007;
+
+
+
+
+
+
+/*
 -- -----------------------------------------------------
 -- Table node
 -- -----------------------------------------------------
@@ -143,7 +251,97 @@ INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1015, 'end_
 
 --SELECT * FROM node_tag;
 
+*/
 
+
+
+
+
+
+
+-- -----------------------------------------------------
+-- Table current_way
+-- -----------------------------------------------------
+-- clean current_way table
+DELETE FROM current_way;
+
+-- add way
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1001);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1002);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002);
+-- add way as GeoJSON
+INSERT INTO current_way (id, geom, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiLineString",
+		    "coordinates":[[[-54, 33], [-32, 31], [-36, 89]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+INSERT INTO current_way (id, geom, fk_changeset_id) 
+VALUES (1007, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiLineString",
+		    "coordinates":[[[-21, 56], [-32, 31], [-23, 74]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+
+
+-- -----------------------------------------------------
+-- Table current_way_tag
+-- -----------------------------------------------------
+-- clean current_way_tag table
+DELETE FROM current_way_tag;
+
+-- insert values in table way_tag
+-- SOURCE: db_pauliceia
+-- way 1
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1001, 'name', 'rua boa vista', 1001);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1002, 'start_date', '1930', 1001);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1003, 'end_date', '1930', 1001);
+-- way 2
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1004, 'address', 'rua tres de dezembro', 1002);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1005, 'start_date', '1930', 1002);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1006, 'end_date', '1930', 1002);
+-- way 3
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1007, 'address', 'rua joao briccola', 1003);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1008, 'start_date', '1930', 1003);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1009, 'end_date', '1930', 1003);
+-- way 4
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1010, 'address', 'ladeira porto geral', 1004);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1011, 'start_date', '1930', 1004);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1012, 'end_date', '1930', 1004);
+-- way 5
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1013, 'address', 'travessa porto geral', 1005);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1014, 'start_date', '1930', 1005);
+INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1015, 'end_date', '1930', 1005);
+
+
+-- -----------------------------------------------------
+-- Operations with current_way
+-- -----------------------------------------------------
+
+-- get just the valid nodes
+-- SELECT id, geom, visible, version, fk_changeset_id FROM current_way WHERE visible=TRUE;
+
+-- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM way;
+-- SELECT w.id, ST_AsText(w.geom) as geom, w.version, w.fk_changeset_id, wt.id, wt.k, wt.v FROM way w, way_tag wt WHERE w.id = wt.fk_way_id;
+
+-- "remove" some nodes
+UPDATE current_way SET visible = FALSE WHERE id>=1003 AND id<=1007;
+
+--SELECT * FROM way_tag;
+
+
+
+/*
 -- -----------------------------------------------------
 -- Table way
 -- -----------------------------------------------------
@@ -156,7 +354,6 @@ INSERT INTO way (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTI
 INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), FALSE, 1001);
 INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), FALSE, 1002);
 INSERT INTO way (id, geom, visible, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), FALSE, 1002);
-
 -- add way as GeoJSON
 INSERT INTO way (id, geom, visible, fk_changeset_id) 
 VALUES (1006, 
@@ -168,7 +365,6 @@ VALUES (1006,
 		}'
 	), 
 	FALSE, 1002);
-
 INSERT INTO way (id, geom, visible, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
@@ -217,9 +413,80 @@ INSERT INTO way_tag (id, k, v, fk_way_id, fk_way_version) VALUES (1014, 'start_d
 INSERT INTO way_tag (id, k, v, fk_way_id, fk_way_version) VALUES (1015, 'end_date', '1930', 1005, 1);
 
 --SELECT * FROM way_tag;
+*/
 
 
 
+
+
+-- -----------------------------------------------------
+-- Table current_area
+-- -----------------------------------------------------
+-- clean current_area table
+DELETE FROM current_area;
+
+-- add area
+INSERT INTO current_area (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
+INSERT INTO current_area (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
+-- add area as GeoJSON 
+INSERT INTO current_area (id, geom, fk_changeset_id) 
+VALUES (1006, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPolygon",
+		    "coordinates":[[[[-54, 33], [-32, 31], [-36, 89], [-54, 33]]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+INSERT INTO current_area (id, geom, fk_changeset_id) 
+VALUES (1007, 
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPolygon",
+		    "coordinates":[[[[-12, 32], [-21, 56], [-32, 31], [-23, 74], [-12, 32]]]],
+		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
+		}'
+	), 
+	1002);
+
+
+-- -----------------------------------------------------
+-- Table current_area_tag
+-- -----------------------------------------------------
+-- clean current_area_tag table
+DELETE FROM current_area_tag;
+
+-- insert values in table area_tag
+-- SOURCE: -
+-- area 1
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1001, 'building', 'hotel', 1001);
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1002, 'start_date', '1870', 1001);
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1003, 'end_date', '1900', 1001);
+-- area 2
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1004, 'building', 'theater', 1002);
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1005, 'start_date', '1920', 1002);
+INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1006, 'end_date', '1930', 1002);
+
+
+-- -----------------------------------------------------
+-- Operations with current_area
+-- -----------------------------------------------------
+
+-- get just the valid nodes
+-- SELECT id, geom, visible, version, fk_changeset_id FROM current_area WHERE visible=TRUE;
+
+-- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM area;
+-- SELECT a.id, ST_AsText(a.geom) as geom, a.version, a.fk_changeset_id, at.id, at.k, at.v FROM area a, area_tag at WHERE a.id = at.fk_area_id;
+
+-- "remove" some areas
+UPDATE current_area SET visible = FALSE WHERE id>=1006 AND id<=1007;
+
+
+
+
+
+/*
 -- -----------------------------------------------------
 -- Table area
 -- -----------------------------------------------------
@@ -229,7 +496,6 @@ DELETE FROM area;
 -- add area
 INSERT INTO area (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
 INSERT INTO area (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
-
 -- add area as GeoJSON 
 INSERT INTO area (id, geom, visible, fk_changeset_id) 
 VALUES (1006, 
@@ -241,7 +507,6 @@ VALUES (1006,
 		}'
 	), 
 	FALSE, 1002);
-
 INSERT INTO area (id, geom, visible, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
@@ -256,8 +521,8 @@ VALUES (1007,
 -- SELECTs
 -- SELECT * FROM area;
 -- SELECT id, geom, visible, version, fk_changeset_id FROM area;
-SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM area;
-SELECT a.id, ST_AsText(a.geom) as geom, a.version, a.fk_changeset_id, at.id, at.k, at.v FROM area a, area_tag at WHERE a.id = at.fk_area_id;
+-- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM area;
+-- SELECT a.id, ST_AsText(a.geom) as geom, a.version, a.fk_changeset_id, at.id, at.k, at.v FROM area a, area_tag at WHERE a.id = at.fk_area_id;
 
 
 -- -----------------------------------------------------
@@ -278,6 +543,7 @@ INSERT INTO area_tag (id, k, v, fk_area_id, fk_area_version) VALUES (1005, 'star
 INSERT INTO area_tag (id, k, v, fk_area_id, fk_area_version) VALUES (1006, 'end_date', '1930', 1002, 1);
 
 --SELECT * FROM area_tag;
+*/
 
 
 
@@ -323,7 +589,6 @@ CROSS JOIN LATERAL (
 	WHERE fk_node_id = node.id    
 ) AS tags
 WHERE id=1;
-*/
 
 SELECT jsonb_build_object(
     'type', 'FeatureCollection',
@@ -350,6 +615,6 @@ CROSS JOIN LATERAL (
 	WHERE fk_node_id = node.id    
 ) AS tags
 WHERE id=1;
-
+*/
 
 
