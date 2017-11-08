@@ -161,12 +161,11 @@ class BaseHandler(RequestHandler):
     # URLS
     ################################################################################
 
-    def get_method_api_element(self, element, param):
+    def get_method_api_element(self, element):
 
-        arguments, parameters = self.get_aguments_and_parameters(element, param)
+        arguments = self.get_aguments()
 
-        result = self.PGSQLConn.get_elements(parameters["element"], q=arguments["q"],
-                                             format=arguments["format"])
+        result = self.PGSQLConn.get_elements(element, q=arguments["q"], format=arguments["format"])
 
         # if there is no element
         if result["features"] is None:
@@ -201,12 +200,12 @@ class BaseHandler(RequestHandler):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    def delete_method_api_element(self, element, param):
+    def delete_method_api_element(self, element):
 
-        arguments, parameters = self.get_aguments_and_parameters(element, param)
+        arguments = self.get_aguments()
 
         try:
-            self.PGSQLConn.delete_element_in_db(parameters["element"], q=arguments["q"])
+            self.PGSQLConn.delete_element_in_db(element, q=arguments["q"])
         except DataError as error:
             # print("Error: ", error)
             self.set_and_send_status(status=400, reason="Invalid parameter")
@@ -231,12 +230,10 @@ class BaseHandler(RequestHandler):
         if raise_error:
             raise HTTPError(status, reason)
 
-    def get_aguments_and_parameters(self, element, param):
+    def get_aguments(self):
         """
-        Given the 'element' and 'param' passed in URL, create the 'arguments' and 'parameters' dictionaries.
-        :param element: is the main parameter of URL, describing the element, i.e. node, way or area.
-        :param param: others parameters of URL, like 'create' or 'history'.
-        :return: 'arguments' and 'parameters' dictionaries contained the arguments and parameters of URL,
+        Create the 'arguments' dictionary.
+        :return: the 'arguments' dictionary contained the arguments and parameters of URL,
                 in a easier way to work with them.
         """
         arguments = {k: self.get_argument(k) for k in self.request.arguments}
@@ -252,14 +249,11 @@ class BaseHandler(RequestHandler):
         if "format" not in arguments:
             arguments["format"] = "geojson"
 
-        parameters = {
-            "element": element.lower(),
-            # if there is value, so True, else False
-            "create": True if param is not None and param.lower() == "create" else False,
-            "history": True if param is not None and param.lower() == "history" else False
-        }
+        return arguments
 
-        return arguments, parameters
+    ################################################################################
+    # AUXILIAR FUNCTION
+    ################################################################################
 
     def get_q_param_as_dict_from_str(self, str_query):
 
@@ -279,10 +273,6 @@ class BaseHandler(RequestHandler):
             query[parts[0]] = parts[1]
 
         return query
-
-    ################################################################################
-    # AUXILIAR FUNCTION
-    ################################################################################
 
     def is_element_type_valid(self, element, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]

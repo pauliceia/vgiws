@@ -21,10 +21,10 @@ INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo',
 DELETE FROM project;
 
 -- add project
-INSERT INTO project (id, fk_user_id_owner) VALUES (1001, 1001);
-INSERT INTO project (id, fk_user_id_owner) VALUES (1002, 1002);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001,  '2017-10-20', 1001);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002,  '2017-10-20', 1002);
 
--- SELECT * FROM project;
+SELECT * FROM project;
 
 
 -- -----------------------------------------------------
@@ -46,6 +46,27 @@ INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1004, 'description', '
 
 --SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v;
 --FROM changeset c, project_tag ct WHERE c.id = ct.fk_project_id;
+
+
+SELECT jsonb_build_object(
+    'type', 'FeatureCollection',
+    'features',   jsonb_agg(jsonb_build_object(
+        'type',       'Project',
+        'properties', json_build_object(
+            'id', id,
+            'create_at', create_at,
+            'removed_at', removed_at
+        ),
+        'tags',       tags.jsontags
+    ))
+) AS row_to_json
+FROM project
+CROSS JOIN LATERAL (
+	SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+	FROM project_tag 
+	WHERE fk_project_id = project.id    
+) AS tags
+WHERE id=1001;
 
 
 

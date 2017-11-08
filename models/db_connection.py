@@ -117,13 +117,143 @@ class PGSQLConnection:
 
         return results_of_query
 
-    # my methods
+    ################################################################################
+    # PROJECT
+    ################################################################################
+
+    def get_projects(self, q=None):
+
+        ######################################################################
+        # CREATE THE WHERE CLAUSE
+        ######################################################################
+
+        # by default, get all results that are visible
+        where = "WHERE visible=TRUE"
+        if q is not None:
+            if "id" in q:  # if the key "id" is in 'q'
+                where += " AND id = {0}".format(q["id"])
+
+        ######################################################################
+        # CREATE THE QUERY AND EXECUTE IT
+        ######################################################################
+
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Project',
+                    'properties', json_build_object(
+                        'id', id,
+                        'create_at', create_at,
+                        'removed_at', removed_at
+                    ),
+                    'tags',       tags.jsontags
+                ))
+            ) AS row_to_json
+            FROM project
+            CROSS JOIN LATERAL (
+                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+                FROM project_tag 
+                WHERE fk_project_id = project.id    
+            ) AS tags
+            {1}
+        """.format(element, where)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        return results_of_query
+
+    ################################################################################
+    # CHANGESET
+    ################################################################################
+
+    def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
+        """
+        Add a changeset in DB
+        :param fk_project_id: id of the project associated with the changeset
+        :param fk_user_id_owner: id of the user (owner) of the changeset
+        :return: the id of the changeset created inside a JSON, example: {"id": -1}
+        """
+
+        create_at = get_current_datetime()
+
+        query_text = """
+            INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
+            VALUES ('{0}', {1}, {2}) RETURNING id;
+        """.format(create_at, fk_project_id, fk_user_id_owner)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def add_changeset_tag_in_db(self, k, v, fk_changeset_id):
+        query_text = """
+            INSERT INTO changeset_tag (k, v, fk_changeset_id) 
+            VALUES ('{0}', '{1}', {2});
+        """.format(k, v, fk_changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
+
+        # return id_changeset_tag
+
+    def create_changeset(self, changeset_json, fk_user_id_owner):
+
+        changeset = changeset_json["plc"]["changeset"]
+
+        # get the fields to add in DB
+        fk_project_id = changeset["properties"]["fk_project_id"]
+
+        # add the chengeset in db and get the id of it
+        id_changeset_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
+
+        # add in DB the tags of changeset
+        for tag in changeset["tags"]:
+            # add the chengeset tag in db
+            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset_in_json["id"])
+
+        # put in DB the changeset and its tags
+        self.commit()
+
+        return id_changeset_in_json
+
+    def close_changeset(self, id_changeset):
+        """
+        Close the changeset of id = id_changeset
+        :param id_changeset: id of changeset to be closed
+        :return:
+        """
+
+        # get the closing time
+        closed_at = get_current_datetime()
+
+        self.execute("""UPDATE changeset SET closed_at='{0}' WHERE id={1};
+                    """.format(closed_at, id_changeset))
 
     ################################################################################
     # ELEMENT
     ################################################################################
 
-    # GET elements
+    # get elements
 
     def get_elements(self, element, q=None, format="geojson"):
         """
@@ -136,19 +266,9 @@ class PGSQLConnection:
         :return: a list with the results, as WKT or GeoJSON.
         """
 
-        ######################################################################
-        # FORMAT OF QUERY - WKT or GEOJSON - CALL RESPECTED METHOD
-        ######################################################################
-
-        # if format == "wkt":
-        #     return self.get_elements_wkt(element, q=q)
-
-        # if format == "geojson":  # default
         return self.get_elements_geojson(element, q=q)
 
     def get_elements_geojson(self, element, q=None):
-
-        # TODO: when return the GeoJSON, returning with the CRS: "EPSG:4326"
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
@@ -299,80 +419,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         self.commit()
-
-    ################################################################################
-    # CHANGESET
-    ################################################################################
-
-    def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
-        """
-        Add a changeset in DB
-        :param fk_project_id: id of the project associated with the changeset
-        :param fk_user_id_owner: id of the user (owner) of the changeset
-        :return: the id of the changeset created inside a JSON, example: {"id": -1}
-        """
-
-        create_at = get_current_datetime()
-
-        query_text = """
-            INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
-            VALUES ('{0}', {1}, {2}) RETURNING id;
-        """.format(create_at, fk_project_id, fk_user_id_owner)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def add_changeset_tag_in_db(self, k, v, fk_changeset_id):
-        query_text = """
-            INSERT INTO changeset_tag (k, v, fk_changeset_id) 
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_changeset_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
-
-        # return id_changeset_tag
-
-    def create_changeset(self, changeset_json, fk_user_id_owner):
-
-        changeset = changeset_json["plc"]["changeset"]
-
-        # get the fields to add in DB
-        fk_project_id = changeset["properties"]["fk_project_id"]
-
-        # add the chengeset in db and get the id of it
-        id_changeset_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
-
-        # add in DB the tags of changeset
-        for tag in changeset["tags"]:
-            # add the chengeset tag in db
-            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset_in_json["id"])
-
-        # put in DB the changeset and its tags
-        self.commit()
-
-        return id_changeset_in_json
-
-    def close_changeset(self, id_changeset):
-        """
-        Close the changeset of id = id_changeset
-        :param id_changeset: id of changeset to be closed
-        :return: 
-        """
-
-        # get the closing time
-        closed_at = get_current_datetime()
-
-        self.execute("""UPDATE changeset SET closed_at='{0}' WHERE id={1};
-                    """.format(closed_at, id_changeset))
 
     ################################################################################
     # USER
