@@ -30,7 +30,6 @@ class AuthLogoutHandler(BaseHandler):
         # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
 
 
-
 # TODO: CREATE A OAUTH2
 
 # class AuthLoginHandler(BaseHandler):
@@ -71,15 +70,11 @@ class FakeAuthLoginHandler(BaseHandler):
 
     urls = [r"/auth/login/fake/", r"/auth/login/fake"]
 
+    @just_run_on_debug_mode
     def get(self):
-
-        # if in debug mode, create a fake login to tests
-        if self.DEBUG_MODE:
-            user = {"email": "test@fake.login"}
-            self.login(user, type_login="fakelogin")
-            self.set_and_send_status(status=200, reason="Logged in")
-        else:
-            self.set_and_send_status(status=404, reason="Not found")
+        user = {"email": "test@fake.login"}
+        self.login(user, type_login="fakelogin")
+        self.set_and_send_status(status=200, reason="Logged in")
 
 
 class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):

@@ -33,6 +33,25 @@ def auth_non_browser_based(method):
     return wrapper
 
 
+def just_run_on_debug_mode(method):
+    """
+    Just run the method on Debug Mode
+    :param method: the method decorated
+    :return: the method wrapped
+    """
+    def wrapper(self, *args, **kwargs):
+
+        # if is not in debug mode, so return a 404 Not Found
+        if not self.DEBUG_MODE:
+            self.set_and_send_status(status=404, reason="Not found")
+            return
+
+        # if is in debug mode, so execute the method
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
 class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
@@ -42,7 +61,7 @@ class BaseHandler(RequestHandler):
     # Static list to be added the all valid urls to one handler
     urls = []
 
-    __AFTER_LOGGED_IN_REDIRECT_TO__ = "/auth/login/success/"
+    __AFTER_LOGGED_IN_REDIRECT_TO__ = ",/"
     __AFTER_LOGGED_OUT_REDIRECT_TO__ = "/auth/logout/success/"
 
     # __init__ for Tornado subclasses

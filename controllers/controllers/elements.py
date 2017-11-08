@@ -9,12 +9,34 @@ from ..base import *
 
 from tornado.escape import json_encode
 
+# TODO: use the current tables instead of the master
+
+# TODO: create project
+
+class APIProject(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/project/", r"/api/project"]
+
+    def get(self):
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({"ok": 1}))
+
+    @auth_non_browser_based
+    def get(self):
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({"ok": 1}))
+
+    @auth_non_browser_based
+    def get(self):
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({"ok": 1}))
+
 
 class APIChangesetCreate(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-
-    urls = [r"/api/changeset/create", r"/api/changeset/create/"]
+    urls = [r"/api/changeset/create/", r"/api/changeset/create"]
 
     @auth_non_browser_based
     def get(self):
@@ -33,9 +55,8 @@ class APIChangesetCreate(BaseHandler):
 class APIChangesetClose(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-
-    urls = [r"/api/changeset/close/(?P<id_changeset>[^\/]+)",
-            r"/api/changeset/close/(?P<id_changeset>[^\/]+)/"]
+    urls = [r"/api/changeset/close/(?P<id_changeset>[^\/]+)/",
+            r"/api/changeset/close/(?P<id_changeset>[^\/]+)"]
 
     @auth_non_browser_based
     def get(self, id_changeset):
@@ -49,48 +70,53 @@ class APIChangesetClose(BaseHandler):
 class APIElementNode(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-
-    urls = [r"/api/node/?(?P<param>[A-Za-z0-9-]+)?",
-            r"/api/node/?(?P<param>[A-Za-z0-9-]+)?/"]
+    urls = [r"/api/node/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/node/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
         self.get_method_api_element("node", param)
 
+    @auth_non_browser_based
     def put(self, param=None):
         self.put_method_api_element("node", param)
 
+    @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_element("node", param)
 
 
 class APIElementWay(BaseHandler):
-    # A list of URLs that can be use for the HTTP methods
 
-    urls = [r"/api/way/?(?P<param>[A-Za-z0-9-]+)?",
-            r"/api/way/?(?P<param>[A-Za-z0-9-]+)?/"]
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/way/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/way/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
         self.get_method_api_element("way", param)
 
+    @auth_non_browser_based
     def put(self, param=None):
         self.put_method_api_element("way", param)
 
+    @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_element("way", param)
 
 
 class APIElementArea(BaseHandler):
-    # A list of URLs that can be use for the HTTP methods
 
-    urls = [r"/api/area/?(?P<param>[A-Za-z0-9-]+)?",
-            r"/api/area/?(?P<param>[A-Za-z0-9-]+)?/"]
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/area/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/area/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
         self.get_method_api_element("area", param)
 
+    @auth_non_browser_based
     def put(self, param=None):
         self.put_method_api_element("area", param)
 
+    @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_element("area", param)
 
@@ -126,6 +152,7 @@ class HelperExecute(BaseHandler):
 
     urls = [r"/helper/execute/", r"/helper/execute"]
 
+    @just_run_on_debug_mode
     def get(self):
 
         query_text = """            
