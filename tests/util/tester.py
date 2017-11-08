@@ -123,9 +123,3 @@ class UtilTester:
         response = self.session.get('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 404)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        expected = {'statusText': 'There is no element', 'status': 404}
-
-        self.ut_self.assertEqual(expected, resulted)

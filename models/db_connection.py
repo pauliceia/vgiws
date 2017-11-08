@@ -143,9 +143,10 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Project',
                     'properties', json_build_object(
-                        'id', id,
-                        'create_at', create_at,
-                        'removed_at', removed_at
+                        'id',           id,
+                        'create_at',    create_at,
+                        'removed_at',   removed_at,
+                        'fk_user_id_owner', fk_user_id_owner
                     ),
                     'tags',       tags.jsontags
                 ))

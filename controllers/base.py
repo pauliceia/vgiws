@@ -162,30 +162,21 @@ class BaseHandler(RequestHandler):
     ################################################################################
 
     def get_method_api_element(self, element):
-
         arguments = self.get_aguments()
 
         result = self.PGSQLConn.get_elements(element, q=arguments["q"], format=arguments["format"])
 
         # if there is no element
         if result["features"] is None:
-            self.set_and_send_status(status=404, reason="There is no element")
-            return
+            raise HTTPError(404, "There is no element")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
 
-    def put_method_api_element(self, element, param):
-
-        if param.lower() != "create":
-            self.set_and_send_status(status=400, reason="Invalid URL")
-            return
-
-        element_json = self.get_the_json_validated()
+    def put_method_api_element_create(self, element, element_json):
 
         if not self.is_element_type_valid(element, element_json):
-            self.set_and_send_status(status=400, reason="Invalid element type")
-            return
+            raise HTTPError(400, "Invalid element type")
 
         current_user_id = self.get_current_user_id()
 
@@ -193,31 +184,36 @@ class BaseHandler(RequestHandler):
             json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
         except DataError as error:
             # print("Error: ", error)
-            self.set_and_send_status(status=400, reason="Problem when create a element. " +
-                                                        "Please, contact the administrator.")
-            return
+            raise HTTPError(400, "Problem when create a element. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    def delete_method_api_element(self, element):
+    def put_method_api_element(self, element, param):
 
+        if param == "create":
+            element_json = self.get_the_json_validated()
+            self.put_method_api_element_create(element, element_json)
+
+        elif param == "update":
+            self.write(json_encode({"ok", 1}))
+        else:
+            raise HTTPError(404, "Invalid URL")
+
+    def delete_method_api_element(self, element):
         arguments = self.get_aguments()
 
         try:
             self.PGSQLConn.delete_element_in_db(element, q=arguments["q"])
         except DataError as error:
             # print("Error: ", error)
-            self.set_and_send_status(status=400, reason="Invalid parameter")
-            return
+            raise HTTPError(400, "Invalid parameter")
 
     ################################################################################
     # URLS
     ################################################################################
 
-    # status HTTP
-
-    def set_and_send_status(self, status=404, reason="", extra={}, raise_error=False):
+    def set_and_send_status(self, status=404, reason="", extra={}):
 
         response_json = {"status": status, "statusText": reason}
 
@@ -226,9 +222,6 @@ class BaseHandler(RequestHandler):
 
         self.set_status(status, reason=reason)
         self.write(json_encode(response_json))
-
-        if raise_error:
-            raise HTTPError(status, reason)
 
     def get_aguments(self):
         """
@@ -255,13 +248,15 @@ class BaseHandler(RequestHandler):
     # AUXILIAR FUNCTION
     ################################################################################
 
+    def is_element_type_valid(self, element, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+
+        return ((element == "node" and multi_element == "MultiPoint") or
+                (element == "way" and multi_element == "MultiLineString") or
+                (element == "area" and multi_element == "MultiPolygon"))
+
     def get_q_param_as_dict_from_str(self, str_query):
-
         str_query = str_query.strip()
-
-        # exceptional case: when I want all values
-        # if str_query.lower() == "all":
-        #     return "all"
 
         # normal case: I have a query
         prequery = str_query.replace(r"[", "").replace(r"]", "").split(",")
@@ -274,9 +269,3 @@ class BaseHandler(RequestHandler):
 
         return query
 
-    def is_element_type_valid(self, element, element_json):
-        multi_element = element_json["features"][0]["geometry"]["type"]
-
-        return ((element == "node" and multi_element == "MultiPoint") or
-                (element == "way" and multi_element == "MultiLineString") or
-                (element == "area" and multi_element == "MultiPolygon"))
