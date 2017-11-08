@@ -106,9 +106,9 @@ OK - Close: PUT /api/0.6/changeset/#id/close
     Add comment: POST /api/0.6/changeset/#id/comment
 
 OK - Read: GET /api/0.6/[node|way|relation]/#id
-    Create: PUT /api/0.6/[node|way|relation]/create
+OK - Create: PUT /api/0.6/[node|way|relation]/create
     Update: PUT /api/0.6/[node|way|relation]/#id
-    Delete: DELETE /api/0.6/[node|way|relation]/#id
+OK - Delete: DELETE /api/0.6/[node|way|relation]/#id
     History: GET /api/0.6/[node|way|relation]/#id/history
         Retrieves all old versions of an element.
 
