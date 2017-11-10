@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 from json import loads, dumps
-from requests import get
+from requests import get, put
 
 from util.tester import UtilTester
 
@@ -21,7 +21,7 @@ class TestAPI(TestCase):
 
     def test_get_api_create_changeset_without_login(self):
         # do a GET call
-        response = get('http://localhost:8888/api/changeset/create/')
+        response = put('http://localhost:8888/api/changeset/create/')
 
         self.assertEqual(response.status_code, 403)
 
@@ -34,11 +34,34 @@ class TestAPI(TestCase):
         # DO LOGIN
         self.tester.do_login()
 
+        # CREATE A PROJECT
+        # send a JSON with the project to create a new one
+        project = {
+            'project': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'name', 'v': 'project of data'},
+                         {'k': 'description', 'v': 'description of the project'}],
+                'properties': {'id': -1}
+            }
+        }
+        project = self.tester.create_a_project(project)
+
+        # get the id of project to use in create a changeset
+        fk_project_id = project["project"]["properties"]["id"]
+
         # CREATE A CHANGESET
-        changeset = self.tester.create_a_changeset()
+        # send a JSON with the changeset to create a new one
+        changeset = {
+            'changeset': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'comment', 'v': 'testing create changeset'}],
+                'properties': {'id': -1, "fk_project_id": fk_project_id}
+            }
+        }
+        changeset = self.tester.create_a_changeset(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        fk_id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
+        fk_id_changeset = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -118,7 +141,7 @@ class TestAPI(TestCase):
         ################################################################################
 
         # do a GET call, sending a changeset to add in DB
-        response = self.tester.session.get('http://localhost:8888/api/changeset/create/',
+        response = self.tester.session.put('http://localhost:8888/api/changeset/create/',
                                            data=dumps(changeset), headers=self.tester.headers)
 
         # it is not possible to create a changeset without login, so get a 403 Forbidden
@@ -128,11 +151,34 @@ class TestAPI(TestCase):
         # DO LOGIN
         self.tester.do_login()
 
+        # CREATE A PROJECT
+        # send a JSON with the project to create a new one
+        project = {
+            'project': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'name', 'v': 'project of data (2)'},
+                         {'k': 'description', 'v': 'description'}],
+                'properties': {'id': -1}
+            }
+        }
+        project = self.tester.create_a_project(project)
+
+        # get the id of project to use in create a changeset
+        fk_project_id = project["project"]["properties"]["id"]
+
         # CREATE A CHANGESET
-        changeset = self.tester.create_a_changeset()
+        # send a JSON with the changeset to create a new one
+        changeset = {
+            'changeset': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'comment', 'v': 'testing create changeset'}],
+                'properties': {'id': -1, "fk_project_id": fk_project_id}
+            }
+        }
+        changeset = self.tester.create_a_changeset(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        fk_id_changeset = changeset["plc"]["changeset"]["properties"]["id"]
+        fk_id_changeset = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
         node = {

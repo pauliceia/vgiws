@@ -157,8 +157,31 @@ class PGSQLConnection:
                 FROM project_tag 
                 WHERE fk_project_id = project.id    
             ) AS tags
-            {1}
-        """.format(element, where)
+            {0}
+        """.format(where)
+
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Project',
+                    'properties', json_build_object(
+                        'id',           id,                        
+                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'fk_user_id_owner', fk_user_id_owner
+                    ),
+                    'tags',       tags.jsontags
+                ))
+            ) AS row_to_json
+            FROM project
+            CROSS JOIN LATERAL (
+                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+                FROM project_tag 
+                WHERE fk_project_id = project.id    
+            ) AS tags
+            {0}
+        """.format(where)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -176,6 +199,46 @@ class PGSQLConnection:
 
         return results_of_query
 
+    def add_project_in_db(self, fk_user_id_owner):
+        query_text = """
+            INSERT INTO project (create_at, fk_user_id_owner) 
+            VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
+        """.format(fk_user_id_owner)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def add_project_tag_in_db(self, k, v, fk_project_id):
+        query_text = """
+            INSERT INTO project_tag (k, v, fk_project_id) 
+            VALUES ('{0}', '{1}', {2});
+        """.format(k, v, fk_project_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_project(self, project_json, fk_user_id_owner):
+
+        project = project_json["project"]
+
+        # add the project in db and get the id of it
+        id_project_in_json = self.add_project_in_db(fk_user_id_owner)
+
+        # add in DB the tags of project
+        for tag in project["tags"]:
+            # add the project tag in db
+            self.add_project_tag_in_db(tag["k"], tag["v"], id_project_in_json["id"])
+
+        # put in DB the project and its tags
+        self.commit()
+
+        return id_project_in_json
+
     ################################################################################
     # CHANGESET
     ################################################################################
@@ -188,12 +251,10 @@ class PGSQLConnection:
         :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
-        create_at = get_current_datetime()
-
         query_text = """
             INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
-            VALUES ('{0}', {1}, {2}) RETURNING id;
-        """.format(create_at, fk_project_id, fk_user_id_owner)
+            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
+        """.format(fk_project_id, fk_user_id_owner)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -219,7 +280,7 @@ class PGSQLConnection:
 
     def create_changeset(self, changeset_json, fk_user_id_owner):
 
-        changeset = changeset_json["plc"]["changeset"]
+        changeset = changeset_json["changeset"]
 
         # get the fields to add in DB
         fk_project_id = changeset["properties"]["fk_project_id"]
@@ -245,10 +306,10 @@ class PGSQLConnection:
         """
 
         # get the closing time
-        closed_at = get_current_datetime()
+        # closed_at = get_current_datetime()
 
-        self.execute("""UPDATE changeset SET closed_at='{0}' WHERE id={1};
-                    """.format(closed_at, id_changeset))
+        self.execute("""UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
+                    """.format(id_changeset))
 
     ################################################################################
     # ELEMENT

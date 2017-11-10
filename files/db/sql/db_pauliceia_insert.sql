@@ -21,8 +21,9 @@ INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo',
 DELETE FROM project;
 
 -- add project
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001,  '2017-10-20', 1001);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002,  '2017-10-20', 1002);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002);
+--INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, 1002);
 
 SELECT * FROM project;
 
@@ -44,18 +45,25 @@ INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1004, 'description', '
 
 -- SELECT * FROM project_tag;
 
---SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v;
---FROM changeset c, project_tag ct WHERE c.id = ct.fk_project_id;
+/*
+SELECT p.id, p.create_at, p.removed_at FROM project p WHERE p.id = 1003;
+SELECT p.id, date(create_at) AS myTime, p.removed_at FROM project p WHERE p.id = 1003;
+SELECT p.id, to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as create_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM project p WHERE p.id = 1003;
+*/
 
 
+-- SELECT p.id, p.create_at, p.closed_at, ṕt.id, pt.k, pt.v FROM project p, project_tag pt WHERE p.id = pt.fk_project_id;
+
+
+/*
 SELECT jsonb_build_object(
     'type', 'FeatureCollection',
     'features',   jsonb_agg(jsonb_build_object(
         'type',       'Project',
         'properties', json_build_object(
             'id', id,
-            'create_at', create_at,
-            'removed_at', removed_at,
+            'create_at',  to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+            'removed_at', to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
             'fk_user_id_owner', fk_user_id_owner
         ),
         'tags',       tags.jsontags
@@ -68,7 +76,7 @@ CROSS JOIN LATERAL (
 	WHERE fk_project_id = project.id    
 ) AS tags
 WHERE id=1001;
-
+*/
 
 
 -- -----------------------------------------------------

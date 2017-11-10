@@ -9,7 +9,68 @@ from requests import get
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-class TestAPIElement(TestCase):
+
+class TestAPIGETProject(TestCase):
+
+    # def test_get_api_node_return_all_projects(self):
+    #     expected = {
+    #         'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+    #         'type': 'FeatureCollection',
+    #         'features': [
+    #             {
+    #                 'properties': {'fk_changeset_id': 1001, 'id': 1001},
+    #                 'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+    #                 'tags': [{'v': 'R. São José', 'k': 'address'},
+    #                          {'v': '1869', 'k': 'start_date'},
+    #                          {'v': '1869', 'k': 'end_date'}],
+    #                 'type': 'Feature'
+    #             },
+    #             {
+    #                 'properties': {'fk_changeset_id': 1002, 'id': 1002},
+    #                 'geometry': {'coordinates': [[-23.55045, -46.634272]], 'type': 'MultiPoint'},
+    #                 'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address'},
+    #                          {'v': '1878', 'k': 'start_date'},
+    #                          {'v': '1910', 'k': 'end_date'}],
+    #                 'type': 'Feature'}
+    #         ]
+    #     }
+    #
+    #     # do a GET call with default format (GeoJSON)
+    #     response = get('http://localhost:8888/api/project/')
+    #
+    #     self.assertTrue(response.ok)
+    #     self.assertEqual(response.status_code, 200)
+    #
+    #     resulted = loads(response.text)  # convert string to dict/JSON
+    #
+    #     self.assertEqual(expected, resulted)
+
+    def test_get_api_node_return_project_with_id_1001(self):
+        # do a GET call
+        response = get('http://localhost:8888/api/project/?q=[id=1001]')
+
+        self.assertTrue(response.ok)
+        self.assertEqual(response.status_code, 200)
+
+        expected = {
+            'features': [
+                {
+                    'type': 'Project',
+                    'tags': [{'k': 'name', 'v': 'default'},
+                             {'k': 'description', 'v': 'default project'}],
+                    'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+                                   'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.assertEqual(expected, resulted)
+
+
+class TestAPIGETElement(TestCase):
 
     ################################################################################
     # NODE
@@ -58,7 +119,7 @@ class TestAPIElement(TestCase):
 
         self.assertEqual(expected, resulted)
 
-    def test_get_api_node_return_element_with_id_1_as_geojson(self):
+    def test_get_api_node_return_element_with_id_1001_as_geojson(self):
         # do a GET call
         response = get('http://localhost:8888/api/node/?q=[id=1001]')
 
@@ -134,7 +195,7 @@ class TestAPIElement(TestCase):
 
         self.assertEqual(expected, resulted)
 
-    def test_get_api_way_return_element_with_id_1_as_geojson(self):
+    def test_get_api_way_return_element_with_id_1001_as_geojson(self):
         # do a GET call
         response = get('http://localhost:8888/api/way/?q=[id=1001]')
 
@@ -209,7 +270,7 @@ class TestAPIElement(TestCase):
 
         self.assertEqual(expected, resulted)
 
-    def test_get_api_area_return_element_with_id_1_as_geojson(self):
+    def test_get_api_area_return_element_with_id_1001_as_geojson(self):
         # do a GET call
         response = get('http://localhost:8888/api/area/?q=[id=1001]')
 

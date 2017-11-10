@@ -16,7 +16,7 @@ class APIProject(BaseHandler):
     urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
             r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
 
-    @auth_non_browser_based
+    # @auth_non_browser_based
     def get(self, param=None):
         arguments = self.get_aguments()
 
@@ -32,24 +32,11 @@ class APIProject(BaseHandler):
     @auth_non_browser_based
     def put(self, param=None):
         if param == "create":
-            # get the JSON sent, to add in DB
-            project_json = self.get_the_json_validated()
-
-            current_user_id = self.get_current_user_id()
-
-            json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
-
-            # Default: self.set_header('Content-Type', 'application/json')
-            self.write(json_encode(json_with_id))
+            self.put_method_api_project_create()
         elif param == "update":
             self.write(json_encode({"ok", 1}))
         else:
             raise HTTPError(404, "Invalid URL")
-
-    # @auth_non_browser_based
-    # def delete(self, param=None):
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode({"ok": 1}))
 
 
 class APIChangesetCreate(BaseHandler):
@@ -58,8 +45,7 @@ class APIChangesetCreate(BaseHandler):
     urls = [r"/api/changeset/create/", r"/api/changeset/create"]
 
     @auth_non_browser_based
-    def get(self):
-
+    def put(self):
         # get the JSON sent, to add in DB
         changeset_json = self.get_the_json_validated()
 
@@ -78,8 +64,7 @@ class APIChangesetClose(BaseHandler):
             r"/api/changeset/close/(?P<id_changeset>[^\/]+)"]
 
     @auth_non_browser_based
-    def get(self, id_changeset):
-
+    def put(self, id_changeset):
         # close the changeset of id = id_changeset
         self.PGSQLConn.close_changeset(id_changeset)
 

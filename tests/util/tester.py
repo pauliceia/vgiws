@@ -37,21 +37,10 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def create_a_changeset(self):
-        # send a JSON with the changeset to create a new one
-        changeset = {
-            "plc": {
-                'changeset': {
-                    'tags': [{'k': 'created_by', 'v': 'test_api'},
-                             {'k': 'comment', 'v': 'testing create changeset'}],
-                    'properties': {'id': -1, "fk_project_id": 1001}
-                }
-            }
-        }
-
+    def create_a_project(self, project_json):
         # do a GET call, sending a changeset to add in DB
-        response = self.session.get('http://localhost:8888/api/changeset/create/',
-                                    data=dumps(changeset), headers=self.headers)
+        response = self.session.put('http://localhost:8888/api/project/create/',
+                                    data=dumps(project_json), headers=self.headers)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
@@ -59,12 +48,27 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["id"], -1)
 
         # put the id received in the original JSON of changeset
-        changeset["plc"]["changeset"]["properties"]["id"] = resulted["id"]
+        project_json["project"]["properties"]["id"] = resulted["id"]
 
-        return changeset
+        return project_json
+
+    def create_a_changeset(self, changeset_json):
+        # do a GET call, sending a changeset to add in DB
+        response = self.session.put('http://localhost:8888/api/changeset/create/',
+                                    data=dumps(changeset_json), headers=self.headers)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        changeset_json["changeset"]["properties"]["id"] = resulted["id"]
+
+        return changeset_json
 
     def close_a_changeset(self, fk_id_changeset):
-        response = self.session.get('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
 
         self.ut_self.assertEqual(response.status_code, 200)
 

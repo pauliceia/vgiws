@@ -161,6 +161,17 @@ class BaseHandler(RequestHandler):
     # URLS
     ################################################################################
 
+    def put_method_api_project_create(self):
+        # get the JSON sent, to add in DB
+        project_json = self.get_the_json_validated()
+
+        current_user_id = self.get_current_user_id()
+
+        json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(json_with_id))
+
     def get_method_api_element(self, element):
         arguments = self.get_aguments()
 
