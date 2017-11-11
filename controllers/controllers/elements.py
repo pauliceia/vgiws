@@ -13,28 +13,42 @@ from tornado.escape import json_encode
 class APIProject(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
-            r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
+    # urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
+    #         r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
+
+    urls = [r"/api/project/?(?P<method>[A-Za-z0-9-]+)?/?(?P<id_project>[A-Za-z0-9-]+)?"]
 
     # @auth_non_browser_based
-    def get(self, param=None):
-        arguments = self.get_aguments()
+    def get(self, method=None, id_project=None):
+        if method == "get":
+            result = self.PGSQLConn.get_projects(id_project)
 
-        result = self.PGSQLConn.get_projects(q=arguments["q"])
+            # if there is no feature
+            if result["features"] is None:
+                raise HTTPError(404, "There is no feature")
 
-        # if there is no feature
-        if result["features"] is None:
-            raise HTTPError(404, "There is no feature")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
+            # Default: self.set_header('Content-Type', 'application/json')
+            self.write(json_encode(result))
+        else:
+            raise HTTPError(404, "Invalid URL")
 
     @auth_non_browser_based
-    def put(self, param=None):
-        if param == "create":
+    def put(self, method=None, id_project=None):
+        if method == "create":
             self.put_method_api_project_create()
-        elif param == "update":
+        elif method == "update":
             self.write(json_encode({"ok", 1}))
+        else:
+            raise HTTPError(404, "Invalid URL")
+
+    @auth_non_browser_based
+    def delete(self, method=None, id_project=None):
+        if method == "delete":
+            try:
+                self.PGSQLConn.delete_project_in_db(id_project)
+            except DataError as error:
+                # print("Error: ", error)
+                raise HTTPError(400, "Invalid parameter")
         else:
             raise HTTPError(404, "Invalid URL")
 
@@ -53,6 +67,7 @@ class APIProjectDelete(BaseHandler):
             # print("Error: ", error)
             raise HTTPError(400, "Invalid parameter")
 
+# CHANGESET
 
 class APIChangesetCreate(BaseHandler):
 
@@ -85,6 +100,8 @@ class APIChangesetClose(BaseHandler):
 
         self.set_and_send_status(status=200, reason="Changeset was closed!")
 
+
+# ELEMENT
 
 class APIElementNode(BaseHandler):
 

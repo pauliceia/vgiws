@@ -121,7 +121,7 @@ class PGSQLConnection:
     # PROJECT
     ################################################################################
 
-    def get_projects(self, q=None):
+    def get_projects(self, id_project=None):
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
@@ -129,9 +129,8 @@ class PGSQLConnection:
 
         # by default, get all results that are visible
         where = "WHERE visible=TRUE"
-        if q is not None:
-            if "id" in q:  # if the key "id" is in 'q'
-                where += " AND id = {0}".format(q["id"])
+        if id_project is not None:
+            where += " AND id = {0}".format(id_project)
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT

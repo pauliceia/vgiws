@@ -37,6 +37,17 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
+    def get_feature(self, feature, feature_expected, id_feature=""):
+        # do a GET call with default format (GeoJSON)
+        response = self.session.get('http://localhost:8888/api/{0}/get/{1}'.format(feature, id_feature))
+
+        self.ut_self.assertTrue(response.ok)
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(feature_expected, resulted)
+
     # project
 
     def create_project(self, project_json):

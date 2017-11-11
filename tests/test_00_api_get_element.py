@@ -6,9 +6,15 @@ from unittest import TestCase
 from json import loads
 from requests import get
 
+from util.tester import UtilTester
+
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 class TestAPIGETProject(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
 
     def test_get_api_project_return_all_projects(self):
         expected = {
@@ -29,23 +35,9 @@ class TestAPIGETProject(TestCase):
             ]
         }
 
-        # do a GET call with default format (GeoJSON)
-        response = get('http://localhost:8888/api/project/')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_feature("project", expected, id_feature="")
 
     def test_get_api_project_return_project_with_id_1001(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/project/?q=[id=1001]')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
         expected = {
             'features': [
                 {
@@ -59,12 +51,14 @@ class TestAPIGETProject(TestCase):
             'type': 'FeatureCollection'
         }
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_feature("project", expected, id_feature="1001")
 
 
 class TestAPIGETElement(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
 
     ################################################################################
     # NODE
@@ -92,6 +86,9 @@ class TestAPIGETElement(TestCase):
                     'type': 'Feature'}
             ]
         }
+
+        # self.tester.get_feature("project", expected, id_feature="")
+        # self.tester.get_feature("project", expected, id_feature="")
 
         # do a GET call with default format (GeoJSON)
         response = get('http://localhost:8888/api/node/')
