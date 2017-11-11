@@ -37,7 +37,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def create_a_project(self, project_json):
+    # project
+
+    def create_project(self, project_json):
         # do a GET call, sending a changeset to add in DB
         response = self.session.put('http://localhost:8888/api/project/create/',
                                     data=dumps(project_json), headers=self.headers)
@@ -52,7 +54,17 @@ class UtilTester:
 
         return project_json
 
-    def create_a_changeset(self, changeset_json):
+    def delete_project(self, project):
+        # get the id of project to REMOVE it
+        fk_id_project = project["project"]["properties"]["id"]
+
+        response = self.session.delete('http://localhost:8888/api/project/delete/{0}'.format(fk_id_project))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # changeset
+
+    def create_changeset(self, changeset_json):
         # do a GET call, sending a changeset to add in DB
         response = self.session.put('http://localhost:8888/api/changeset/create/',
                                     data=dumps(changeset_json), headers=self.headers)
@@ -67,12 +79,17 @@ class UtilTester:
 
         return changeset_json
 
-    def close_a_changeset(self, fk_id_changeset):
+    def close_changeset(self, changeset):
+        # get the id of changeset to CLOSE the changeset
+        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+
         response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def add_a_element(self, element_json):
+    # element
+
+    def add_element(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 

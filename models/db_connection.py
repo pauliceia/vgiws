@@ -136,30 +136,6 @@ class PGSQLConnection:
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
         ######################################################################
-
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Project',
-                    'properties', json_build_object(
-                        'id',           id,
-                        'create_at',    create_at,
-                        'removed_at',   removed_at,
-                        'fk_user_id_owner', fk_user_id_owner
-                    ),
-                    'tags',       tags.jsontags
-                ))
-            ) AS row_to_json
-            FROM project
-            CROSS JOIN LATERAL (
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM project_tag 
-                WHERE fk_project_id = project.id    
-            ) AS tags
-            {0}
-        """.format(where)
-
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -238,6 +214,17 @@ class PGSQLConnection:
         self.commit()
 
         return id_project_in_json
+
+    def delete_project_in_db(self, id_project):
+        query_text = """
+            UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
+            WHERE id={0};
+        """.format(id_project)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.commit()
 
     ################################################################################
     # CHANGESET

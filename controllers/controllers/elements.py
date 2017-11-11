@@ -39,6 +39,21 @@ class APIProject(BaseHandler):
             raise HTTPError(404, "Invalid URL")
 
 
+class APIProjectDelete(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/project/delete/(?P<id_project>[^\/]+)/",
+            r"/api/project/delete/(?P<id_project>[^\/]+)"]
+
+    @auth_non_browser_based
+    def delete(self, id_project):
+        try:
+            self.PGSQLConn.delete_project_in_db(id_project)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(400, "Invalid parameter")
+
+
 class APIChangesetCreate(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
