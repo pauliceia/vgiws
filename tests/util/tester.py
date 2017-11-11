@@ -137,7 +137,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
         self.ut_self.assertTrue(response.ok)
         self.ut_self.assertEqual(response.status_code, 200)
@@ -153,6 +153,6 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 404)

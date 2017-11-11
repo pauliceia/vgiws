@@ -303,7 +303,7 @@ class PGSQLConnection:
 
     # get elements
 
-    def get_elements(self, element, q=None, format="geojson"):
+    def get_elements(self, element, id_element=None, format="geojson"):
         """
         Do a GET query in DB.
 
@@ -314,9 +314,9 @@ class PGSQLConnection:
         :return: a list with the results, as WKT or GeoJSON.
         """
 
-        return self.get_elements_geojson(element, q=q)
+        return self.get_elements_geojson(element, id_element=id_element)
 
-    def get_elements_geojson(self, element, q=None):
+    def get_elements_geojson(self, element, id_element=None):
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
@@ -324,9 +324,8 @@ class PGSQLConnection:
 
         # by default, get all results that are visible
         where = "WHERE visible=TRUE"
-        if q is not None:
-            if "id" in q:  # if the key "id" is in 'q'
-                where += " AND id = {0}".format(q["id"])
+        if id_element is not None:
+            where += " AND id = {0}".format(id_element)
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT

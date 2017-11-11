@@ -187,10 +187,12 @@ class BaseHandler(RequestHandler):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    def get_method_api_element(self, element):
-        arguments = self.get_aguments()
+    def get_method_api_element(self, element, param):
 
-        result = self.PGSQLConn.get_elements(element, q=arguments["q"], format=arguments["format"])
+        if param is not None and not param.isdigit():
+            raise HTTPError(404, "Invalid URL")
+
+        result = self.PGSQLConn.get_elements(element, id_element=param, format="geojson")
 
         # if there is no element
         if result["features"] is None:

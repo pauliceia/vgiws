@@ -110,7 +110,8 @@ class TestAPIGETElement(TestCase):
 
     def test_get_api_node_return_element_with_id_1001_as_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/node/?q=[id=1001]')
+        # response = get('http://localhost:8888/api/node/?q=[id=1001]')
+        response = get('http://localhost:8888/api/node/1001')
 
         self.assertEqual(response.status_code, 200)
 
@@ -185,7 +186,7 @@ class TestAPIGETElement(TestCase):
 
     def test_get_api_way_return_element_with_id_1001_as_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/way/?q=[id=1001]')
+        response = get('http://localhost:8888/api/way/1001')
 
         # self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
@@ -241,7 +242,6 @@ class TestAPIGETElement(TestCase):
         # do a GET call with default format (GeoJSON)
         response = get('http://localhost:8888/api/area/')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -251,7 +251,6 @@ class TestAPIGETElement(TestCase):
         # do a GET call putting explicit GeoJSON format
         response = get('http://localhost:8888/api/area/?format=geojson')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -260,9 +259,8 @@ class TestAPIGETElement(TestCase):
 
     def test_get_api_area_return_element_with_id_1001_as_geojson(self):
         # do a GET call
-        response = get('http://localhost:8888/api/area/?q=[id=1001]')
+        response = get('http://localhost:8888/api/area/1001')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         expected = {

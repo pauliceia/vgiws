@@ -110,7 +110,7 @@ class APIElementNode(BaseHandler):
             r"/api/node/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        self.get_method_api_element("node")
+        self.get_method_api_element("node", param)
 
     @auth_non_browser_based
     def put(self, param=None):
@@ -128,7 +128,7 @@ class APIElementWay(BaseHandler):
             r"/api/way/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        self.get_method_api_element("way")
+        self.get_method_api_element("way", param)
 
     @auth_non_browser_based
     def put(self, param=None):
@@ -146,7 +146,7 @@ class APIElementArea(BaseHandler):
             r"/api/area/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        self.get_method_api_element("area")
+        self.get_method_api_element("area", param)
 
     @auth_non_browser_based
     def put(self, param=None):
