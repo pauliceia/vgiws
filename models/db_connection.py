@@ -457,10 +457,10 @@ class PGSQLConnection:
 
     # delete elements
 
-    def delete_element_in_db(self, element, q=None):
+    def delete_element_in_db(self, element, id_element):
         query_text = """
             UPDATE current_{0} SET visible = FALSE WHERE id={1};
-            """.format(element, q["id"])
+            """.format(element, id_element)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

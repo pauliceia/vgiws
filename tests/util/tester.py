@@ -125,7 +125,7 @@ class UtilTester:
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 
-        response = self.session.delete('http://localhost:8888/api/{0}/?q=[id={1}]'.format(element, id_element))
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
