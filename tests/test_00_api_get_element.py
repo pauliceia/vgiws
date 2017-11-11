@@ -93,7 +93,6 @@ class TestAPIGETElement(TestCase):
         # do a GET call with default format (GeoJSON)
         response = get('http://localhost:8888/api/node/')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -103,7 +102,6 @@ class TestAPIGETElement(TestCase):
         # do a GET call putting explicit GeoJSON format
         response = get('http://localhost:8888/api/node/?format=geojson')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -114,7 +112,6 @@ class TestAPIGETElement(TestCase):
         # do a GET call
         response = get('http://localhost:8888/api/node/?q=[id=1001]')
 
-        self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         expected = {
@@ -169,7 +166,7 @@ class TestAPIGETElement(TestCase):
         # do a GET call with default format (GeoJSON)
         response = get('http://localhost:8888/api/way/')
 
-        self.assertTrue(response.ok)
+        # self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -190,7 +187,7 @@ class TestAPIGETElement(TestCase):
         # do a GET call
         response = get('http://localhost:8888/api/way/?q=[id=1001]')
 
-        self.assertTrue(response.ok)
+        # self.assertTrue(response.ok)
         self.assertEqual(response.status_code, 200)
 
         expected = {

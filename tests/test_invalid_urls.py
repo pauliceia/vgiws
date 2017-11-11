@@ -13,7 +13,7 @@ class TestInvalidURLs(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-        response = get('http://localhost:8888/api/element33/')
+        response = get('http://localhost:8888/api/element33/abx/')
 
         self.assertEqual(response.status_code, 404)
 

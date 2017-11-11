@@ -41,7 +41,6 @@ class UtilTester:
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/get/{1}'.format(feature, id_feature))
 
-        self.ut_self.assertTrue(response.ok)
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
@@ -107,6 +106,8 @@ class UtilTester:
         # do a PUT call, sending a node to add in DB
         response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
                                     data=dumps(element_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 

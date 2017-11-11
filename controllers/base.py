@@ -52,6 +52,21 @@ def just_run_on_debug_mode(method):
     return wrapper
 
 
+# def run_if_element_is_valid(method):
+#
+#     def wrapper(self, *args, **kwargs):
+#
+#         for key in kwargs:
+#             if key == "element":
+#                 element = kwargs[key]
+#                 if not (element == "node" or element == "way" or element == "area"):
+#                     raise HTTPError(404, "Invalid URL")
+#
+#         return method(self, *args, **kwargs)
+#
+#     return wrapper
+
+
 class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
