@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 from json import loads, dumps
-from requests import get, put
+from requests import put
 
 from util.tester import UtilTester
 

@@ -79,6 +79,8 @@ class UtilTester:
         response = self.session.put('http://localhost:8888/api/changeset/create/',
                                     data=dumps(changeset_json), headers=self.headers)
 
+        self.ut_self.assertEqual(response.status_code, 200)
+
         resulted = loads(response.text)  # convert string to dict/JSON
 
         self.ut_self.assertIn("id", resulted)
@@ -96,6 +98,23 @@ class UtilTester:
         response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    # changeset errors
+
+    def api_changeset_create_without_permission(self, changeset_json):
+        # do a GET call, sending a changeset to add in DB
+        response = self.session.put('http://localhost:8888/api/changeset/create/',
+                                    data=dumps(changeset_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_changeset_close_without_permission(self, changeset):
+        # get the id of changeset to CLOSE the changeset
+        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
+
+        self.ut_self.assertEqual(response.status_code, 403)
 
     # element
 
@@ -156,3 +175,25 @@ class UtilTester:
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    # element errors
+
+    def api_element_create_without_permission(self, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
+
+        # do a PUT call, sending a node to add in DB
+        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+                                    data=dumps(element_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_element_delete_without_persmission(self, element_json):
+        id_element = element_json["features"][0]["properties"]["id"]  # get the id of element
+
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
+
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+
+        self.ut_self.assertEqual(response.status_code, 403)
