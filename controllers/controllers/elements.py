@@ -18,11 +18,15 @@ class APIProject(BaseHandler):
 
     def get(self, param=None):
         # param on this case is the id of element
-        result = self.PGSQLConn.get_projects(param)
+        try:
+            result = self.PGSQLConn.get_projects(param)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when get a project. Please, contact the administrator.")
 
         # if there is no feature
         if result["features"] is None:
-            raise HTTPError(404, "There is no feature")
+            raise HTTPError(404, "There is no project.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
@@ -40,11 +44,14 @@ class APIProject(BaseHandler):
     @auth_non_browser_based
     def delete(self, param=None):
         # param on this case is the id of element
+        if param is not None and not param.isdigit():
+            raise HTTPError(400, "Invalid parameter.")
+
         try:
             self.PGSQLConn.delete_project_in_db(param)
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(400, "Invalid parameter")
+            raise HTTPError(500, "Problem when delete a project. Please, contact the administrator.")
 
 
 # CHANGESET
@@ -57,25 +64,34 @@ class APIChangesetCreate(BaseHandler):
 
     @auth_non_browser_based
     def put(self, param=None, param2=None):
+        # param on this case is "create" or "close"
         if param == "create":
             # get the JSON sent, to add in DB
             changeset_json = self.get_the_json_validated()
 
             current_user_id = self.get_current_user_id()
 
-            json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+            try:
+                json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+            except DataError as error:
+                # print("Error: ", error)
+                raise HTTPError(500, "Problem when create a changeset. Please, contact the administrator.")
 
             # Default: self.set_header('Content-Type', 'application/json')
             self.write(json_encode(json_with_id))
         elif param == "close":
+            # param2 on this case is the id of changeset
+            if param2 is not None and not param2.isdigit():
+                raise HTTPError(400, "Invalid parameter.")
+
             try:
                 # close the changeset of id = id_changeset
                 self.PGSQLConn.close_changeset(param2)
             except DataError as error:
                 # print("Error: ", error)
-                raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
+                raise HTTPError(500, "Problem when close a changeset. Please, contact the administrator.")
         else:
-            raise HTTPError(404, "Invalid URL")
+            raise HTTPError(404, "Invalid URL.")
 
 
 # class APIChangesetCreate(BaseHandler):

@@ -132,32 +132,117 @@ Just point the Python interpreter of Pycharm to the folder of the virtualenv was
 Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 
-## Examples:
-
-Obs.: Functions with (OK) are already working.
-
+## API Doc:
 
 ### Project
 
-- (OK) GET /api/project/#id
-- (OK) PUT /api/project/create
-- PUT /api/project/update
-- (OK) DELETE /api/project/delete/#id
+- GET /api/project/#id
+
+    This method get all projects in DB or a specific with id = #id
+    - Parameters:
+        - #id (optional): a positive integer (e.g. 1, 2, 3, ...).
+    - Send:
+    - Response: a JSON that contain the features selected.
+    - Error codes:
+        - 404: There is no project.
+        - 500: Problem when get a project. Please, contact the administrator.
+    - Notes:
+
+- PUT /api/project/create
+
+    This method create a new project described in a JSON.
+    - Parameters:
+    - Send: a JSON describing the feature.
+    - Response: a JSON that contain the id of the feature created.
+    - Error codes:
+        - 500: Problem when create a project. Please, contact the administrator.
+    - Notes:
+
+<!-- - PUT /api/project/update -->
+
+- DELETE /api/project/delete/#id
+
+    This method delete project by id = #id.
+    - Parameters:
+        - #id (mandatory): a positive integer (e.g. 1, 2, 3, ...).
+    - Send:
+    - Response:
+    - Error codes:
+        - 400: Invalid parameter
+        - 400: It needs a valid id to delete a project.
+        - 500: Problem when delete a project. Please, contact the administrator.
+    - Notes:
 
 
 ### Changeset
 
-- GET /api/changeset/#id
-- (OK) PUT /api/changeset/create
-- PUT /api/changeset/update
-- (OK) PUT /api/changeset/close/#id
+<!-- - GET /api/changeset/#id -->
+
+- PUT /api/changeset/create
+
+    This method create a new changeset described in a JSON.
+    - Parameters:
+    - Send: a JSON describing the feature.
+    - Response: a JSON that contain the id of the feature created.
+    - Error codes:
+        - 500: Problem when create a changeset. Please, contact the administrator.
+    - Notes:
+
+<!-- - PUT /api/changeset/update -->
+
+- PUT /api/changeset/close/#id
+
+    This method close a changeset by id = #id.
+    - Parameters:
+        - #id (mandatory): a positive integer (e.g. 1, 2, 3, ...).
+    - Send:
+    - Response:
+    - Error codes:
+        - 400: Invalid parameter.
+        - 400: It needs a valid id to close a changeset.
+        - 500: Problem when close a changeset. Please, contact the administrator.
+    - Notes:
 
 
-### Elements (node, way or area)
+### Elements (it can be node, way or area)
 
-- (OK) GET /api/\[node|way|area]/#id
-- (OK) PUT /api/\[node|way|area]/create
-- PUT /api/\[node|way|area]/update
-- (OK) DELETE /api/\[node|way|area]/#id
-- GET /api/\[node|way|area]/history/#id
+- GET /api/\[node|way|area]/#id
+
+    This method get all elements in DB or a specific with id = #id
+    - Parameters:
+        - #id (optional): a positive integer (e.g. 1, 2, 3, ...).
+    - Send:
+    - Response: a GeoJSON that contain the features selected.
+    - Error codes:
+        - 400: Invalid parameter.
+        - 404: There is no element.
+        - 500: Problem when get a element. Please, contact the administrator.
+    - Notes:
+
+- PUT /api/\[node|way|area]/create
+
+    This method create a new element described in a GeoJSON.
+    - Parameters:
+    - Send: a GeoJSON describing the element.
+    - Response: a JSON that contain the id of the feature created.
+    - Error codes:
+        - 500: Problem when create a element. Please, contact the administrator.
+    - Notes:
+
+<!-- - PUT /api/\[node|way|area]/update -->
+
+- DELETE /api/\[node|way|area]/#id
+
+    This method delete element by id = #id.
+    - Parameters:
+        - #id (mandatory): a positive integer (e.g. 1, 2, 3, ...).
+    - Send:
+    - Response:
+    - Error codes:
+        - 400: Invalid parameter.
+        - 400: It needs a valid id to delete a element.
+        - 500: Problem when delete a element. Please, contact the administrator.
+    - Notes:
+
+<!-- - GET /api/\[node|way|area]/history/#id -->
 

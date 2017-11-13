@@ -215,6 +215,9 @@ class PGSQLConnection:
         return id_project_in_json
 
     def delete_project_in_db(self, id_project):
+        if id_project is None:
+            raise HTTPError(400, "It needs a valid id to delete a project.")
+
         query_text = """
             UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
             WHERE id={0};
@@ -292,7 +295,7 @@ class PGSQLConnection:
         """
 
         if id_changeset is None:
-            raise HTTPError(400, "It is necessary a id to close a changeset")
+            raise HTTPError(400, "It needs a valid id to close a changeset.")
 
         self.execute("""UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
                     """.format(id_changeset))
@@ -450,6 +453,9 @@ class PGSQLConnection:
     # delete elements
 
     def delete_element_in_db(self, element, id_element):
+        if id_element is None:
+            raise HTTPError(400, "It needs a valid id to delete a element.")
+
         query_text = """
             UPDATE current_{0} SET visible = FALSE WHERE id={1};
             """.format(element, id_element)

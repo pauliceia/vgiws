@@ -180,7 +180,11 @@ class BaseHandler(RequestHandler):
 
         current_user_id = self.get_current_user_id()
 
-        json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+        try:
+            json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when create a project. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -188,13 +192,17 @@ class BaseHandler(RequestHandler):
     def get_method_api_element(self, element, param):
 
         if param is not None and not param.isdigit():
-            raise HTTPError(404, "Invalid URL")
+            raise HTTPError(400, "Invalid parameter.")
 
-        result = self.PGSQLConn.get_elements(element, id_element=param, format="geojson")
+        try:
+            result = self.PGSQLConn.get_elements(element, id_element=param, format="geojson")
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
 
         # if there is no element
         if result["features"] is None:
-            raise HTTPError(404, "There is no element")
+            raise HTTPError(404, "There is no element.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
@@ -202,7 +210,7 @@ class BaseHandler(RequestHandler):
     def put_method_api_element_create(self, element, element_json):
 
         if not self.is_element_type_valid(element, element_json):
-            raise HTTPError(400, "Invalid element type")
+            raise HTTPError(404, "Invalid URL.")
 
         current_user_id = self.get_current_user_id()
 
@@ -234,13 +242,13 @@ class BaseHandler(RequestHandler):
 
     def delete_method_api_element(self, element, id_element):
         if id_element is not None and not id_element.isdigit():
-            raise HTTPError(404, "Invalid URL")
+            raise HTTPError(400, "Invalid parameter.")
 
         try:
             self.PGSQLConn.delete_element_in_db(element, id_element)
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(400, "Invalid parameter")
+            raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
 
     ################################################################################
     # URLS
