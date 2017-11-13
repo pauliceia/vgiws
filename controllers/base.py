@@ -209,7 +209,12 @@ class BaseHandler(RequestHandler):
         current_user_id = self.get_current_user_id()
 
         try:
-            json_with_id = self.PGSQLConn.create_element(element, element_json, current_user_id)
+            # get the first feature/element to add
+            feature = element_json["features"][0]
+            # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
+            feature["geometry"]["crs"] = element_json["crs"]
+
+            json_with_id = self.PGSQLConn.create_element(element, feature, current_user_id)
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(400, "Problem when create a element. Please, contact the administrator.")
@@ -221,7 +226,11 @@ class BaseHandler(RequestHandler):
 
         if param == "create":
             element_json = self.get_the_json_validated()
+
+
             self.put_method_api_element_create(element, element_json)
+
+
 
         elif param == "update":
             self.write(json_encode({"ok", 1}))

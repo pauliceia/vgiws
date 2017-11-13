@@ -416,7 +416,7 @@ class PGSQLConnection:
 
         # return id_element_tag
 
-    def create_element(self, element, element_json, fk_user_id_owner):
+    def create_element(self, element, feature, fk_user_id_owner):
         """
         Add a element in DB
         :param element_json:
@@ -427,9 +427,6 @@ class PGSQLConnection:
         # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
         # searching if the changeset is its by fk_user_id_owner. If the user is the owner of the changeset
 
-        # get the first feature/element to add
-        feature = element_json["features"][0]
-
         # get the tags
         tags = feature["tags"]
 
@@ -438,9 +435,6 @@ class PGSQLConnection:
 
         # get the id of changeset
         fk_changeset_id = feature["properties"]["fk_changeset_id"]
-
-        # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-        feature["geometry"]["crs"] = element_json["crs"]
 
         # add the element in db and get the id of it
         id_element_in_json = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)

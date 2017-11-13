@@ -20,13 +20,70 @@
         <h4>
             <ul class="list-group">
                 <li class="list-group-item">
-                    <a href="#api_element_get">¶</a> GET /api/[node|way|area]/?{PARAMS}
+                    <a href="#api_element_get">¶</a> (OK) GET /api/project/#id
                 </li>
-                <!--<li class="list-group-item">-->
-                    <!--<a href="#url_api">¶</a> GET /api/-->
-                <!--</li>-->
+                <li class="list-group-item">
+                    <a href="#api_element_put_create">¶</a> (OK) PUT /api/project/create
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_update">¶</a> PUT /api/project/update
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_update">¶</a> (OK) DELETE /api/project/delete/#id
+                </li>
+            </ul>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="#api_element_get">¶</a> GET /api/changeset/#id
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_create">¶</a> (OK) PUT /api/changeset/create
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_update">¶</a> PUT /api/changeset/update
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_update">¶</a> (OK) PUT /api/changeset/close/#id
+                </li>
+            </ul>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="#api_element_get">¶</a> (OK) GET /api/[node|way|area]/#id
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_create">¶</a> (OK) PUT /api/[node|way|area]/create
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_put_update">¶</a> PUT /api/[node|way|area]/update
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_delete">¶</a> (OK) DELETE /api/[node|way|area]/#id
+                </li>
+                <li class="list-group-item">
+                    <a href="#api_element_delete">¶</a>  GET /api/[node|way|area]/#id/history
+                </li>
             </ul>
         </h4>
+
+
+<!--
+/api/0.6/[nodes|ways|relations]?#params
+OK - Create: PUT /api/0.6/changeset/create
+Read: GET /api/0.6/changeset/#id?include_discussion=true
+Update: PUT /api/0.6/changeset/#id
+OK - Close: PUT /api/0.6/changeset/#id/close
+Query: GET /api/0.6/changesets
+    user=#uid, open=true, ...
+Add comment: POST /api/0.6/changeset/#id/comment
+
+OK - Read: GET /api/0.6/[node|way|relation]/#id
+OK - Create: PUT /api/0.6/[node|way|relation]/create
+Update: PUT /api/0.6/[node|way|relation]/#id
+OK - Delete: DELETE /api/0.6/[node|way|relation]/#id
+History: GET /api/0.6/[node|way|relation]/#id/history
+    Retrieves all old versions of an element.
+-->
+
 
         {% include "api/element/get.html" %}
 
