@@ -87,34 +87,9 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        # self.tester.get_feature("project", expected, id_feature="")
-        # self.tester.get_feature("project", expected, id_feature="")
-
-        # do a GET call with default format (GeoJSON)
-        response = get('http://localhost:8888/api/node/')
-
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
-        # do a GET call putting explicit GeoJSON format
-        response = get('http://localhost:8888/api/node/?format=geojson')
-
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_method_api_element("node", expected, id_element="")
 
     def test_get_api_node_return_element_with_id_1001_as_geojson(self):
-        # do a GET call
-        # response = get('http://localhost:8888/api/node/?q=[id=1001]')
-        response = get('http://localhost:8888/api/node/1001')
-
-        self.assertEqual(response.status_code, 200)
-
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -130,17 +105,13 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
+        self.tester.get_method_api_element("node", expected, id_element="1001")
 
     ################################################################################
     # WAY
     ################################################################################
 
     def test_get_api_way_return_all_elements_as_geojson(self):
-
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -164,39 +135,19 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        # do a GET call with default format (GeoJSON)
-        response = get('http://localhost:8888/api/way/')
-
-        # self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
-        # do a GET call putting explicit GeoJSON format
-        response = get('http://localhost:8888/api/way/?format=geojson')
-
-        self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_method_api_element("way", expected, id_element="")
 
     def test_get_api_way_return_element_with_id_1001_as_geojson(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/way/1001')
-
-        # self.assertTrue(response.ok)
-        self.assertEqual(response.status_code, 200)
-
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
                     'type': 'Feature',
-                    'geometry': {'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]], 'type': 'MultiLineString'},
+                    'geometry': {'coordinates': [
+                        [[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836],
+                         [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075],
+                         [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]],
+                                 'type': 'MultiLineString'},
                     'tags': [{'v': 'rua boa vista', 'k': 'name'},
                              {'v': '1930', 'k': 'start_date'},
                              {'v': '1930', 'k': 'end_date'}],
@@ -206,16 +157,13 @@ class TestAPIGETElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_method_api_element("way", expected, id_element="1001")
 
     ################################################################################
     # AREA
     ################################################################################
 
     def test_get_api_area_return_all_elements_as_geojson(self):
-
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -239,30 +187,9 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        # do a GET call with default format (GeoJSON)
-        response = get('http://localhost:8888/api/area/')
-
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
-        # do a GET call putting explicit GeoJSON format
-        response = get('http://localhost:8888/api/area/?format=geojson')
-
-        self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
+        self.tester.get_method_api_element("area", expected, id_element="")
 
     def test_get_api_area_return_element_with_id_1001_as_geojson(self):
-        # do a GET call
-        response = get('http://localhost:8888/api/area/1001')
-
-        self.assertEqual(response.status_code, 200)
-
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -278,10 +205,7 @@ class TestAPIGETElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
+        self.tester.get_method_api_element("area", expected, id_element="1001")
 
     # helper
     # def test_helper_execute(self):

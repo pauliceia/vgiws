@@ -53,21 +53,6 @@ class APIProject(BaseHandler):
             raise HTTPError(404, "Invalid URL")
 
 
-# class APIProjectDelete(BaseHandler):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/project/delete/(?P<id_project>[^\/]+)/",
-#             r"/api/project/delete/(?P<id_project>[^\/]+)"]
-#
-#     @auth_non_browser_based
-#     def delete(self, id_project):
-#         try:
-#             self.PGSQLConn.delete_project_in_db(id_project)
-#         except DataError as error:
-#             # print("Error: ", error)
-#             raise HTTPError(400, "Invalid parameter")
-
-
 # CHANGESET
 
 class APIChangesetCreate(BaseHandler):
@@ -111,6 +96,7 @@ class APIElementNode(BaseHandler):
             r"/api/node/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
+        # param on this case is the id of element
         self.get_method_api_element("node", param)
 
     @auth_non_browser_based
@@ -129,6 +115,7 @@ class APIElementWay(BaseHandler):
             r"/api/way/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
+        # param on this case is the id of element
         self.get_method_api_element("way", param)
 
     @auth_non_browser_based
@@ -147,6 +134,7 @@ class APIElementArea(BaseHandler):
             r"/api/area/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
+        # param on this case is the id of element
         self.get_method_api_element("area", param)
 
     @auth_non_browser_based

@@ -118,6 +118,16 @@ class UtilTester:
 
     # element
 
+    def get_method_api_element(self, element, element_expected, id_element=""):
+        # do a GET call with default format (GeoJSON)
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(element_expected, resulted)
+
     def add_element(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
