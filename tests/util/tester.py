@@ -27,12 +27,12 @@ class UtilTester:
         # unittest self
         self.ut_self = ut_self
 
-    def do_login(self):
+    def auth_login(self):
         response = self.session.get('http://localhost:8888/auth/login/fake/')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def do_logout(self):
+    def auth_logout(self):
         response = self.session.get('http://localhost:8888/auth/logout')
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -118,7 +118,7 @@ class UtilTester:
 
     # element
 
-    def get_method_api_element(self, element, element_expected, id_element=""):
+    def api_element(self, element, element_expected, id_element=""):
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
@@ -128,7 +128,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(element_expected, resulted)
 
-    def add_element(self, element_json):
+    def api_element_create(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 
@@ -148,7 +148,7 @@ class UtilTester:
 
         return element_json
 
-    def delete_element(self, element_json):
+    def api_element_delete(self, element_json):
         id_element = element_json["features"][0]["properties"]["id"]  # get the id of element
 
         multi_element = element_json["features"][0]["geometry"]["type"]

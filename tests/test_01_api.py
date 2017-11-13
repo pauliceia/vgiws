@@ -29,7 +29,7 @@ class TestAPIWihoutLogin(TestCase):
 
     def test_get_api_create_changeset_with_and_without_login(self):
         # DO LOGIN
-        self.tester.do_login()
+        self.tester.auth_login()
 
         # CREATE A CHANGESET
         changeset = {
@@ -61,19 +61,19 @@ class TestAPIWihoutLogin(TestCase):
                 }
             ]
         }
-        node = self.tester.add_element(node)  # return the same element with the id generated
+        node = self.tester.api_element_create(node)  # return the same element with the id generated
 
         # VERIFY IN DB, IF THE ELEMENTS EXIST
         self.tester.verify_if_element_was_add_in_db(node)
 
         # REMOVE THE ELEMENT CREATED
-        self.tester.delete_element(node)
+        self.tester.api_element_delete(node)
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset)
 
         # DO LOGOUT
-        self.tester.do_logout()
+        self.tester.auth_logout()
 
         ################################################################################
         # TRY TO CREATE ANOTHER CHANGESET WITHOUT LOGIN
@@ -94,7 +94,7 @@ class TestAPI(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.do_login()
+        self.tester.auth_login()
 
         # CREATE A PROJECT FOR ALL TESTS
         project = {
@@ -112,7 +112,7 @@ class TestAPI(TestCase):
         self.tester.api_project_delete(self.project)
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.do_logout()
+        self.tester.auth_logout()
 
     def test_get_api_crud_elements_with_login(self):
         # get the id of project to use in create a changeset
@@ -149,7 +149,7 @@ class TestAPI(TestCase):
                 }
             ]
         }
-        node = self.tester.add_element(node)  # return the same element with the id generated
+        node = self.tester.api_element_create(node)  # return the same element with the id generated
 
         way = {
             'type': 'FeatureCollection',
@@ -168,7 +168,7 @@ class TestAPI(TestCase):
                 }
             ]
         }
-        way = self.tester.add_element(way)
+        way = self.tester.api_element_create(way)
 
         area = {
             'type': 'FeatureCollection',
@@ -187,7 +187,7 @@ class TestAPI(TestCase):
                 }
             ]
         }
-        area = self.tester.add_element(area)
+        area = self.tester.api_element_create(area)
 
         # VERIFY IN DB, IF THE ELEMENTS EXIST
         self.tester.verify_if_element_was_add_in_db(node)
@@ -195,9 +195,9 @@ class TestAPI(TestCase):
         self.tester.verify_if_element_was_add_in_db(area)
 
         # REMOVE THE ELEMENTS CREATED
-        self.tester.delete_element(node)
-        self.tester.delete_element(way)
-        self.tester.delete_element(area)
+        self.tester.api_element_delete(node)
+        self.tester.api_element_delete(way)
+        self.tester.api_element_delete(area)
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset)

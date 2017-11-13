@@ -87,7 +87,7 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        self.tester.get_method_api_element("node", expected, id_element="")
+        self.tester.api_element("node", expected, id_element="")
 
     def test_get_api_node_return_element_with_id_1001_as_geojson(self):
         expected = {
@@ -105,7 +105,7 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        self.tester.get_method_api_element("node", expected, id_element="1001")
+        self.tester.api_element("node", expected, id_element="1001")
 
     ################################################################################
     # WAY
@@ -135,7 +135,7 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        self.tester.get_method_api_element("way", expected, id_element="")
+        self.tester.api_element("way", expected, id_element="")
 
     def test_get_api_way_return_element_with_id_1001_as_geojson(self):
         expected = {
@@ -157,7 +157,7 @@ class TestAPIGETElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.get_method_api_element("way", expected, id_element="1001")
+        self.tester.api_element("way", expected, id_element="1001")
 
     ################################################################################
     # AREA
@@ -187,7 +187,7 @@ class TestAPIGETElement(TestCase):
             ]
         }
 
-        self.tester.get_method_api_element("area", expected, id_element="")
+        self.tester.api_element("area", expected, id_element="")
 
     def test_get_api_area_return_element_with_id_1001_as_geojson(self):
         expected = {
@@ -205,7 +205,7 @@ class TestAPIGETElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.get_method_api_element("area", expected, id_element="1001")
+        self.tester.api_element("area", expected, id_element="1001")
 
     # helper
     # def test_helper_execute(self):
