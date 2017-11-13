@@ -23,9 +23,7 @@ def auth_non_browser_based(method):
 
         # if user is not logged in, so return a 403 Forbidden
         if not self.current_user:
-            # self.set_and_send_status(status=403, reason="It needs a user looged to access this URL")
-            # return
-            raise HTTPError(403, "It needs a user looged to access this URL")
+            raise HTTPError(403, "It needs a user looged in to access this URL")
 
         # if the user is logged in, so execute the method
         return method(self, *args, **kwargs)

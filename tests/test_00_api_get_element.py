@@ -35,7 +35,7 @@ class TestAPIGETProject(TestCase):
             ]
         }
 
-        self.tester.get_project(expected, id_project="")
+        self.tester.api_project(expected, id_project="")
 
     def test_get_api_project_return_project_with_id_1001(self):
         expected = {
@@ -51,7 +51,7 @@ class TestAPIGETProject(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.get_project(expected, id_project="1001")
+        self.tester.api_project(expected, id_project="1001")
 
 
 class TestAPIGETElement(TestCase):

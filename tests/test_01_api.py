@@ -23,6 +23,10 @@ class TestAPIWihoutLogin(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+        response = put('http://localhost:8888/api/changeset/close/-1')
+
+        self.assertEqual(response.status_code, 403)
+
     def test_get_api_create_changeset_with_and_without_login(self):
         # DO LOGIN
         self.tester.do_login()
@@ -35,7 +39,7 @@ class TestAPIWihoutLogin(TestCase):
                 'properties': {'id': -1, "fk_project_id": 1001}
             }
         }
-        changeset = self.tester.create_changeset(changeset)
+        changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
         fk_id_changeset = changeset["changeset"]["properties"]["id"]
@@ -66,7 +70,7 @@ class TestAPIWihoutLogin(TestCase):
         self.tester.delete_element(node)
 
         # CLOSE THE CHANGESET
-        self.tester.close_changeset(changeset)
+        self.tester.api_changeset_close(changeset)
 
         # DO LOGOUT
         self.tester.do_logout()
@@ -101,11 +105,11 @@ class TestAPI(TestCase):
                 'properties': {'id': -1}
             }
         }
-        self.project = self.tester.create_project(project)
+        self.project = self.tester.api_project_create(project)
 
     def tearDown(self):
         # REMOVE THE PROJECT AFTER THE TESTS
-        self.tester.delete_project(self.project)
+        self.tester.api_project_delete(self.project)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.do_logout()
@@ -123,7 +127,7 @@ class TestAPI(TestCase):
                 'properties': {'id': -1, "fk_project_id": fk_project_id}
             }
         }
-        changeset = self.tester.create_changeset(changeset)
+        changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
         fk_id_changeset = changeset["changeset"]["properties"]["id"]
@@ -196,7 +200,7 @@ class TestAPI(TestCase):
         self.tester.delete_element(area)
 
         # CLOSE THE CHANGESET
-        self.tester.close_changeset(changeset)
+        self.tester.api_changeset_close(changeset)
 
     def test_get_api_crud_elements_that_not_exist_with_login(self):
         # get the id of project to use in create a changeset
@@ -211,7 +215,7 @@ class TestAPI(TestCase):
                 'properties': {'id': -1, "fk_project_id": fk_project_id}
             }
         }
-        changeset = self.tester.create_changeset(changeset)
+        changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
         fk_id_changeset = changeset["changeset"]["properties"]["id"]
@@ -276,7 +280,7 @@ class TestAPI(TestCase):
         self.tester.verify_if_element_was_not_add_in_db(area)
 
         # CLOSE THE CHANGESET
-        self.tester.close_changeset(changeset)
+        self.tester.api_changeset_close(changeset)
 
 
 # It is not necessary to pyt the main() of unittest here,
