@@ -217,7 +217,7 @@ class BaseHandler(RequestHandler):
             json_with_id = self.PGSQLConn.create_element(element, feature, current_user_id)
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(400, "Problem when create a element. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -227,10 +227,7 @@ class BaseHandler(RequestHandler):
         if param == "create":
             element_json = self.get_the_json_validated()
 
-
             self.put_method_api_element_create(element, element_json)
-
-
 
         elif param == "update":
             self.write(json_encode({"ok", 1}))

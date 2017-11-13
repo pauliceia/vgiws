@@ -52,33 +52,62 @@ class APIProject(BaseHandler):
 class APIChangesetCreate(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/changeset/create/", r"/api/changeset/create"]
+    urls = [r"/api/changeset/?(?P<param>[A-Za-z0-9-]+)?/?(?P<param2>[A-Za-z0-9-]+)?",
+            ]
 
     @auth_non_browser_based
-    def put(self):
-        # get the JSON sent, to add in DB
-        changeset_json = self.get_the_json_validated()
+    def put(self, param=None, param2=None):
+        if param == "create":
+            # get the JSON sent, to add in DB
+            changeset_json = self.get_the_json_validated()
 
-        current_user_id = self.get_current_user_id()
+            current_user_id = self.get_current_user_id()
 
-        json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+            json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
 
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(json_with_id))
+            # Default: self.set_header('Content-Type', 'application/json')
+            self.write(json_encode(json_with_id))
+        elif param == "close":
+            try:
+                # close the changeset of id = id_changeset
+                self.PGSQLConn.close_changeset(param2)
+            except DataError as error:
+                # print("Error: ", error)
+                raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
+        else:
+            raise HTTPError(404, "Invalid URL")
 
 
-class APIChangesetClose(BaseHandler):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/changeset/close/(?P<id_changeset>[^\/]+)/",
-            r"/api/changeset/close/(?P<id_changeset>[^\/]+)"]
-
-    @auth_non_browser_based
-    def put(self, id_changeset):
-        # close the changeset of id = id_changeset
-        self.PGSQLConn.close_changeset(id_changeset)
-
-        self.set_and_send_status(status=200, reason="Changeset was closed!")
+# class APIChangesetCreate(BaseHandler):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/changeset/create/", r"/api/changeset/create"]
+#
+#     @auth_non_browser_based
+#     def put(self):
+#         # get the JSON sent, to add in DB
+#         changeset_json = self.get_the_json_validated()
+#
+#         current_user_id = self.get_current_user_id()
+#
+#         json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+#
+#         # Default: self.set_header('Content-Type', 'application/json')
+#         self.write(json_encode(json_with_id))
+#
+#
+# class APIChangesetClose(BaseHandler):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/changeset/close/(?P<id_changeset>[^\/]+)/",
+#             r"/api/changeset/close/(?P<id_changeset>[^\/]+)"]
+#
+#     @auth_non_browser_based
+#     def put(self, id_changeset):
+#         # close the changeset of id = id_changeset
+#         self.PGSQLConn.close_changeset(id_changeset)
+#
+#         self.set_and_send_status(status=200, reason="Changeset was closed!")
 
 
 # ELEMENT

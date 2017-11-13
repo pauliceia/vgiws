@@ -29,9 +29,9 @@
 from psycopg2 import connect, DatabaseError
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
+from tornado.web import HTTPError
 
 from modules.design_pattern import Singleton
-from modules.common import get_current_datetime
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
 from tornado.escape import json_encode
 
@@ -284,18 +284,21 @@ class PGSQLConnection:
 
         return id_changeset_in_json
 
-    def close_changeset(self, id_changeset):
+    def close_changeset(self, id_changeset=None):
         """
         Close the changeset of id = id_changeset
         :param id_changeset: id of changeset to be closed
         :return:
         """
 
-        # get the closing time
-        # closed_at = get_current_datetime()
+        if id_changeset is None:
+            raise HTTPError(400, "It is necessary a id to close a changeset")
 
         self.execute("""UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
                     """.format(id_changeset))
+
+        # send the modifications to DB
+        self.commit()
 
     ################################################################################
     # ELEMENT
@@ -410,11 +413,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        # id_element_tag = self.__PGSQL_CURSOR__.fetchone()
-
-        # return id_element_tag
 
     def create_element(self, element, feature, fk_user_id_owner):
         """

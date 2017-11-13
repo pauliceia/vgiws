@@ -130,3 +130,34 @@ Just point the Python interpreter of Pycharm to the folder of the virtualenv was
 ## To render it in Atom
 
 Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
+
+
+## Examples:
+
+Obs.: Functions with (OK) are already working.
+
+
+### Project
+
+- (OK) GET /api/project/#id
+- (OK) PUT /api/project/create
+- PUT /api/project/update
+- (OK) DELETE /api/project/delete/#id
+
+
+### Changeset
+
+- GET /api/changeset/#id
+- (OK) PUT /api/changeset/create
+- PUT /api/changeset/update
+- (OK) PUT /api/changeset/close/#id
+
+
+### Elements (node, way or area)
+
+- (OK) GET /api/\[node|way|area]/#id
+- (OK) PUT /api/\[node|way|area]/create
+- PUT /api/\[node|way|area]/update
+- (OK) DELETE /api/\[node|way|area]/#id
+- GET /api/\[node|way|area]/history/#id
+
