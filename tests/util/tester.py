@@ -37,22 +37,22 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def get_feature(self, feature, feature_expected, id_feature=""):
-        # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/get/{1}'.format(feature, id_feature))
+    # project
+
+    def get_project(self, project_expected, id_project=""):
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(id_project))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertEqual(feature_expected, resulted)
-
-    # project
+        self.ut_self.assertEqual(project_expected, resulted)
 
     def create_project(self, project_json):
-        # do a GET call, sending a changeset to add in DB
         response = self.session.put('http://localhost:8888/api/project/create/',
                                     data=dumps(project_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
@@ -68,7 +68,7 @@ class UtilTester:
         # get the id of project to REMOVE it
         fk_id_project = project["project"]["properties"]["id"]
 
-        response = self.session.delete('http://localhost:8888/api/project/delete/{0}'.format(fk_id_project))
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(fk_id_project))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -168,7 +168,6 @@ class UtilTester:
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
-        self.ut_self.assertTrue(response.ok)
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON

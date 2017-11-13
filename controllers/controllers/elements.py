@@ -13,44 +13,38 @@ from tornado.escape import json_encode
 class APIProject(BaseHandler):
 
     # A list of URLs that can be use for the HTTP methods
-    # urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
-    #         r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
+    urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
 
-    urls = [r"/api/project/?(?P<method>[A-Za-z0-9-]+)?/?(?P<id_project>[A-Za-z0-9-]+)?"]
+    def get(self, param=None):
+        # param on this case is the id of element
+        result = self.PGSQLConn.get_projects(param)
 
-    # @auth_non_browser_based
-    def get(self, method=None, id_project=None):
-        if method == "get":
-            result = self.PGSQLConn.get_projects(id_project)
+        # if there is no feature
+        if result["features"] is None:
+            raise HTTPError(404, "There is no feature")
 
-            # if there is no feature
-            if result["features"] is None:
-                raise HTTPError(404, "There is no feature")
-
-            # Default: self.set_header('Content-Type', 'application/json')
-            self.write(json_encode(result))
-        else:
-            raise HTTPError(404, "Invalid URL")
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(result))
 
     @auth_non_browser_based
-    def put(self, method=None, id_project=None):
-        if method == "create":
+    def put(self, param=None):
+        # param on this case is "create" or "update"
+        if param == "create":
             self.put_method_api_project_create()
-        elif method == "update":
+        elif param == "update":
             self.write(json_encode({"ok", 1}))
         else:
             raise HTTPError(404, "Invalid URL")
 
     @auth_non_browser_based
-    def delete(self, method=None, id_project=None):
-        if method == "delete":
-            try:
-                self.PGSQLConn.delete_project_in_db(id_project)
-            except DataError as error:
-                # print("Error: ", error)
-                raise HTTPError(400, "Invalid parameter")
-        else:
-            raise HTTPError(404, "Invalid URL")
+    def delete(self, param=None):
+        # param on this case is the id of element
+        try:
+            self.PGSQLConn.delete_project_in_db(param)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(400, "Invalid parameter")
 
 
 # CHANGESET
@@ -101,10 +95,12 @@ class APIElementNode(BaseHandler):
 
     @auth_non_browser_based
     def put(self, param=None):
+        # param on this case is "create" or "update"
         self.put_method_api_element("node", param)
 
     @auth_non_browser_based
     def delete(self, param=None):
+        # param on this case is the id of element
         self.delete_method_api_element("node", param)
 
 
@@ -120,10 +116,12 @@ class APIElementWay(BaseHandler):
 
     @auth_non_browser_based
     def put(self, param=None):
+        # param on this case is "create" or "update"
         self.put_method_api_element("way", param)
 
     @auth_non_browser_based
     def delete(self, param=None):
+        # param on this case is the id of element
         self.delete_method_api_element("way", param)
 
 
@@ -139,10 +137,12 @@ class APIElementArea(BaseHandler):
 
     @auth_non_browser_based
     def put(self, param=None):
+        # param on this case is "create" or "update"
         self.put_method_api_element("area", param)
 
     @auth_non_browser_based
     def delete(self, param=None):
+        # param on this case is the id of element
         self.delete_method_api_element("area", param)
 
 

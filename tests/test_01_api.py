@@ -23,11 +23,6 @@ class TestAPIWihoutLogin(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-        expected = {'status': 403, 'statusText': 'It needs a user looged to access this URL'}
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.assertEqual(expected, resulted)
-
     def test_get_api_create_changeset_with_and_without_login(self):
         # DO LOGIN
         self.tester.do_login()
