@@ -26,22 +26,11 @@ The meaning of the mainly folders and files are:
 -->
 
 
-
+## Running the server
 
 <details>
- <summary>Summary</summary>
-
-```js
-const x = 1
-```
-</details>
-
-
-
-
-
-
-## Running the server
+<summary>## Running the server</summary>
+<p>
 
 This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
 
@@ -71,6 +60,33 @@ Run the application normally or on Debug Mode::
 $ python main.py
 $ python main.py --debug=True
 ```
+
+
+</p>
+</details>
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
+
+
+
+</p>
+</details>
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
+
+
+
+</p>
+</details>
+
+
+
+
+
 
 
 ## Database connection
