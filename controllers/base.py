@@ -214,19 +214,27 @@ class BaseHandler(RequestHandler):
 
         current_user_id = self.get_current_user_id()
 
-        try:
-            # get the first feature/element to add
-            feature = element_json["features"][0]
-            # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-            feature["geometry"]["crs"] = element_json["crs"]
+        list_of_id_of_features_created = []
 
-            json_with_id = self.PGSQLConn.create_element(element, feature, current_user_id)
+        try:
+
+            for feature in element_json["features"]:
+                # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
+                feature["geometry"]["crs"] = element_json["crs"]
+
+                list_of_id_of_features_created.append(
+                    # create_element returns the id of the element created
+                    self.PGSQLConn.create_element(element, feature, current_user_id)
+                )
+
+            # send the elements created to DB
+            self.PGSQLConn.commit()
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(json_with_id))
+        self.write(json_encode(list_of_id_of_features_created))
 
     def put_method_api_element(self, element, param):
 

@@ -140,13 +140,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-        resulted = loads(response.text)  # convert string to dict/JSON
+        list_of_id_of_features_created = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
-
-        # put the id received in the original JSON of node
-        element_json["features"][0]["properties"]["id"] = resulted["id"]
+        # add the id of the feature for each feature created
+        for feature, id_feature in zip(element_json["features"], list_of_id_of_features_created):
+            feature["properties"]["id"] = id_feature
 
         return element_json
 

@@ -196,7 +196,7 @@ INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_d
 -- -----------------------------------------------------
 
 -- get just the valid nodes
--- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
+SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
 
 -- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, nt.id, nt.k, nt.v FROM current_node n, node_tag nt WHERE n.id = nt.fk_node_id;
 

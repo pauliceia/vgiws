@@ -97,7 +97,13 @@ class PGSQLConnection:
         Close the PostgreSQL DB connection
         :return:
         """
+
+        # send the modifications to DB, before to close the connection
+        self.commit()
+
+        # close the connection
         self.__PGSQL_CONNECTION__.close()
+
         print("Closed the PostgreSQL's connection!\n")
 
     def commit(self):
@@ -419,7 +425,7 @@ class PGSQLConnection:
         # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
 
-        return result
+        return result["id"]
 
     def add_element_tag_in_db(self, k, v, element, fk_element_id):
         query_text = """
@@ -451,17 +457,17 @@ class PGSQLConnection:
         fk_changeset_id = feature["properties"]["fk_changeset_id"]
 
         # add the element in db and get the id of it
-        id_element_in_json = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
+        id_element = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
 
         for tag in tags:
             # add the element tag in db
             # PS: how the element is new in db, so the fk_element_version = 1
-            self.add_element_tag_in_db(tag["k"], tag["v"], element, id_element_in_json["id"])
+            self.add_element_tag_in_db(tag["k"], tag["v"], element, id_element)
 
         # put in DB the element and its tags
-        self.commit()
+        # self.commit()
 
-        return id_element_in_json
+        return id_element
 
     # delete elements
 

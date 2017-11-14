@@ -75,6 +75,9 @@ def prepare_test_db_before_tests():
         PGSQLConn.execute(insert_data, modify_information=True)
         print("Inserting the test data in DB.")
 
+        # send modifications to DB
+        PGSQLConn.commit()
+
     # close DB
     PGSQLConn.close()
 

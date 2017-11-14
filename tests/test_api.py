@@ -145,8 +145,8 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'event', 'v': 'assault'},
+                             {'k': 'date', 'v': '1912'}],
                     'type': 'Feature',
                     'properties': {'id': 5000, 'fk_changeset_id': fk_id_changeset},
                     'geometry': {
@@ -163,8 +163,8 @@ class TestAPI(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                             {'k': 'start_date', 'v': '1914-02-18'},
+                             {'k': 'end_date', 'v': '1927-03-21'}],
                     'type': 'Feature',
                     'properties': {'id': 5001, 'fk_changeset_id': fk_id_changeset},
                     'geometry': {
@@ -180,9 +180,8 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                    'tags': [{'k': 'building', 'v': 'church'},
+                             {'k': 'start_date', 'v': '1880-03-30'}],
                     'type': 'Feature',
                     'properties': {'id': 5002, 'fk_changeset_id': fk_id_changeset},
                     'geometry': {
