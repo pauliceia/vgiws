@@ -246,3 +246,10 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
 
+
+## Inspiration
+
+This web service have as inspiration the following services:
+
+- [OSM API](http://wiki.openstreetmap.org/wiki/API_v0.6)
+- [Building Inspector](https://buildinginspector.nypl.org/data)

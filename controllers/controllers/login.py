@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Responsible module to create handlers.
+    Responsible module to create controllers.
 """
 
 from ..base import *
