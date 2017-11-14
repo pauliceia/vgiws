@@ -70,7 +70,7 @@ $ python main.py --debug=True
 It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "db_pauliceia_test" does not exist".
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 ### Create the database of test
@@ -108,7 +108,7 @@ To exit, use:
 ## Run the tests
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 First of all, clean the DB of test. On console, go to root folder, turn on the environment and run the cleaning code:
@@ -157,7 +157,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 ### Project
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 - GET /api/project/#id
@@ -205,7 +205,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 ### Changeset
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 <!-- - GET /api/changeset/#id -->
@@ -243,7 +243,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 ### Elements (it can be node, way or area)
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 - GET /api/\[node|way|area]/#id
@@ -293,7 +293,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 ### Tags
 
 <details>
-<summary>stuff with *mark* **down**</summary>
+<summary> click here </summary>
 <p>
 
 All features can be mapped usings [tags](http://wiki.openstreetmap.org/wiki/Tags), like OSM.
