@@ -61,39 +61,17 @@ $ python main.py
 $ python main.py --debug=True
 ```
 
-
 </p>
 </details>
-
-<details>
-<summary>stuff with *mark* **down**</summary>
-<p>
-
-
-
-</p>
-</details>
-
-<details>
-<summary>stuff with *mark* **down**</summary>
-<p>
-
-
-
-</p>
-</details>
-
-
-
-
-
 
 
 ## Database connection
 
 It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "db_pauliceia_test" does not exist".
 
-
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 ### Create the database of test
 
@@ -123,8 +101,15 @@ To exit, use:
 \q
 ```
 
+</p>
+</details>
+
 
 ## Run the tests
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 First of all, clean the DB of test. On console, go to root folder, turn on the environment and run the cleaning code:
 
@@ -152,6 +137,9 @@ $ python run_tests.py
 Alright, the tests will be execute with a new test database.
 
 
+</p>
+</details>
+
 
 ## To run this application in PyCharm
 
@@ -166,8 +154,11 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 ## API Doc:
 
-
 ### Project
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 - GET /api/project/#id
 
@@ -207,7 +198,15 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Notes:
 
 
+</p>
+</details>
+
+
 ### Changeset
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 <!-- - GET /api/changeset/#id -->
 
@@ -237,7 +236,15 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Notes:
 
 
+</p>
+</details>
+
+
 ### Elements (it can be node, way or area)
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 - GET /api/\[node|way|area]/#id
 
@@ -279,7 +286,15 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
 
+</p>
+</details>
+
+
 ### Tags
+
+<details>
+<summary>stuff with *mark* **down**</summary>
+<p>
 
 All features can be mapped usings [tags](http://wiki.openstreetmap.org/wiki/Tags), like OSM.
 There are some standard features described in [OSM Map Features](http://wiki.openstreetmap.org/wiki/Map_Features) that can be used.
@@ -293,6 +308,9 @@ There are too others specific tags for Pauliceia' project, described on followin
 | original_author      | text (e.g. "J. R. R. Tolkien") | node, way or area    | the original author of the data          |
 | food_author          | text (e.g. "Jorge")            | node, way or area    | the user that feeding the system         |
 
+
+</p>
+</details>
 
 
 ## Inspiration
