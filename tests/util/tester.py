@@ -27,6 +27,8 @@ class UtilTester:
         # unittest self
         self.ut_self = ut_self
 
+    # login and logout
+
     def auth_login(self):
         response = self.session.get('http://localhost:8888/auth/login/fake/')
 
@@ -206,3 +208,16 @@ class UtilTester:
         response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+    # others
+
+    def api_capabilities(self):
+        response = self.session.get('http://localhost:8888/api/capabilities/')
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        expected = {"version": "0.0.1", "status": {"database": "online"}}
+
+        self.ut_self.assertNotEqual(resulted, expected)

@@ -5,9 +5,27 @@
     Responsible module to create handlers.
 """
 
+
 from ..base import *
 
-from tornado.escape import json_encode
+from settings import VERSION
+
+
+class APICapabilities(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/capabilities/", r"/api/capabilities"]
+
+    def get(self):
+        capabilities = {
+            "version": VERSION,
+            "status": {
+                "database": self.PGSQLConn.get_connection_status(readable=False)
+            }
+        }
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(capabilities))
 
 
 class APIProject(BaseHandler):

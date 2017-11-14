@@ -71,11 +71,24 @@ class PGSQLConnection:
                                                 password=__pgsql_connection_settings__["PASSWORD"],
                                                 dbname=__pgsql_connection_settings__["DATABASE"])
             print("PostgreSQL's connection was successful!")
+            self.set_connection_status(status=True)
         except (DatabaseError, Exception) as error:
             print("PostgreSQL's connection was failed! \n")
             print("Error: ", error)
             print("Closing web service!")
+            self.set_connection_status(status=False)
             exit(1)
+
+    # status
+
+    def get_connection_status(self, readable=False):
+        if readable:
+            return "online" if self.__DB_STATUS__ else "offline"
+
+        return self.__DB_STATUS__
+
+    def set_connection_status(self, status=True):
+        self.__DB_STATUS__ = status
 
     # "overwriting" some DB methods
 

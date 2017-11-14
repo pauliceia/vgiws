@@ -3,10 +3,18 @@
 
 
 from unittest import TestCase
-from json import loads
-from requests import get
 
 from util.tester import UtilTester
+
+
+class TestAPIOthers(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    def test_get_api_capabilities(self):
+        self.tester.api_capabilities()
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/

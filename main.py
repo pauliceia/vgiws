@@ -99,7 +99,8 @@ def start_application():
     http_server = HTTPServer(HttpServerApplication())
     http_server.listen(options.port, address=options.address)
     print("\nRunning Tornado on " + URL_APP)
-    print("Debug mode? ", options.debug, "\n")
+    print("Debug mode? ", options.debug)
+    print("Version of service: ", VERSION, "\n")
     IOLoop.current().start()
 
 
