@@ -1,6 +1,6 @@
 # webservice
 
-VGI's Web Service for the Pauliceia's project.
+Web Service for Explicit VGI for the Pauliceia's project.
 
 <!---
 A basic project for Tornado application.
@@ -24,6 +24,22 @@ The meaning of the mainly folders and files are:
 - start_app.sh: example how to start the application using the virtualenv.
 
 -->
+
+
+
+
+<details>
+ <summary>Summary</summary>
+
+```js
+const x = 1
+```
+</details>
+
+
+
+
+
 
 ## Running the server
 
@@ -133,6 +149,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 
 ## API Doc:
+
 
 ### Project
 
@@ -245,6 +262,21 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Notes:
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
+
+### Tags
+
+All features can be mapped usings [tags](http://wiki.openstreetmap.org/wiki/Tags), like OSM.
+There are some standard features described in [OSM Map Features](http://wiki.openstreetmap.org/wiki/Map_Features) that can be used.
+There are too others specific tags for Pauliceia' project, described on following sections.
+
+
+#### Authors
+
+| Key                  | Value                          | Element              | Comment                                  |
+| -------------------- | ------------------------------ | -------------------- | ---------------------------------------- |
+| original_author      | text (e.g. "J. R. R. Tolkien") | node, way or area    | the original author of the data          |
+| food_author          | text (e.g. "Jorge")            | node, way or area    | the user that feeding the system         |
+
 
 
 ## Inspiration
