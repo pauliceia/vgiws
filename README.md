@@ -29,7 +29,7 @@ The meaning of the mainly folders and files are:
 ## Running the server
 
 <details>
-<summary>## Running the server</summary>
+## <summary> Running the server</summary>
 <p>
 
 This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
