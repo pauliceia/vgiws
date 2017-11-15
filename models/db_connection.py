@@ -328,7 +328,7 @@ class PGSQLConnection:
 
     # get elements
 
-    def get_elements(self, element, id_element=None, format="geojson"):
+    def get_elements(self, element, element_id=None, project_id=None, changeset_id=None):
         """
         Do a GET query in DB.
 
@@ -339,22 +339,114 @@ class PGSQLConnection:
         :return: a list with the results, as WKT or GeoJSON.
         """
 
-        return self.get_elements_geojson(element, id_element=id_element)
+        return self.get_elements_geojson(element, element_id=element_id,
+                                         project_id=project_id, changeset_id=changeset_id)
 
-    def get_elements_geojson(self, element, id_element=None):
+    def get_elements_geojson(self, element, element_id=None, project_id=None, changeset_id=None):
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
         ######################################################################
 
         # by default, get all results that are visible
-        where = "WHERE element.visible=TRUE"
-        if id_element is not None:
-            where += " AND element.id = {0}".format(id_element)
+        conditions_of_where = ["element.visible=TRUE"]
+
+        if element_id is not None:
+            conditions_of_where.append("element.id = {0}".format(element_id))
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
         ######################################################################
+
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type',       'FeatureCollection',
+        #         'crs',  json_build_object(
+        #             'type',      'name',
+        #             'properties', json_build_object(
+        #                 'name', 'EPSG:4326'
+        #             )
+        #         ),
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'Feature',
+        #             'geometry',   ST_AsGeoJSON(geom)::jsonb,
+        #             'properties', json_build_object(
+        #                 'id',               id,
+        #                 'fk_changeset_id',  fk_changeset_id
+        #             ),
+        #             'tags',       tags.jsontags
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     (
+        #         -- (1) get all elements with its changeset information
+        #         SELECT element.id, element.geom, element.fk_changeset_id
+        #         FROM current_{0} element LEFT JOIN changeset cs ON element.fk_changeset_id = cs.id
+        #         {1}
+        #     ) AS element
+        #     CROSS JOIN LATERAL (
+        #         -- (2) get the tags of some element
+        #         SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #         FROM current_{0}_tag
+        #         WHERE fk_current_{0}_id = element.id
+        #     ) AS tags
+        # """.format(element, where)
+
+
+        if project_id is not None:
+            # create the where clause with the conditions
+            where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
+
+            # by default, get all elements from a specific project
+            conditions_of_where = ["project.id = {0}".format(project_id)]
+            if changeset_id is not None:
+                conditions_of_where.append("changeset.id = {0}".format(changeset_id))
+            # create the where clause with the conditions
+            where_join_project_with_changeset = "WHERE " + " AND ".join(conditions_of_where)
+
+            # search by project_id
+            current_element_table = """
+                (
+                    SELECT element.id, element.geom, element.fk_changeset_id
+                    FROM 
+                    (
+                        -- get the changesets of a specific project
+                        SELECT cs.id AS changeset_id
+                        FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
+                        {2}
+                    ) AS changeset
+                    LEFT JOIN current_{0} element ON changeset.changeset_id = element.fk_changeset_id
+                    {1}
+                ) AS element
+            """.format(element, where_current_element_table, where_join_project_with_changeset)
+        elif changeset_id is not None:
+            # add the id of changeset in WHERE
+            conditions_of_where.append("changeset.id = {0}".format(changeset_id))
+            # create the where clause with the conditions
+            where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
+
+            # search by changeset_id
+            current_element_table = """
+                (
+                    SELECT element.id, element.geom, element.fk_changeset_id
+                    FROM current_{0} element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
+                    {1}
+                ) AS element
+            """.format(element, where_current_element_table)
+
+        else:
+            # create the where clause with the conditions
+            where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
+
+            # default subquery, get all elements
+            current_element_table = """
+                (
+                    -- (1) get all elements
+                    SELECT element.id, element.geom, element.fk_changeset_id
+                    FROM current_{0} element
+                    {1}
+                ) AS element
+            """.format(element, where_current_element_table)
 
         query_text = """
             SELECT jsonb_build_object(
@@ -376,19 +468,14 @@ class PGSQLConnection:
                 ))
             ) AS row_to_json
             FROM 
-            (
-                -- (1) get all elements with its changeset information
-                SELECT element.id, element.geom, element.fk_changeset_id
-                FROM current_{0} element LEFT JOIN changeset cs ON element.fk_changeset_id = cs.id
-                {1}
-            ) AS element
+            {1}
             CROSS JOIN LATERAL ( 
                 -- (2) get the tags of some element
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
                 FROM current_{0}_tag 
                 WHERE fk_current_{0}_id = element.id                
             ) AS tags
-        """.format(element, where)
+        """.format(element, current_element_table)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

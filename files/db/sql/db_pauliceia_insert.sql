@@ -23,9 +23,9 @@ DELETE FROM project;
 -- add project
 INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001);
 INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002);
---INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, 1002);
 
-SELECT * FROM project;
+-- SELECT * FROM project;
+-- SELECT * FROM project p WHERE p.id = 1001;
 
 
 -- -----------------------------------------------------
@@ -705,3 +705,19 @@ FROM current_node cn LEFT JOIN changeset cs
 ON cn.fk_changeset_id = cs.id
 ORDER BY cn.id;
 */
+
+
+SELECT pjt.id AS project_id, cs.id AS changeset_id
+FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
+WHERE pjt.id = 1001;
+
+
+SELECT changeset.project_id, element.fk_changeset_id, element.id, element.geom
+FROM 
+(
+    SELECT pjt.id AS project_id, cs.id AS changeset_id
+    FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
+    WHERE pjt.id = 1001 AND cs.id = 1001
+) AS changeset
+LEFT JOIN current_node element ON changeset.changeset_id = element.fk_changeset_id
+WHERE element.id = 1001;

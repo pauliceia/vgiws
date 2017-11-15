@@ -195,7 +195,7 @@ class BaseHandler(RequestHandler):
             raise HTTPError(400, "Invalid parameter.")
 
         try:
-            result = self.PGSQLConn.get_elements(element, id_element=param, format="geojson")
+            result = self.PGSQLConn.get_elements(element, element_id=param)
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
@@ -244,6 +244,10 @@ class BaseHandler(RequestHandler):
             self.put_method_api_element_create(element, element_json)
 
         elif param == "update":
+
+            # wiki.openstreetmap.org/wiki/Elements
+            # o id do usuário que fica no element é o do ultimo que modificou
+
             self.write(json_encode({"ok", 1}))
         else:
             raise HTTPError(404, "Invalid URL")
