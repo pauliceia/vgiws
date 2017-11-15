@@ -196,22 +196,6 @@ INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_d
 -- Operations with current_node
 -- -----------------------------------------------------
 
--- all changeset
--- SELECT * FROM changeset;
--- just changeset open
--- SELECT * FROM changeset WHERE closed_at is NULL;
--- just changeset close
--- SELECT * FROM changeset WHERE closed_at is not NULL;
-
-
-SELECT cn.id, cn.visible, cn.fk_changeset_id, 
-        cs. id, cs.create_at, cs.closed_at, cs.fk_user_id_owner
-FROM current_node cn LEFT JOIN changeset cs 
-ON cn.fk_changeset_id = cs.id
-ORDER BY cn.id;
-
-
-
 -- SELECT * FROM current_node n WHERE visible=TRUE;
 
 -- get just the valid nodes
@@ -642,7 +626,7 @@ CROSS JOIN LATERAL (
 	FROM node_tag 
 	WHERE fk_node_id = node.id    
 ) AS tags
-WHERE id=1;
+WHERE id=1001;
 
 SELECT jsonb_build_object(
     'type', 'FeatureCollection',
@@ -654,7 +638,7 @@ SELECT jsonb_build_object(
     ),
     'features',   jsonb_agg(jsonb_build_object(
         'type',       'Feature',
-        'geometry',   ST_AsGeoJSON(node.geom)::jsonb,
+        'geometry',   ST_AsGeoJSON(geom)::jsonb,
         'properties', json_build_object(
             'id', id,
             'fk_changeset_id', fk_changeset_id
@@ -662,13 +646,62 @@ SELECT jsonb_build_object(
         'tags',       tags.jsontags
     ))
 ) AS row_to_json
-FROM node
+FROM current_node
 CROSS JOIN LATERAL (
 	SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-	FROM node_tag 
-	WHERE fk_node_id = node.id    
+	FROM current_node_tag 
+	WHERE fk_current_node_id = current_node.id    
 ) AS tags
-WHERE id=1;
+WHERE current_node.id=1001;
 */
 
 
+/*
+SELECT jsonb_build_object(
+    'type', 'FeatureCollection',
+    'crs',  json_build_object(
+        'type',      'name', 
+        'properties', json_build_object(
+            'name', 'EPSG:4326'
+        )
+    ),
+    'features',   jsonb_agg(jsonb_build_object(
+        'type',       'Feature',
+        'geometry',   ST_AsGeoJSON(geom)::jsonb,
+        'properties', json_build_object(
+            'id', id,
+            'fk_changeset_id', fk_changeset_id
+        ),
+        'tags',       tags.jsontags
+    ))
+) AS row_to_json
+FROM (
+    -- (1) get all elements with its changeset information
+    SELECT c.id, c.geom, c.fk_changeset_id
+    FROM current_node c LEFT JOIN changeset cs ON c.fk_changeset_id = cs.id
+    WHERE c.visible=TRUE AND c.id=1001
+) AS element
+CROSS JOIN LATERAL (
+    -- (2) get the tags of some element
+	SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+	FROM current_node_tag 
+	WHERE fk_current_node_id = element.id    
+) AS tags;
+*/
+
+-- all changeset
+-- SELECT * FROM changeset;
+-- just changeset open
+-- SELECT * FROM changeset WHERE closed_at is NULL;
+-- just changeset close
+-- SELECT * FROM changeset WHERE closed_at is not NULL;
+
+
+-- get all nodes with its changeset information
+/*
+SELECT cn.id, cn.visible, cn.fk_changeset_id, 
+        cs. id, cs.create_at, cs.closed_at, cs.fk_user_id_owner
+FROM current_node cn LEFT JOIN changeset cs 
+ON cn.fk_changeset_id = cs.id
+ORDER BY cn.id;
+*/

@@ -348,9 +348,9 @@ class PGSQLConnection:
         ######################################################################
 
         # by default, get all results that are visible
-        where = "WHERE visible=TRUE"
+        where = "WHERE element.visible=TRUE"
         if id_element is not None:
-            where += " AND id = {0}".format(id_element)
+            where += " AND element.id = {0}".format(id_element)
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
@@ -367,7 +367,7 @@ class PGSQLConnection:
                 ),
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(current_{0}.geom)::jsonb,
+                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
                     'properties', json_build_object(
                         'id',               id,
                         'fk_changeset_id',  fk_changeset_id
@@ -375,13 +375,19 @@ class PGSQLConnection:
                     'tags',       tags.jsontags
                 ))
             ) AS row_to_json
-            FROM current_{0}
+            FROM 
+            (
+                -- (1) get all elements with its changeset information
+                SELECT element.id, element.geom, element.fk_changeset_id
+                FROM current_{0} element LEFT JOIN changeset cs ON element.fk_changeset_id = cs.id
+                {1}
+            ) AS element
             CROSS JOIN LATERAL ( 
+                -- (2) get the tags of some element
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
                 FROM current_{0}_tag 
-                WHERE fk_current_{0}_id = current_{0}.id                
+                WHERE fk_current_{0}_id = element.id                
             ) AS tags
-            {1}
         """.format(element, where)
 
         # do the query in database
