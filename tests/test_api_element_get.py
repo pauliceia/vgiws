@@ -21,24 +21,37 @@ class TestAPIGETElement(TestCase):
 
     def test_get_api_node_return_all_elements_as_geojson(self):
         expected = {
-            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'features': [
                 {
-                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
-                    'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+                    'type': 'Feature',
                     'tags': [{'v': 'R. São José', 'k': 'address'},
                              {'v': '1869', 'k': 'start_date'},
                              {'v': '1869', 'k': 'end_date'}],
-                    'type': 'Feature'
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
                 },
                 {
-                    'properties': {'fk_changeset_id': 1002, 'id': 1002},
-                    'geometry': {'coordinates': [[-23.55045, -46.634272]], 'type': 'MultiPoint'},
+                    'type': 'Feature',
                     'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address'},
                              {'v': '1878', 'k': 'start_date'},
                              {'v': '1910', 'k': 'end_date'}],
-                    'type': 'Feature'}
+                    'properties': {'id': 1002, 'fk_changeset_id': 1002},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.55045, -46.634272]]}
+                },
+                {
+                    'type': 'Feature',
+                    'tags': None,
+                    'properties': {'id': 1006, 'fk_changeset_id': 1003},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-54, 33]]}
+                },
+                {
+                    'type': 'Feature',
+                    'tags': None,
+                    'properties': {'id': 1007, 'fk_changeset_id': 1002},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-21, 42]]}
+                }
             ]
         }
 

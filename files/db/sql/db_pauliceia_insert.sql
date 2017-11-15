@@ -34,7 +34,7 @@ SELECT * FROM project;
 -- clean project_tag table
 DELETE FROM project_tag;
 
--- insert values in table changeset_tag
+-- insert values in table project_tag
 -- SOURCE: -
 -- project 1001
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'default', 1001);
@@ -90,18 +90,13 @@ WHERE id=1001;
 -- clean changeset table
 DELETE FROM changeset;
 
--- add changeset with pre-id
+-- add changeset open
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002, 1002);
+-- add changeset closed
+INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, LOCALTIMESTAMP, 1001, 1001);
+INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1004, LOCALTIMESTAMP, LOCALTIMESTAMP, 1002, 1002);
 
--- add changeset with SERIAL
--- INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) VALUES ('2016-04-20', 1002, 1002) RETURNING id;
-
--- SELECTs
--- SELECT * FROM changeset;
-
--- closing a changeset
--- UPDATE changeset SET closed_at='2017-10-22' WHERE id=1001;
 
 
 -- -----------------------------------------------------
@@ -118,6 +113,12 @@ INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1002, 'comment', '
 -- changeset 1002
 INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1003, 'created_by', 'test_postgresql', 1002);
 INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1004, 'comment', 'changeset test', 1002);
+-- changeset 1003
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1005, 'created_by', 'pauliceia_portal', 1003);
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1006, 'comment', 'a changeset created', 1003);
+-- changeset 1004
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1007, 'created_by', 'test_postgresql', 1004);
+INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1008, 'comment', 'changeset test', 1004);
 
 -- SELECT * FROM changeset_tag;
 
@@ -135,9 +136,9 @@ DELETE FROM current_node;
 -- add node
 INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001);
 INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1001);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1002);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1002);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004);
+INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001);
 -- add node as GeoJSON
 INSERT INTO current_node (id, geom, fk_changeset_id) 
 VALUES (1006, 
@@ -148,7 +149,7 @@ VALUES (1006,
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1002);
+	1003);
 INSERT INTO current_node (id, geom, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
@@ -195,28 +196,33 @@ INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_d
 -- Operations with current_node
 -- -----------------------------------------------------
 
--- just changeset close ou not
-SELECT * FROM changeset WHERE closed_at is NULL;
-SELECT * FROM changeset WHERE closed_at is not NULL;
+-- all changeset
+-- SELECT * FROM changeset;
+-- just changeset open
+-- SELECT * FROM changeset WHERE closed_at is NULL;
+-- just changeset close
+-- SELECT * FROM changeset WHERE closed_at is not NULL;
 
 
 SELECT cn.id, cn.visible, cn.fk_changeset_id, 
         cs. id, cs.create_at, cs.closed_at, cs.fk_user_id_owner
 FROM current_node cn LEFT JOIN changeset cs 
-ON cn.fk_changeset_id = cs.id;
+ON cn.fk_changeset_id = cs.id
+ORDER BY cn.id;
 
 
-SELECT * FROM current_node n WHERE visible=TRUE;
+
+-- SELECT * FROM current_node n WHERE visible=TRUE;
 
 -- get just the valid nodes
-SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
+-- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
 
 -- SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, nt.id, nt.k, nt.v FROM current_node n, node_tag nt WHERE n.id = nt.fk_node_id;
 
 --SELECT * FROM current_node_tag;
 
 -- "remove" some nodes
-UPDATE current_node SET visible = FALSE WHERE id>=1003 AND id<=1007;
+UPDATE current_node SET visible = FALSE WHERE id>=1003 AND id<=1005;
 
 
 
@@ -316,8 +322,8 @@ DELETE FROM current_way;
 -- add way
 INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
 INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1001);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1002);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003);
+INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004);
 INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002);
 -- add way as GeoJSON
 INSERT INTO current_way (id, geom, fk_changeset_id) 
@@ -339,7 +345,7 @@ VALUES (1007,
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1002);
+	1003);
 
 
 -- -----------------------------------------------------
@@ -382,7 +388,7 @@ INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1015, 'end_dat
 -- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM way;
 -- SELECT w.id, ST_AsText(w.geom) as geom, w.version, w.fk_changeset_id, wt.id, wt.k, wt.v FROM way w, way_tag wt WHERE w.id = wt.fk_way_id;
 
--- "remove" some nodes
+-- "remove" some ways
 UPDATE current_way SET visible = FALSE WHERE id>=1003 AND id<=1007;
 
 --SELECT * FROM way_tag;
@@ -486,7 +492,7 @@ VALUES (1006,
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1002);
+	1003);
 INSERT INTO current_area (id, geom, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
@@ -496,7 +502,7 @@ VALUES (1007,
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1002);
+	1004);
 
 
 -- -----------------------------------------------------
