@@ -1,6 +1,7 @@
 # Ignore all the files in folders
 venv/*
 ignore/*
+files/ignore/*
 0_old/*
 
 # Ignore specific files

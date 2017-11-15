@@ -170,12 +170,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
             "status": {"database": "online"}
         }
         ```
-        ```javascript
-        {
-            "version": "0.0.1",
-            "status": {"database": "online"}
-        }
-        ```
     - Error codes:
     - Notes:
 

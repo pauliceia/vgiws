@@ -195,6 +195,19 @@ INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_d
 -- Operations with current_node
 -- -----------------------------------------------------
 
+-- just changeset close ou not
+SELECT * FROM changeset WHERE closed_at is NULL;
+SELECT * FROM changeset WHERE closed_at is not NULL;
+
+
+SELECT cn.id, cn.visible, cn.fk_changeset_id, 
+        cs. id, cs.create_at, cs.closed_at, cs.fk_user_id_owner
+FROM current_node cn LEFT JOIN changeset cs 
+ON cn.fk_changeset_id = cs.id;
+
+
+SELECT * FROM current_node n WHERE visible=TRUE;
+
 -- get just the valid nodes
 SELECT n.id, ST_AsText(n.geom) as geom, n.version, n.fk_changeset_id, n.visible FROM current_node n WHERE visible=TRUE;
 
