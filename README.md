@@ -154,6 +154,25 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 ## API Doc:
 
+
+### Miscellaneous
+
+- GET /api/capabilities/
+
+    This method return the capabilities of the server.
+    - Parameters:
+    - Send:
+    - Response: a JSON that contain the capabilities of the server.
+        - Example:
+        ```json
+        {"version": "0.0.1", "status": {"database": "online"}}
+        ```
+        ```javascript
+        {"version": "0.0.1", "status": {"database": "online"}}
+        ```
+    - Error codes:
+    - Notes:
+
 ### Project
 
 <details>
