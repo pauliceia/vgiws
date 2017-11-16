@@ -265,7 +265,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 <summary> click here </summary>
 <p>
 
-- GET /api/\[node|way|area]/?<párams>
+- GET /api/\[node|way|area]/?<params>
 
     This method get all elements in DB or a specific with id = #id
     - Parameters:
@@ -284,6 +284,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - http://localhost:8888/api/area/?changeset_id=1001
         - http://localhost:8888/api/node/?project_id=1001&changeset_id=1001
         - http://localhost:8888/api/way/?element_id=1001&project_id=1001&changeset_id=1001
+        - http://localhost:8888/api/area/
     - Notes:
 
 - PUT /api/\[node|way|area]/create
