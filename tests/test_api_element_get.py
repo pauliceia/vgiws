@@ -19,7 +19,7 @@ class TestAPIGETElement(TestCase):
     # NODE
     ################################################################################
 
-    def test_get_api_node_return_all_elements_as_geojson(self):
+    def test_get_api_node_return_all_elements(self):
         expected = {
             'type': 'FeatureCollection',
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -57,7 +57,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("node", expected, element_id="")
 
-    def test_get_api_node_return_element_with_id_1001_as_geojson(self):
+    def test_get_api_node_return_element_with_id_1001(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -79,7 +79,7 @@ class TestAPIGETElement(TestCase):
     # WAY
     ################################################################################
 
-    def test_get_api_way_return_all_elements_as_geojson(self):
+    def test_get_api_way_return_all_elements(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -105,7 +105,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("way", expected, element_id="")
 
-    def test_get_api_way_return_element_with_id_1001_as_geojson(self):
+    def test_get_api_way_return_element_with_id_1001(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -131,7 +131,7 @@ class TestAPIGETElement(TestCase):
     # AREA
     ################################################################################
 
-    def test_get_api_area_return_all_elements_as_geojson(self):
+    def test_get_api_area_return_all_elements(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -157,7 +157,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("area", expected, element_id="")
 
-    def test_get_api_area_return_element_with_id_1001_as_geojson(self):
+    def test_get_api_area_return_element_with_id_1001(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -202,43 +202,165 @@ class TestAPIGETElementByProject(TestCase):
     # NODE
     ################################################################################
 
-    def test_get_api_node_return_all_elements_as_geojson(self):
+    def test_get_api_element_return_all_elements_by_project_id_1001(self):
+        expected = {
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
+                    'type': 'Feature',
+                    'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+                    'tags': [{'k': 'address', 'v': 'R. São José'},
+                             {'k': 'start_date', 'v': '1869'},
+                             {'k': 'end_date', 'v': '1869'}]
+                },
+                {
+                    'properties': {'fk_changeset_id': 1003, 'id': 1006},
+                    'type': 'Feature',
+                    'geometry': {'coordinates': [[-54, 33]], 'type': 'MultiPoint'},
+                    'tags': None
+                }
+            ]
+        }
+
+        self.tester.api_element("node", expected, project_id="1001")
+
+        expected = {
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'},
+                             {'k': 'end_date', 'v': '1930'}],
+                    'type': 'Feature',
+                    'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001}
+                }
+            ]
+        }
+
+        self.tester.api_element("way", expected, project_id="1001")
+
+        expected = {
+            'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
+                    'type': 'Feature',
+                    'tags': [{'v': 'hotel', 'k': 'building'},
+                             {'v': '1870', 'k': 'start_date'},
+                             {'v': '1900', 'k': 'end_date'}],
+                    'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]}
+                }
+            ]
+        }
+
+        self.tester.api_element("area", expected, project_id="1001")
+
+    def test_get_api_element_return_all_elements_by_changeset_id_1001(self):
+        expected = {
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
+                    'type': 'Feature',
+                    'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+                    'tags': [{'k': 'address', 'v': 'R. São José'},
+                             {'k': 'start_date', 'v': '1869'},
+                             {'k': 'end_date', 'v': '1869'}]
+                }
+            ]
+        }
+
+        self.tester.api_element("node", expected, changeset_id="1001")
+
+        expected = {
+            'type': 'FeatureCollection',
+            'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'},
+            'features': [
+                {
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
+                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'},
+                             {'k': 'end_date', 'v': '1930'}],
+                    'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
+                    'type': 'Feature'
+                }
+            ]
+        }
+
+        self.tester.api_element("way", expected, changeset_id="1001")
+
+        expected = {
+            'features': [
+                {
+                    'geometry': {'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]], 'type': 'MultiPolygon'},
+                    'tags': [{'v': 'hotel', 'k': 'building'},
+                             {'v': '1870', 'k': 'start_date'},
+                             {'v': '1900', 'k': 'end_date'}],
+                    'type': 'Feature',
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001}}
+            ],
+            'type': 'FeatureCollection',
+            'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
+        }
+
+        self.tester.api_element("area", expected, changeset_id="1001")
+
+    def test_get_api_element_return_all_elements_by_project_id_1001_and_changeset_id_1001(self):
+        expected = {
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
+                    'type': 'Feature',
+                    'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
+                    'tags': [{'k': 'address', 'v': 'R. São José'},
+                             {'k': 'start_date', 'v': '1869'},
+                             {'k': 'end_date', 'v': '1869'}]
+                }
+            ]
+        }
+
+        self.tester.api_element("node", expected, project_id="1001", changeset_id="1001")
+
         expected = {
             'type': 'FeatureCollection',
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'features': [
                 {
+                    'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
                     'type': 'Feature',
-                    'tags': [{'v': 'R. São José', 'k': 'address'},
-                             {'v': '1869', 'k': 'start_date'},
-                             {'v': '1869', 'k': 'end_date'}],
-                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
-                },
-                {
-                    'type': 'Feature',
-                    'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address'},
-                             {'v': '1878', 'k': 'start_date'},
-                             {'v': '1910', 'k': 'end_date'}],
-                    'properties': {'id': 1002, 'fk_changeset_id': 1002},
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.55045, -46.634272]]}
-                },
-                {
-                    'type': 'Feature',
-                    'tags': None,
-                    'properties': {'id': 1006, 'fk_changeset_id': 1003},
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-54, 33]]}
-                },
-                {
-                    'type': 'Feature',
-                    'tags': None,
-                    'properties': {'id': 1007, 'fk_changeset_id': 1002},
-                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-21, 42]]}
+                    'properties': {'fk_changeset_id': 1001, 'id': 1001},
+                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'},
+                             {'k': 'end_date', 'v': '1930'}]
                 }
             ]
         }
 
-        self.tester.api_element("node", expected, element_id="")
+        self.tester.api_element("way", expected, project_id="1001", changeset_id="1001")
+
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {'type': 'Feature',
+                 'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]},
+                 'tags': [{'v': 'hotel', 'k': 'building'},
+                          {'v': '1870', 'k': 'start_date'},
+                          {'v': '1900', 'k': 'end_date'}],
+                 'properties': {'id': 1001, 'fk_changeset_id': 1001}
+                 }
+            ],
+            'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+        }
+
+        self.tester.api_element("area", expected, project_id="1001", changeset_id="1001")
 
 
 

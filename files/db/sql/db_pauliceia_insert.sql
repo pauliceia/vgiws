@@ -710,12 +710,24 @@ FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
 WHERE pjt.id = 1001;
 
 
-SELECT changeset.project_id, element.fk_changeset_id, element.id, element.geom
+-- get the elements of the changesets of a specific project
+SELECT changeset.project_id, element.fk_changeset_id, element.id, element.geom, element.visible
 FROM 
 (
-    SELECT pjt.id AS project_id, cs.id AS changeset_id
-    FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
-    WHERE pjt.id = 1001 AND cs.id = 1001
+    -- get the changesets of a specific project
+    SELECT project.id AS project_id, changeset.id AS changeset_id
+    FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
+    WHERE project.id = 1001
 ) AS changeset
-LEFT JOIN current_node element ON changeset.changeset_id = element.fk_changeset_id
-WHERE element.id = 1001;
+LEFT JOIN current_area element ON changeset.changeset_id = element.fk_changeset_id
+WHERE element.visible=TRUE;
+
+
+SELECT element.id, element.geom, element.fk_changeset_id, element.visible
+FROM current_area element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
+WHERE changeset.id = 1001;
+
+
+
+
+                    

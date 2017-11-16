@@ -9,7 +9,7 @@ from util.tester import UtilTester
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 
-class TestAPIGETProject(TestCase):
+class TestAPIProject(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -51,7 +51,6 @@ class TestAPIGETProject(TestCase):
         }
 
         self.tester.api_project(expected, id_project="1001")
-
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

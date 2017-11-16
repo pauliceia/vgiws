@@ -193,7 +193,7 @@ class BaseHandler(RequestHandler):
 
         arguments = self.get_aguments()
 
-        print("\n\narguments: ", arguments, "\n\n")
+        # print("\n\narguments: ", arguments, "\n\n")
 
         if param is not None and not param.isdigit():
             raise HTTPError(400, "Invalid parameter.")

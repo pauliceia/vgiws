@@ -407,18 +407,20 @@ class PGSQLConnection:
             # search by project_id
             current_element_table = """
                 (
+                    -- get the elements of the changesets of a specific project
                     SELECT element.id, element.geom, element.fk_changeset_id
                     FROM 
                     (
                         -- get the changesets of a specific project
-                        SELECT cs.id AS changeset_id
+                        SELECT changeset.id
                         FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
                         {2}
                     ) AS changeset
-                    LEFT JOIN current_{0} element ON changeset.changeset_id = element.fk_changeset_id
+                    LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
                     {1}
                 ) AS element
             """.format(element, where_current_element_table, where_join_project_with_changeset)
+
         elif changeset_id is not None:
             # add the id of changeset in WHERE
             conditions_of_where.append("changeset.id = {0}".format(changeset_id))
