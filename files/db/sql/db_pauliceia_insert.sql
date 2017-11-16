@@ -51,9 +51,6 @@ SELECT p.id, date(create_at) AS myTime, p.removed_at FROM project p WHERE p.id =
 SELECT p.id, to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as create_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM project p WHERE p.id = 1003;
 */
 
-SELECT * FROM project p;
--- SELECT p.id, p.create_at, p.removed_at, p.visible FROM project p WHERE p.id = 1001;
-
 -- UPDATE project SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
 
 
@@ -97,6 +94,7 @@ INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1
 INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, LOCALTIMESTAMP, 1001, 1001);
 INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1004, LOCALTIMESTAMP, LOCALTIMESTAMP, 1002, 1002);
 
+-- SELECT * FROM changeset;
 
 
 -- -----------------------------------------------------

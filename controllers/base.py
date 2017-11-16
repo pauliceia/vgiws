@@ -191,11 +191,19 @@ class BaseHandler(RequestHandler):
 
     def get_method_api_element(self, element, param):
 
+        arguments = self.get_aguments()
+
+        print("\n\narguments: ", arguments, "\n\n")
+
         if param is not None and not param.isdigit():
             raise HTTPError(400, "Invalid parameter.")
 
         try:
-            result = self.PGSQLConn.get_elements(element, element_id=param)
+            # break the arguments dict in each parameter of method
+            result = self.PGSQLConn.get_elements(element, **arguments)
+        except TypeError as error:
+            # print("Error: ", error)
+            raise HTTPError(400, "Invalid argument(s).")
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
@@ -285,15 +293,15 @@ class BaseHandler(RequestHandler):
         arguments = {k: self.get_argument(k) for k in self.request.arguments}
 
         # "q" is the query argument, that have the fields of query
-        if "q" in arguments:
-            arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
-        else:
-            # if "q" is not in arguments, so put None value
-            arguments["q"] = None
+        # if "q" in arguments:
+        #     arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
+        # else:
+        #     # if "q" is not in arguments, so put None value
+        #     arguments["q"] = None
 
         # if key "format" not in arguments, put a default value, the "geojson"
-        if "format" not in arguments:
-            arguments["format"] = "geojson"
+        # if "format" not in arguments:
+        #     arguments["format"] = "geojson"
 
         return arguments
 

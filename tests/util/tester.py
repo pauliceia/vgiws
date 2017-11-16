@@ -120,9 +120,28 @@ class UtilTester:
 
     # element
 
-    def api_element(self, element, element_expected, id_element=""):
+    def get_url_arguments(self, element_id="", project_id="", changeset_id=""):
+        arguments = []
+        if element_id != "":
+            arguments.append('element_id={0}'.format(element_id))
+        if project_id != "":
+            arguments.append('project_id={0}'.format(project_id))
+        if changeset_id != "":
+            arguments.append('changeset_id={0}'.format(changeset_id))
+
+        if arguments:  # if there are elements, put "?" + concat of elements with "&"
+            arguments = "?" + "&".join(arguments)
+        else:  # if there is no element, so put empty string
+            arguments = ""
+
+        return arguments
+
+    def api_element(self, element, element_expected, element_id="", project_id="", changeset_id=""):
+        # get the arguments of the URL
+        arguments = self.get_url_arguments(element_id=element_id, project_id=project_id, changeset_id=changeset_id)
+
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -159,29 +178,25 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
     def verify_if_element_was_add_in_db(self, element_json_expected):
-        id_element = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
+        element_id = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
 
         multi_element = element_json_expected["features"][0]["geometry"]["type"]
 
         element = by_multi_element_get_url_name(multi_element)
 
-        # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertEqual(element_json_expected, resulted)
+        self.api_element(element, element_json_expected, element_id=element_id)
 
     def verify_if_element_was_not_add_in_db(self, element_json_expected):
-        id_element = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
+        element_id = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
 
         multi_element = element_json_expected["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 
+        # get the arguments of the URL
+        arguments = self.get_url_arguments(element_id=element_id)
+
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 

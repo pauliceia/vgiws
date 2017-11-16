@@ -441,7 +441,6 @@ class PGSQLConnection:
             # default subquery, get all elements
             current_element_table = """
                 (
-                    -- (1) get all elements
                     SELECT element.id, element.geom, element.fk_changeset_id
                     FROM current_{0} element
                     {1}
