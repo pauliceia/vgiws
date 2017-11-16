@@ -267,7 +267,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 - GET /api/\[node|way|area]/?\<params>
 
-    This method get elements from DB.
+    This method get elements from DB. If you doesn't put any parameter, so will return all elements.
     - Parameters:
         - element_id (optional): the id of a element (e.g. 1, 2, 3, ...).
         - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
