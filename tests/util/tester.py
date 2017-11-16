@@ -17,6 +17,25 @@ def by_multi_element_get_url_name(multi_element):
     raise Exception("Invalid multi element: {0}".format(multi_element))
 
 
+def get_url_arguments(**kwargs):
+    arguments = []
+    if "element_id" in kwargs and kwargs["element_id"] != "":
+        arguments.append('element_id={0}'.format(kwargs["element_id"]))
+
+    if "project_id" in kwargs and kwargs["project_id"] != "":
+        arguments.append('project_id={0}'.format(kwargs["project_id"]))
+
+    if "changeset_id" in kwargs and kwargs["changeset_id"] != "":
+        arguments.append('changeset_id={0}'.format(kwargs["changeset_id"]))
+
+    if arguments:  # if there are elements, put "?" + concat of elements with "&"
+        arguments = "?" + "&".join(arguments)
+    else:  # if there is no element, so put empty string
+        arguments = ""
+
+    return arguments
+
+
 class UtilTester:
 
     def __init__(self, ut_self):
@@ -120,25 +139,9 @@ class UtilTester:
 
     # element
 
-    def get_url_arguments(self, element_id="", project_id="", changeset_id=""):
-        arguments = []
-        if element_id != "":
-            arguments.append('element_id={0}'.format(element_id))
-        if project_id != "":
-            arguments.append('project_id={0}'.format(project_id))
-        if changeset_id != "":
-            arguments.append('changeset_id={0}'.format(changeset_id))
-
-        if arguments:  # if there are elements, put "?" + concat of elements with "&"
-            arguments = "?" + "&".join(arguments)
-        else:  # if there is no element, so put empty string
-            arguments = ""
-
-        return arguments
-
-    def api_element(self, element, element_expected, element_id="", project_id="", changeset_id=""):
+    def api_element(self, element, element_expected, **kwargs):
         # get the arguments of the URL
-        arguments = self.get_url_arguments(element_id=element_id, project_id=project_id, changeset_id=changeset_id)
+        arguments = get_url_arguments(**kwargs)
 
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
@@ -193,7 +196,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # get the arguments of the URL
-        arguments = self.get_url_arguments(element_id=element_id)
+        arguments = get_url_arguments(element_id=element_id)
 
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
