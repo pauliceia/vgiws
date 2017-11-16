@@ -265,17 +265,25 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 <summary> click here </summary>
 <p>
 
-- GET /api/\[node|way|area]/#id
+- GET /api/\[node|way|area]/?<párams>
 
     This method get all elements in DB or a specific with id = #id
     - Parameters:
-        - #id (optional): a positive integer (e.g. 1, 2, 3, ...).
+        - element_id (optional): the id of a element (e.g. 1, 2, 3, ...).
+        - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
+        - changeset_id (optional): the id of a changeset (e.g. 1, 2, 3, ...).
     - Send:
     - Response: a GeoJSON that contain the features selected.
     - Error codes:
         - 400: Invalid parameter.
         - 404: There is no element.
         - 500: Problem when get a element. Please, contact the administrator.
+    - Examples:
+        - http://localhost:8888/api/node/?element_id=1001
+        - http://localhost:8888/api/way/?project_id=1001
+        - http://localhost:8888/api/area/?changeset_id=1001
+        - http://localhost:8888/api/node/?project_id=1001&changeset_id=1001
+        - http://localhost:8888/api/way/?element_id=1001&project_id=1001&changeset_id=1001
     - Notes:
 
 - PUT /api/\[node|way|area]/create
