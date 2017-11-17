@@ -130,6 +130,18 @@ def get_subquery_current_element_table(element, **kwargs):
     return current_element_table
 
 
+def are_arguments_valid_to_get_elements(**arguments):
+    # the ids are just valid if there are numbers
+    if "element_id" in arguments and not arguments["element_id"].isdigit():
+        return False
+    elif "project_id" in arguments and not arguments["project_id"].isdigit():
+        return False
+    elif "changeset_id" in arguments and not arguments["changeset_id"].isdigit():
+        return False
+    else:
+        return True
+
+
 @Singleton
 class PGSQLConnection:
 
@@ -422,24 +434,16 @@ class PGSQLConnection:
 
     # get elements
 
-    def get_elements(self, element, element_id=None, project_id=None, changeset_id=None):
-        """
-        Do a GET query in DB.
+    def get_elements(self, element, **arguments):
+        if not are_arguments_valid_to_get_elements(**arguments):
+            raise HTTPError(400, "Invalid argument(s).")
 
-        PS: 'p' inside queries means properties.
-        :param element: the element to search, i.e. node, way or area.
-        :param q: means query. It is the fields of query, like 'id'.
-        :param format: wkt or geojson.
-        :return: a list with the results, as WKT or GeoJSON.
-        """
+        return self.get_elements_geojson(element, **arguments)
 
-        return self.get_elements_geojson(element, element_id=element_id,
-                                         project_id=project_id, changeset_id=changeset_id)
-
-    def get_elements_geojson(self, element, **kwargs):
+    def get_elements_geojson(self, element, **arguments):
         # Valid arguments on **kwargs: element_id=None, project_id=None, changeset_id=None
 
-        current_element_table = get_subquery_current_element_table(element, **kwargs)
+        current_element_table = get_subquery_current_element_table(element, **arguments)
 
         query_text = """
             SELECT jsonb_build_object(

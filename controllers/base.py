@@ -50,21 +50,6 @@ def just_run_on_debug_mode(method):
     return wrapper
 
 
-# def run_if_element_is_valid(method):
-#
-#     def wrapper(self, *args, **kwargs):
-#
-#         for key in kwargs:
-#             if key == "element":
-#                 element = kwargs[key]
-#                 if not (element == "node" or element == "way" or element == "area"):
-#                     raise HTTPError(404, "Invalid URL")
-#
-#         return method(self, *args, **kwargs)
-#
-#     return wrapper
-
-
 class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
@@ -189,24 +174,18 @@ class BaseHandler(RequestHandler):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    def get_method_api_element(self, element, param):
-
+    def get_method_api_element(self, element):
         arguments = self.get_aguments()
-
-        # print("\n\narguments: ", arguments, "\n\n")
-
-        if param is not None and not param.isdigit():
-            raise HTTPError(400, "Invalid parameter.")
 
         try:
             # break the arguments dict in each parameter of method
             result = self.PGSQLConn.get_elements(element, **arguments)
-        except TypeError as error:
-            # print("Error: ", error)
-            raise HTTPError(400, "Invalid argument(s).")
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
+        except Exception as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
 
         # if there is no element
         if result["features"] is None:
@@ -216,7 +195,6 @@ class BaseHandler(RequestHandler):
         self.write(json_encode(result))
 
     def put_method_api_element_create(self, element, element_json):
-
         if not self.is_element_type_valid(element, element_json):
             raise HTTPError(404, "Invalid URL.")
 
@@ -225,7 +203,6 @@ class BaseHandler(RequestHandler):
         list_of_id_of_features_created = []
 
         try:
-
             for feature in element_json["features"]:
                 # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
                 feature["geometry"]["crs"] = element_json["crs"]
@@ -240,19 +217,20 @@ class BaseHandler(RequestHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
+        except Exception as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(list_of_id_of_features_created))
 
     def put_method_api_element(self, element, param):
-
         if param == "create":
             element_json = self.get_the_json_validated()
 
             self.put_method_api_element_create(element, element_json)
 
         elif param == "update":
-
             # wiki.openstreetmap.org/wiki/Elements
             # o id do usuário que fica no element é o do ultimo que modificou
 
@@ -269,6 +247,9 @@ class BaseHandler(RequestHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
+        except Exception as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
 
     ################################################################################
     # URLS
