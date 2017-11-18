@@ -295,6 +295,8 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Send: a GeoJSON describing the element.
     - Response: a JSON that contain the id of the feature created.
     - Error codes:
+        - 400 (Bad Request): ERROR: The changeset with id=X is closed, so it is not possible to use it.
+            - Just can use changesets that are open.
         - 500 (Internal Server Error): Problem when create a element. Please, contact the administrator.
         - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
     - Notes: when add a element, it starts with a default version 1 and it is saved in current_element table.

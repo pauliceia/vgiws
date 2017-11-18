@@ -219,6 +219,13 @@ class PGSQLConnection:
 
         self.__PGSQL_CONNECTION__.commit()
 
+    def rollback(self):
+        """
+            Just do the ROLLBACK operator in DB
+        """
+
+        self.__PGSQL_CONNECTION__.rollback()
+
     def execute(self, query_text, modify_information=False):
 
         try:

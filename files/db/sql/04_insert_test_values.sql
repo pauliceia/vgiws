@@ -90,9 +90,8 @@ DELETE FROM changeset;
 -- add changeset open
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002, 1002);
--- add changeset closed
-INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, LOCALTIMESTAMP, 1001, 1001);
-INSERT INTO changeset (id, create_at, closed_at, fk_project_id, fk_user_id_owner) VALUES (1004, LOCALTIMESTAMP, LOCALTIMESTAMP, 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1004, LOCALTIMESTAMP, 1002, 1002);
 
 -- SELECT * FROM changeset;
 
@@ -585,6 +584,15 @@ INSERT INTO area_tag (id, k, v, fk_area_id, fk_area_version) VALUES (1006, 'end_
 
 
 -- -----------------------------------------------------
+-- Final operations
+-- -----------------------------------------------------
+-- close the changesets
+UPDATE changeset SET closed_at = LOCALTIMESTAMP WHERE id>=1001 AND id<=1004;
+
+
+
+
+-- -----------------------------------------------------
 -- Queries about table {node,way,area}
 -- -----------------------------------------------------
 /*
@@ -704,7 +712,7 @@ ON cn.fk_changeset_id = cs.id
 ORDER BY cn.id;
 */
 
-
+/*
 SELECT pjt.id AS project_id, cs.id AS changeset_id
 FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
 WHERE pjt.id = 1001;
@@ -724,10 +732,7 @@ WHERE element.visible=TRUE;
 
 
 SELECT element.id, element.geom, element.fk_changeset_id, element.visible
-FROM current_area element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
+FROM current_node element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
 WHERE changeset.id = 1001;
-
-
-
-
-                    
+*/
+             

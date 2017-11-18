@@ -3,9 +3,9 @@ This file transform the SQL produced by MySQL on SQL that can execute on Postgre
 """
 
 
-__READ_SQL_FILE__ = "db_pauliceia_by_msql.sql"
+__READ_SQL_FILE__ = "original_schema_msql.sql"
 
-__OUTPUT_SQL_FILE__ = "db_pauliceia_by_postgresql.sql"
+__OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 
 pauliceia_way_tag = {

@@ -6,7 +6,7 @@
 """
 from json import loads
 
-from psycopg2._psycopg import DataError
+from psycopg2._psycopg import DataError, InternalError
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
@@ -214,6 +214,10 @@ class BaseHandler(RequestHandler):
 
             # send the elements created to DB
             self.PGSQLConn.commit()
+        except InternalError as error:
+            # print("Error: ", error)
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(400, str(error.pgerror))
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")

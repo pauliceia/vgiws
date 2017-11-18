@@ -121,6 +121,11 @@ class TestAPI(TestCase):
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset)
 
+        # TRY TO ADD NEW ELEMENTS WITH THE CLOSED CHANGESET
+        self.tester.api_element_create_with_changeset_close(node)
+        self.tester.api_element_create_with_changeset_close(way)
+        self.tester.api_element_create_with_changeset_close(area)
+
     def test_get_api_crud_elements_that_not_exist_with_login(self):
         # get the id of project to use in create a changeset
         fk_project_id = self.project["project"]["properties"]["id"]

@@ -205,6 +205,19 @@ class UtilTester:
 
     # element errors
 
+    def api_element_create_with_changeset_close(self, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
+
+        # do a PUT call, sending a node to add in DB
+        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+                                    data=dumps(element_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+        # print("response.text: ", response.text)
+        # ERROR:  The changeset with id=N is closed, so it is not possible to use it
+
     def api_element_create_without_permission(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
