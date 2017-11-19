@@ -213,6 +213,42 @@ class BaseHandler(RequestHandler):
 
     # changeset
 
+    def put_method_api_changeset_create(self):
+        # get the JSON sent, to add in DB
+        changeset_json = self.get_the_json_validated()
+
+        current_user_id = self.get_current_user_id()
+
+        try:
+            json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when create a changeset. Please, contact the administrator.")
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(json_with_id))
+
+    def put_method_api_changeset_close(self, changeset_id):
+        if changeset_id is not None and not changeset_id.isdigit():
+            raise HTTPError(400, "Invalid parameter.")
+
+        try:
+            # close the changeset of id = changeset_id
+            self.PGSQLConn.close_changeset(changeset_id)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when close a changeset. Please, contact the administrator.")
+
+    def put_method_api_changeset(self, param, param2):
+        # param on this case is "create" or "close"
+        if param == "create":
+            self.put_method_api_changeset_create()
+        elif param == "close":
+            # param2 on this case is the id of changeset
+            self.put_method_api_changeset_close(param2)
+        else:
+            raise HTTPError(404, "Invalid URL.")
+
     # element
 
     def get_method_api_element(self, element):
