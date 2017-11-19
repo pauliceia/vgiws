@@ -6,12 +6,12 @@
 """
 
 
-from ..base import *
+from ..base import BaseHandlerProject, BaseHandlerChangeset, auth_non_browser_based
 
 
 # PROJECT
 
-class APIProject(BaseHandler):
+class APIProject(BaseHandlerProject):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
@@ -31,7 +31,7 @@ class APIProject(BaseHandler):
 
 # CHANGESET
 
-class APIChangeset(BaseHandler):
+class APIChangeset(BaseHandlerChangeset):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/changeset/?(?P<param>[A-Za-z0-9-]+)?/?(?P<param2>[A-Za-z0-9-]+)?"]

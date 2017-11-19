@@ -20,14 +20,7 @@ class AuthLogoutHandler(BaseHandler):
     urls = [r"/auth/logout/", r"/auth/logout"]
 
     def get(self):
-
-        if self.get_current_user():
-            self.clear_cookie("user")
-            self.set_and_send_status(status=200, reason="Logout with success.")
-        else:
-            self.set_and_send_status(status=400, reason="There is no user to logout.")
-
-        # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
+        self.logout()
 
 
 # TODO: CREATE A OAUTH2
@@ -74,7 +67,6 @@ class FakeAuthLoginHandler(BaseHandler):
     def get(self):
         user = {"email": "test@fake.login"}
         self.login(user, type_login="fakelogin")
-        self.set_and_send_status(status=200, reason="Logged in")
 
 
 class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):

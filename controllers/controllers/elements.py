@@ -6,10 +6,10 @@
 """
 
 
-from ..base import *
+from ..base import BaseHandlerElement, auth_non_browser_based
 
 
-class APIElementNode(BaseHandler):
+class APIElementNode(BaseHandlerElement):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/node/?(?P<param>[A-Za-z0-9-]+)?/",
@@ -30,7 +30,7 @@ class APIElementNode(BaseHandler):
         self.delete_method_api_element("node", param)
 
 
-class APIElementWay(BaseHandler):
+class APIElementWay(BaseHandlerElement):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/way/?(?P<param>[A-Za-z0-9-]+)?/",
@@ -51,7 +51,7 @@ class APIElementWay(BaseHandler):
         self.delete_method_api_element("way", param)
 
 
-class APIElementArea(BaseHandler):
+class APIElementArea(BaseHandlerElement):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/area/?(?P<param>[A-Za-z0-9-]+)?/",

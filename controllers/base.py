@@ -102,12 +102,9 @@ class BaseHandler(RequestHandler):
 
         return search
 
-    ################################################################################
-    # LOGIN
-    ################################################################################
+    # LOGIN AND LOGOUT
 
     def login(self, user, type_login):
-
         # looking for a user in db, if not exist user, so create a new one
         user_in_db = self.PGSQLConn.get_user_in_db(user["email"])
 
@@ -117,9 +114,17 @@ class BaseHandler(RequestHandler):
         # insert the user in cookie
         self.set_current_user(user=user_in_db, type_login=type_login, new_user=True)
 
-    ################################################################################
+    def logout(self):
+        # if there is no user logged, so raise a exception
+        if not self.get_current_user():
+            raise HTTPError(400, "There is no user to logout.")
+
+        # if there is a user logged, so remove it from cookie
+        self.clear_cookie("user")
+
+        # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
+
     # COOKIES
-    ################################################################################
 
     def set_current_user(self, user={}, type_login="", new_user=True):
         if new_user:
@@ -155,11 +160,54 @@ class BaseHandler(RequestHandler):
         else:
             return None
 
-    ################################################################################
     # URLS
-    ################################################################################
 
-    # project
+    def get_aguments(self):
+        """
+        Create the 'arguments' dictionary.
+        :return: the 'arguments' dictionary contained the arguments and parameters of URL,
+                in a easier way to work with them.
+        """
+        arguments = {k: self.get_argument(k) for k in self.request.arguments}
+
+        # "q" is the query argument, that have the fields of query
+        # if "q" in arguments:
+        #     arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
+        # else:
+        #     # if "q" is not in arguments, so put None value
+        #     arguments["q"] = None
+
+        # if key "format" not in arguments, put a default value, the "geojson"
+        # if "format" not in arguments:
+        #     arguments["format"] = "geojson"
+
+        return arguments
+
+    # AUXILIAR FUNCTION
+
+    def is_element_type_valid(self, element, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+
+        return ((element == "node" and multi_element == "MultiPoint") or
+                (element == "way" and multi_element == "MultiLineString") or
+                (element == "area" and multi_element == "MultiPolygon"))
+
+    def get_q_param_as_dict_from_str(self, str_query):
+        str_query = str_query.strip()
+
+        # normal case: I have a query
+        prequery = str_query.replace(r"[", "").replace(r"]", "").split(",")
+
+        # with each part of the string, create a dictionary
+        query = {}
+        for condiction in prequery:
+            parts = condiction.split("=")
+            query[parts[0]] = parts[1]
+
+        return query
+
+
+class BaseHandlerProject(BaseHandler):
 
     def get_method_api_project(self, param):
         # param on this case is the id of element
@@ -211,7 +259,8 @@ class BaseHandler(RequestHandler):
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a project. Please, contact the administrator.")
 
-    # changeset
+
+class BaseHandlerChangeset(BaseHandler):
 
     def put_method_api_changeset_create(self):
         # get the JSON sent, to add in DB
@@ -249,7 +298,8 @@ class BaseHandler(RequestHandler):
         else:
             raise HTTPError(404, "Invalid URL.")
 
-    # element
+
+class BaseHandlerElement(BaseHandler):
 
     def get_method_api_element(self, element):
         arguments = self.get_aguments()
@@ -331,64 +381,3 @@ class BaseHandler(RequestHandler):
         except Exception as error:
             # print("Error: ", error)
             raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
-
-    ################################################################################
-    # URLS
-    ################################################################################
-
-    def set_and_send_status(self, status=404, reason="", extra={}):
-
-        response_json = {"status": status, "statusText": reason}
-
-        if extra != {}:
-            response_json["extra"] = extra
-
-        self.set_status(status, reason=reason)
-        self.write(json_encode(response_json))
-
-    def get_aguments(self):
-        """
-        Create the 'arguments' dictionary.
-        :return: the 'arguments' dictionary contained the arguments and parameters of URL,
-                in a easier way to work with them.
-        """
-        arguments = {k: self.get_argument(k) for k in self.request.arguments}
-
-        # "q" is the query argument, that have the fields of query
-        # if "q" in arguments:
-        #     arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
-        # else:
-        #     # if "q" is not in arguments, so put None value
-        #     arguments["q"] = None
-
-        # if key "format" not in arguments, put a default value, the "geojson"
-        # if "format" not in arguments:
-        #     arguments["format"] = "geojson"
-
-        return arguments
-
-    ################################################################################
-    # AUXILIAR FUNCTION
-    ################################################################################
-
-    def is_element_type_valid(self, element, element_json):
-        multi_element = element_json["features"][0]["geometry"]["type"]
-
-        return ((element == "node" and multi_element == "MultiPoint") or
-                (element == "way" and multi_element == "MultiLineString") or
-                (element == "area" and multi_element == "MultiPolygon"))
-
-    def get_q_param_as_dict_from_str(self, str_query):
-        str_query = str_query.strip()
-
-        # normal case: I have a query
-        prequery = str_query.replace(r"[", "").replace(r"]", "").split(",")
-
-        # with each part of the string, create a dictionary
-        query = {}
-        for condiction in prequery:
-            parts = condiction.split("=")
-            query[parts[0]] = parts[1]
-
-        return query
-
