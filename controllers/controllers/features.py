@@ -19,41 +19,15 @@ class APIProject(BaseHandler):
             r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        # param on this case is the id of element
-        try:
-            result = self.PGSQLConn.get_projects(param)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a project. Please, contact the administrator.")
-
-        # if there is no feature
-        if result["features"] is None:
-            raise HTTPError(404, "There is no project.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
+        self.get_method_api_project(param)
 
     @auth_non_browser_based
     def put(self, param=None):
-        # param on this case is "create" or "update"
-        if param == "create":
-            self.put_method_api_project_create()
-        elif param == "update":
-            self.write(json_encode({"ok", 1}))
-        else:
-            raise HTTPError(404, "Invalid URL")
+        self.put_method_api_project(param)
 
     @auth_non_browser_based
     def delete(self, param=None):
-        # param on this case is the id of element
-        if param is not None and not param.isdigit():
-            raise HTTPError(400, "Invalid parameter.")
-
-        try:
-            self.PGSQLConn.delete_project_in_db(param)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a project. Please, contact the administrator.")
+        self.delete_method_api_project(param)
 
 
 # CHANGESET
