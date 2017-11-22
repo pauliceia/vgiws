@@ -266,9 +266,9 @@ class PGSQLConnection:
     # PROJECT
     ################################################################################
 
-    def get_projects(self, project_id=None):
+    def get_projects(self, project_id=None, user_id=None):
         # the id have to be a int
-        if is_a_invalid_id(project_id):
+        if is_a_invalid_id(project_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
         ######################################################################
@@ -279,6 +279,12 @@ class PGSQLConnection:
         where = "WHERE visible=TRUE"
         if project_id is not None:
             where += " AND id = {0}".format(project_id)
+
+        subquery_project_table = """
+            (
+                SELECT * FROM project {0}
+            ) AS project
+        """.format(where)
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
@@ -297,14 +303,14 @@ class PGSQLConnection:
                     'tags',       tags.jsontags
                 ))
             ) AS row_to_json
-            FROM project
+            FROM 
+            {0}
             CROSS JOIN LATERAL (
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
                 FROM project_tag 
                 WHERE fk_project_id = project.id    
             ) AS tags
-            {0}
-        """.format(where)
+        """.format(subquery_project_table)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -464,7 +470,7 @@ class PGSQLConnection:
         return self.get_elements_geojson(element, **arguments)
 
     def get_elements_geojson(self, element, element_id=None, project_id=None, changeset_id=None):
-        current_element_table = get_subquery_current_element_table(element, element_id=element_id,
+        subquery_current_element_table = get_subquery_current_element_table(element, element_id=element_id,
                                                                    project_id=project_id, changeset_id=changeset_id)
 
         query_text = """
@@ -494,7 +500,7 @@ class PGSQLConnection:
                 FROM current_{0}_tag 
                 WHERE fk_current_{0}_id = element.id                
             ) AS tags
-        """.format(element, current_element_table)
+        """.format(element, subquery_current_element_table)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

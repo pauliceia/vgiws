@@ -36,7 +36,7 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, project_id="")
 
-    def test_get_api_project_return_project_by_id(self):
+    def test_get_api_project_return_project_by_project_id(self):
         expected = {
             'features': [
                 {
@@ -51,6 +51,22 @@ class TestAPIProject(TestCase):
         }
 
         self.tester.api_project(expected, project_id="1001")
+
+    # def test_get_api_project_return_project_by_user_id(self):
+    #     expected = {
+    #         'features': [
+    #             {
+    #                 'type': 'Project',
+    #                 'tags': [{'k': 'name', 'v': 'default'},
+    #                          {'k': 'description', 'v': 'default project'}],
+    #                 'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+    #                                'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+    #             }
+    #         ],
+    #         'type': 'FeatureCollection'
+    #     }
+    #
+    #     self.tester.api_project(expected, user_id="1001")
 
     def test_get_api_project_with_invalid_project_id(self):
         self.tester.api_project_invalid_parameter(project_id="abc")
