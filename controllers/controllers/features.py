@@ -18,7 +18,7 @@ class APIProject(BaseHandlerProject):
             r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        self.get_method_api_project(param)
+        self.get_method_api_project()
 
     @auth_non_browser_based
     def put(self, param=None):

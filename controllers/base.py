@@ -209,10 +209,12 @@ class BaseHandler(RequestHandler):
 
 class BaseHandlerProject(BaseHandler):
 
-    def get_method_api_project(self, param):
-        # param on this case is the id of element
+    def get_method_api_project(self):
+        arguments = self.get_aguments()
+
         try:
-            result = self.PGSQLConn.get_projects(param)
+            # break the arguments dict in each parameter of method
+            result = self.PGSQLConn.get_projects(**arguments)
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a project. Please, contact the administrator.")

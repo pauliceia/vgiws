@@ -61,8 +61,10 @@ class UtilTester:
 
     # project
 
-    def api_project(self, project_expected, project_id=""):
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project(self, project_expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -96,8 +98,10 @@ class UtilTester:
 
     # project errors
 
-    def api_project_invalid_parameter(self, project_id):
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project_invalid_parameter(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
@@ -147,9 +151,9 @@ class UtilTester:
 
     # element
 
-    def api_element(self, element, element_expected, **kwargs):
+    def api_element(self, element, element_expected, **arguments):
         # get the arguments of the URL
-        arguments = get_url_arguments(**kwargs)
+        arguments = get_url_arguments(**arguments)
 
         # do a GET call with default format (GeoJSON)
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))

@@ -53,11 +53,11 @@ class TestAPIProject(TestCase):
         self.tester.api_project(expected, project_id="1001")
 
     def test_get_api_project_with_invalid_project_id(self):
-        self.tester.api_project_invalid_parameter("abc")
-        self.tester.api_project_invalid_parameter(0)
-        self.tester.api_project_invalid_parameter(-1)
-        self.tester.api_project_invalid_parameter("-1")
-        self.tester.api_project_invalid_parameter("0")
+        self.tester.api_project_invalid_parameter(project_id="abc")
+        self.tester.api_project_invalid_parameter(project_id=0)
+        self.tester.api_project_invalid_parameter(project_id=-1)
+        self.tester.api_project_invalid_parameter(project_id="-1")
+        self.tester.api_project_invalid_parameter(project_id="0")
 
 
 

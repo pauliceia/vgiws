@@ -463,10 +463,9 @@ class PGSQLConnection:
 
         return self.get_elements_geojson(element, **arguments)
 
-    def get_elements_geojson(self, element, **arguments):
-        # Valid arguments on **kwargs: element_id=None, project_id=None, changeset_id=None
-
-        current_element_table = get_subquery_current_element_table(element, **arguments)
+    def get_elements_geojson(self, element, element_id=None, project_id=None, changeset_id=None):
+        current_element_table = get_subquery_current_element_table(element, element_id=element_id,
+                                                                   project_id=project_id, changeset_id=changeset_id)
 
         query_text = """
             SELECT jsonb_build_object(

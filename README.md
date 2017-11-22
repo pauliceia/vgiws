@@ -179,11 +179,13 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 <summary> click here </summary>
 <p>
 
-- GET /api/project/#id
 
-    This method get all projects in DB or a specific with id = #id
+- GET /api/project/?\<params>
+
+    This method gets projects from DB. If you doesn't put any parameter, so will return all.
     - Parameters:
-        - #id (optional): a positive integer (e.g. 1, 2, 3, ...).
+        - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
+        - user_id (optional): the id of a user (e.g. 1, 2, 3, ...).
     - Send:
     - Response: a JSON that contain the features selected.
         - Example:
@@ -205,6 +207,13 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 400 (Bad Request): Invalid parameter.
         - 404 (Not Found): There is no project.
         - 500 (Internal Server Error): Problem when get a project. Please, contact the administrator.
+    - Examples:
+        <!-- - http://localhost:8888/api/node/?element_id=1001 -->
+        <!-- - http://localhost:8888/api/way/?project_id=1001 -->
+        <!-- - http://localhost:8888/api/area/?changeset_id=1001 -->
+        <!-- - http://localhost:8888/api/node/?project_id=1001&changeset_id=1001 -->
+        <!-- - http://localhost:8888/api/way/?element_id=1001&project_id=1001&changeset_id=1001 -->
+        <!-- - http://localhost:8888/api/area/ -->
     - Notes:
 
 - PUT /api/project/create
@@ -283,7 +292,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 - GET /api/\[node|way|area]/?\<params>
 
-    This method get elements from DB. If you doesn't put any parameter, so will return all elements.
+    This method gets elements from DB. If you doesn't put any parameter, so will return all.
     - Parameters:
         - element_id (optional): the id of a element (e.g. 1, 2, 3, ...).
         - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
@@ -294,7 +303,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 400 (Bad Request): Invalid argument(s).
         - 404 (Not Found): There is no element.
         - 500 (Internal Server Error): Problem when get a element. Please, contact the administrator.
-        - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
     - Examples:
         - http://localhost:8888/api/node/?element_id=1001
         - http://localhost:8888/api/way/?project_id=1001
@@ -314,7 +322,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 400 (Bad Request): ERROR: The changeset with id=X is closed, so it is not possible to use it.
             - Just can use changesets that are open.
         - 500 (Internal Server Error): Problem when create a element. Please, contact the administrator.
-        - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
     - Notes: when add a element, it starts with a default version 1 and it is saved in current_element table.
 
 <!--
@@ -326,7 +333,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
      - Response: a JSON that contain the id of the feature created.
      - Error codes:
          - 500 (Internal Server Error): Problem when update a element. Please, contact the administrator.
-         - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
      - Notes: when update a element, it is added in element table (historical), with the same id.
              After that, the original row is removed from current element table (main) and the element updated is added in database with the version incremented (+1).
 -->
@@ -342,7 +348,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 400 (Bad Request): Invalid parameter.
         - 400 (Bad Request): It needs a valid id to delete a element.
         - 500 (Internal Server Error): Problem when delete a element. Please, contact the administrator.
-        - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
     - Notes: when delete a element, it is removed from current_element table (main) and put in element table (historical), with its version.
             After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed.
 
