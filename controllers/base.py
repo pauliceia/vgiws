@@ -310,9 +310,6 @@ class BaseHandlerElement(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
-        except Exception as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
 
         # if there is no element
         if result["features"] is None:
@@ -348,9 +345,6 @@ class BaseHandlerElement(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
-        except Exception as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(list_of_id_of_features_created))
@@ -375,6 +369,3 @@ class BaseHandlerElement(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
-        except Exception as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Unexpected error. Please, contact the administrator.")

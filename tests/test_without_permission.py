@@ -10,7 +10,7 @@ from requests import put
 from util.tester import UtilTester
 
 
-class TestWithoutPermission(TestCase):
+class TestAPIWihoutLogin(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -96,24 +96,20 @@ class TestWithoutPermission(TestCase):
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close_without_permission(changeset)
 
-
-class TestAPIWihoutLogin(TestCase):
-
-    def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-    def test_get_api_create_changeset_without_login(self):
+    def test_api_changeset_create_and_close_without_login(self):
         # do a GET call
-        response = put('http://localhost:8888/api/changeset/create/')
+        changeset = {
+            'changeset': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'comment', 'v': 'testing create changeset'}],
+                'properties': {'id': 1700, "fk_project_id": 1700}
+            }
+        }
+        self.tester.api_changeset_create_without_permission(changeset)
 
-        self.assertEqual(response.status_code, 403)
+        self.tester.api_changeset_close_without_permission(changeset)
 
-        response = put('http://localhost:8888/api/changeset/close/-1')
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_get_api_create_changeset_with_and_without_login(self):
+    def test_api_create_changeset_with_and_without_login(self):
             # DO LOGIN
             self.tester.auth_login()
 
@@ -171,6 +167,7 @@ class TestAPIWihoutLogin(TestCase):
 
             # it is not possible to create a changeset without login, so get a 403 Forbidden
             self.assertEqual(response.status_code, 403)
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

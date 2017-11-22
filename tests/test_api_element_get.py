@@ -57,7 +57,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("node", expected, element_id="")
 
-    def test_get_api_node_return_element_with_id_1001(self):
+    def test_get_api_node_return_element_by_id(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'type': 'FeatureCollection',
@@ -105,7 +105,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("way", expected, element_id="")
 
-    def test_get_api_way_return_element_with_id_1001(self):
+    def test_get_api_way_return_element_by_id(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -157,7 +157,7 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("area", expected, element_id="")
 
-    def test_get_api_area_return_element_with_id_1001(self):
+    def test_get_api_area_return_element_by_id(self):
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -175,12 +175,12 @@ class TestAPIGETElement(TestCase):
 
         self.tester.api_element("area", expected, element_id="1001")
 
-    # def test_get_api_element_with_invalid_element_id(self):
-    #     self.tester.api_element_invalid_parameter("node", "abc")
-    #     self.tester.api_element_invalid_parameter("node", 0)
-    #     self.tester.api_element_invalid_parameter("node", -1)
-    #     self.tester.api_element_invalid_parameter("node", "-1")
-    #     self.tester.api_element_invalid_parameter("node", "0")
+    def test_get_api_element_with_invalid_element_id(self):
+        self.tester.api_element_invalid_parameter("node", "abc")
+        self.tester.api_element_invalid_parameter("node", 0)
+        self.tester.api_element_invalid_parameter("node", -1)
+        self.tester.api_element_invalid_parameter("node", "-1")
+        self.tester.api_element_invalid_parameter("node", "0")
 
     # helper
     # def test_helper_execute(self):

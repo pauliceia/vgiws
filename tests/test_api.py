@@ -33,7 +33,7 @@ class TestAPI(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_get_api_crud_elements_with_login(self):
+    def test_crud_elements_with_login(self):
         # get the id of project to use in create a changeset
         fk_project_id = self.project["project"]["properties"]["id"]
 
@@ -126,7 +126,7 @@ class TestAPI(TestCase):
         self.tester.api_element_create_with_changeset_close(way)
         self.tester.api_element_create_with_changeset_close(area)
 
-    def test_get_api_crud_elements_that_not_exist_with_login(self):
+    def test_crud_elements_that_not_exist_with_login(self):
         # get the id of project to use in create a changeset
         fk_project_id = self.project["project"]["properties"]["id"]
 

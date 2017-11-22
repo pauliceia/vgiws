@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-class TestAPIGETElementByProject(TestCase):
+class TestAPIGETElementByProjectAndChangeset(TestCase):
 
     # TODO: CREATE A INVALID TEST -         arguments.append('abc=123')
 
@@ -20,7 +20,7 @@ class TestAPIGETElementByProject(TestCase):
     # NODE
     ################################################################################
 
-    def test_get_api_element_return_all_elements_by_project_id_1001(self):
+    def test_get_api_element_return_all_elements_by_project_id(self):
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'type': 'FeatureCollection',
@@ -78,7 +78,7 @@ class TestAPIGETElementByProject(TestCase):
 
         self.tester.api_element("area", expected, project_id="1001")
 
-    def test_get_api_element_return_all_elements_by_changeset_id_1001(self):
+    def test_get_api_element_return_all_elements_by_changeset_id(self):
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'type': 'FeatureCollection',
@@ -129,7 +129,7 @@ class TestAPIGETElementByProject(TestCase):
 
         self.tester.api_element("area", expected, changeset_id="1001")
 
-    def test_get_api_element_return_all_elements_by_project_id_1001_and_changeset_id_1001(self):
+    def test_get_api_element_return_all_elements_by_project_id_and_changeset_id(self):
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'type': 'FeatureCollection',

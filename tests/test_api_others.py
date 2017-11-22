@@ -15,7 +15,7 @@ class TestAPIOthers(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    def test_get_api_capabilities(self):
+    def test_api_capabilities(self):
         self.tester.api_capabilities()
 
 
