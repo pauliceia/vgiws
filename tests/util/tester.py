@@ -19,6 +19,7 @@ def by_multi_element_get_url_name(multi_element):
 
 def get_url_arguments(**kwargs):
     arguments = []
+
     if "element_id" in kwargs and kwargs["element_id"] != "":
         arguments.append('element_id={0}'.format(kwargs["element_id"]))
 
@@ -60,8 +61,8 @@ class UtilTester:
 
     # project
 
-    def api_project(self, project_expected, id_project=""):
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(id_project))
+    def api_project(self, project_expected, project_id=""):
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(project_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -92,6 +93,13 @@ class UtilTester:
         response = self.session.delete('http://localhost:8888/api/project/{0}'.format(fk_id_project))
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    # project errors
+
+    def api_project_invalid_parameter(self, project_id):
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(project_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
 
     # changeset
 
@@ -204,6 +212,13 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 404)
 
     # element errors
+
+    def api_element_invalid_parameter(self, element, element_id):
+        arguments = get_url_arguments(element_id=element_id)
+
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
 
     def api_element_create_with_changeset_close(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]

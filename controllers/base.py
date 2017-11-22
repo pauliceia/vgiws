@@ -369,12 +369,9 @@ class BaseHandlerElement(BaseHandler):
         else:
             raise HTTPError(404, "Invalid URL")
 
-    def delete_method_api_element(self, element, id_element):
-        if id_element is not None and not id_element.isdigit():
-            raise HTTPError(400, "Invalid parameter.")
-
+    def delete_method_api_element(self, element, element_id):
         try:
-            self.PGSQLConn.delete_element_in_db(element, id_element)
+            self.PGSQLConn.delete_element_in_db(element, element_id)
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")

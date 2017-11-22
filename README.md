@@ -186,7 +186,23 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - #id (optional): a positive integer (e.g. 1, 2, 3, ...).
     - Send:
     - Response: a JSON that contain the features selected.
+        - Example:
+            ```json
+                {
+                    'features': [
+                        {
+                            'type': 'Project',
+                            'tags': [{'k': 'name', 'v': 'default'},
+                                     {'k': 'description', 'v': 'default project'}],
+                            'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+                                           'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                        }
+                    ],
+                    'type': 'FeatureCollection'
+                }
+            ```
     - Error codes:
+        - 400 (Bad Request): Invalid parameter.
         - 404 (Not Found): There is no project.
         - 500 (Internal Server Error): Problem when get a project. Please, contact the administrator.
     - Notes:
@@ -211,7 +227,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Send:
     - Response:
     - Error codes:
-        - 400 (Bad Request): Invalid parameter
+        - 400 (Bad Request): Invalid parameter.
         - 400 (Bad Request): It needs a valid id to delete a project.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Notes:
@@ -329,8 +345,6 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 500 (Internal Server Error): Unexpected error. Please, contact the administrator.
     - Notes: when delete a element, it is removed from current_element table (main) and put in element table (historical), with its version.
             After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed.
-
-    its visibility become FALSE, the row
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
 

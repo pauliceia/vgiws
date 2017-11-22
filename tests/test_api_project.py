@@ -34,9 +34,9 @@ class TestAPIProject(TestCase):
             ]
         }
 
-        self.tester.api_project(expected, id_project="")
+        self.tester.api_project(expected, project_id="")
 
-    def test_get_api_project_return_project_with_id_1001(self):
+    def test_get_api_project_return_project_by_id(self):
         expected = {
             'features': [
                 {
@@ -50,7 +50,17 @@ class TestAPIProject(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_project(expected, id_project="1001")
+        self.tester.api_project(expected, project_id="1001")
+
+    def test_get_api_project_with_invalid_project_id(self):
+        self.tester.api_project_invalid_parameter("abc")
+        self.tester.api_project_invalid_parameter(0)
+        self.tester.api_project_invalid_parameter(-1)
+        self.tester.api_project_invalid_parameter("-1")
+        self.tester.api_project_invalid_parameter("0")
+
+
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

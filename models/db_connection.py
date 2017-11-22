@@ -130,13 +130,26 @@ def get_subquery_current_element_table(element, **kwargs):
     return current_element_table
 
 
+def is_a_invalid_id(feature_id):
+    """
+    Verify if the id of some feature is valid or not.
+    For a id to be valid, it needs to be:
+        (1) not None; (2) a integer (a digit); (3) if is a integer, so different of 0.
+    IDs are integer numbers greater than zero.
+    :param feature_id: id of a feature in string format.
+    :return: if id is invalid, return True, else False
+    """
+    return (feature_id is not None and not feature_id.isdigit()) or \
+           (feature_id is not None and feature_id.isdigit() and feature_id == "0")
+
+
 def are_arguments_valid_to_get_elements(**arguments):
     # the ids are just valid if there are numbers
-    if "element_id" in arguments and not arguments["element_id"].isdigit():
+    if "element_id" in arguments and is_a_invalid_id(arguments["element_id"]):
         return False
-    elif "project_id" in arguments and not arguments["project_id"].isdigit():
+    elif "project_id" in arguments and is_a_invalid_id(arguments["project_id"]):
         return False
-    elif "changeset_id" in arguments and not arguments["changeset_id"].isdigit():
+    elif "changeset_id" in arguments and is_a_invalid_id(arguments["changeset_id"]):
         return False
     else:
         return True
@@ -253,7 +266,10 @@ class PGSQLConnection:
     # PROJECT
     ################################################################################
 
-    def get_projects(self, id_project=None):
+    def get_projects(self, project_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(project_id):
+            raise HTTPError(400, "Invalid parameter.")
 
         ######################################################################
         # CREATE THE WHERE CLAUSE
@@ -261,8 +277,8 @@ class PGSQLConnection:
 
         # by default, get all results that are visible
         where = "WHERE visible=TRUE"
-        if id_project is not None:
-            where += " AND id = {0}".format(id_project)
+        if project_id is not None:
+            where += " AND id = {0}".format(project_id)
 
         ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
@@ -334,26 +350,26 @@ class PGSQLConnection:
         project = project_json["project"]
 
         # add the project in db and get the id of it
-        id_project_in_json = self.add_project_in_db(fk_user_id_owner)
+        project_id_in_json = self.add_project_in_db(fk_user_id_owner)
 
         # add in DB the tags of project
         for tag in project["tags"]:
             # add the project tag in db
-            self.add_project_tag_in_db(tag["k"], tag["v"], id_project_in_json["id"])
+            self.add_project_tag_in_db(tag["k"], tag["v"], project_id_in_json["id"])
 
         # put in DB the project and its tags
         self.commit()
 
-        return id_project_in_json
+        return project_id_in_json
 
-    def delete_project_in_db(self, id_project):
-        if id_project is None:
+    def delete_project_in_db(self, project_id):
+        if is_a_invalid_id(project_id):
             raise HTTPError(400, "It needs a valid id to delete a project.")
 
         query_text = """
             UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
             WHERE id={0};
-        """.format(id_project)
+        """.format(project_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -407,17 +423,17 @@ class PGSQLConnection:
         fk_project_id = changeset["properties"]["fk_project_id"]
 
         # add the chengeset in db and get the id of it
-        id_changeset_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
+        changeset_id_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
 
         # add in DB the tags of changeset
         for tag in changeset["tags"]:
             # add the chengeset tag in db
-            self.add_changeset_tag_in_db(tag["k"], tag["v"], id_changeset_in_json["id"])
+            self.add_changeset_tag_in_db(tag["k"], tag["v"], changeset_id_in_json["id"])
 
         # put in DB the changeset and its tags
         self.commit()
 
-        return id_changeset_in_json
+        return changeset_id_in_json
 
     def close_changeset(self, id_changeset=None):
         """
@@ -554,27 +570,27 @@ class PGSQLConnection:
         fk_changeset_id = feature["properties"]["fk_changeset_id"]
 
         # add the element in db and get the id of it
-        id_element = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
+        element_id = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
 
         for tag in tags:
             # add the element tag in db
             # PS: how the element is new in db, so the fk_element_version = 1
-            self.add_element_tag_in_db(tag["k"], tag["v"], element, id_element)
+            self.add_element_tag_in_db(tag["k"], tag["v"], element, element_id)
 
         # put in DB the element and its tags
         # self.commit()
 
-        return id_element
+        return element_id
 
     # delete elements
 
-    def delete_element_in_db(self, element, id_element):
-        if id_element is None:
+    def delete_element_in_db(self, element, element_id):
+        if is_a_invalid_id(element_id):
             raise HTTPError(400, "It needs a valid id to delete a element.")
 
         query_text = """
             UPDATE current_{0} SET visible = FALSE WHERE id={1};
-            """.format(element, id_element)
+            """.format(element, element_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
