@@ -282,7 +282,7 @@ class PGSQLConnection:
 
         subquery_project_table = """
             (
-                SELECT * FROM project {0}
+                SELECT id, create_at, removed_at, fk_user_id_owner FROM project {0}
             ) AS project
         """.format(where)
 

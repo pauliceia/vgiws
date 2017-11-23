@@ -8,6 +8,9 @@ DELETE FROM user_;
 -- add users
 INSERT INTO user_ (id, username, email, password, name) VALUES (1001, 'admin', 'admin@admin.com', 'admin', 'Administrator');
 INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', 'Rodrigo');
+INSERT INTO user_ (id, username, email, password, name) VALUES (1003, 'miguel', 'miguel@admin.com', 'miguel', 'Miguel');
+INSERT INTO user_ (id, username, email, password, name) VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael', 'Rafael');
+INSERT INTO user_ (id, username, email, password, name) VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel', 'Gabriel');
 
 -- SELECT * FROM user_;
 -- SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
@@ -21,8 +24,11 @@ INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo',
 DELETE FROM project;
 
 -- add project
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-11-20', 1001);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-12', 1002);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1003, '2017-12-23', 1002);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1004, '2017-09-11', 1003);
+INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1005, '2017-06-04', 1003);
 
 -- SELECT * FROM project;
 -- SELECT * FROM project p WHERE p.id = 1001;
@@ -42,6 +48,16 @@ INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', '
 -- project 1002
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1003, 'name', 'test_project', 1002);
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1004, 'description', 'test_project', 1002);
+-- project 1003
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1005, 'name', 'project 3', 1003);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1006, 'description', 'test_project', 1003);
+-- project 1004
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1007, 'name', 'project 4', 1004);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1008, 'description', 'test_project', 1004);
+-- project 1005
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1009, 'name', 'project 5', 1005);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1010, 'description', 'test_project', 1005);
+
 
 -- SELECT * FROM project_tag;
 
