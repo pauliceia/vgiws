@@ -189,6 +189,20 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Send:
     - Response: a JSON that contain the features selected.
         - Example:
+            ```javascript
+                {
+                    'features': [
+                        {
+                            'type': 'Project',
+                            'tags': [{'k': 'name', 'v': 'default'},
+                                     {'k': 'description', 'v': 'default project'}],
+                            'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+                                           'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                        }
+                    ],
+                    'type': 'FeatureCollection'
+                }
+            ```
             ```json
                 {
                     'features': [
