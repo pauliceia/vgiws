@@ -69,12 +69,19 @@ class UtilTester:
 
     # project errors
 
-    def api_project_invalid_parameter(self, **arguments):
+    def api_project_error_400_invalid_parameter(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_project_error_404_there_is_no_project(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     # changeset
 

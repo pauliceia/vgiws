@@ -208,12 +208,9 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 404 (Not Found): There is no project.
         - 500 (Internal Server Error): Problem when get a project. Please, contact the administrator.
     - Examples:
-        <!-- - http://localhost:8888/api/node/?element_id=1001 -->
-        <!-- - http://localhost:8888/api/way/?project_id=1001 -->
-        <!-- - http://localhost:8888/api/area/?changeset_id=1001 -->
-        <!-- - http://localhost:8888/api/node/?project_id=1001&changeset_id=1001 -->
-        <!-- - http://localhost:8888/api/way/?element_id=1001&project_id=1001&changeset_id=1001 -->
-        <!-- - http://localhost:8888/api/area/ -->
+         - Get all projects: http://localhost:8888/api/project/
+         - Get project by id: http://localhost:8888/api/project/?project_id=1001
+         - Get projects by user id: http://localhost:8888/api/project/?user_id=1001
     - Notes:
 
 - PUT /api/project/create
