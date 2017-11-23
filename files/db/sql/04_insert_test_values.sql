@@ -28,7 +28,7 @@ INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-11-20'
 INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-12', 1002);
 INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1003, '2017-12-23', 1002);
 INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1004, '2017-09-11', 1003);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1005, '2017-06-04', 1003);
+INSERT INTO project (id, create_at, fk_user_id_owner, visible) VALUES (1005, '2017-06-04', 1003, FALSE);
 
 -- SELECT * FROM project;
 -- SELECT * FROM project p WHERE p.id = 1001;

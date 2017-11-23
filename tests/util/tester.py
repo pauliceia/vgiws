@@ -5,36 +5,7 @@
 from json import loads, dumps
 from requests import Session
 
-
-def by_multi_element_get_url_name(multi_element):
-    if multi_element == "MultiPoint":
-        return "node"
-    if multi_element == "MultiLineString":
-        return "way"
-    if multi_element == "MultiPolygon":
-        return "area"
-
-    raise Exception("Invalid multi element: {0}".format(multi_element))
-
-
-def get_url_arguments(**kwargs):
-    arguments = []
-
-    if "element_id" in kwargs and kwargs["element_id"] != "":
-        arguments.append('element_id={0}'.format(kwargs["element_id"]))
-
-    if "project_id" in kwargs and kwargs["project_id"] != "":
-        arguments.append('project_id={0}'.format(kwargs["project_id"]))
-
-    if "changeset_id" in kwargs and kwargs["changeset_id"] != "":
-        arguments.append('changeset_id={0}'.format(kwargs["changeset_id"]))
-
-    if arguments:  # if there are elements, put "?" + concat of elements with "&"
-        arguments = "?" + "&".join(arguments)
-    else:  # if there is no element, so put empty string
-        arguments = ""
-
-    return arguments
+from .common import *
 
 
 class UtilTester:

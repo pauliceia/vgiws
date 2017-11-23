@@ -2,15 +2,30 @@
 # -*- coding: utf-8 -*-
 
 
-from sys import path as sys_path
-from os import path as os_path
+def by_multi_element_get_url_name(multi_element):
+    if multi_element == "MultiPoint":
+        return "node"
+    if multi_element == "MultiLineString":
+        return "way"
+    if multi_element == "MultiPolygon":
+        return "area"
 
-# get the reference of the function (to be faster)
-sys_path_append = sys_path.append
-os_path_abspath = os_path.abspath
+    raise Exception("Invalid multi element: {0}".format(multi_element))
 
-# Folder before the current folder (root of project)
-ROOT_PROJECT_PATH = os_path.sep.join(os_path.abspath(__file__).split(os_path.sep)[:-3])
 
-# add in sys.path the root folder to can import modules outside of test folder
-sys_path_append(os_path_abspath(ROOT_PROJECT_PATH))
+def get_url_arguments(**kwargs):
+    list_of_arguments = []
+
+    for key in kwargs:
+        # it is necessary to exist a value for a key
+        if kwargs[key] != "":
+            list_of_arguments.append('{0}={1}'.format(key, kwargs[key]))
+
+    # default: if there is no element, so put empty string
+    arguments = ""
+
+    if list_of_arguments:
+        # if there are elements, put "?" + concat of arguments with "&"
+        arguments = "?" + "&".join(list_of_arguments)
+
+    return arguments

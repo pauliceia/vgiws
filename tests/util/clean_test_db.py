@@ -4,9 +4,9 @@
 
 # put the root project in sys path and import the ROOT_PROJECT_PATH
 try:
-    from common import ROOT_PROJECT_PATH
+    from config import ROOT_PROJECT_PATH
 except:
-    from .common import ROOT_PROJECT_PATH
+    from .config import ROOT_PROJECT_PATH
 
 
 # now can use the module models

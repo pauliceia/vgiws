@@ -26,133 +26,17 @@
 """
 
 
+from tornado.web import HTTPError
+from tornado.escape import json_encode
+
 from psycopg2 import connect, DatabaseError
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
-from tornado.web import HTTPError
 
-from modules.design_pattern import Singleton
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
-from tornado.escape import json_encode
+from modules.design_pattern import Singleton
 
-
-def get_subquery_current_element_table_if_project_id_is_not_none(element, conditions_of_where, **kwargs):
-
-    # create the where clause with the conditions
-    where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
-
-    # by default, get all elements from a specific project
-    conditions_of_where = ["project.id = {0}".format(kwargs["project_id"])]
-
-    # if there is a changeset_id, put it in where
-    if "changeset_id" in kwargs and kwargs["changeset_id"] is not None:
-        conditions_of_where.append("changeset.id = {0}".format(kwargs["changeset_id"]))
-
-    # create the where clause with the conditions
-    where_join_project_with_changeset = "WHERE " + " AND ".join(conditions_of_where)
-
-    # search by project_id
-    current_element_table = """
-        (
-            -- get the elements of the changesets of a specific project
-            SELECT element.id, element.geom, element.fk_changeset_id
-            FROM 
-            (
-                -- get the changesets of a specific project
-                SELECT changeset.id
-                FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
-                {2}
-            ) AS changeset
-            LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
-            {1}
-        ) AS element
-    """.format(element, where_current_element_table, where_join_project_with_changeset)
-
-    return current_element_table
-
-
-def get_subquery_current_element_table_if_changeset_id_is_not_none(element, conditions_of_where, **kwargs):
-
-    # add the id of changeset in WHERE
-    conditions_of_where.append("changeset.id = {0}".format(kwargs["changeset_id"]))
-    # create the where clause with the conditions
-    where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
-
-    # search by changeset_id
-    current_element_table = """
-        (
-            SELECT element.id, element.geom, element.fk_changeset_id
-            FROM current_{0} element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
-            {1}
-        ) AS element
-    """.format(element, where_current_element_table)
-
-    return current_element_table
-
-
-def get_subquery_current_element_table_default(element, conditions_of_where, **kwargs):
-    # create the where clause with the conditions
-    where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
-
-    # default subquery, get all elements
-    current_element_table = """
-        (
-            SELECT element.id, element.geom, element.fk_changeset_id
-            FROM current_{0} element
-            {1}
-        ) AS element
-    """.format(element, where_current_element_table)
-
-    return current_element_table
-
-
-def get_subquery_current_element_table(element, **kwargs):
-    # DEFAULT WHERE
-    # by default, get all results that are visible (that exist)
-    conditions_of_where = ["element.visible=TRUE"]
-    if "element_id" in kwargs and kwargs["element_id"] is not None:
-        conditions_of_where.append("element.id = {0}".format(kwargs["element_id"]))
-
-    # SUBQUERY
-    # create a subquery to get the elements, by a type:
-    if "project_id" in kwargs and kwargs["project_id"] is not None:
-        # if there is a project_id
-        current_element_table = get_subquery_current_element_table_if_project_id_is_not_none(element, conditions_of_where, **kwargs)
-
-    elif "changeset_id" in kwargs and kwargs["changeset_id"] is not None:
-        # if there is a changeset_id
-        current_element_table = get_subquery_current_element_table_if_changeset_id_is_not_none(element, conditions_of_where, **kwargs)
-
-    else:
-        # default
-        current_element_table = get_subquery_current_element_table_default(element, conditions_of_where, **kwargs)
-
-    return current_element_table
-
-
-def is_a_invalid_id(feature_id):
-    """
-    Verify if the id of some feature is valid or not.
-    For a id to be valid, it needs to be:
-        (1) not None; (2) a integer (a digit); (3) if is a integer, so different of 0.
-    IDs are integer numbers greater than zero.
-    :param feature_id: id of a feature in string format.
-    :return: if id is invalid, return True, else False
-    """
-    return (feature_id is not None and not feature_id.isdigit()) or \
-           (feature_id is not None and feature_id.isdigit() and feature_id == "0")
-
-
-def are_arguments_valid_to_get_elements(**arguments):
-    # the ids are just valid if there are numbers
-    if "element_id" in arguments and is_a_invalid_id(arguments["element_id"]):
-        return False
-    elif "project_id" in arguments and is_a_invalid_id(arguments["project_id"]):
-        return False
-    elif "changeset_id" in arguments and is_a_invalid_id(arguments["changeset_id"]):
-        return False
-    else:
-        return True
+from .util import *
 
 
 @Singleton
@@ -271,24 +155,9 @@ class PGSQLConnection:
         if is_a_invalid_id(project_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        ######################################################################
-        # CREATE THE WHERE CLAUSE
-        ######################################################################
+        subquery_project_table = get_subquery_project_table(project_id=project_id, user_id=user_id)
 
-        # by default, get all results that are visible
-        where = "WHERE visible=TRUE"
-        if project_id is not None:
-            where += " AND id = {0}".format(project_id)
-
-        subquery_project_table = """
-            (
-                SELECT id, create_at, removed_at, fk_user_id_owner FROM project {0}
-            ) AS project
-        """.format(where)
-
-        ######################################################################
         # CREATE THE QUERY AND EXECUTE IT
-        ######################################################################
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -471,7 +340,8 @@ class PGSQLConnection:
 
     def get_elements_geojson(self, element, element_id=None, project_id=None, changeset_id=None):
         subquery_current_element_table = get_subquery_current_element_table(element, element_id=element_id,
-                                                                   project_id=project_id, changeset_id=changeset_id)
+                                                                            project_id=project_id,
+                                                                            changeset_id=changeset_id)
 
         query_text = """
             SELECT jsonb_build_object(
