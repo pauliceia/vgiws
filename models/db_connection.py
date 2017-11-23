@@ -461,7 +461,7 @@ class PGSQLConnection:
 
     def delete_element_in_db(self, element, element_id):
         if is_a_invalid_id(element_id):
-            raise HTTPError(400, "It needs a valid id to delete a element.")
+            raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             UPDATE current_{0} SET visible = FALSE WHERE id={1};

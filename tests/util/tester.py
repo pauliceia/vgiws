@@ -83,6 +83,16 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    def api_project_delete_error_400_invalid_parameter(self, project_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_project_delete_error_403_forbidden(self, project_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
     # changeset
 
     def api_changeset_create(self, changeset_json):

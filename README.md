@@ -162,8 +162,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     This method return the capabilities of the server.
     - Parameters:
     - Send:
-    - Response: a JSON that contain the capabilities of the server.
-        - Example:
+    - Response: a JSON that contain the capabilities of the server. Example:
         ```javascript
         {
             "version": "0.0.1",
@@ -187,22 +186,21 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
         - user_id (optional): the id of a user (e.g. 1, 2, 3, ...).
     - Send:
-    - Response: a JSON that contain the features selected.
-        - Example:
-            ```javascript
-                {
-                    'features': [
-                        {
-                            'type': 'Project',
-                            'tags': [{'k': 'name', 'v': 'default'},
-                                     {'k': 'description', 'v': 'default project'}],
-                            'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
-                                           'id': 1001, 'create_at': '2017-10-20 00:00:00'}
-                        }
-                    ],
-                    'type': 'FeatureCollection'
-                }
-            ```
+    - Response: a JSON that contain the features selected. Example:
+        ```javascript
+            {
+                'features': [
+                    {
+                        'type': 'Project',
+                        'tags': [{'k': 'name', 'v': 'default'},
+                                 {'k': 'description', 'v': 'default project'}],
+                        'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+                                       'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                    }
+                ],
+                'type': 'FeatureCollection'
+            }
+        ```
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
         - 404 (Not Found): There is no project.
@@ -217,11 +215,25 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
     This method create a new project described in a JSON.
     - Parameters:
-    - Send: a JSON describing the feature.
-    - Response: a JSON that contain the id of the feature created.
+    - Send: a JSON describing the feature. Example:
+        ```javascript
+            {
+                'project': {
+                    'tags': [{'k': 'created_by', 'v': 'test_api'},
+                             {'k': 'name', 'v': 'project of data'},
+                             {'k': 'description', 'v': 'description of the project'}],
+                    'properties': {'id': -1}
+                }
+            }
+        ```
+    - Response: a JSON that contain the id of the feature created. Example:
+        ```javascript
+            {'id': 7}
+        ```
     - Error codes:
+        - 403 (Forbidden): It is necessary a user logged in to access this URL.
         - 500 (Internal Server Error): Problem when create a project. Please, contact the administrator.
-    - Notes:
+    - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 <!-- - PUT /api/project/update -->
 
@@ -234,7 +246,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Response:
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
-        - 400 (Bad Request): It needs a valid id to delete a project.
+        - 403 (Forbidden): It is necessary a user logged in to access this URL.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Notes:
 

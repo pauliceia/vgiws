@@ -94,7 +94,29 @@ class TestAPIProject(TestCase):
         self.tester.api_project_error_404_there_is_no_project(project_id="999")
         self.tester.api_project_error_404_there_is_no_project(project_id="998")
 
+    def test_api_project_delete_with_invalid_project_id(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
 
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_project_delete_error_400_invalid_parameter(project_id="abc")
+        self.tester.api_project_delete_error_400_invalid_parameter(project_id=0)
+        self.tester.api_project_delete_error_400_invalid_parameter(project_id=-1)
+        self.tester.api_project_delete_error_400_invalid_parameter(project_id="-1")
+        self.tester.api_project_delete_error_400_invalid_parameter(project_id="0")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_api_project_delete_forbidden(self):
+        self.tester.api_project_delete_error_403_forbidden(project_id="abc")
+        self.tester.api_project_delete_error_403_forbidden(project_id=0)
+        self.tester.api_project_delete_error_403_forbidden(project_id=-1)
+        self.tester.api_project_delete_error_403_forbidden(project_id="-1")
+        self.tester.api_project_delete_error_403_forbidden(project_id="0")
+        self.tester.api_project_delete_error_403_forbidden(project_id="1001")
 
 
 # It is not necessary to pyt the main() of unittest here,
