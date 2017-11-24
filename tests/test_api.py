@@ -52,7 +52,7 @@ class TestAPI(TestCase):
         changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -63,7 +63,7 @@ class TestAPI(TestCase):
                     'tags': [{'k': 'event', 'v': 'robbery'},
                              {'k': 'date', 'v': '1910'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPoint',
                         'coordinates': [[-23.546421, -46.635722]]
@@ -82,7 +82,7 @@ class TestAPI(TestCase):
                              {'k': 'start_date', 'v': '1910-12-08'},
                              {'k': 'end_date', 'v': '1930-03-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiLineString',
                         'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
@@ -101,7 +101,7 @@ class TestAPI(TestCase):
                              {'k': 'start_date', 'v': '1900-11-12'},
                              {'k': 'end_date', 'v': '1915-12-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPolygon',
                         'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
@@ -122,7 +122,7 @@ class TestAPI(TestCase):
         self.tester.api_element_delete(area)
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset)
+        self.tester.api_changeset_close(changeset_id)
 
         # TRY TO ADD NEW ELEMENTS WITH THE CLOSED CHANGESET
         self.tester.api_element_create_with_changeset_close(node)
@@ -145,7 +145,7 @@ class TestAPI(TestCase):
         changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -156,7 +156,7 @@ class TestAPI(TestCase):
                     'tags': [{'k': 'event', 'v': 'assault'},
                              {'k': 'date', 'v': '1912'}],
                     'type': 'Feature',
-                    'properties': {'id': 5000, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': 5000, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPoint',
                         'coordinates': [[-23.546421, -46.635722]]
@@ -174,7 +174,7 @@ class TestAPI(TestCase):
                              {'k': 'start_date', 'v': '1914-02-18'},
                              {'k': 'end_date', 'v': '1927-03-21'}],
                     'type': 'Feature',
-                    'properties': {'id': 5001, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': 5001, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiLineString',
                         'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
@@ -191,7 +191,7 @@ class TestAPI(TestCase):
                     'tags': [{'k': 'building', 'v': 'church'},
                              {'k': 'start_date', 'v': '1880-03-30'}],
                     'type': 'Feature',
-                    'properties': {'id': 5002, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': 5002, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPolygon',
                         'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
@@ -206,7 +206,7 @@ class TestAPI(TestCase):
         self.tester.verify_if_element_was_not_add_in_db(area)
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset)
+        self.tester.api_changeset_close(changeset_id)
 
 
 # It is not necessary to pyt the main() of unittest here,

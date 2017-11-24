@@ -26,10 +26,10 @@ class TestAPIWihoutLogin(TestCase):
                 'properties': {'id': 1500, "fk_project_id": 1500}
             }
         }
-        self.tester.api_changeset_create_without_permission(changeset)
+        self.tester.api_changeset_create_error_403_forbidden(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -40,7 +40,7 @@ class TestAPIWihoutLogin(TestCase):
                     'tags': [{'k': 'event', 'v': 'robbery'},
                              {'k': 'date', 'v': '1910'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPoint',
                         'coordinates': [[-23.546421, -46.635722]]
@@ -59,7 +59,7 @@ class TestAPIWihoutLogin(TestCase):
                              {'k': 'start_date', 'v': '1910-12-08'},
                              {'k': 'end_date', 'v': '1930-03-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiLineString',
                         'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
@@ -78,7 +78,7 @@ class TestAPIWihoutLogin(TestCase):
                              {'k': 'start_date', 'v': '1900-11-12'},
                              {'k': 'end_date', 'v': '1915-12-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
                         'type': 'MultiPolygon',
                         'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
@@ -94,7 +94,7 @@ class TestAPIWihoutLogin(TestCase):
         self.tester.api_element_delete_without_persmission(area)
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close_without_permission(changeset)
+        self.tester.api_changeset_close_error_403_forbidden(changeset_id)
 
     def test_api_changeset_create_and_close_without_login(self):
         # do a GET call
@@ -105,9 +105,12 @@ class TestAPIWihoutLogin(TestCase):
                 'properties': {'id': 1700, "fk_project_id": 1700}
             }
         }
-        self.tester.api_changeset_create_without_permission(changeset)
+        self.tester.api_changeset_create_error_403_forbidden(changeset)
 
-        self.tester.api_changeset_close_without_permission(changeset)
+        # get the id of changeset to CLOSE changeset
+        changeset_id = changeset["changeset"]["properties"]["id"]
+
+        self.tester.api_changeset_close_error_403_forbidden(changeset_id)
 
     def test_api_create_changeset_with_and_without_login(self):
             # DO LOGIN
@@ -124,7 +127,7 @@ class TestAPIWihoutLogin(TestCase):
             changeset = self.tester.api_changeset_create(changeset)
 
             # get the id of changeset to use in ADD element and CLOSE changeset
-            fk_id_changeset = changeset["changeset"]["properties"]["id"]
+            changeset_id = changeset["changeset"]["properties"]["id"]
 
             # ADD ELEMENT
             node = {
@@ -135,7 +138,7 @@ class TestAPIWihoutLogin(TestCase):
                         'tags': [{'k': 'event', 'v': 'robbery'},
                                  {'k': 'date', 'v': '1910'}],
                         'type': 'Feature',
-                        'properties': {'id': -1, 'fk_changeset_id': fk_id_changeset},
+                        'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                         'geometry': {
                             'type': 'MultiPoint',
                             'coordinates': [[-23.546421, -46.635722]]
@@ -152,7 +155,7 @@ class TestAPIWihoutLogin(TestCase):
             self.tester.api_element_delete(node)
 
             # CLOSE THE CHANGESET
-            self.tester.api_changeset_close(changeset)
+            self.tester.api_changeset_close(changeset_id)
 
             # DO LOGOUT
             self.tester.auth_logout()

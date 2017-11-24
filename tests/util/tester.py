@@ -124,30 +124,36 @@ class UtilTester:
 
         return changeset_json
 
-    def api_changeset_close(self, changeset):
-        # get the id of changeset to CLOSE the changeset
-        fk_id_changeset = changeset["changeset"]["properties"]["id"]
-
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
+    def api_changeset_close(self, changeset_id):
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # changeset errors
+    # changeset errors - create
 
-    def api_changeset_create_without_permission(self, changeset_json):
+    def api_changeset_create_error_403_forbidden(self, changeset_json):
         # do a GET call, sending a changeset to add in DB
         response = self.session.put('http://localhost:8888/api/changeset/create/',
                                     data=dumps(changeset_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_changeset_close_without_permission(self, changeset):
-        # get the id of changeset to CLOSE the changeset
-        fk_id_changeset = changeset["changeset"]["properties"]["id"]
+    # changeset errors - close
 
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(fk_id_changeset))
+    def api_changeset_close_error_400_bad_request(self, changeset_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(changeset_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_close_error_403_forbidden(self, changeset_id):
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_changeset_close_error_404_not_found(self, changeset_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(changeset_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     # element
 

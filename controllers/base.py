@@ -248,9 +248,6 @@ class BaseHandlerProject(BaseHandler):
 
     def delete_method_api_project(self, param):
         # param on this case is the id of element
-        if param is not None and not param.isdigit():
-            raise HTTPError(400, "Invalid parameter.")
-
         try:
             self.PGSQLConn.delete_project_in_db(param)
         except DataError as error:
@@ -276,11 +273,7 @@ class BaseHandlerChangeset(BaseHandler):
         self.write(json_encode(json_with_id))
 
     def put_method_api_changeset_close(self, changeset_id):
-        if changeset_id is not None and not changeset_id.isdigit():
-            raise HTTPError(400, "Invalid parameter.")
-
         try:
-            # close the changeset of id = changeset_id
             self.PGSQLConn.close_changeset(changeset_id)
         except DataError as error:
             # print("Error: ", error)

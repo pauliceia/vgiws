@@ -8,12 +8,13 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-
 class TestAPIProject(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
+
+    # project - get
 
     def test_get_api_project_return_all_projects(self):
         expected = {
@@ -83,7 +84,37 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, user_id="1002")
 
-    # ERRORS
+    # project - create and delete
+
+    def test_get_api_project_create_and_delete(self):
+        # DO LOGIN
+        self.tester.auth_login()
+
+        # create a project
+        project = {
+            'project': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'name', 'v': 'project of data'},
+                         {'k': 'description', 'v': 'description of the project'}],
+                'properties': {'id': -1}
+            }
+        }
+        self.project = self.tester.api_project_create(project)
+
+        # get the id of project to REMOVE it
+        project_id = self.project["project"]["properties"]["id"]
+
+        # REMOVE THE PROJECT AFTER THE TESTS
+        self.tester.api_project_delete(project_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+
+class TestAPIProjectErrors(TestCase):
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
 
     # project errors - get
 

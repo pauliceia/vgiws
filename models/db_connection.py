@@ -243,7 +243,7 @@ class PGSQLConnection:
 
     def delete_project_in_db(self, project_id):
         if is_a_invalid_id(project_id):
-            raise HTTPError(400, "It needs a valid id to delete a project.")
+            raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
@@ -319,21 +319,23 @@ class PGSQLConnection:
 
         return changeset_id_in_json
 
-    def close_changeset(self, id_changeset=None):
-        """
-        Close the changeset of id = id_changeset
-        :param id_changeset: id of changeset to be closed
-        :return:
-        """
+    def close_changeset(self, changeset_id=None):
+        if is_a_invalid_id(changeset_id):
+            raise HTTPError(400, "Invalid parameter.")
 
-        if id_changeset is None:
-            raise HTTPError(400, "It needs a valid id to close a changeset.")
+        query_text = """
+            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
+        """.format(changeset_id)
 
-        self.execute("""UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
-                    """.format(id_changeset))
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
-        # send the modifications to DB
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
         self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # ELEMENT
