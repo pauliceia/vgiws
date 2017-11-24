@@ -195,7 +195,7 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is no feature
+        # if there is not feature
         if results_of_query["features"] is None:
             raise HTTPError(404, "Not found any feature.")
 
@@ -345,7 +345,7 @@ class PGSQLConnection:
 
     def get_elements(self, element, **arguments):
         if not are_arguments_valid_to_get_elements(**arguments):
-            raise HTTPError(400, "Invalid argument(s).")
+            raise HTTPError(400, "Invalid parameter.")
 
         return self.get_elements_geojson(element, **arguments)
 
@@ -396,6 +396,10 @@ class PGSQLConnection:
         # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
 
         return results_of_query
 

@@ -189,7 +189,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Examples:
          - Get all projects: http://localhost:8888/api/project/
-         - Get project by id: http://localhost:8888/api/project/?project_id=1001
+         - Get one project by id: http://localhost:8888/api/project/?project_id=1001
          - Get projects by user id: http://localhost:8888/api/project/?user_id=1001
     - Send:
     - Response: a JSON that contain the features selected. Example:
@@ -328,22 +328,36 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
     This method gets elements from DB. If you doesn't put any parameter, so will return all.
     - Parameters:
-        - element_id (optional): the id of a element (e.g. 1, 2, 3, ...).
-        - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
-        - changeset_id (optional): the id of a changeset (e.g. 1, 2, 3, ...).
-    - Send:
-    - Response: a GeoJSON that contain the features selected.
-    - Error codes:
-        - 400 (Bad Request): Invalid argument(s).
-        - 404 (Not Found): There is no element.
-        - 500 (Internal Server Error): Problem when get a element. Please, contact the administrator.
+        - element_id (optional): the id of a element that is a positive integer not null (e.g. 1, 2, 3, ...).
+        - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
+        - changeset_id (optional): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Examples:
-        - http://localhost:8888/api/node/?element_id=1001
-        - http://localhost:8888/api/way/?project_id=1001
-        - http://localhost:8888/api/area/?changeset_id=1001
-        - http://localhost:8888/api/node/?project_id=1001&changeset_id=1001
-        - http://localhost:8888/api/way/?element_id=1001&project_id=1001&changeset_id=1001
-        - http://localhost:8888/api/area/
+        - Get one node by id: http://localhost:8888/api/node/?element_id=1001
+        - Get all ways by project id: http://localhost:8888/api/way/?project_id=1001
+        - Get all areas by changeset id:  http://localhost:8888/api/area/?changeset_id=1001
+        - Get all area elements: http://localhost:8888/api/area/
+    - Send:
+    - Response: a GeoJSON that contain the features selected. Example:
+        ```javascript
+        {
+            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'tags': [{'v': 'R. São José', 'k': 'address'},
+                             {'v': '1869', 'k': 'start_date'},
+                             {'v': '1869', 'k': 'end_date'}],
+                    'type': 'Feature',
+                    'properties': {'id': 1001, 'fk_changeset_id': 1001},
+                    'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
+                }
+            ]
+        }
+        ```
+    - Error codes:
+        - 400 (Bad Request): Invalid parameter.
+        - 404 (Not Found): Not found any feature.
+        - 500 (Internal Server Error): Problem when get a element. Please, contact the administrator.
     - Notes:
 
 - PUT /api/\[node|way|area]/create

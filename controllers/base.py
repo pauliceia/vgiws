@@ -302,10 +302,6 @@ class BaseHandlerElement(BaseHandler):
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a element. Please, contact the administrator.")
 
-        # if there is no element
-        if result["features"] is None:
-            raise HTTPError(404, "There is no element.")
-
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
 
