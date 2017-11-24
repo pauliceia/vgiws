@@ -249,7 +249,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
         - 403 (Forbidden): It is necessary a user logged in to access this URL.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Examples:
-         - Delete a project by id: DELETE ```http://localhost:8888/api/project/7```
+         - Delete a project by id: ```DELETE http://localhost:8888/api/project/7```
     - Notes:
 
 
