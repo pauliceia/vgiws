@@ -195,6 +195,10 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
+        # if there is no feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
         return results_of_query
 
     def add_project_in_db(self, fk_user_id_owner):
@@ -249,7 +253,12 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
         self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # CHANGESET

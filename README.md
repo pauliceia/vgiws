@@ -188,22 +188,22 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Send:
     - Response: a JSON that contain the features selected. Example:
         ```javascript
-            {
-                'features': [
-                    {
-                        'type': 'Project',
-                        'tags': [{'k': 'name', 'v': 'default'},
-                                 {'k': 'description', 'v': 'default project'}],
-                        'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
-                                       'id': 1001, 'create_at': '2017-10-20 00:00:00'}
-                    }
-                ],
-                'type': 'FeatureCollection'
-            }
+        {
+            'features': [
+                {
+                    'type': 'Project',
+                    'tags': [{'k': 'name', 'v': 'default'},
+                             {'k': 'description', 'v': 'default project'}],
+                    'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
+                                   'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
         ```
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
-        - 404 (Not Found): There is no project.
+        - 404 (Not Found): Not found any feature.
         - 500 (Internal Server Error): Problem when get a project. Please, contact the administrator.
     - Examples:
          - Get all projects: http://localhost:8888/api/project/
@@ -217,18 +217,18 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Parameters:
     - Send: a JSON describing the feature. Example:
         ```javascript
-            {
-                'project': {
-                    'tags': [{'k': 'created_by', 'v': 'test_api'},
-                             {'k': 'name', 'v': 'project of data'},
-                             {'k': 'description', 'v': 'description of the project'}],
-                    'properties': {'id': -1}
-                }
+        {
+            'project': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'name', 'v': 'project of data'},
+                         {'k': 'description', 'v': 'description of the project'}],
+                'properties': {'id': -1}
             }
+        }
         ```
     - Response: a JSON that contain the id of the feature created. Example:
         ```javascript
-            {'id': 7}
+        {'id': 7}
         ```
     - Error codes:
         - 403 (Forbidden): It is necessary a user logged in to access this URL.
@@ -247,6 +247,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
         - 403 (Forbidden): It is necessary a user logged in to access this URL.
+        - 404 (Not Found): Not found any feature.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Examples:
          - Delete a project by id: ```DELETE http://localhost:8888/api/project/7```

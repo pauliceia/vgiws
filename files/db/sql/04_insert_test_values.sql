@@ -751,4 +751,4 @@ SELECT element.id, element.geom, element.fk_changeset_id, element.visible
 FROM current_node element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
 WHERE changeset.id = 1001;
 */
-             
+          

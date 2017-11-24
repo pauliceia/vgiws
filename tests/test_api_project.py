@@ -83,29 +83,48 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, user_id="1002")
 
-    def test_get_api_project_error_400_invalid_parameter(self):
-        self.tester.api_project_error_400_invalid_parameter(project_id="abc")
-        self.tester.api_project_error_400_invalid_parameter(project_id=0)
-        self.tester.api_project_error_400_invalid_parameter(project_id=-1)
-        self.tester.api_project_error_400_invalid_parameter(project_id="-1")
-        self.tester.api_project_error_400_invalid_parameter(project_id="0")
+    # ERRORS
 
-    def test_get_api_project_error_404_there_is_no_project(self):
-        self.tester.api_project_error_404_there_is_no_project(project_id="999")
-        self.tester.api_project_error_404_there_is_no_project(project_id="998")
+    # project errors - get
 
-    def test_delete_api_project_error_400_invalid_parameter(self):
+    def test_get_api_project_error_400_bad_request(self):
+        self.tester.api_project_error_400_bad_request(project_id="abc")
+        self.tester.api_project_error_400_bad_request(project_id=0)
+        self.tester.api_project_error_400_bad_request(project_id=-1)
+        self.tester.api_project_error_400_bad_request(project_id="-1")
+        self.tester.api_project_error_400_bad_request(project_id="0")
+
+    def test_get_api_project_error_404_not_found(self):
+        self.tester.api_project_error_404_not_found(project_id="999")
+        self.tester.api_project_error_404_not_found(project_id="998")
+
+    # project errors - create
+
+    def test_put_api_project_create_error_403_forbidden(self):
+        project = {
+            'project': {
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'name', 'v': 'project of data'},
+                         {'k': 'description', 'v': 'description of the project'}],
+                'properties': {'id': -1}
+            }
+        }
+        self.tester.api_project_create_error_403_forbidden(project)
+
+    # project errors - delete
+
+    def test_delete_api_project_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_project_delete_error_400_invalid_parameter(project_id="abc")
-        self.tester.api_project_delete_error_400_invalid_parameter(project_id=0)
-        self.tester.api_project_delete_error_400_invalid_parameter(project_id=-1)
-        self.tester.api_project_delete_error_400_invalid_parameter(project_id="-1")
-        self.tester.api_project_delete_error_400_invalid_parameter(project_id="0")
+        self.tester.api_project_delete_error_400_bad_request(project_id="abc")
+        self.tester.api_project_delete_error_400_bad_request(project_id=0)
+        self.tester.api_project_delete_error_400_bad_request(project_id=-1)
+        self.tester.api_project_delete_error_400_bad_request(project_id="-1")
+        self.tester.api_project_delete_error_400_bad_request(project_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -117,6 +136,19 @@ class TestAPIProject(TestCase):
         self.tester.api_project_delete_error_403_forbidden(project_id="-1")
         self.tester.api_project_delete_error_403_forbidden(project_id="0")
         self.tester.api_project_delete_error_403_forbidden(project_id="1001")
+
+    def test_delete_api_project_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_project_delete_error_404_not_found(project_id="5000")
+        self.tester.api_project_delete_error_404_not_found(project_id="5001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 # It is not necessary to pyt the main() of unittest here,

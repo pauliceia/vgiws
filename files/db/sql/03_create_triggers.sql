@@ -1,5 +1,5 @@
--- -----------------------------------------------------
--- Triggers
+﻿-- -----------------------------------------------------
+-- Triggers to current_element table
 -- -----------------------------------------------------
 -- create a generic function to observe when add a new element in current_element table
 DROP FUNCTION IF EXISTS observe_when_add_new_element_in_current_element_table() CASCADE;
@@ -21,16 +21,14 @@ CREATE OR REPLACE FUNCTION observe_when_add_new_element_in_current_element_table
 $$ LANGUAGE plpgsql;
 
 -- Create a trigger to observe each current_element table when add a new element
-CREATE TRIGGER observe_when_add_new_element_in_current_node_table BEFORE INSERT OR UPDATE ON current_node
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_node_table BEFORE INSERT OR UPDATE ON current_node
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
 
-CREATE TRIGGER observe_when_add_new_element_in_current_way_table BEFORE INSERT OR UPDATE ON current_way
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_way_table BEFORE INSERT OR UPDATE ON current_way
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
 
-CREATE TRIGGER observe_when_add_new_element_in_current_area_table BEFORE INSERT OR UPDATE ON current_area
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_area_table BEFORE INSERT OR UPDATE ON current_area
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
-
-
 
 
 /*

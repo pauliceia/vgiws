@@ -219,10 +219,6 @@ class BaseHandlerProject(BaseHandler):
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get a project. Please, contact the administrator.")
 
-        # if there is no feature
-        if result["features"] is None:
-            raise HTTPError(404, "There is no project.")
-
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
 

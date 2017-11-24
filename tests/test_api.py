@@ -27,8 +27,11 @@ class TestAPI(TestCase):
         self.project = self.tester.api_project_create(project)
 
     def tearDown(self):
+        # get the id of project to REMOVE it
+        project_id = self.project["project"]["properties"]["id"]
+
         # REMOVE THE PROJECT AFTER THE TESTS
-        self.tester.api_project_delete(self.project)
+        self.tester.api_project_delete(project_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

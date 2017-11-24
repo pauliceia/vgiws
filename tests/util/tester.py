@@ -30,7 +30,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # project
+    # PROJECT
 
     def api_project(self, project_expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -59,31 +59,38 @@ class UtilTester:
 
         return project_json
 
-    def api_project_delete(self, project):
-        # get the id of project to REMOVE it
-        fk_id_project = project["project"]["properties"]["id"]
-
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(fk_id_project))
+    def api_project_delete(self, project_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # project errors
+    # project errors - get
 
-    def api_project_error_400_invalid_parameter(self, **arguments):
+    def api_project_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_project_error_404_there_is_no_project(self, **arguments):
+    def api_project_error_404_not_found(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    def api_project_delete_error_400_invalid_parameter(self, project_id):
+    # project errors - create
+
+    def api_project_create_error_403_forbidden(self, project_json):
+        response = self.session.put('http://localhost:8888/api/project/create/',
+                                    data=dumps(project_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # project errors - delete
+
+    def api_project_delete_error_400_bad_request(self, project_id):
         response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
@@ -93,7 +100,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    # changeset
+    def api_project_delete_error_404_not_found(self, project_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # CHANGESET
 
     def api_changeset_create(self, changeset_json):
         # do a GET call, sending a changeset to add in DB
