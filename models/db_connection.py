@@ -430,6 +430,7 @@ class PGSQLConnection:
 
         return result["id"]
 
+        list_of_id_of_features_created = []
     def add_element_tag_in_db(self, k, v, element, fk_element_id):
         query_text = """
             INSERT INTO current_{0}_tag (k, v, fk_current_{0}_id) 
@@ -485,7 +486,12 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
         self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # USER

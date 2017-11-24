@@ -112,6 +112,7 @@ class TestAPIProject(TestCase):
 
 
 class TestAPIProjectErrors(TestCase):
+
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)

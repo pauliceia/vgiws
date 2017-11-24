@@ -48,7 +48,7 @@ class TestAPIWihoutLogin(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_without_permission(node)  # return the same element with the id generated
+        self.tester.api_element_create_error_403_forbidden(node)  # return the same element with the id generated
 
         way = {
             'type': 'FeatureCollection',
@@ -67,7 +67,7 @@ class TestAPIWihoutLogin(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_without_permission(way)
+        self.tester.api_element_create_error_403_forbidden(way)
 
         area = {
             'type': 'FeatureCollection',
@@ -86,12 +86,15 @@ class TestAPIWihoutLogin(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_without_permission(area)
+        self.tester.api_element_create_error_403_forbidden(area)
 
         # REMOVE THE ELEMENTS CREATED
-        self.tester.api_element_delete_without_persmission(node)
-        self.tester.api_element_delete_without_persmission(way)
-        self.tester.api_element_delete_without_persmission(area)
+        element_id = node["features"][0]["properties"]["id"]  # get the id of element
+        self.tester.api_element_delete_error_403_forbidden("node", element_id=element_id)
+        element_id = way["features"][0]["properties"]["id"]  # get the id of element
+        self.tester.api_element_delete_error_403_forbidden("way", element_id=element_id)
+        element_id = area["features"][0]["properties"]["id"]  # get the id of element
+        self.tester.api_element_delete_error_403_forbidden("area", element_id=element_id)
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close_error_403_forbidden(changeset_id)
@@ -152,7 +155,8 @@ class TestAPIWihoutLogin(TestCase):
             self.tester.verify_if_element_was_add_in_db(node)
 
             # REMOVE THE ELEMENT CREATED
-            self.tester.api_element_delete(node)
+            element_id = node["features"][0]["properties"]["id"]  # get the id of element
+            self.tester.api_element_delete("node", element_id)
 
             # CLOSE THE CHANGESET
             self.tester.api_changeset_close(changeset_id)

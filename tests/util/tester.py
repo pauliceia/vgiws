@@ -141,7 +141,7 @@ class UtilTester:
     # changeset errors - close
 
     def api_changeset_close_error_400_bad_request(self, changeset_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(changeset_id))
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
@@ -151,11 +151,11 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_changeset_close_error_404_not_found(self, changeset_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(changeset_id))
+        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # element
+    # ELEMENT
 
     def api_element(self, element, element_expected, **arguments):
         # get the arguments of the URL
@@ -188,13 +188,8 @@ class UtilTester:
 
         return element_json
 
-    def api_element_delete(self, element_json):
-        id_element = element_json["features"][0]["properties"]["id"]  # get the id of element
-
-        multi_element = element_json["features"][0]["geometry"]["type"]
-        element = by_multi_element_get_url_name(multi_element)
-
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+    def api_element_delete(self, element, element_id):
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -221,16 +216,25 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # element errors
+    # element errors - get
 
-    def api_element_invalid_parameter(self, element, element_id):
+    def api_element_error_400_bad_request(self, element, element_id):
         arguments = get_url_arguments(element_id=element_id)
 
         response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_element_create_with_changeset_close(self, element_json):
+    def api_element_error_404_not_found(self, element, element_id):
+        arguments = get_url_arguments(element_id=element_id)
+
+        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # element errors - create
+
+    def api_element_create_error_400_bad_request(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 
@@ -240,10 +244,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-        # print("response.text: ", response.text)
-        # ERROR:  The changeset with id=N is closed, so it is not possible to use it
-
-    def api_element_create_without_permission(self, element_json):
+    def api_element_create_error_403_forbidden(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
 
@@ -253,15 +254,22 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_element_delete_without_persmission(self, element_json):
-        id_element = element_json["features"][0]["properties"]["id"]  # get the id of element
+    # element errors - delete
 
-        multi_element = element_json["features"][0]["geometry"]["type"]
-        element = by_multi_element_get_url_name(multi_element)
+    def api_element_delete_error_400_bad_request(self, element, element_id):
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
 
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, id_element))
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_element_delete_error_403_forbidden(self, element, element_id):
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_element_delete_error_404_not_found(self,  element, element_id):
+        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     # others
 
