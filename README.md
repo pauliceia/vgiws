@@ -183,8 +183,8 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
     This method gets projects from DB. If you doesn't put any parameter, so will return all.
     - Parameters:
-        - project_id (optional): the id of a project (e.g. 1, 2, 3, ...).
-        - user_id (optional): the id of a user (e.g. 1, 2, 3, ...).
+        - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
+        - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Send:
     - Response: a JSON that contain the features selected. Example:
         ```javascript
@@ -239,15 +239,17 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 - DELETE /api/project/delete/#id
 
-    This method delete project by id = #id.
+    This method delete one project by id = #id.
     - Parameters:
-        - #id (mandatory): a positive integer (e.g. 1, 2, 3, ...).
+        - #id (mandatory): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Send:
     - Response:
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
         - 403 (Forbidden): It is necessary a user logged in to access this URL.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
+    - Examples:
+         - Delete a project by id: DELETE ```http://localhost:8888/api/project/7```
     - Notes:
 
 

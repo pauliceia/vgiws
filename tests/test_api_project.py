@@ -83,18 +83,18 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, user_id="1002")
 
-    def test_get_api_project_with_invalid_project_id(self):
+    def test_get_api_project_error_400_invalid_parameter(self):
         self.tester.api_project_error_400_invalid_parameter(project_id="abc")
         self.tester.api_project_error_400_invalid_parameter(project_id=0)
         self.tester.api_project_error_400_invalid_parameter(project_id=-1)
         self.tester.api_project_error_400_invalid_parameter(project_id="-1")
         self.tester.api_project_error_400_invalid_parameter(project_id="0")
 
-    def test_get_api_project_there_is_no_project_by_project_id(self):
+    def test_get_api_project_error_404_there_is_no_project(self):
         self.tester.api_project_error_404_there_is_no_project(project_id="999")
         self.tester.api_project_error_404_there_is_no_project(project_id="998")
 
-    def test_api_project_delete_with_invalid_project_id(self):
+    def test_delete_api_project_error_400_invalid_parameter(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
@@ -110,7 +110,7 @@ class TestAPIProject(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_api_project_delete_forbidden(self):
+    def test_delete_api_project_error_403_forbidden(self):
         self.tester.api_project_delete_error_403_forbidden(project_id="abc")
         self.tester.api_project_delete_error_403_forbidden(project_id=0)
         self.tester.api_project_delete_error_403_forbidden(project_id=-1)
