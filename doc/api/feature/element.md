@@ -1,8 +1,4 @@
-### Elements (it can be node, way or area)
-
-<details>
-<summary> click here </summary>
-<p>
+### Element (it can be node, way or area)
 
 - GET /api/\[node|way|area]/?\<params>
 
@@ -110,6 +106,3 @@
             <!-- After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed. -->
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
-
-</p>
-</details>

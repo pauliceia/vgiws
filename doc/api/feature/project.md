@@ -1,10 +1,5 @@
 ### Project
 
-<details>
-<summary> click here </summary>
-<p>
-
-
 - GET /api/project/?\<params>
 
     This method gets projects from DB. If you doesn't put any parameter, so will return all.
@@ -80,7 +75,3 @@
         - 404 (Not Found): Not found any feature.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Notes:
-
-
-</p>
-</details>

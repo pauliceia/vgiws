@@ -1,9 +1,5 @@
 ### Changeset
 
-<details>
-<summary> click here </summary>
-<p>
-
 <!-- - GET /api/changeset/#id -->
 
 - PUT /api/changeset/create
@@ -48,7 +44,3 @@
         - 404 (Not Found): Not found any feature.
         - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
     - Notes:
-
-
-</p>
-</details>
