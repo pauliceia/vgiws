@@ -448,10 +448,10 @@ There are too others specific tags for Pauliceia' project, described on followin
 
 #### Authors
 
-| Key                  | Value                          | Element              | Comment                                  |
-| -------------------- | ------------------------------ | -------------------- | ---------------------------------------- |
-| original_author      | text (e.g. "J. R. R. Tolkien") | node, way or area    | the original author of the data          |
-| food_author          | text (e.g. "Jorge")            | node, way or area    | the user that feeding the system         |
+| Key                            | Value                          | Element              | Comment                                                      |
+| ------------------------------ | ------------------------------ | -------------------- | ------------------------------------------------------------ |
+| original_author                | text (e.g. "J. R. R. Tolkien") | node, way or area    | The original author of the data                              |
+| feeder_author                  | text (e.g. "Jorge")            | node, way or area    | The user that feeding the system, who make changes in data   |
 
 
 </p>
