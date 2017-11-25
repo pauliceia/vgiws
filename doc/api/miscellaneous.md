@@ -5,7 +5,7 @@
     This method return the capabilities of the server.
     - Parameters:
     - Examples:
-         - Get the capabilities: http://localhost:8888//api/capabilities/
+         - Get the capabilities: http://localhost:8888/api/capabilities/
     - Send:
     - Response: a JSON that contain the capabilities of the server. Example:
         ```javascript
