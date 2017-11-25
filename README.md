@@ -5,12 +5,12 @@ Web Service for Explicit VGI for the Pauliceia's project.
 
 ## Server Documentation:
 
-- [Server Documentation](doc/server/README.md)
+- [Server Documentation](doc/server/)
 
 
 ## API Documentation:
 
-- [API Documentation](doc/api/README.md)
+- [API Documentation](doc/api/)
 
 
 ## To run this application in PyCharm
