@@ -247,7 +247,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Parameters:
         - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Examples:
-         - Delete a project by id: ```DELETE http://localhost:8888/api/project/7```
+         - Delete a feature by id: ```DELETE http://localhost:8888/api/project/7```
     - Send:
     - Response:
     - Error codes:
@@ -303,7 +303,7 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
     - Parameters:
         - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
     - Examples:
-         - Delete a project by id: ```PUT http://localhost:8888/api/changeset/close/7```
+         - Close a changeset by id: ```PUT http://localhost:8888/api/changeset/close/7```
     - Send:
     - Response:
     - Error codes:
@@ -364,13 +364,39 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
     This method create a new element described in a GeoJSON.
     - Parameters:
-    - Send: a GeoJSON describing the element.
-    - Response: a JSON that contain the id of the feature created.
+    - Examples:
+        - Create a feature: ```PUT http://localhost:8888/api/node/create```
+    - Send: a GeoJSON describing the element. The key 'features' receive a list of features to create. Example:
+        ```javascript
+        {
+            'type': 'FeatureCollection',
+            'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
+            'features': [
+                {
+                    'tags': [{'k': 'event', 'v': 'robbery'},
+                             {'k': 'date', 'v': '1910'}],
+                    'type': 'Feature',
+                    'properties': {'id': -1, 'fk_changeset_id': 1001},
+                    'geometry': {
+                        'type': 'MultiPoint',
+                        'coordinates': [[-23.546421, -46.635722]]
+                    },
+                },
+                ...
+            ]
+        }
+        ```
+    - Response: a list that contain the ids of the features created.
+        ```javascript
+        [10, ...]
+        ```
     - Error codes:
         - 400 (Bad Request): ERROR: The changeset with id=X is closed, so it is not possible to use it.
             - PS: Just can use changesets that are open.
+        - 403 (Forbidden): It is necessary a user logged in to access this URL.
         - 500 (Internal Server Error): Problem when create a element. Please, contact the administrator.
-    - Notes: when add a element, it starts with a default version 1 and it is saved in current_element table.
+    - Notes:
+    <!-- when add a element, it starts with a default version 1 and it is saved in current_element table. -->
 
 <!--
  - PUT /api/\[node|way|area]/update
@@ -387,17 +413,21 @@ Use the command "CTRL+SHIFT+M" to show the rendered HTML markdown in Atom.
 
 - DELETE /api/\[node|way|area]/#id
 
-    This method delete element by id = #id.
+    This method delete one element by id = #id.
     - Parameters:
-        - #id (mandatory): a positive integer (e.g. 1, 2, 3, ...).
+        - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - Examples:
+        - Delete a feature by id: ```DELETE http://localhost:8888/api/way/3```
     - Send:
     - Response:
     - Error codes:
         - 400 (Bad Request): Invalid parameter.
-        - 400 (Bad Request): It needs a valid id to delete a element.
-        - 500 (Internal Server Error): Problem when delete a element. Please, contact the administrator.
-    - Notes: when delete a element, it is removed from current_element table (main) and put in element table (historical), with its version.
-            After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed.
+        - 403 (Forbidden): It is necessary a user logged in to access this URL.
+        - 404 (Not Found): Not found any feature.
+        - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
+    - Notes:
+            <!-- when delete a element, it is removed from current_element table (main) and put in element table (historical), with its version. -->
+            <!-- After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed. -->
 
 <!-- - GET /api/\[node|way|area]/history/#id -->
 
