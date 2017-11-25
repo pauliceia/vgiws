@@ -1,11 +1,11 @@
-### Tags
+## Tags
 
 All features can be mapped usings [tags](http://wiki.openstreetmap.org/wiki/Tags), like OSM.
 There are some standard features described in [OSM Map Features](http://wiki.openstreetmap.org/wiki/Map_Features) that can be used.
 There are too others specific tags for Pauliceia' project, described on following sections.
 
 
-#### Authors
+### Authors
 
 | Key                            | Value                          | Element              | Comment                                                      |
 | ------------------------------ | ------------------------------ | -------------------- | ------------------------------------------------------------ |

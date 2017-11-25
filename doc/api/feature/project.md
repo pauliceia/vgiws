@@ -1,7 +1,7 @@
-### Project
+## Project
 
 
-#### GET /api/project/?\<params>
+### GET /api/project/?\<params>
 
 This method gets projects from DB. If you doesn't put any parameter, so will return all.
 - Parameters:
@@ -34,7 +34,7 @@ This method gets projects from DB. If you doesn't put any parameter, so will ret
 - Notes:
 
 
-#### PUT /api/project/create
+### PUT /api/project/create
 
 This method create a new project described in a JSON.
 - Parameters:
@@ -64,7 +64,7 @@ This method create a new project described in a JSON.
 <!-- - PUT /api/project/update -->
 
 
-#### DELETE /api/project/delete/#id
+### DELETE /api/project/delete/#id
 
 This method delete one project by id = #id.
 - Parameters:
