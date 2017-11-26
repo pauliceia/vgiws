@@ -21,9 +21,10 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
         'type': 'FeatureCollection',
         'features': [
             {
-                'tags': [{'v': 'R. São José', 'k': 'address'},
-                         {'v': '1869', 'k': 'start_date'},
-                         {'v': '1869', 'k': 'end_date'}],
+                'tags': [{'v': 'R. São José', 'k': 'addr:street'},
+                         {'v': '10', 'k': 'addr:housenumber'},
+                         {'v': '1870', 'k': 'start_date'},
+                         {'v': '1910', 'k': 'end_date'}],
                 'type': 'Feature',
                 'properties': {'id': 1001, 'fk_changeset_id': 1001},
                 'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
