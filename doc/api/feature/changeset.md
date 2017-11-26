@@ -12,8 +12,8 @@ This method create a new changeset described in a JSON.
     ```javascript
     {
         'changeset': {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': [{'k': 'created_by', 'v': 'Tomás de Aquino'},
+                     {'k': 'comment', 'v': 'Changeset for crimes data.'}],
             'properties': {'id': -1, "fk_project_id": 1001}
         }
     }
