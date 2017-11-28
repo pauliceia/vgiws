@@ -8,11 +8,15 @@ This method gets changesets from DB. If you doesn't put any parameter, so will r
     - changeset_id (optional): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
     - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
     - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - open: if use this parameter, get all open changesets.
+    - closed: if use this parameter, get all closed changesets.
 - Examples:
     - Get one changeset by id: http://localhost:8888/api/changeset/?changeset_id=1001
     - Get all changesets of one project: http://localhost:8888/api/changeset/?project_id=1001
+    - Get all changesets of one project that are open: http://localhost:8888/api/changeset/?project_id=1001&open=true
     - Get all changesets of one user:  http://localhost:8888/api/changeset/?user_id=1001
     - Get all changesets: http://localhost:8888/api/changeset/
+    - Get all changesets that are closed: http://localhost:8888/api/changeset/?closed=true
 - Send:
 - Response: a JSON that contain the features selected. Example:
     ```javascript
@@ -36,6 +40,7 @@ This method gets changesets from DB. If you doesn't put any parameter, so will r
 - Notes: If pass more than one parameter, the server will use the one that have more importance.
         The importance order is describe in 'Parameters' section above (changeset_id, project_id, ...).
         It means that: whether use the 'changeset_id' parameter, will be ignored the others (project_id, user_id, ...).
+        'open' and 'closed' parameters can be used with the others.
 
 
 ###  PUT /api/changeset/create

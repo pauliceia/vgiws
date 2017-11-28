@@ -27,6 +27,7 @@ def get_subquery_current_element_table_if_user_id_is_not_none(element, condition
                 ) AS changeset
                 LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
                 {1}
+                ORDER BY id
             ) AS element
         """.format(element, where_current_element_table, where_join_user_with_changeset)
 
@@ -58,6 +59,7 @@ def get_subquery_current_element_table_if_project_id_is_not_none(element, condit
             ) AS changeset
             LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
             {1}
+            ORDER BY id
         ) AS element
     """.format(element, where_current_element_table, where_join_project_with_changeset)
 
@@ -77,6 +79,7 @@ def get_subquery_current_element_table_if_changeset_id_is_not_none(element, cond
             SELECT element.id, element.geom, element.fk_changeset_id
             FROM current_{0} element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
             {1}
+            ORDER BY id
         ) AS element
     """.format(element, where_current_element_table)
 
@@ -93,6 +96,7 @@ def get_subquery_current_element_table_default(element, conditions_of_where, **k
             SELECT element.id, element.geom, element.fk_changeset_id
             FROM current_{0} element
             {1}
+            ORDER BY id
         ) AS element
     """.format(element, where_current_element_table)
 

@@ -104,10 +104,14 @@ WHERE id=1001;
 DELETE FROM changeset;
 
 -- add changeset open
+-- closed changesets (they will be closed in the final of file)
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-11-10', 1002, 1002);
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1003, '2017-11-15', 1001, 1001);
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1004, '2017-01-20', 1002, 1002);
+-- open changesets
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1005, '2017-03-25', 1003, 1003);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1006, '2017-05-13', 1004, 1004);
 
 -- SELECT * FROM changeset;
 

@@ -265,13 +265,13 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    def get_changesets(self, changeset_id=None, user_id=None, project_id=None, open=None, close=None):
+    def get_changesets(self, changeset_id=None, user_id=None, project_id=None, open=None, closed=None):
         # the id have to be a int
         if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
         subquery_project_table = get_subquery_changeset_table(changeset_id=changeset_id, project_id=project_id,
-                                                              user_id=user_id, open=open, close=close)
+                                                              user_id=user_id, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -283,6 +283,7 @@ class PGSQLConnection:
                         'id',           id,                        
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'fk_project_id',    fk_project_id,
                         'fk_user_id_owner', fk_user_id_owner
                     ),
                     'tags',       tags.jsontags

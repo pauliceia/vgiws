@@ -18,13 +18,13 @@ def get_subquery_changeset_table(**kwargs):
         # default get all features, without where clause
         pass
 
-    # # extra conditions: open or closed changesets
-    # if "open" in kwargs and kwargs["open"] is not None:
-    #     conditions_of_where.append("closed_at is NULL")
-    # elif "closed" in kwargs and kwargs["closed"] is not None:
-    #     conditions_of_where.append("closed_at is not NULL")
-    # else:
-    #     pass
+    # extra conditions: open or closed changesets
+    if "open" in kwargs and kwargs["open"] is not None:
+        conditions_of_where.append("closed_at is NULL")
+    elif "closed" in kwargs and kwargs["closed"] is not None:
+        conditions_of_where.append("closed_at is not NULL")
+    else:
+        pass
 
     # default get all features, without where clause
     where_clause = ""
@@ -35,7 +35,9 @@ def get_subquery_changeset_table(**kwargs):
 
     subquery_table = """
         (
-            SELECT id, create_at, closed_at, fk_project_id, fk_user_id_owner FROM changeset {0} 
+            SELECT id, create_at, closed_at, fk_project_id, fk_user_id_owner 
+            FROM changeset {0}
+            ORDER BY id 
         ) AS changeset
     """.format(where_clause)
 
