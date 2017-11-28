@@ -155,7 +155,8 @@ class PGSQLConnection:
         if is_a_invalid_id(project_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery_project_table = get_subquery_project_table(project_id=project_id, user_id=user_id)
+        subquery_project_table = get_subquery_project_table(project_id=project_id,
+                                                            user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -263,6 +264,58 @@ class PGSQLConnection:
     ################################################################################
     # CHANGESET
     ################################################################################
+
+    def get_changesets(self, changeset_id=None, user_id=None, project_id=None, open=None, close=None):
+        # the id have to be a int
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery_project_table = get_subquery_changeset_table(changeset_id=changeset_id, project_id=project_id,
+                                                              user_id=user_id, open=open, close=close)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Changeset',
+                    'properties', json_build_object(
+                        'id',           id,                        
+                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'fk_user_id_owner', fk_user_id_owner
+                    ),
+                    'tags',       tags.jsontags
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}
+            CROSS JOIN LATERAL (
+                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+                FROM changeset_tag 
+                WHERE fk_changeset_id = changeset.id    
+            ) AS tags
+        """.format(subquery_project_table)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
+        return results_of_query
 
     def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
         """

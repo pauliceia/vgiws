@@ -356,7 +356,7 @@ class TestAPIElement(TestCase):
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_project_id": 1001}
+                'properties': {'id': -1, "fk_project_id": 1004}
             }
         }
         changeset = self.tester.api_changeset_create(changeset)

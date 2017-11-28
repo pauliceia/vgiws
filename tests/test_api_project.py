@@ -43,7 +43,7 @@ class TestAPIProject(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_project(expected, project_id="")
+        self.tester.api_project(expected)
 
     def test_get_api_project_return_project_by_project_id(self):
         expected = {

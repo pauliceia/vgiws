@@ -1,6 +1,42 @@
 ## Changeset
 
-<!-- - GET /api/changeset/#id -->
+
+###  GET /api/changeset/?\<params>
+
+This method gets changesets from DB. If you doesn't put any parameter, so will return all.
+- Parameters:
+    - changeset_id (optional): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
+- Examples:
+    - Get one changeset by id: http://localhost:8888/api/changeset/?changeset_id=1001
+    - Get all changesets of one project: http://localhost:8888/api/changeset/?project_id=1001
+    - Get all changesets of one user:  http://localhost:8888/api/changeset/?user_id=1001
+    - Get all changesets: http://localhost:8888/api/changeset/
+- Send:
+- Response: a JSON that contain the features selected. Example:
+    ```javascript
+    {
+        'features': [
+            {
+                'type': 'Changeset',
+                'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id_owner': 1001,
+                               'create_at': '2017-10-20 00:00:00', 'id': 1001},
+                'tags': [{'k': 'created_by', 'v': 'pauliceia_portal'},
+                         {'k': 'comment', 'v': 'a changeset created'}]
+            }
+        ],
+        'type': 'FeatureCollection'
+    }
+    ```
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found any feature.
+    - 500 (Internal Server Error): Problem when get a changeset. Please, contact the administrator.
+- Notes: If pass more than one parameter, the server will use the one that have more importance.
+        The importance order is describe in 'Parameters' section above (changeset_id, project_id, ...).
+        It means that: whether use the 'changeset_id' parameter, will be ignored the others (project_id, user_id, ...).
+
 
 ###  PUT /api/changeset/create
 

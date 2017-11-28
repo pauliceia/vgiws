@@ -105,9 +105,9 @@ DELETE FROM changeset;
 
 -- add changeset open
 INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-10-20', 1002, 1002);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1003, LOCALTIMESTAMP, 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1004, LOCALTIMESTAMP, 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-11-10', 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1003, '2017-11-15', 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1004, '2017-01-20', 1002, 1002);
 
 -- SELECT * FROM changeset;
 
@@ -603,7 +603,7 @@ INSERT INTO area_tag (id, k, v, fk_area_id, fk_area_version) VALUES (1006, 'end_
 -- Final operations
 -- -----------------------------------------------------
 -- close the changesets
-UPDATE changeset SET closed_at = LOCALTIMESTAMP WHERE id>=1001 AND id<=1004;
+UPDATE changeset SET closed_at = '2017-12-01' WHERE id>=1001 AND id<=1004;
 
 
 

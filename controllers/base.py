@@ -257,6 +257,19 @@ class BaseHandlerProject(BaseHandler):
 
 class BaseHandlerChangeset(BaseHandler):
 
+    def get_method_api_changeset(self):
+        arguments = self.get_aguments()
+
+        try:
+            # break the arguments dict in each parameter of method
+            result = self.PGSQLConn.get_changesets(**arguments)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when get a changeset. Please, contact the administrator.")
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(result))
+
     def put_method_api_changeset_create(self):
         # get the JSON sent, to add in DB
         changeset_json = self.get_the_json_validated()
