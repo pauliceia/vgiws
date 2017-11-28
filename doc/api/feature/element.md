@@ -38,7 +38,9 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
     - 400 (Bad Request): Invalid parameter.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when get a element. Please, contact the administrator.
-- Notes: if pass more than one parameter the server will use the one that have more importance to user. For example:
+- Notes: If pass more than one parameter, the server will use the one that have more importance.
+        The importance order is describe in 'Parameters' section above (element_id, user_id, ...).
+        It means that: whether use the 'element_id' parameter, will be ignored the others (user_id, project_id, ...).
 
 
 ### PUT /api/\[node|way|area]/create
