@@ -6,12 +6,14 @@
 This method gets elements from DB. If you doesn't put any parameter, so will return all.
 - Parameters:
     - element_id (optional): the id of a element that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
     - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
     - changeset_id (optional): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
     - Get one node by id: http://localhost:8888/api/node/?element_id=1001
-    - Get all ways by project id: http://localhost:8888/api/way/?project_id=1001
-    - Get all areas by changeset id:  http://localhost:8888/api/area/?changeset_id=1001
+    - Get all ways of project: http://localhost:8888/api/way/?project_id=1001
+    - Get all areas of one changeset:  http://localhost:8888/api/area/?changeset_id=1001
+    - Get all ways of one user:  http://localhost:8888/api/way/?user_id=1001
     - Get all area elements: http://localhost:8888/api/area/
 - Send:
 - Response: a GeoJSON that contain the features selected. Example:
@@ -36,7 +38,7 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
     - 400 (Bad Request): Invalid parameter.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when get a element. Please, contact the administrator.
-- Notes:
+- Notes: if pass more than one parameter the server will use the one that have more importance to user. For example:
 
 
 ### PUT /api/\[node|way|area]/create

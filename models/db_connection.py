@@ -349,8 +349,12 @@ class PGSQLConnection:
 
         return self.get_elements_geojson(element, **arguments)
 
-    def get_elements_geojson(self, element, element_id=None, project_id=None, changeset_id=None):
-        subquery_current_element_table = get_subquery_current_element_table(element, element_id=element_id,
+    def get_elements_geojson(self, element, element_id=None, user_id=None, project_id=None,
+                             changeset_id=None):
+
+        subquery_current_element_table = get_subquery_current_element_table(element,
+                                                                            element_id=element_id,
+                                                                            user_id=user_id,
                                                                             project_id=project_id,
                                                                             changeset_id=changeset_id)
 
