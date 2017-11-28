@@ -17,7 +17,7 @@ class TestAPIChangeset(TestCase):
     # changeset - get
 
     def test_get_api_changeset_return_all_changesets(self):
-        expected_at_least = {
+        expected = {
             'features': [
                 {
                     'tags': [{'v': 'pauliceia_portal', 'k': 'created_by'},
@@ -51,7 +51,7 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected_at_least=expected_at_least)
+        self.tester.api_changeset(expected)
 
     def test_get_api_changeset_return_changeset_by_changeset_id(self):
         expected = {
@@ -67,7 +67,7 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected=expected, changeset_id="1001")
+        self.tester.api_changeset(expected, changeset_id="1001")
 
     def test_get_api_changeset_return_changeset_by_project_id(self):
         expected = {
@@ -90,7 +90,7 @@ class TestAPIChangeset(TestCase):
             ]
         }
 
-        self.tester.api_changeset(expected=expected, project_id="1001")
+        self.tester.api_changeset(expected, project_id="1001")
 
     def test_get_api_changeset_return_changeset_by_user_id(self):
         expected = {
@@ -112,11 +112,11 @@ class TestAPIChangeset(TestCase):
             ]
         }
 
-        self.tester.api_changeset(expected=expected, user_id="1002")
+        self.tester.api_changeset(expected, user_id="1002")
 
     # changeset - create and delete
 
-    def test_get_api_changeset_create_and_delete(self):
+    def test_get_api_changeset_create_close_and_delete(self):
         # DO LOGIN
         self.tester.auth_login()
 
@@ -134,6 +134,9 @@ class TestAPIChangeset(TestCase):
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -208,6 +211,44 @@ class TestAPIChangesetErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    # project errors - delete
+
+    def test_delete_api_changeset_error_400_bad_request(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_changeset_delete_error_400_bad_request("abc")
+        self.tester.api_changeset_delete_error_400_bad_request(0)
+        self.tester.api_changeset_delete_error_400_bad_request(-1)
+        self.tester.api_changeset_delete_error_400_bad_request("-1")
+        self.tester.api_changeset_delete_error_400_bad_request("0")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_project_error_403_forbidden(self):
+        self.tester.api_changeset_delete_error_403_forbidden("abc")
+        self.tester.api_changeset_delete_error_403_forbidden(0)
+        self.tester.api_changeset_delete_error_403_forbidden(-1)
+        self.tester.api_changeset_delete_error_403_forbidden("-1")
+        self.tester.api_changeset_delete_error_403_forbidden("0")
+        self.tester.api_changeset_delete_error_403_forbidden("1001")
+
+    def test_delete_api_project_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_changeset_delete_error_404_not_found("5000")
+        self.tester.api_changeset_delete_error_404_not_found("5001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

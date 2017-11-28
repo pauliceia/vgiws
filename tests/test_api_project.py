@@ -152,22 +152,22 @@ class TestAPIProjectErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_project_delete_error_400_bad_request(project_id="abc")
-        self.tester.api_project_delete_error_400_bad_request(project_id=0)
-        self.tester.api_project_delete_error_400_bad_request(project_id=-1)
-        self.tester.api_project_delete_error_400_bad_request(project_id="-1")
-        self.tester.api_project_delete_error_400_bad_request(project_id="0")
+        self.tester.api_project_delete_error_400_bad_request("abc")
+        self.tester.api_project_delete_error_400_bad_request(0)
+        self.tester.api_project_delete_error_400_bad_request(-1)
+        self.tester.api_project_delete_error_400_bad_request("-1")
+        self.tester.api_project_delete_error_400_bad_request("0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_delete_api_project_error_403_forbidden(self):
-        self.tester.api_project_delete_error_403_forbidden(project_id="abc")
-        self.tester.api_project_delete_error_403_forbidden(project_id=0)
-        self.tester.api_project_delete_error_403_forbidden(project_id=-1)
-        self.tester.api_project_delete_error_403_forbidden(project_id="-1")
-        self.tester.api_project_delete_error_403_forbidden(project_id="0")
-        self.tester.api_project_delete_error_403_forbidden(project_id="1001")
+        self.tester.api_project_delete_error_403_forbidden("abc")
+        self.tester.api_project_delete_error_403_forbidden(0)
+        self.tester.api_project_delete_error_403_forbidden(-1)
+        self.tester.api_project_delete_error_403_forbidden("-1")
+        self.tester.api_project_delete_error_403_forbidden("0")
+        self.tester.api_project_delete_error_403_forbidden("1001")
 
     def test_delete_api_project_error_404_not_found(self):
         # create a tester passing the unittest self
@@ -176,8 +176,8 @@ class TestAPIProjectErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_project_delete_error_404_not_found(project_id="5000")
-        self.tester.api_project_delete_error_404_not_found(project_id="5001")
+        self.tester.api_project_delete_error_404_not_found("5000")
+        self.tester.api_project_delete_error_404_not_found("5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

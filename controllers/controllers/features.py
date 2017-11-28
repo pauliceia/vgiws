@@ -43,6 +43,10 @@ class APIChangeset(BaseHandlerChangeset):
     def put(self, param=None, param2=None):
         self.put_method_api_changeset(param, param2)
 
+    @auth_non_browser_based
+    def delete(self, param=None, param2=None):
+        self.delete_method_api_changeset(param)
+
 
 # class APIChangesetCreate(BaseHandler):
 #

@@ -82,3 +82,22 @@ This method close a changeset by id = #id.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
 - Notes:
+
+
+<!---
+### DELETE /api/changeset/delete/#id
+
+This method delete one changeset by id = #id.
+- Parameters:
+    - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
+- Examples:
+     - Delete a feature by id: ```DELETE http://localhost:8888/api/changeset/9```
+- Send:
+- Response:
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 404 (Not Found): Not found any feature.
+    - 500 (Internal Server Error): Problem when delete a changeset. Please, contact the administrator.
+- Notes:
+-->

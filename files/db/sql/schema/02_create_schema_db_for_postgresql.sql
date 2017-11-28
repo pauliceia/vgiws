@@ -1,4 +1,5 @@
 
+-- Ter 28 Nov 2017 18:14:58 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS changeset (
   id SERIAL ,
   create_at TIMESTAMP NULL,
   closed_at TIMESTAMP NULL,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_project_id INT NOT NULL,
   fk_user_id_owner INT NOT NULL,
   PRIMARY KEY (id),

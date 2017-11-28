@@ -124,6 +124,9 @@ class TestAPI(TestCase):
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)
 
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id)
+
         # TRY TO ADD NEW ELEMENTS WITH THE CLOSED CHANGESET
         self.tester.api_element_create_error_400_bad_request(node)
         self.tester.api_element_create_error_400_bad_request(way)
@@ -207,6 +210,9 @@ class TestAPI(TestCase):
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id)
 
 
 # It is not necessary to pyt the main() of unittest here,

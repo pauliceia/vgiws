@@ -430,6 +430,9 @@ class TestAPIElement(TestCase):
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)
 
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id)
+
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 

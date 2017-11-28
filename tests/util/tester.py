@@ -59,8 +59,8 @@ class UtilTester:
 
         return project_json
 
-    def api_project_delete(self, project_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project_delete(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -90,24 +90,24 @@ class UtilTester:
 
     # project errors - delete
 
-    def api_project_delete_error_400_bad_request(self, project_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_project_delete_error_403_forbidden(self, project_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_project_delete_error_404_not_found(self, project_id):
-        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(project_id))
+    def api_project_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/project/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # CHANGESET
 
-    def api_changeset(self, expected=None, expected_at_least=None, **arguments):
+    def api_changeset(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get('http://localhost:8888/api/changeset/{0}'.format(arguments))
@@ -116,28 +116,27 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        if expected is not None:
-            self.ut_self.assertEqual(expected, resulted)
+        self.ut_self.assertEqual(expected, resulted)
 
-        if expected_at_least is not None:
-            """
-            Test Case: Changesets can not be removed, because of this, the result of the returned 
-            changesets may be larger than expected (because there are other tests that create 
-            changesets). Because of this I pass a subset of minimum changesets that have to exist.
-            """
-
-            """ Explanation: Generator creating booleans by looping through list 
-                'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'. 
-                all() returns True if every item is truthy, else False.
-                https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other 
-            """
-            __set__ = resulted["features"]  # set returned
-            __subset__ = expected_at_least["features"]  # subset expected
-
-            # verify if the elements of a subset is in a set, if OK, return True, else False
-            resulted_bool = all(element in __set__ for element in __subset__)
-
-            self.ut_self.assertTrue(resulted_bool)
+        # if expected_at_least is not None:
+        #     """
+        #     Test Case: Changesets can not be removed, because of this, the result of the returned
+        #     changesets may be larger than expected (because there are other tests that create
+        #     changesets). Because of this I pass a subset of minimum changesets that have to exist.
+        #     """
+        #
+        #     """ Explanation: Generator creating booleans by looping through list
+        #         'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
+        #         all() returns True if every item is truthy, else False.
+        #         https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
+        #     """
+        #     __set__ = resulted["features"]  # set returned
+        #     __subset__ = expected_at_least["features"]  # subset expected
+        #
+        #     # verify if the elements of a subset is in a set, if OK, return True, else False
+        #     resulted_bool = all(element in __set__ for element in __subset__)
+        #
+        #     self.ut_self.assertTrue(resulted_bool)
 
     def api_changeset_create(self, changeset_json):
         # do a GET call, sending a changeset to add in DB
@@ -158,6 +157,11 @@ class UtilTester:
 
     def api_changeset_close(self, changeset_id):
         response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_changeset_delete(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -200,6 +204,23 @@ class UtilTester:
 
     def api_changeset_close_error_404_not_found(self, changeset_id):
         response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # project errors - delete
+
+    def api_changeset_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_changeset_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 

@@ -242,14 +242,14 @@ class PGSQLConnection:
 
         return project_id_in_json
 
-    def delete_project_in_db(self, project_id):
-        if is_a_invalid_id(project_id):
+    def delete_project_in_db(self, feature_id):
+        if is_a_invalid_id(feature_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
             WHERE id={0};
-        """.format(project_id)
+        """.format(feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -379,6 +379,25 @@ class PGSQLConnection:
         query_text = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
         """.format(changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
+
+    def delete_changeset_in_db(self, feature_id):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            UPDATE changeset SET visible = FALSE
+            WHERE id={0};
+        """.format(feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

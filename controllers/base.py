@@ -302,6 +302,14 @@ class BaseHandlerChangeset(BaseHandler):
         else:
             raise HTTPError(404, "Invalid URL.")
 
+    def delete_method_api_changeset(self, param):
+        # param on this case is the id of feature
+        try:
+            self.PGSQLConn.delete_changeset_in_db(param)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when delete a changeset. Please, contact the administrator.")
+
 
 class BaseHandlerElement(BaseHandler):
 
