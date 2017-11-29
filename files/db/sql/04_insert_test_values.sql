@@ -12,9 +12,37 @@ INSERT INTO user_ (id, username, email, password, name) VALUES (1003, 'miguel', 
 INSERT INTO user_ (id, username, email, password, name) VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael', 'Rafael');
 INSERT INTO user_ (id, username, email, password, name) VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel', 'Gabriel');
 
--- SELECT * FROM user_;
+SELECT * FROM user_;
 -- SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
 -- SELECT id, username, name FROM user_ WHERE email='admin@admin.c';
+
+
+-- -----------------------------------------------------
+-- Table user_tag
+-- -----------------------------------------------------
+-- clean user_tag table
+DELETE FROM user_tag;
+
+-- insert values in table user_tag
+-- user 1001
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'institution', 'INPE', 1001);
+-- user 1002
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1002, 'institution', 'INPE', 1002);
+
+
+
+-- -----------------------------------------------------
+-- Table auth
+-- -----------------------------------------------------
+-- clean auth table
+DELETE FROM auth;
+
+-- insert values in auth table
+-- user 1001
+INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1001, TRUE, TRUE, 1001);
+-- user 1002
+INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRUE, TRUE, 1002);
+
 
 
 -- -----------------------------------------------------

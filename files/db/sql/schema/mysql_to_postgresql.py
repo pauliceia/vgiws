@@ -272,6 +272,23 @@ def add_serial_number_in_ID(text):
 
     return text
 
+def arrange_table_auth(text):   
+    lines = text.split("\n")
+    lines_copy = list(lines)  # create a copy to iterate inside it
+
+    for i in range(0, len(lines_copy)):
+        line = lines_copy[i]
+
+        line_lower = line.lower()
+
+        # put default values to 'is_admin' and 'allow_import_bulk'
+        if ("is_admin boolean" in line_lower) or ("allow_import_bulk boolean" in line_lower):
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
+    text = "\n".join(lines)
+
+    return text
+
 def add_create_tables_updated(text):
     text += "\n"+"""
 -- -----------------------------------------------------
@@ -331,7 +348,10 @@ def main():
         text = add_create_tables_updated(text)
         
         # remove bad lines     
-        text = remove_bad_lines_and_put_default_values(text)        
+        text = remove_bad_lines_and_put_default_values(text)
+
+        # arrange table 'auth'
+        text = arrange_table_auth(text)
 
         # add new lines
         #text = add_new_lines(text)

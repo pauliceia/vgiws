@@ -1,5 +1,5 @@
 
--- Ter 28 Nov 2017 18:14:58 -02
+-- Ter 28 Nov 2017 19:39:37 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -89,11 +89,11 @@ CREATE TABLE IF NOT EXISTS node (
 
 
 -- -----------------------------------------------------
--- Table user_preference
+-- Table user_tag
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_preference CASCADE ;
+DROP TABLE IF EXISTS user_tag CASCADE ;
 
-CREATE TABLE IF NOT EXISTS user_preference (
+CREATE TABLE IF NOT EXISTS user_tag (
   id SERIAL ,
   k TEXT NOT NULL,
   v TEXT NULL,
@@ -199,7 +199,8 @@ DROP TABLE IF EXISTS auth CASCADE ;
 
 CREATE TABLE IF NOT EXISTS auth (
   id SERIAL ,
-  allow_import_bulk BOOLEAN NOT NULL,
+  is_admin BOOLEAN NULL DEFAULT FALSE,
+  allow_import_bulk BOOLEAN NOT NULL DEFAULT FALSE,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_auth_user1
