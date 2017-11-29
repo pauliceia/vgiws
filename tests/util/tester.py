@@ -30,6 +30,35 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
+    # USER
+
+    def api_user(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    # user errors - get
+
+    def api_user_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # PROJECT
 
     def api_project(self, expected, **arguments):

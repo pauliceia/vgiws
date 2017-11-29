@@ -7,3 +7,4 @@ from .others import *
 from .login import *
 from .features import *
 from .elements import *
+from .user import *
