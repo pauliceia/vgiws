@@ -2,7 +2,7 @@
 
 This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
 
-WARNING: It is necessary a database to run it, whether is not exist, create a new one as follow on next section.
+WARNING: It is necessary a database to run it, whether is not exist, create a new one [here](db_connection.md).
 
 To create a new virtualenv with Python 3:
 
@@ -22,7 +22,7 @@ Install the dependencies that are in requirements.txt file:
 $ pip install -r requirements.txt
 ```
 
-Run the application normally or on Debug Mode::
+Run the application normally or on Debug Mode:
 
 ```
 $ python main.py

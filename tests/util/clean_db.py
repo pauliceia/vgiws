@@ -1,6 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+This file clean the DB (main or test).
+Parameters:
+    --debug=True - iff you want to clean the test database
+"""
+
+# get the arguments of the file
+from sys import argv
+from ast import literal_eval
+
+args = list(argv)
+del args[0]  # the first element is the name file, so it is not necessary
+
+arguments = {}
+
+for arg in args:
+    parts = arg.split("=")
+
+    # if the value is a boolean, convert it
+    if parts[1] == "True" or parts[1] == "False":
+        parts[1] = literal_eval(parts[1])
+
+    arguments[parts[0]] = parts[1]
+
 
 # put the root project in sys path and import the ROOT_PROJECT_PATH
 try:
@@ -50,9 +74,12 @@ def remove_special_characters(text):
     return text
 
 
-def prepare_test_db_before_tests():
-    # create a instance of DB passing arguments
-    PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": True})
+def prepare_test_db_before_tests(arguments):
+    if "--debug" in arguments and arguments["--debug"] is True:
+        # create a instance of DB passing arguments
+        PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": True})
+    else:
+        PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": False})
 
     # open the schema file and the insert file, both to edit the DB
     with open(__PATH_SQL_SCHEMA_FILE__, 'r') as schema_file, \
@@ -68,11 +95,14 @@ def prepare_test_db_before_tests():
         schema_data = remove_comments_from_sql_file(schema_data)
         schema_data = remove_special_characters(schema_data)
 
-        insert_data = remove_comments_from_sql_file(insert_data)
-        insert_data = remove_special_characters(insert_data)
-
         trigger_data = remove_comments_from_sql_file(trigger_data)
         trigger_data = remove_special_characters(trigger_data)
+
+        # just insert test data if it is in debug mode
+        if "--debug" in arguments and arguments["--debug"] is True:
+            print("[1]")
+            insert_data = remove_comments_from_sql_file(insert_data)
+            insert_data = remove_special_characters(insert_data)
 
         # executing the SQL files
         print("\nCleaning and creating the schema of DB.")
@@ -81,8 +111,11 @@ def prepare_test_db_before_tests():
         print("Inserting the triggers in DB.")
         PGSQLConn.execute(trigger_data, modify_information=True)
 
-        print("Inserting the test data in DB.\n")
-        PGSQLConn.execute(insert_data, modify_information=True)
+        # just insert test data if it is in debug mode
+        if "--debug" in arguments and arguments["--debug"] is True:
+            print("[2]")
+            print("Inserting the test data in DB.\n")
+            PGSQLConn.execute(insert_data, modify_information=True)
 
         # send modifications to DB
         PGSQLConn.commit()
@@ -91,7 +124,29 @@ def prepare_test_db_before_tests():
     PGSQLConn.close()
 
 
+def are_you_sure_to_clean_database(arguments):
+    # if is in debug mode, so ok
+    if "--debug" in arguments and arguments["--debug"] is True:
+        return True
+
+    option = input("\nAre you sure that you want to CLEAN THE DATABASE? (s/n): ")
+
+    if option.lower().replace(" ", "") != "s":
+        print("Bye!")
+        return False
+
+    option = input("Are you REALLY SURE that you want to CLEAN THE DATABASE? (s/n): ")
+
+    if option.lower().replace(" ", "") != "s":
+        print("Bye!")
+        return False
+
+    print("Well, if it is what you want...\n")
+    return True
+
+
 # If the file is run as Python script (main), so execute it
 # if the file is called as a module, so doesn't execute it
 if __name__ == "__main__":
-    prepare_test_db_before_tests()
+    if are_you_sure_to_clean_database(arguments):
+        prepare_test_db_before_tests(arguments)

@@ -8,7 +8,7 @@ First of all, clean the DB of test. On console, go to root folder, turn on the e
 
 ```
 $ workon pauliceia_webservice
-$ python tests/util/clean_test_db.py
+$ python tests/util/clean_db.py --debug=True
 ```
 
 

@@ -35,8 +35,8 @@ LOGIN_URL = "/"
 
 # By default is False, so run the application normally
 # True is just for Debug
-# DEBUG_MODE = False
-DEBUG_MODE = True
+DEBUG_MODE = False
+# DEBUG_MODE = True
 
 
 # LIST_HOSTS_ALLOW = [
