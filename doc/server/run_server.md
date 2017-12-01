@@ -4,6 +4,13 @@ This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.
 
 WARNING: It is necessary a database to run it, whether is not exist, create a new one [here](db_connection.md).
 
+If you don't have the pip, install it:
+```
+$ sudo apt-get update
+$ sudo apt-get -y install python-pip
+$ sudo apt-get -y install python-pip3
+```
+
 To create a new virtualenv with Python 3:
 
 ```
