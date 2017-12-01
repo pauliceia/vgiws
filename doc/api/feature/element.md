@@ -1,5 +1,7 @@
 ## Element (it can be node, way or area)
 
+Basic geometric elements: point, line and polygon.
+
 
 ###  GET /api/\[node|way|area]/?\<params>
 

@@ -1,8 +1,5 @@
 ## Run the tests
 
-<details>
-<summary> click here </summary>
-<p>
 
 First of all, clean the DB of test. On console, go to root folder, turn on the environment and run the cleaning code:
 

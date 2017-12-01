@@ -1,5 +1,7 @@
 ## Changeset
 
+A changeset is a group of changes did by a user. It provide the changes of the elements, its versions and etc.
+
 
 ###  GET /api/changeset/?\<params>
 
@@ -89,7 +91,6 @@ This method close a changeset by id = #id.
 - Notes:
 
 
-<!---
 ### DELETE /api/changeset/delete/#id
 
 This method delete one changeset by id = #id.
@@ -105,4 +106,3 @@ This method delete one changeset by id = #id.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when delete a changeset. Please, contact the administrator.
 - Notes:
--->

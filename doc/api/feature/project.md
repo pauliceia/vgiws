@@ -1,5 +1,7 @@
 ## Project
 
+A project is a group of elements. All elements have to be associated with a project.
+
 
 ### GET /api/project/?\<params>
 
