@@ -8,7 +8,6 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-@skip("demonstrating skipping")
 class TestAPIUser(TestCase):
 
     def setUp(self):
@@ -19,33 +18,56 @@ class TestAPIUser(TestCase):
 
     def test_get_api_user_return_all_users(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00', 'fk_user_id_owner': 1001, 'id': 1001},
-                    'tags': [{'k': 'name', 'v': 'default'}, {'k': 'description', 'v': 'default project'}],
-                    'type': 'Project'
+                    'type': 'User',
+                    'tags': None,
+                    'properties': {'id': 1, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'test@fake.login', 'name': None,
+                                   'terms_seen': None, 'removed_at': None, 'username': None}
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00', 'fk_user_id_owner': 1002, 'id': 1002},
-                    'tags': [{'k': 'name', 'v': 'test_project'}, {'k': 'description', 'v': 'test_project'}],
-                    'type': 'Project'
+                    'type': 'User',
+                    'tags': [{'v': 'INPE', 'k': 'institution'}],
+                    'properties': {'id': 1001, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'admin@admin.com', 'name': 'Administrator',
+                                   'terms_seen': None, 'removed_at': None, 'username': 'admin'}
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00', 'fk_user_id_owner': 1002, 'id': 1003},
-                    'tags': [{'k': 'name', 'v': 'project 3'}, {'k': 'description', 'v': 'test_project'}],
-                    'type': 'Project'
+                    'type': 'User',
+                    'tags': [{'v': 'INPE', 'k': 'institution'}],
+                    'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
+                                   'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-09-11 00:00:00', 'fk_user_id_owner': 1003, 'id': 1004},
-                    'tags': [{'k': 'name', 'v': 'project 4'}, {'k': 'description', 'v': 'test_project'}],
-                    'type': 'Project'
+                    'type': 'User',
+                    'tags': None,
+                    'properties': {'id': 1003, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'miguel@admin.com', 'name': 'Miguel',
+                                   'terms_seen': None, 'removed_at': None, 'username': 'miguel'}
+                },
+                {
+                    'type': 'User',
+                    'tags': None,
+                    'properties': {'id': 1004, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'rafael@admin.com', 'name': 'Rafael',
+                                   'terms_seen': None, 'removed_at': None, 'username': 'rafael'}
+                },
+                {
+                    'type': 'User',
+                    'tags': None,
+                    'properties': {'id': 1005, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                                   'description': None, 'email': 'gabriel@admin.com', 'name': 'Gabriel',
+                                   'terms_seen': None, 'removed_at': None, 'username': 'gabriel'}
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_user(expected)
 
+    @skip("demonstrating skipping")
     def test_get_api_user_return_user_by_user_id(self):
         expected = {
             'features': [

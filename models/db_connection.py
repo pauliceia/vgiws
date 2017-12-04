@@ -606,7 +606,7 @@ class PGSQLConnection:
             CROSS JOIN LATERAL (
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
                 FROM user_tag 
-                WHERE fk_user_id = user.id    
+                WHERE fk_user_id = user_.id    
             ) AS tags
         """.format(subquery)
 

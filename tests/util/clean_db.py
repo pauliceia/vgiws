@@ -100,7 +100,6 @@ def prepare_test_db_before_tests(arguments):
 
         # just insert test data if it is in debug mode
         if "--debug" in arguments and arguments["--debug"] is True:
-            print("[1]")
             insert_data = remove_comments_from_sql_file(insert_data)
             insert_data = remove_special_characters(insert_data)
 
@@ -113,7 +112,6 @@ def prepare_test_db_before_tests(arguments):
 
         # just insert test data if it is in debug mode
         if "--debug" in arguments and arguments["--debug"] is True:
-            print("[2]")
             print("Inserting the test data in DB.\n")
             PGSQLConn.execute(insert_data, modify_information=True)
 

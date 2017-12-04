@@ -23,7 +23,7 @@ def get_subquery_user_table(**kwargs):
     (
         SELECT id, username, email, name, is_email_valid, description, create_at, removed_at, terms_agreed, terms_seen
         FROM user_ {0} ORDER BY id
-    ) AS user
+    ) AS user_
     """.format(where_clause)
 
     return subquery_table
