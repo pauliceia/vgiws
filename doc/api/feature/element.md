@@ -25,7 +25,7 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
         'type': 'FeatureCollection',
         'features': [
             {
-                'tags': [{'v': 'R. São José', 'k': 'addr:street'},
+                'attributes': [{'v': 'R. São José', 'k': 'addr:street'},
                          {'v': '10', 'k': 'addr:housenumber'},
                          {'v': '1870', 'k': 'start_date'},
                          {'v': '1910', 'k': 'end_date'}],
@@ -58,7 +58,7 @@ This method create a new element described in a GeoJSON.
         'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
         'features': [
             {
-                'tags': [{'k': 'event', 'v': 'robbery'},
+                'attributes': [{'k': 'event', 'v': 'robbery'},
                          {'k': 'date', 'v': '1910'}],
                 'type': 'Feature',
                 'properties': {'id': -1, 'fk_changeset_id': 1001},
