@@ -6,3 +6,4 @@
 - [Changeset](feature/changeset.md)
 - [Element](feature/element.md)
 - [Tag](feature/tag.md)
+- [User](feature/user.md)
