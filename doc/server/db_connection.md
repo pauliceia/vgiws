@@ -65,7 +65,7 @@ $ sudo service neo4j restart
 
 Open a browser and enter in 'http://localhost:7474/browser/' to show the database interface. If is the once, will appear to change the password.
 
-Now creaate a new database, opening the neo4j.conf file:
+Now create a new database or change it, open the neo4j.conf file:
 
 ```
 $ sudo nano /etc/neo4j/neo4j.conf
@@ -94,10 +94,10 @@ $ sudo cp ~rodrigo/apoc-3.3.0.1-all.jar /var/lib/neo4j/plugins
 #### Clean the database
 
 Change the database (main or test DB) as explained on 'Create the database in Neo4J' section.
-If you want to clean the database and put default values, on the root folder of the project, use the follow commands to main DB or test DB:
+If you want to clean the database and put default values, on the root folder of the project, use the follow commands:
 
 ```
 $ cat files/db/neo4j/theme_db.cql | cypher-shell -u <USERNAME> -p <PASSWORD> --format plain
 ```
 
-Remember: <USERNAME> and  <PASSWORD> are the username and password of the database.
+Remember: \<USERNAME> and  \<PASSWORD> are the username and password of the database.
