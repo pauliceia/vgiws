@@ -35,7 +35,6 @@ from psycopg2.extras import RealDictCursor
 
 from json import loads, dumps
 from requests import Session
-from requests.auth import HTTPBasicAuth
 
 from base64 import b64encode
 
@@ -683,6 +682,9 @@ class Neo4JConnection:
         :return:
         """
 
+        # create a session to do the requests
+        self.session = Session()
+
         username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
 
         string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
@@ -711,5 +713,16 @@ class Neo4JConnection:
                                      data=dumps(query_dict), headers=self.headers)
 
         result = loads(response.text)
+
+        return result
+
+    def get_theme_tree(self):
+
+        result = self.match("""
+                    MATCH path = (generic:Theme {key: "generic"})-[:can_be*]-(:Theme)
+                    WITH collect(path) as paths
+                    CALL apoc.convert.toTree(paths) yield value
+                    RETURN value;
+                """)
 
         return result

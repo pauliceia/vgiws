@@ -64,7 +64,10 @@ class BaseHandler(RequestHandler):
 
     # __init__ for Tornado subclasses
     def initialize(self):
+        # get the database instances
         self.PGSQLConn = self.application.PGSQLConn
+        self.Neo4JConn = self.application.Neo4JConn
+
         self.DEBUG_MODE = self.application.DEBUG_MODE
 
     def set_default_headers(self):
@@ -393,3 +396,67 @@ class BaseHandlerElement(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
+
+
+class BaseHandlerTheme(BaseHandler):
+
+    def get_method_api_theme(self, param):
+        if param == "tree":
+            self.get_method_api_theme_tree()
+        # else:
+        #     self.get_method_api_theme_other()
+
+    def get_method_api_theme_tree(self):
+        try:
+            result = self.Neo4JConn.get_theme_tree()
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(result))
+
+    # def get_method_api_theme_other(self):
+    #     arguments = self.get_aguments()
+    #
+    #     try:
+    #         # break the arguments dict in each parameter of method
+    #         result = self.PGSQLConn.get_projects(**arguments)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(result))
+
+    # def put_method_api_project_create(self):
+    #     # get the JSON sent, to add in DB
+    #     project_json = self.get_the_json_validated()
+    #
+    #     current_user_id = self.get_current_user_id()
+    #
+    #     try:
+    #         json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when create a project. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(json_with_id))
+    #
+    # def put_method_api_project(self, param):
+    #     # param on this case is "create" or "update"
+    #     if param == "create":
+    #         self.put_method_api_project_create()
+    #     elif param == "update":
+    #         self.write(json_encode({"ok", 1}))
+    #     else:
+    #         raise HTTPError(404, "Invalid URL")
+    #
+    # def delete_method_api_project(self, param):
+    #     # param on this case is the id of element
+    #     try:
+    #         self.PGSQLConn.delete_project_in_db(param)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when delete a project. Please, contact the administrator.")

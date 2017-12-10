@@ -389,6 +389,17 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # THEME TREE
+
+    def api_theme_tree(self, expected):
+        response = self.session.get('http://localhost:8888/api/theme/tree')
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
     # others
 
     def api_capabilities(self):
