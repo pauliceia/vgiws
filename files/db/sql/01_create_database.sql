@@ -3,13 +3,13 @@ sudo -i -u postgres
 psql -d postgres
 
 -- remove the database if it exists
-DROP DATABASE IF EXISTS db_pauliceia_test;
+DROP DATABASE IF EXISTS pauliceia_test;
 
 -- create databse
-CREATE DATABASE db_pauliceia_test;
+CREATE DATABASE pauliceia_test;
 
 -- connect on database
-\c db_pauliceia_test
+\c pauliceia_test
 
 -- active the extension
 CREATE EXTENSION postgis;
@@ -18,4 +18,4 @@ CREATE EXTENSION postgis;
 \q
 
 -- connect on database
-psql -d db_pauliceia_test
+psql -d pauliceia_test

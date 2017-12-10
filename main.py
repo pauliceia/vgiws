@@ -15,7 +15,7 @@ from tornado.options import define, options, parse_command_line
 from settings import *
 from settings.accounts import __COOKIE_SECRET__
 from controllers.main import __LIST_BASEHANDLER_SUBCLASSES__
-from models import PGSQLConnection
+from models import *
 
 
 # define all arguments to pass in command line
@@ -87,8 +87,10 @@ class HttpServerApplication(Application):
 
         # create a global variable to debug mode
         self.DEBUG_MODE = options.debug
-        # create a instance of DB passing arguments
+
+        # create a instance of the databases passing arguments
         self.PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
+        self.Neo4JConn = Neo4JConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
 
         # Pass the handlers and the settings created to the constructor of the super class (father class)
         Application.__init__(self, __handlers__, **__setting__s)

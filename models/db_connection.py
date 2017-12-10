@@ -33,7 +33,14 @@ from psycopg2 import connect, DatabaseError
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
 
-from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
+from json import loads, dumps
+from requests import Session
+from requests.auth import HTTPBasicAuth
+
+from base64 import b64encode
+
+from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__, \
+                                __NEO4J_CONNECTION_SETTINGS__, __DEBUG_NEO4J_CONNECTION_SETTINGS__
 from modules.design_pattern import Singleton
 
 from .util import *
@@ -54,25 +61,25 @@ class PGSQLConnection:
         # represented by a dictionary in python
         self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
 
-    def __DO_CONNECTION__(self, __pgsql_connection_settings__):
+    def __DO_CONNECTION__(self, __connection_settings__):
         """
         Do the DB connection with the '__pgsql_connection_settings__'
-        :param __pgsql_connection_settings__: the connection settings of PostgreSQL.
+        :param __connection_settings__: the connection settings of PostgreSQL.
         It can be for the normal DB or test DB
         :return:
         """
         if self.__ARGS__["DEBUG_MODE"]:
             print("\nConnecting in PostgreSQL with:"
-                  "\n- hostname: ", __pgsql_connection_settings__["HOSTNAME"],
-                  "\n- port: ", __pgsql_connection_settings__["PORT"],
-                  "\n- database: ", __pgsql_connection_settings__["DATABASE"], "\n")
+                  "\n- hostname: ", __connection_settings__["HOSTNAME"],
+                  "\n- port: ", __connection_settings__["PORT"],
+                  "\n- database: ", __connection_settings__["DATABASE"], "\n")
 
         try:
-            self.__PGSQL_CONNECTION__ = connect(host=__pgsql_connection_settings__["HOSTNAME"],
-                                                port=__pgsql_connection_settings__["PORT"],
-                                                user=__pgsql_connection_settings__["USERNAME"],
-                                                password=__pgsql_connection_settings__["PASSWORD"],
-                                                dbname=__pgsql_connection_settings__["DATABASE"])
+            self.__PGSQL_CONNECTION__ = connect(host=__connection_settings__["HOSTNAME"],
+                                                port=__connection_settings__["PORT"],
+                                                user=__connection_settings__["USERNAME"],
+                                                password=__connection_settings__["PASSWORD"],
+                                                dbname=__connection_settings__["DATABASE"])
             print("PostgreSQL's connection was successful!")
             self.set_connection_status(status=True)
         except (DatabaseError, Exception) as error:
@@ -653,5 +660,56 @@ class PGSQLConnection:
         result = self.get_user_in_db(email)
 
         self.commit()
+
+        return result
+
+
+@Singleton
+class Neo4JConnection:
+
+    def __init__(self, args={}):
+        self.__ARGS__ = args
+
+        if self.__ARGS__["DEBUG_MODE"]:
+            self.__DO_CONNECTION__(__DEBUG_NEO4J_CONNECTION_SETTINGS__)
+        else:
+            self.__DO_CONNECTION__(__NEO4J_CONNECTION_SETTINGS__)
+
+    def __DO_CONNECTION__(self, __connection_settings__):
+        """
+        Do the DB connection with the '__pgsql_connection_settings__'
+        :param __connection_settings__: the connection settings of Neo4J.
+        It can be for the normal DB or test DB
+        :return:
+        """
+
+        username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
+
+        string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+
+        self.headers = {'Content-type': 'application/json',
+                        'Accept': 'application/json; charset=UTF-8',
+                        'Authorization': 'Basic ' + string_in_base64}
+
+        self.URL = "http://" + __connection_settings__["HOSTNAME"] + ":" + str(__connection_settings__["PORT"])
+
+        if self.__ARGS__["DEBUG_MODE"]:
+            print("\nConnecting in Neo4J with:"
+                  "\n- hostname: ", __connection_settings__["HOSTNAME"],
+                  "\n- port: ", __connection_settings__["PORT"],
+                  "\n- database: ", __connection_settings__["DATABASE"],
+                  "\n- URL: ", self.URL, "\n")
+
+    def match(self, query, params={}):
+
+        query_dict = {
+            "query": query,
+            "params": params
+        }
+
+        response = self.session.post(self.URL + '/db/data/cypher',
+                                     data=dumps(query_dict), headers=self.headers)
+
+        result = loads(response.text)
 
         return result
