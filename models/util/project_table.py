@@ -14,7 +14,7 @@ def get_subquery_project_table(**kwargs):
         conditions_of_where.append("project.id = {0}".format(kwargs["project_id"]))
 
     elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("project.fk_user_id_owner = {0}".format(kwargs["user_id"]))
+        conditions_of_where.append("project.fk_user_id = {0}".format(kwargs["user_id"]))
 
     else:
         # default get all features, without where clause
@@ -30,7 +30,7 @@ def get_subquery_project_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT id, create_at, removed_at, fk_user_id_owner 
+            SELECT id, create_at, removed_at, fk_user_id 
             FROM project {0}
             ORDER BY id
         ) AS project

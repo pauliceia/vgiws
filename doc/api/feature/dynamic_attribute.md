@@ -5,6 +5,15 @@ There are some standard features described in [OSM Map Features](http://wiki.ope
 There are also others specifics attributes for Pauliceia project, described below.
 
 
+### Themes
+
+How to describe the themes:
+
+| Key                  | Value                               | Element              | Comment                                                      |
+| -------------------- | ----------------------------------- | -------------------- | ------------------------------------------------------------ |
+| theme                | text (e.g. "generic", "crime", ...) | layer                | The theme of a layer                                         |
+
+
 ### Authors
 
 How to describe the data author:

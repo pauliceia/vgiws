@@ -173,7 +173,7 @@ class PGSQLConnection:
                         'id',           id,                        
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_user_id_owner', fk_user_id_owner
+                        'fk_user_id', fk_user_id
                     ),
                     'tags',       tags.jsontags
                 ))
@@ -207,11 +207,11 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_project_in_db(self, fk_user_id_owner):
+    def add_project_in_db(self, fk_user_id):
         query_text = """
-            INSERT INTO project (create_at, fk_user_id_owner) 
+            INSERT INTO project (create_at, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
-        """.format(fk_user_id_owner)
+        """.format(fk_user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -230,12 +230,12 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_project(self, project_json, fk_user_id_owner):
+    def create_project(self, project_json, fk_user_id):
 
         project = project_json["project"]
 
         # add the project in db and get the id of it
-        project_id_in_json = self.add_project_in_db(fk_user_id_owner)
+        project_id_in_json = self.add_project_in_db(fk_user_id)
 
         # add in DB the tags of project
         for tag in project["tags"]:
@@ -289,7 +289,7 @@ class PGSQLConnection:
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_project_id',    fk_project_id,
-                        'fk_user_id_owner', fk_user_id_owner
+                        'fk_user_id', fk_user_id
                     ),
                     'tags',       tags.jsontags
                 ))
@@ -323,18 +323,18 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_changeset_in_db(self, fk_project_id, fk_user_id_owner):
+    def add_changeset_in_db(self, fk_project_id, fk_user_id):
         """
         Add a changeset in DB
         :param fk_project_id: id of the project associated with the changeset
-        :param fk_user_id_owner: id of the user (owner) of the changeset
+        :param fk_user_id: id of the user (owner) of the changeset
         :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
         query_text = """
-            INSERT INTO changeset (create_at, fk_project_id, fk_user_id_owner) 
+            INSERT INTO changeset (create_at, fk_project_id, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(fk_project_id, fk_user_id_owner)
+        """.format(fk_project_id, fk_user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -358,7 +358,7 @@ class PGSQLConnection:
 
         # return id_changeset_tag
 
-    def create_changeset(self, changeset_json, fk_user_id_owner):
+    def create_changeset(self, changeset_json, fk_user_id):
 
         changeset = changeset_json["changeset"]
 
@@ -366,7 +366,7 @@ class PGSQLConnection:
         fk_project_id = changeset["properties"]["fk_project_id"]
 
         # add the chengeset in db and get the id of it
-        changeset_id_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id_owner)
+        changeset_id_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id)
 
         # add in DB the tags of changeset
         for tag in changeset["tags"]:
@@ -522,16 +522,16 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_element(self, element, feature, fk_user_id_owner):
+    def create_element(self, element, feature, fk_user_id):
         """
         Add a element in DB
         :param element_json:
-        :param fk_user_id_owner:
+        :param fk_user_id:
         :return: the id of the element created
         """
 
         # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
-        # searching if the changeset is its by fk_user_id_owner. If the user is the owner of the changeset
+        # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
 
         # get the tags
         tags = feature["tags"]
@@ -638,7 +638,7 @@ class PGSQLConnection:
 
     def get_user_in_db(self, email):
         query_text = """
-            SELECT id, username, name, email FROM user_ WHERE email='{0}';
+            SELECT id, username, email FROM user_ WHERE email='{0}';
             """.format(email)
 
         # do the query in database

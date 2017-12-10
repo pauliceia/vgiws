@@ -8,58 +8,58 @@ __READ_SQL_FILE__ = "original_schema_msql.sql"
 __OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 
-pauliceia_way_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.way_tag",
+pauliceia_line_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.line_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.way_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.line_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   version INT NOT NULL,  
-  fk_way_id INT NOT NULL,
-  fk_way_version INT NOT NULL,
+  fk_line_id INT NOT NULL,
+  fk_line_version INT NOT NULL,
   PRIMARY KEY (id, version, k),
-  CONSTRAINT fk_way_tag_way1
-    FOREIGN KEY (fk_way_id, fk_way_version)
-    REFERENCES pauliceia.way (id, version)
+  CONSTRAINT fk_line_tag_line1
+    FOREIGN KEY (fk_line_id, fk_line_version)
+    REFERENCES pauliceia.line (id, version)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 """
 }
-pauliceia_node_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.node_tag",
+pauliceia_point_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.point_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.node_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.point_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   version INT NOT NULL,
-  fk_node_id INT NOT NULL,
-  fk_node_version INT NOT NULL,
+  fk_point_id INT NOT NULL,
+  fk_point_version INT NOT NULL,
   PRIMARY KEY (id, version, k),
-  CONSTRAINT fk_node_tag_node1
-    FOREIGN KEY (fk_node_id, fk_node_version)
-    REFERENCES pauliceia.node (id, version)
+  CONSTRAINT fk_point_tag_point1
+    FOREIGN KEY (fk_point_id, fk_point_version)
+    REFERENCES pauliceia.point (id, version)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 """
 }
-pauliceia_area_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.area_tag",
+pauliceia_polygon_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.area_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   version INT NOT NULL,
-  fk_area_id INT NOT NULL,
-  fk_area_version INT NOT NULL,
+  fk_polygon_id INT NOT NULL,
+  fk_polygon_version INT NOT NULL,
   PRIMARY KEY (id, version, k),
-  CONSTRAINT fk_area_tag_area1
-    FOREIGN KEY (fk_area_id, fk_area_version)
-    REFERENCES pauliceia.area (id, version)
+  CONSTRAINT fk_polygon_tag_polygon1
+    FOREIGN KEY (fk_polygon_id, fk_polygon_version)
+    REFERENCES pauliceia.polygon (id, version)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -67,52 +67,52 @@ CREATE TABLE IF NOT EXISTS pauliceia.area_tag (
 }
 
 
-pauliceia_current_way_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_way_tag",
+pauliceia_current_line_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_way_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  fk_current_way_id INT NOT NULL,
+  fk_current_line_id INT NOT NULL,
   PRIMARY KEY (id, k),
-  CONSTRAINT fk_current_way_tag_current_way1
-    FOREIGN KEY (fk_current_way_id)
-    REFERENCES pauliceia.current_way (id)
+  CONSTRAINT fk_current_line_tag_current_line1
+    FOREIGN KEY (fk_current_line_id)
+    REFERENCES pauliceia.current_line (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 """
 }
-pauliceia_current_node_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_node_tag",
+pauliceia_current_point_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_node_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  fk_current_node_id INT NOT NULL,
+  fk_current_point_id INT NOT NULL,
   PRIMARY KEY (id, k),
-  CONSTRAINT fk_current_node_tag_current_node1
-    FOREIGN KEY (fk_current_node_id)
-    REFERENCES pauliceia.current_node (id)
+  CONSTRAINT fk_current_point_tag_current_point1
+    FOREIGN KEY (fk_current_point_id)
+    REFERENCES pauliceia.current_point (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 """
 }
-pauliceia_current_area_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_area_tag",
+pauliceia_current_polygon_tag = {
+    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag",
     "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_area_tag (
+CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag (
   id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  fk_current_area_id INT NOT NULL,
+  fk_current_polygon_id INT NOT NULL,
   PRIMARY KEY (id, k),
-  CONSTRAINT fk_current_area_tag_current_area1
-    FOREIGN KEY (fk_current_area_id)
-    REFERENCES pauliceia.current_area (id)
+  CONSTRAINT fk_current_polygon_tag_current_polygon1
+    FOREIGN KEY (fk_current_polygon_id)
+    REFERENCES pauliceia.current_polygon (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -158,12 +158,12 @@ def remove_bad_create_tables(text):
 
     while not break_loop:
 
-        if (pauliceia_way_tag["create_table_name"] not in text) and \
-                (pauliceia_node_tag["create_table_name"] not in text) and \
-                (pauliceia_area_tag["create_table_name"] not in text) and \
-                (pauliceia_current_way_tag["create_table_name"] not in text) and \
-                (pauliceia_current_node_tag["create_table_name"] not in text) and \
-                (pauliceia_current_area_tag["create_table_name"] not in text):
+        if (pauliceia_line_tag["create_table_name"] not in text) and \
+                (pauliceia_point_tag["create_table_name"] not in text) and \
+                (pauliceia_polygon_tag["create_table_name"] not in text) and \
+                (pauliceia_current_line_tag["create_table_name"] not in text) and \
+                (pauliceia_current_point_tag["create_table_name"] not in text) and \
+                (pauliceia_current_polygon_tag["create_table_name"] not in text):
 
             break_loop = True
             continue
@@ -175,12 +175,12 @@ def remove_bad_create_tables(text):
             line = lines_copy[a]
 
             # if the create clause is in line, remove the SQL
-            if (pauliceia_way_tag["create_table_name"] in line) or \
-                (pauliceia_node_tag["create_table_name"] in line) or \
-                (pauliceia_area_tag["create_table_name"] in line) or \
-                (pauliceia_current_way_tag["create_table_name"] in line) or \
-                (pauliceia_current_node_tag["create_table_name"] in line) or \
-                (pauliceia_current_area_tag["create_table_name"] in line):
+            if (pauliceia_line_tag["create_table_name"] in line) or \
+                (pauliceia_point_tag["create_table_name"] in line) or \
+                (pauliceia_polygon_tag["create_table_name"] in line) or \
+                (pauliceia_current_line_tag["create_table_name"] in line) or \
+                (pauliceia_current_point_tag["create_table_name"] in line) or \
+                (pauliceia_current_polygon_tag["create_table_name"] in line):
 
                 # find initial_line and final_line
                 initial_line = a
@@ -296,12 +296,12 @@ def add_create_tables_updated(text):
 -- -----------------------------------------------------
     """
     
-    text += pauliceia_way_tag["sql"] + "\n"
-    text += pauliceia_node_tag["sql"] + "\n"
-    text += pauliceia_area_tag["sql"] + "\n"
-    text += pauliceia_current_way_tag["sql"] + "\n"
-    text += pauliceia_current_node_tag["sql"] + "\n"
-    text += pauliceia_current_area_tag["sql"] + "\n"
+    text += pauliceia_line_tag["sql"] + "\n"
+    text += pauliceia_point_tag["sql"] + "\n"
+    text += pauliceia_polygon_tag["sql"] + "\n"
+    text += pauliceia_current_line_tag["sql"] + "\n"
+    text += pauliceia_current_point_tag["sql"] + "\n"
+    text += pauliceia_current_polygon_tag["sql"] + "\n"
 
     return text
 

@@ -6,11 +6,11 @@
 DELETE FROM user_;
 
 -- add users
-INSERT INTO user_ (id, username, email, password, name) VALUES (1001, 'admin', 'admin@admin.com', 'admin', 'Administrator');
-INSERT INTO user_ (id, username, email, password, name) VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', 'Rodrigo');
-INSERT INTO user_ (id, username, email, password, name) VALUES (1003, 'miguel', 'miguel@admin.com', 'miguel', 'Miguel');
-INSERT INTO user_ (id, username, email, password, name) VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael', 'Rafael');
-INSERT INTO user_ (id, username, email, password, name) VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel', 'Gabriel');
+INSERT INTO user_ (id, username, email, password) VALUES (1001, 'admin', 'admin@admin.com', 'admin');
+INSERT INTO user_ (id, username, email, password) VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo');
+INSERT INTO user_ (id, username, email, password) VALUES (1003, 'miguel', 'miguel@admin.com', 'miguel');
+INSERT INTO user_ (id, username, email, password) VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael');
+INSERT INTO user_ (id, username, email, password) VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel');
 
 SELECT * FROM user_;
 -- SELECT id, username, name FROM user_ WHERE email='admin@admin.com';
@@ -25,9 +25,17 @@ DELETE FROM user_tag;
 
 -- insert values in table user_tag
 -- user 1001
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'name', 'Administrator', 1001);
 INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'institution', 'INPE', 1001);
 -- user 1002
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1002, 'institution', 'INPE', 1002);
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1005, 'name', 'Rodrigo', 1002);
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1006, 'institution', 'INPE', 1002);
+-- user 1003
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1010, 'name', 'Miguel', 1003);
+-- user 1004
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1015, 'name', 'Rafael', 1004);
+-- user 1005
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1020, 'name', 'Gabriel', 1005);
 
 
 
@@ -46,48 +54,51 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 
 
 -- -----------------------------------------------------
--- Table project
+-- Table layer
 -- -----------------------------------------------------
--- clean project table
-DELETE FROM project;
+-- clean layer table
+DELETE FROM layer;
 
 -- add project
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1001, '2017-11-20', 1001);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1002, '2017-10-12', 1002);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1003, '2017-12-23', 1002);
-INSERT INTO project (id, create_at, fk_user_id_owner) VALUES (1004, '2017-09-11', 1003);
-INSERT INTO project (id, create_at, fk_user_id_owner, visible) VALUES (1005, '2017-06-04', 1003, FALSE);
+INSERT INTO layer (id, create_at, fk_user_id) VALUES (1001, '2017-11-20', 1001);
+INSERT INTO layer (id, create_at, fk_user_id) VALUES (1002, '2017-10-12', 1002);
+INSERT INTO layer (id, create_at, fk_user_id) VALUES (1003, '2017-12-23', 1002);
+INSERT INTO layer (id, create_at, fk_user_id) VALUES (1004, '2017-09-11', 1003);
+INSERT INTO layer (id, create_at, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, FALSE);
 
--- SELECT * FROM project;
--- SELECT * FROM project p WHERE p.id = 1001;
+-- SELECT * FROM layer;
+-- SELECT * FROM layer p WHERE p.id = 1001;
 
 
 -- -----------------------------------------------------
--- Table project_tag
+-- Table layer_tag
 -- -----------------------------------------------------
--- clean project_tag table
-DELETE FROM project_tag;
+-- clean layer_tag table
+DELETE FROM layer_tag;
 
--- insert values in table project_tag
+-- insert values in table layer_tag
 -- SOURCE: -
--- project 1001
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'default', 1001);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default project', 1001);
--- project 1002
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1003, 'name', 'test_project', 1002);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1004, 'description', 'test_project', 1002);
--- project 1003
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1005, 'name', 'project 3', 1003);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1006, 'description', 'test_project', 1003);
--- project 1004
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1007, 'name', 'project 4', 1004);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1008, 'description', 'test_project', 1004);
--- project 1005
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1009, 'name', 'project 5', 1005);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1010, 'description', 'test_project', 1005);
+-- layer 1001
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1001, 'name', 'default', 1001);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1002, 'description', 'default project', 1001);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1003, 'theme', 'generic', 1001);
+-- layer 1002
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1005, 'name', 'test_project', 1002);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1006, 'description', 'test_project', 1002);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1007, 'theme', 'crime', 1001);
+-- layer 1003
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1010, 'name', 'project 3', 1003);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1011, 'description', 'test_project', 1003);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1012, 'theme', 'addresses', 1001);
+-- layer 1004
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1015, 'name', 'project 4', 1004);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1016, 'description', 'test_project', 1004);
+-- layer layer_tag
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1020, 'name', 'project 5', 1005);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1021, 'description', 'test_project', 1005);
 
 
--- SELECT * FROM project_tag;
+-- SELECT * FROM layer_tag;
 
 /*
 SELECT p.id, p.create_at, p.removed_at FROM project p WHERE p.id = 1003;
@@ -133,13 +144,13 @@ DELETE FROM changeset;
 
 -- add changeset open
 -- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1002, '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1003, '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1004, '2017-01-20', 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
 -- open changesets
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1005, '2017-03-25', 1003, 1003);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id_owner) VALUES (1006, '2017-05-13', 1004, 1004);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
+INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
 
 -- SELECT * FROM changeset;
 

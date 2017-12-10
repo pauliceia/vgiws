@@ -13,7 +13,7 @@ def get_subquery_changeset_table(**kwargs):
     elif "project_id" in kwargs and kwargs["project_id"] is not None:
         conditions_of_where.append("changeset.fk_project_id = {0}".format(kwargs["project_id"]))
     elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("changeset.fk_user_id_owner = {0}".format(kwargs["user_id"]))
+        conditions_of_where.append("changeset.fk_user_id = {0}".format(kwargs["user_id"]))
     else:
         # default get all features, without where clause
         pass
@@ -35,7 +35,7 @@ def get_subquery_changeset_table(**kwargs):
 
     subquery_table = """
         (
-            SELECT id, create_at, closed_at, fk_project_id, fk_user_id_owner 
+            SELECT id, create_at, closed_at, fk_project_id, fk_user_id
             FROM changeset {0}
             ORDER BY id 
         ) AS changeset

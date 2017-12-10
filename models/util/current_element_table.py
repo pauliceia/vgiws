@@ -22,7 +22,7 @@ def get_subquery_current_element_table_if_user_id_is_not_none(element, condition
                 (
                     -- get the changesets of a specific project
                     SELECT changeset.id
-                    FROM user_ LEFT JOIN changeset ON user_.id = changeset.fk_user_id_owner
+                    FROM user_ LEFT JOIN changeset ON user_.id = changeset.fk_user_id
                     {2}
                 ) AS changeset
                 LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
