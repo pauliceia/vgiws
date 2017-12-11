@@ -15,7 +15,7 @@ from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
 
 # authentication
 
-class AuthLogoutHandler(BaseHandler):
+class AuthLogoutHandler(BaseHandlerAuthLogout):
 
     urls = [r"/auth/logout/", r"/auth/logout"]
 
@@ -56,7 +56,7 @@ class AuthLogoutHandler(BaseHandler):
 #             return
 
 
-class FakeAuthLoginHandler(BaseHandler):
+class FakeAuthLoginHandler(BaseHandlerFakeAuthLogin):
     """
     A fake login to tests
     """

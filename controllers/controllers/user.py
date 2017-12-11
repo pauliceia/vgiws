@@ -18,4 +18,5 @@ class APIUser(BaseHandlerUser):
             r"/api/user/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        self.get_method_api_user()
+        # self.get_method_api_user()
+        self.get_method_api_feature()

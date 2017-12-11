@@ -11,7 +11,7 @@ from ..base import *
 from settings import VERSION
 
 
-class APICapabilities(BaseHandler):
+class APICapabilities(BaseHandlerCapabilities):
 
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/capabilities/", r"/api/capabilities"]

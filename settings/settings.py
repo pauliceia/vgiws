@@ -16,7 +16,7 @@ CURRENT_YEAR = str(datetime.now().year)
 AUTHOR = "Rodrigo M. Mariano"
 
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 TITLE_APP = "Web Service for Explicit VGI, for Pauliceia's Project"
 
 

@@ -213,16 +213,35 @@ class BaseHandler(RequestHandler, metaclass=ABCMeta):
 
     # template method
 
-    # @abstractmethod
-    # def __get_feature(self, **arguments):
-    #     pass
-    #
-    # def get_method_api_feature(self):
+    @abstractmethod
+    def _get_feature(self, *args, **kwargs):
+        pass
+
+    def get_method_api_feature(self, *args):
+        arguments = self.get_aguments()
+
+        try:
+            # break the arguments dict in each parameter of method
+            result = self._get_feature(*args, **arguments)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode(result))
+
+
+class BaseHandlerUser(BaseHandler):
+
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_users(**kwargs)
+
+    # def get_method_api_user(self):
     #     arguments = self.get_aguments()
     #
     #     try:
     #         # break the arguments dict in each parameter of method
-    #         result = self.__get_feature(**arguments)
+    #         result = self.PGSQLConn.get_users(**arguments)
     #     except DataError as error:
     #         # print("Error: ", error)
     #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
@@ -231,36 +250,23 @@ class BaseHandler(RequestHandler, metaclass=ABCMeta):
     #     self.write(json_encode(result))
 
 
-class BaseHandlerUser(BaseHandler):
-
-    def get_method_api_user(self):
-        arguments = self.get_aguments()
-
-        try:
-            # break the arguments dict in each parameter of method
-            result = self.PGSQLConn.get_users(**arguments)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
-
-
 class BaseHandlerLayer(BaseHandler):
 
-    def get_method_api_layer(self):
-        arguments = self.get_aguments()
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_layers(**kwargs)
 
-        try:
-            # break the arguments dict in each parameter of method
-            result = self.PGSQLConn.get_layers(**arguments)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
+    # def get_method_api_layer(self):
+    #     arguments = self.get_aguments()
+    #
+    #     try:
+    #         # break the arguments dict in each parameter of method
+    #         result = self.PGSQLConn.get_layers(**arguments)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(result))
 
     def put_method_api_layer_create(self):
         # get the JSON sent, to add in DB
@@ -297,18 +303,21 @@ class BaseHandlerLayer(BaseHandler):
 
 class BaseHandlerChangeset(BaseHandler):
 
-    def get_method_api_changeset(self):
-        arguments = self.get_aguments()
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_changesets(**kwargs)
 
-        try:
-            # break the arguments dict in each parameter of method
-            result = self.PGSQLConn.get_changesets(**arguments)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
+    # def get_method_api_changeset(self):
+    #     arguments = self.get_aguments()
+    #
+    #     try:
+    #         # break the arguments dict in each parameter of method
+    #         result = self.PGSQLConn.get_changesets(**arguments)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(result))
 
     def put_method_api_changeset_create(self):
         # get the JSON sent, to add in DB
@@ -353,18 +362,21 @@ class BaseHandlerChangeset(BaseHandler):
 
 class BaseHandlerElement(BaseHandler):
 
-    def get_method_api_element(self, element):
-        arguments = self.get_aguments()
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_elements(args[0], **kwargs)
 
-        try:
-            # break the arguments dict in each parameter of method
-            result = self.PGSQLConn.get_elements(element, **arguments)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
+    # def get_method_api_element(self, element):
+    #     arguments = self.get_aguments()
+    #
+    #     try:
+    #         # break the arguments dict in each parameter of method
+    #         result = self.PGSQLConn.get_elements(element, **arguments)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(result))
 
     def put_method_api_element_create(self, element, element_json):
         if not self.is_element_type_valid(element, element_json):
@@ -419,36 +431,26 @@ class BaseHandlerElement(BaseHandler):
             raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
 
 
-class BaseHandlerTheme(BaseHandler):
+class BaseHandlerThemeTree(BaseHandler):
 
-    def get_method_api_theme(self, param):
-        if param == "tree":
-            self.get_method_api_theme_tree()
-        # else:
-        #     self.get_method_api_theme_other()
+    def _get_feature(self, *args, **kwargs):
+        return self.Neo4JConn.get_theme_tree()
 
-    def get_method_api_theme_tree(self):
-        try:
-            result = self.Neo4JConn.get_theme_tree()
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
-        except exceptions.ConnectionError as error:
-            # print("Error: ", error)
-            raise HTTPError(503, "Connection refused. Please, contact the administrator.")
+    # def get_method_api_theme(self, param):
+    #     if param == "tree":
+    #         self.get_method_api_theme_tree()
+    #     # else:
+    #     #     self.get_method_api_theme_other()
 
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(result))
-
-    # def get_method_api_theme_other(self):
-    #     arguments = self.get_aguments()
-    #
+    # def get_method_api_theme_tree(self):
     #     try:
-    #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_layers(**arguments)
+    #         result = self.Neo4JConn.get_theme_tree()
     #     except DataError as error:
     #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #         raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
+    #     except exceptions.ConnectionError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(503, "Connection refused. Please, contact the administrator.")
     #
     #     # Default: self.set_header('Content-Type', 'application/json')
     #     self.write(json_encode(result))
@@ -484,3 +486,21 @@ class BaseHandlerTheme(BaseHandler):
     #     except DataError as error:
     #         # print("Error: ", error)
     #         raise HTTPError(500, "Problem when delete a layer. Please, contact the administrator.")
+
+
+class BaseHandlerAuthLogout(BaseHandler):
+
+    def _get_feature(self, *args, **kwargs):
+        pass
+
+
+class BaseHandlerFakeAuthLogin(BaseHandler):
+
+    def _get_feature(self, *args, **kwargs):
+        pass
+
+
+class BaseHandlerCapabilities(BaseHandler):
+
+    def _get_feature(self, *args, **kwargs):
+        pass

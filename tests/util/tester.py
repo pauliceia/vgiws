@@ -392,7 +392,7 @@ class UtilTester:
     # THEME TREE
 
     def api_theme_tree(self, expected):
-        response = self.session.get('http://localhost:8888/api/theme/tree')
+        response = self.session.get('http://localhost:8888/api/theme_tree')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -409,6 +409,6 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        expected = {"version": "0.0.1", "status": {"database": "online"}}
+        expected = {"version": "0.0.2", "status": {"database": "online"}}
 
         self.ut_self.assertNotEqual(resulted, expected)

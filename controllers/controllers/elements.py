@@ -17,7 +17,8 @@ class APIElementNode(BaseHandlerElement):
 
     def get(self, param=None):
         # param on this case is the id of element
-        self.get_method_api_element("node")
+        # self.get_method_api_element("node")
+        self.get_method_api_feature("node")
 
     @auth_non_browser_based
     def put(self, param=None):
@@ -38,7 +39,8 @@ class APIElementWay(BaseHandlerElement):
 
     def get(self, param=None):
         # param on this case is the id of element
-        self.get_method_api_element("way")
+        # self.get_method_api_element("way")
+        self.get_method_api_feature("way")
 
     @auth_non_browser_based
     def put(self, param=None):
@@ -59,7 +61,8 @@ class APIElementArea(BaseHandlerElement):
 
     def get(self, param=None):
         # param on this case is the id of element
-        self.get_method_api_element("area")
+        # self.get_method_api_element("area")
+        self.get_method_api_feature("area")
 
     @auth_non_browser_based
     def put(self, param=None):
