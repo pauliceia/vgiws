@@ -20,38 +20,38 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'Administrator', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
                     'properties': {'id': 1001, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'admin@admin.com', 'name': 'Administrator',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'admin'}
+                                   'email': 'admin@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'admin'}
                 },
                 {
                     'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'Rodrigo', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
                     'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
+                                   'email': 'rodrigo@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'rodrigo'}
                 },
                 {
                     'type': 'User',
-                    'tags': None,
+                    'tags': [{'v': 'Miguel', 'k': 'name'}],
                     'properties': {'id': 1003, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'miguel@admin.com', 'name': 'Miguel',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'miguel'}
+                                   'email': 'miguel@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'miguel'}
                 },
                 {
                     'type': 'User',
-                    'tags': None,
+                    'tags': [{'v': 'Rafael', 'k': 'name'}],
                     'properties': {'id': 1004, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'rafael@admin.com', 'name': 'Rafael',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'rafael'}
+                                   'email': 'rafael@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'rafael'}
                 },
                 {
                     'type': 'User',
-                    'tags': None,
+                    'tags': [{'v': 'Gabriel', 'k': 'name'}],
                     'properties': {'id': 1005, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'gabriel@admin.com', 'name': 'Gabriel',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'gabriel'}
+                                   'email': 'gabriel@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'gabriel'}
                 }
             ]
         }
@@ -64,11 +64,11 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'Rodrigo', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
                     'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
-                                   'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
-                                   'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
-                }
+                                   'email': 'rodrigo@admin.com', 'terms_seen': None, 'removed_at': None,
+                                   'username': 'rodrigo'}
+                },
             ]
         }
 

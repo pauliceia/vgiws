@@ -26,7 +26,7 @@ DELETE FROM user_tag;
 -- insert values in table user_tag
 -- user 1001
 INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'name', 'Administrator', 1001);
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'institution', 'INPE', 1001);
+INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1002, 'institution', 'INPE', 1001);
 -- user 1002
 INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1005, 'name', 'Rodrigo', 1002);
 INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1006, 'institution', 'INPE', 1002);
@@ -85,11 +85,11 @@ INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1003, 'theme', 'generic', 
 -- layer 1002
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1005, 'name', 'test_layer', 1002);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1006, 'description', 'test_layer', 1002);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1007, 'theme', 'crime', 1001);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1007, 'theme', 'crime', 1002);
 -- layer 1003
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1010, 'name', 'layer 3', 1003);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1011, 'description', 'test_layer', 1003);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1012, 'theme', 'addresses', 1001);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1012, 'theme', 'addresses', 1003);
 -- layer 1004
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1015, 'name', 'layer 4', 1004);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1016, 'description', 'test_layer', 1004);

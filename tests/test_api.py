@@ -15,37 +15,37 @@ class TestAPI(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        # CREATE A PROJECT FOR ALL TESTS
-        project = {
-            'project': {
+        # CREATE A layer FOR ALL TESTS
+        layer = {
+            'layer': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'name', 'v': 'project of data'},
-                         {'k': 'description', 'v': 'description of the project'}],
+                         {'k': 'name', 'v': 'layer of data'},
+                         {'k': 'description', 'v': 'description of the layer'}],
                 'properties': {'id': -1}
             }
         }
-        self.project = self.tester.api_project_create(project)
+        self.layer = self.tester.api_layer_create(layer)
 
     def tearDown(self):
-        # get the id of project to REMOVE it
-        project_id = self.project["project"]["properties"]["id"]
+        # get the id of layer to REMOVE it
+        layer_id = self.layer["layer"]["properties"]["id"]
 
-        # REMOVE THE PROJECT AFTER THE TESTS
-        self.tester.api_project_delete(project_id)
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_crud_elements_with_login(self):
-        # get the id of project to use in create a changeset
-        fk_project_id = self.project["project"]["properties"]["id"]
+        # get the id of layer to use in create a changeset
+        fk_layer_id = self.layer["layer"]["properties"]["id"]
 
         # CREATE A CHANGESET
         changeset = {
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_project_id": fk_project_id}
+                'properties': {'id': -1, "fk_layer_id": fk_layer_id}
             }
         }
         changeset = self.tester.api_changeset_create(changeset)

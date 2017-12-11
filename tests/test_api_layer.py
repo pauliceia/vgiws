@@ -20,23 +20,34 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00', 'fk_user_id_owner': 1001, 'id': 1001},
-                    'tags': [{'k': 'name', 'v': 'default'}, {'k': 'description', 'v': 'default layer'}],
+                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
+                                   'fk_user_id': 1001, 'id': 1001},
+                    'tags': [{'k': 'name', 'v': 'default'},
+                             {'k': 'description', 'v': 'default layer'},
+                             {'k': 'theme', 'v': 'generic'}],
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00', 'fk_user_id_owner': 1002, 'id': 1002},
-                    'tags': [{'k': 'name', 'v': 'test_layer'}, {'k': 'description', 'v': 'test_layer'}],
+                    'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
+                                   'fk_user_id': 1002, 'id': 1002},
+                    'tags': [{'k': 'name', 'v': 'test_layer'},
+                             {'k': 'description', 'v': 'test_layer'},
+                             {'k': 'theme', 'v': 'crime'}],
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00', 'fk_user_id_owner': 1002, 'id': 1003},
-                    'tags': [{'k': 'name', 'v': 'layer 3'}, {'k': 'description', 'v': 'test_layer'}],
+                    'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
+                                   'fk_user_id': 1002, 'id': 1003},
+                    'tags': [{'k': 'name', 'v': 'layer 3'},
+                             {'k': 'description', 'v': 'test_layer'},
+                             {'k': 'theme', 'v': 'addresses'}],
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-09-11 00:00:00', 'fk_user_id_owner': 1003, 'id': 1004},
-                    'tags': [{'k': 'name', 'v': 'layer 4'}, {'k': 'description', 'v': 'test_layer'}],
+                    'properties': {'removed_at': None, 'create_at': '2017-09-11 00:00:00',
+                                   'fk_user_id': 1003, 'id': 1004},
+                    'tags': [{'k': 'name', 'v': 'layer 4'},
+                             {'k': 'description', 'v': 'test_layer'}],
                     'type': 'Layer'
                 }
             ],
@@ -49,12 +60,13 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'type': 'Layer',
+                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
+                                   'fk_user_id': 1001, 'id': 1001},
                     'tags': [{'k': 'name', 'v': 'default'},
-                             {'k': 'description', 'v': 'default layer'}],
-                    'properties': {'removed_at': None, 'fk_user_id_owner': 1001,
-                                   'id': 1001, 'create_at': '2017-11-20 00:00:00'}
-                }
+                             {'k': 'description', 'v': 'default layer'},
+                             {'k': 'theme', 'v': 'generic'}],
+                    'type': 'Layer'
+                },
             ],
             'type': 'FeatureCollection'
         }
@@ -66,18 +78,20 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
-                                   'fk_user_id_owner': 1002,'id': 1002},
+                                   'fk_user_id': 1002, 'id': 1002},
                     'tags': [{'k': 'name', 'v': 'test_layer'},
-                             {'k': 'description', 'v': 'test_layer'}],
+                             {'k': 'description', 'v': 'test_layer'},
+                             {'k': 'theme', 'v': 'crime'}],
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
-                                   'fk_user_id_owner': 1002, 'id': 1003},
+                                   'fk_user_id': 1002, 'id': 1003},
                     'tags': [{'k': 'name', 'v': 'layer 3'},
-                             {'k': 'description', 'v': 'test_layer'}],
+                             {'k': 'description', 'v': 'test_layer'},
+                             {'k': 'theme', 'v': 'addresses'}],
                     'type': 'Layer'
-                }
+                },
             ],
             'type': 'FeatureCollection'
         }
