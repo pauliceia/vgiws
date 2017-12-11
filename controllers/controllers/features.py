@@ -9,7 +9,7 @@
 from ..base import BaseHandlerLayer, BaseHandlerChangeset, auth_non_browser_based
 
 
-# PROJECT
+# layer
 
 class APILayer(BaseHandlerLayer):
 

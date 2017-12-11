@@ -59,7 +59,7 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 -- clean layer table
 DELETE FROM layer;
 
--- add project
+-- add layer
 INSERT INTO layer (id, create_at, fk_user_id) VALUES (1001, '2017-11-20', 1001);
 INSERT INTO layer (id, create_at, fk_user_id) VALUES (1002, '2017-10-12', 1002);
 INSERT INTO layer (id, create_at, fk_user_id) VALUES (1003, '2017-12-23', 1002);
@@ -80,43 +80,43 @@ DELETE FROM layer_tag;
 -- SOURCE: -
 -- layer 1001
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1001, 'name', 'default', 1001);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1002, 'description', 'default project', 1001);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1002, 'description', 'default layer', 1001);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1003, 'theme', 'generic', 1001);
 -- layer 1002
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1005, 'name', 'test_project', 1002);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1006, 'description', 'test_project', 1002);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1005, 'name', 'test_layer', 1002);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1006, 'description', 'test_layer', 1002);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1007, 'theme', 'crime', 1001);
 -- layer 1003
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1010, 'name', 'project 3', 1003);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1011, 'description', 'test_project', 1003);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1010, 'name', 'layer 3', 1003);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1011, 'description', 'test_layer', 1003);
 INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1012, 'theme', 'addresses', 1001);
 -- layer 1004
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1015, 'name', 'project 4', 1004);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1016, 'description', 'test_project', 1004);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1015, 'name', 'layer 4', 1004);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1016, 'description', 'test_layer', 1004);
 -- layer layer_tag
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1020, 'name', 'project 5', 1005);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1021, 'description', 'test_project', 1005);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1020, 'name', 'layer 5', 1005);
+INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1021, 'description', 'test_layer', 1005);
 
 
 -- SELECT * FROM layer_tag;
 
 /*
-SELECT p.id, p.create_at, p.removed_at FROM project p WHERE p.id = 1003;
-SELECT p.id, date(create_at) AS myTime, p.removed_at FROM project p WHERE p.id = 1003;
-SELECT p.id, to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as create_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM project p WHERE p.id = 1003;
+SELECT p.id, p.create_at, p.removed_at FROM layer p WHERE p.id = 1003;
+SELECT p.id, date(create_at) AS myTime, p.removed_at FROM layer p WHERE p.id = 1003;
+SELECT p.id, to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as create_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM layer p WHERE p.id = 1003;
 */
 
--- UPDATE project SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
+-- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
 
 
--- SELECT p.id, p.create_at, p.closed_at, ṕt.id, pt.k, pt.v FROM project p, project_tag pt WHERE p.id = pt.fk_project_id;
+-- SELECT p.id, p.create_at, p.closed_at, ṕt.id, pt.k, pt.v FROM layer p, layer_tag pt WHERE p.id = pt.fk_layer_id;
 
 
 /*
 SELECT jsonb_build_object(
     'type', 'FeatureCollection',
     'features',   jsonb_agg(jsonb_build_object(
-        'type',       'Project',
+        'type',       'Layer',
         'properties', json_build_object(
             'id', id,
             'create_at',  to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
@@ -126,11 +126,11 @@ SELECT jsonb_build_object(
         'tags',       tags.jsontags
     ))
 ) AS row_to_json
-FROM project
+FROM layer
 CROSS JOIN LATERAL (
 	SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-	FROM project_tag 
-	WHERE fk_project_id = project.id    
+	FROM layer_tag 
+	WHERE fk_layer_id = layer.id    
 ) AS tags
 WHERE id=1001;
 */
@@ -144,13 +144,13 @@ DELETE FROM changeset;
 
 -- add changeset open
 -- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
 -- open changesets
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
-INSERT INTO changeset (id, create_at, fk_project_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
+INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
 
 -- SELECT * FROM changeset;
 
@@ -772,19 +772,19 @@ ORDER BY cn.id;
 */
 
 /*
-SELECT pjt.id AS project_id, cs.id AS changeset_id
-FROM project pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_project_id
+SELECT pjt.id AS layer_id, cs.id AS changeset_id
+FROM layer pjt LEFT JOIN changeset cs ON pjt.id = cs.fk_layer_id
 WHERE pjt.id = 1001;
 
 
--- get the elements of the changesets of a specific project
-SELECT changeset.project_id, element.fk_changeset_id, element.id, element.geom, element.visible
+-- get the elements of the changesets of a specific layer
+SELECT changeset.layer_id, element.fk_changeset_id, element.id, element.geom, element.visible
 FROM 
 (
-    -- get the changesets of a specific project
-    SELECT project.id AS project_id, changeset.id AS changeset_id
-    FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
-    WHERE project.id = 1001
+    -- get the changesets of a specific layer
+    SELECT layer.id AS layer_id, changeset.id AS changeset_id
+    FROM layer LEFT JOIN changeset ON layer.id = changeset.fk_layer_id
+    WHERE layer.id = 1001
 ) AS changeset
 LEFT JOIN current_area element ON changeset.changeset_id = element.fk_changeset_id
 WHERE element.visible=TRUE;

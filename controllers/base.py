@@ -248,7 +248,7 @@ class BaseHandlerLayer(BaseHandler):
         current_user_id = self.get_current_user_id()
 
         try:
-            json_with_id = self.PGSQLConn.create_project(feature_json, current_user_id)
+            json_with_id = self.PGSQLConn.create_layer(feature_json, current_user_id)
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a layer. Please, contact the administrator.")
@@ -421,7 +421,7 @@ class BaseHandlerTheme(BaseHandler):
     #
     #     try:
     #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_projects(**arguments)
+    #         result = self.PGSQLConn.get_layers(**arguments)
     #     except DataError as error:
     #         # print("Error: ", error)
     #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
@@ -429,34 +429,34 @@ class BaseHandlerTheme(BaseHandler):
     #     # Default: self.set_header('Content-Type', 'application/json')
     #     self.write(json_encode(result))
 
-    # def put_method_api_project_create(self):
+    # def put_method_api_layer_create(self):
     #     # get the JSON sent, to add in DB
-    #     project_json = self.get_the_json_validated()
+    #     layer_json = self.get_the_json_validated()
     #
     #     current_user_id = self.get_current_user_id()
     #
     #     try:
-    #         json_with_id = self.PGSQLConn.create_project(project_json, current_user_id)
+    #         json_with_id = self.PGSQLConn.create_layer(layer_json, current_user_id)
     #     except DataError as error:
     #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when create a project. Please, contact the administrator.")
+    #         raise HTTPError(500, "Problem when create a layer. Please, contact the administrator.")
     #
     #     # Default: self.set_header('Content-Type', 'application/json')
     #     self.write(json_encode(json_with_id))
     #
-    # def put_method_api_project(self, param):
+    # def put_method_api_layer(self, param):
     #     # param on this case is "create" or "update"
     #     if param == "create":
-    #         self.put_method_api_project_create()
+    #         self.put_method_api_layer_create()
     #     elif param == "update":
     #         self.write(json_encode({"ok", 1}))
     #     else:
     #         raise HTTPError(404, "Invalid URL")
     #
-    # def delete_method_api_project(self, param):
+    # def delete_method_api_layer(self, param):
     #     # param on this case is the id of element
     #     try:
-    #         self.PGSQLConn.delete_project_in_db(param)
+    #         self.PGSQLConn.delete_layer_in_db(param)
     #     except DataError as error:
     #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when delete a project. Please, contact the administrator.")
+    #         raise HTTPError(500, "Problem when delete a layer. Please, contact the administrator.")

@@ -133,8 +133,8 @@ class TestAPI(TestCase):
         self.tester.api_element_create_error_400_bad_request(area)
 
     def test_crud_elements_that_not_exist_with_login(self):
-        # get the id of project to use in create a changeset
-        fk_project_id = self.project["project"]["properties"]["id"]
+        # get the id of layer to use in create a changeset
+        fk_layer_id = self.layer["layer"]["properties"]["id"]
 
         # CREATE A CHANGESET
         # send a JSON with the changeset to create a new one
@@ -142,7 +142,7 @@ class TestAPI(TestCase):
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_project_id": fk_project_id}
+                'properties': {'id': -1, "fk_layer_id": fk_layer_id}
             }
         }
         changeset = self.tester.api_changeset_create(changeset)

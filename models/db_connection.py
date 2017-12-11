@@ -153,22 +153,22 @@ class PGSQLConnection:
         return results_of_query
 
     ################################################################################
-    # PROJECT
+    # layer
     ################################################################################
 
-    def get_projects(self, project_id=None, user_id=None):
+    def get_layers(self, layer_id=None, user_id=None):
         # the id have to be a int
-        if is_a_invalid_id(project_id) or is_a_invalid_id(user_id):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_project_table(project_id=project_id, user_id=user_id)
+        subquery = get_subquery_layer_table(layer_id=layer_id, user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Project',
+                    'type',       'Layer',
                     'properties', json_build_object(
                         'id',           id,                        
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
@@ -182,8 +182,8 @@ class PGSQLConnection:
             {0}
             CROSS JOIN LATERAL (
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM project_tag 
-                WHERE fk_project_id = project.id    
+                FROM layer_tag 
+                WHERE fk_layer_id = layer.id    
             ) AS tags
         """.format(subquery)
 
@@ -207,9 +207,9 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_project_in_db(self, fk_user_id):
+    def add_layer_in_db(self, fk_user_id):
         query_text = """
-            INSERT INTO project (create_at, fk_user_id) 
+            INSERT INTO layer (create_at, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
         """.format(fk_user_id)
 
@@ -221,38 +221,38 @@ class PGSQLConnection:
 
         return result
 
-    def add_project_tag_in_db(self, k, v, fk_project_id):
+    def add_layer_tag_in_db(self, k, v, fk_layer_id):
         query_text = """
-            INSERT INTO project_tag (k, v, fk_project_id) 
+            INSERT INTO layer_tag (k, v, fk_layer_id) 
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_project_id)
+        """.format(k, v, fk_layer_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_project(self, project_json, fk_user_id):
+    def create_layer(self, feature_json, fk_user_id):
 
-        project = project_json["project"]
+        feature = feature_json["layer"]
 
-        # add the project in db and get the id of it
-        project_id_in_json = self.add_project_in_db(fk_user_id)
+        # add the layer in db and get the id of it
+        id_in_json = self.add_layer_in_db(fk_user_id)
 
-        # add in DB the tags of project
-        for tag in project["tags"]:
-            # add the project tag in db
-            self.add_project_tag_in_db(tag["k"], tag["v"], project_id_in_json["id"])
+        # add in DB the tags of layer
+        for tag in feature["tags"]:
+            # add the layer tag in db
+            self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
-        # put in DB the project and its tags
+        # put in DB the layer and its tags
         self.commit()
 
-        return project_id_in_json
+        return id_in_json
 
-    def delete_project_in_db(self, feature_id):
+    def delete_layer_in_db(self, feature_id):
         if is_a_invalid_id(feature_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
+            UPDATE layer SET visible = FALSE, removed_at = LOCALTIMESTAMP
             WHERE id={0};
         """.format(feature_id)
 
@@ -270,12 +270,12 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    def get_changesets(self, changeset_id=None, user_id=None, project_id=None, open=None, closed=None):
+    def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
         # the id have to be a int
         if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_changeset_table(changeset_id=changeset_id, project_id=project_id,
+        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
                                                 user_id=user_id, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -288,7 +288,7 @@ class PGSQLConnection:
                         'id',           id,                        
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_project_id',    fk_project_id,
+                        'fk_layer_id',    fk_layer_id,
                         'fk_user_id', fk_user_id
                     ),
                     'tags',       tags.jsontags
@@ -323,18 +323,18 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_changeset_in_db(self, fk_project_id, fk_user_id):
+    def add_changeset_in_db(self, fk_layer_id, fk_user_id):
         """
         Add a changeset in DB
-        :param fk_project_id: id of the project associated with the changeset
+        :param fk_layer_id: id of the layer associated with the changeset
         :param fk_user_id: id of the user (owner) of the changeset
         :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
         query_text = """
-            INSERT INTO changeset (create_at, fk_project_id, fk_user_id) 
+            INSERT INTO changeset (create_at, fk_layer_id, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(fk_project_id, fk_user_id)
+        """.format(fk_layer_id, fk_user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -363,10 +363,10 @@ class PGSQLConnection:
         changeset = changeset_json["changeset"]
 
         # get the fields to add in DB
-        fk_project_id = changeset["properties"]["fk_project_id"]
+        fk_layer_id = changeset["properties"]["fk_layer_id"]
 
         # add the chengeset in db and get the id of it
-        changeset_id_in_json = self.add_changeset_in_db(fk_project_id, fk_user_id)
+        changeset_id_in_json = self.add_changeset_in_db(fk_layer_id, fk_user_id)
 
         # add in DB the tags of changeset
         for tag in changeset["tags"]:
@@ -427,13 +427,13 @@ class PGSQLConnection:
 
         return self.get_elements_geojson(element, **arguments)
 
-    def get_elements_geojson(self, element, element_id=None, user_id=None, project_id=None,
+    def get_elements_geojson(self, element, element_id=None, user_id=None, layer_id=None,
                              changeset_id=None):
 
         subquery_current_element_table = get_subquery_current_element_table(element,
                                                                             element_id=element_id,
                                                                             user_id=user_id,
-                                                                            project_id=project_id,
+                                                                            layer_id=layer_id,
                                                                             changeset_id=changeset_id)
 
         query_text = """
@@ -596,9 +596,7 @@ class PGSQLConnection:
                         'id',           id,
                         'username', username,
                         'email', email,
-                        'name', name,
-                        'is_email_valid', is_email_valid,
-                        'description', description,                
+                        'is_email_valid', is_email_valid,           
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'terms_agreed', terms_agreed,

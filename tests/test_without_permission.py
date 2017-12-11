@@ -23,7 +23,7 @@ class TestAPIWihoutLogin(TestCase):
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': 1500, "fk_project_id": 1500}
+                'properties': {'id': 1500, "fk_layer_id": 1500}
             }
         }
         self.tester.api_changeset_create_error_403_forbidden(changeset)
@@ -105,7 +105,7 @@ class TestAPIWihoutLogin(TestCase):
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': 1700, "fk_project_id": 1700}
+                'properties': {'id': 1700, "fk_layer_id": 1700}
             }
         }
         self.tester.api_changeset_create_error_403_forbidden(changeset)
@@ -124,7 +124,7 @@ class TestAPIWihoutLogin(TestCase):
                 'changeset': {
                     'tags': [{'k': 'created_by', 'v': 'test_api'},
                              {'k': 'comment', 'v': 'testing create changeset'}],
-                    'properties': {'id': -1, "fk_project_id": 1003}
+                    'properties': {'id': -1, "fk_layer_id": 1003}
                 }
             }
             changeset = self.tester.api_changeset_create(changeset)

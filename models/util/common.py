@@ -19,7 +19,7 @@ def are_arguments_valid_to_get_elements(**arguments):
     # the ids are just valid if there are numbers
     if "element_id" in arguments and is_a_invalid_id(arguments["element_id"]):
         return False
-    elif "project_id" in arguments and is_a_invalid_id(arguments["project_id"]):
+    elif "layer_id" in arguments and is_a_invalid_id(arguments["layer_id"]):
         return False
     elif "changeset_id" in arguments and is_a_invalid_id(arguments["changeset_id"]):
         return False

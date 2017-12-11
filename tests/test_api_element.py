@@ -180,7 +180,7 @@ class TestAPIElement(TestCase):
     #
     #     self.assertEqual(expected, resulted)
 
-    def test_get_api_element_return_all_elements_by_project_id(self):
+    def test_get_api_element_return_all_elements_by_layer_id(self):
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
             'type': 'FeatureCollection',
@@ -202,7 +202,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, project_id="1001")
+        self.tester.api_element("node", expected, layer_id="1001")
 
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -219,7 +219,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("way", expected, project_id="1001")
+        self.tester.api_element("way", expected, layer_id="1001")
 
         expected = {
             'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'},
@@ -236,7 +236,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("area", expected, project_id="1001")
+        self.tester.api_element("area", expected, layer_id="1001")
 
     def test_get_api_element_return_all_elements_by_changeset_id(self):
         expected = {
@@ -356,7 +356,7 @@ class TestAPIElement(TestCase):
             'changeset': {
                 'tags': [{'k': 'created_by', 'v': 'test_api'},
                          {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_project_id": 1004}
+                'properties': {'id': -1, "fk_layer_id": 1004}
             }
         }
         changeset = self.tester.api_changeset_create(changeset)

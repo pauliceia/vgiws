@@ -34,34 +34,34 @@ def get_subquery_current_element_table_if_user_id_is_not_none(element, condition
     return current_element_table
 
 
-def get_subquery_current_element_table_if_project_id_is_not_none(element, conditions_of_where, **kwargs):
+def get_subquery_current_element_table_if_layer_id_is_not_none(element, conditions_of_where, **kwargs):
 
     # create the where clause with the conditions
     where_current_element_table = "WHERE " + " AND ".join(conditions_of_where)
 
-    # by default, get all elements from a specific project
-    conditions_of_where = ["project.id = {0}".format(kwargs["project_id"])]
+    # by default, get all elements from a specific layer
+    conditions_of_where = ["layer.id = {0}".format(kwargs["layer_id"])]
 
     # create the where clause with the conditions
-    where_join_project_with_changeset = "WHERE " + " AND ".join(conditions_of_where)
+    where_join_layer_with_changeset = "WHERE " + " AND ".join(conditions_of_where)
 
-    # search by project_id
+    # search by layer_id
     current_element_table = """
         (
-            -- get the elements of the changesets of a specific project
+            -- get the elements of the changesets of a specific layer
             SELECT element.id, element.geom, element.fk_changeset_id
             FROM 
             (
-                -- get the changesets of a specific project
+                -- get the changesets of a specific layer
                 SELECT changeset.id
-                FROM project LEFT JOIN changeset ON project.id = changeset.fk_project_id
+                FROM layer LEFT JOIN changeset ON layer.id = changeset.fk_layer_id
                 {2}
             ) AS changeset
             LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
             {1}
             ORDER BY id
         ) AS element
-    """.format(element, where_current_element_table, where_join_project_with_changeset)
+    """.format(element, where_current_element_table, where_join_layer_with_changeset)
 
     return current_element_table
 
@@ -117,14 +117,14 @@ def get_subquery_current_element_table(element, **kwargs):
         current_element_table = get_subquery_current_element_table_default(element, conditions_of_where, **kwargs)
 
     elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        # if there is a project_id
+        # if there is a layer_id
         current_element_table = get_subquery_current_element_table_if_user_id_is_not_none(element,
                                                                                           conditions_of_where,
                                                                                           **kwargs)
 
-    elif "project_id" in kwargs and kwargs["project_id"] is not None:
-        # if there is a project_id
-        current_element_table = get_subquery_current_element_table_if_project_id_is_not_none(element,
+    elif "layer_id" in kwargs and kwargs["layer_id"] is not None:
+        # if there is a layer_id
+        current_element_table = get_subquery_current_element_table_if_layer_id_is_not_none(element,
                                                                                              conditions_of_where,
                                                                                              **kwargs)
 

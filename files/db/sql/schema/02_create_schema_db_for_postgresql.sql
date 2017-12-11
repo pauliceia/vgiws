@@ -1,5 +1,5 @@
 
--- Dom 10 Dez 2017 17:34:33 -02
+-- Seg 11 Dez 2017 11:53:16 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -27,9 +27,6 @@ DROP TABLE IF EXISTS layer CASCADE ;
 
 CREATE TABLE IF NOT EXISTS layer (
   id SERIAL ,
-  theme TEXT NULL,
-  start_date TIMESTAMP NULL,
-  end_date TIMESTAMP NULL,
   create_at TIMESTAMP NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
@@ -53,7 +50,7 @@ CREATE TABLE IF NOT EXISTS changeset (
   create_at TIMESTAMP NULL,
   closed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  fk_project_id INT NOT NULL,
+  fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_project_tb_user1
@@ -62,7 +59,7 @@ CREATE TABLE IF NOT EXISTS changeset (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_change_set_project1
-    FOREIGN KEY (fk_project_id)
+    FOREIGN KEY (fk_layer_id)
     REFERENCES layer (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
