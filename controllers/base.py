@@ -5,7 +5,7 @@
     Responsible module to create base handlers.
 """
 from json import loads
-from abc import abstractmethod
+from abc import abstractmethod, ABCMeta
 from requests import exceptions
 
 from psycopg2._psycopg import DataError, InternalError
@@ -52,7 +52,7 @@ def just_run_on_debug_mode(method):
     return wrapper
 
 
-class BaseHandler(RequestHandler):
+class BaseHandler(RequestHandler, metaclass=ABCMeta):
     """
         Responsible class to be a base handler for the others classes.
         It extends of the RequestHandler class.
@@ -214,15 +214,15 @@ class BaseHandler(RequestHandler):
     # template method
 
     # @abstractmethod
-    # def __get_feature(self):
+    # def __get_feature(self, **arguments):
     #     pass
     #
-    # def get_method_api_user(self):
+    # def get_method_api_feature(self):
     #     arguments = self.get_aguments()
     #
     #     try:
     #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_users(**arguments)
+    #         result = self.__get_feature(**arguments)
     #     except DataError as error:
     #         # print("Error: ", error)
     #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
