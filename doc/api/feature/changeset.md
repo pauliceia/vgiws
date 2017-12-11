@@ -26,7 +26,7 @@ This method gets changesets from DB. If you doesn't put any parameter, so will r
         'features': [
             {
                 'type': 'Changeset',
-                'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id_owner': 1001,
+                'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001,
                                'create_at': '2017-10-20 00:00:00', 'id': 1001},
                 'tags': [{'k': 'created_by', 'v': 'pauliceia_portal'},
                          {'k': 'comment', 'v': 'a changeset created'}]
