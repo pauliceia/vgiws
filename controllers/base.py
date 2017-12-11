@@ -6,9 +6,12 @@
 """
 from json import loads
 
+import requests
 from psycopg2._psycopg import DataError, InternalError
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
+from urllib3 import HTTPConnectionPool
+from urllib3.exceptions import MaxRetryError
 
 from modules.user import get_new_user_struct_cookie
 
@@ -412,6 +415,9 @@ class BaseHandlerTheme(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
+        except requests.exceptions.ConnectionError as error:
+            # print("Error: ", error)
+            raise HTTPError(503, "Connection refused. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))

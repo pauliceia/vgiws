@@ -40,4 +40,5 @@ This method gets the theme tree in JSON format.
     ```
 - Error codes:
     - 500 (Internal Server Error): Problem when get the theme tree. Please, contact the administrator.
+    - 503 (Service Unavailable): Connection refused. Please, contact the administrator.
 - Notes:
