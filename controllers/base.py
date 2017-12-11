@@ -5,13 +5,12 @@
     Responsible module to create base handlers.
 """
 from json import loads
+from abc import abstractmethod
+from requests import exceptions
 
-import requests
 from psycopg2._psycopg import DataError, InternalError
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
-from urllib3 import HTTPConnectionPool
-from urllib3.exceptions import MaxRetryError
 
 from modules.user import get_new_user_struct_cookie
 
@@ -211,6 +210,25 @@ class BaseHandler(RequestHandler):
             query[parts[0]] = parts[1]
 
         return query
+
+    # template method
+
+    # @abstractmethod
+    # def __get_feature(self):
+    #     pass
+    #
+    # def get_method_api_user(self):
+    #     arguments = self.get_aguments()
+    #
+    #     try:
+    #         # break the arguments dict in each parameter of method
+    #         result = self.PGSQLConn.get_users(**arguments)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(result))
 
 
 class BaseHandlerUser(BaseHandler):
@@ -415,7 +433,7 @@ class BaseHandlerTheme(BaseHandler):
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
-        except requests.exceptions.ConnectionError as error:
+        except exceptions.ConnectionError as error:
             # print("Error: ", error)
             raise HTTPError(503, "Connection refused. Please, contact the administrator.")
 
