@@ -512,7 +512,6 @@ class PGSQLConnection:
 
         return result["id"]
 
-        list_of_id_of_features_created = []
     def add_element_tag_in_db(self, k, v, element, fk_element_id):
         query_text = """
             INSERT INTO current_{0}_tag (k, v, fk_current_{0}_id) 

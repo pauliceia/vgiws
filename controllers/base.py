@@ -6,6 +6,8 @@
 """
 from json import loads
 from abc import abstractmethod, ABCMeta
+
+import psycopg2
 from requests import exceptions
 
 from psycopg2._psycopg import DataError, InternalError
@@ -386,10 +388,16 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
 
             # send the elements created to DB
             self.PGSQLConn.commit()
-        except InternalError as error:
-            # print("Error: ", error)
+
+        except psycopg2.Error as error:
+            # print(">>>> ", error)
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(400, str(error.pgerror))
+
+            if error.pgcode == "VW001":
+                # VW001 - The changeset with id=#ID was closed at #CLOSED_AT, so it is not possible to use it
+                raise HTTPError(409, str(error))
+
+            raise HTTPError(500, "Psycopg2 error. Please, contact the administrator.")
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")

@@ -1,4 +1,11 @@
-﻿-- -----------------------------------------------------
+﻿/*
+VGI WS Errors:
+
+VW001 - The changeset with id=#ID was closed at #CLOSED_AT, so it is not possible to use it
+
+*/
+
+-- -----------------------------------------------------
 -- Triggers to current_element table
 -- -----------------------------------------------------
 -- create a generic function to observe when add a new element in current_element table
@@ -13,7 +20,8 @@ CREATE OR REPLACE FUNCTION observe_when_add_new_element_in_current_element_table
 
         -- if this changeset is closed (not null), so raise a exception
         IF __closed_at__ is not NULL THEN
-            RAISE EXCEPTION 'The changeset with id=% is closed, so it is not possible to use it', NEW.fk_changeset_id;
+            RAISE 'The changeset with id=% was closed at %, so it is not possible to use it.', NEW.fk_changeset_id, __closed_at__ 
+                USING ERRCODE = 'VW001';
         END IF;
         
         RETURN NEW;

@@ -352,16 +352,6 @@ class UtilTester:
 
     # element errors - create
 
-    def api_element_create_error_400_bad_request(self, element_json):
-        multi_element = element_json["features"][0]["geometry"]["type"]
-        element = by_multi_element_get_url_name(multi_element)
-
-        # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
-                                    data=dumps(element_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
     def api_element_create_error_403_forbidden(self, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
         element = by_multi_element_get_url_name(multi_element)
@@ -371,6 +361,16 @@ class UtilTester:
                                     data=dumps(element_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_element_create_error_409_conflict(self, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+        element = by_multi_element_get_url_name(multi_element)
+
+        # do a PUT call, sending a node to add in DB
+        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+                                    data=dumps(element_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
 
     # element errors - delete
 

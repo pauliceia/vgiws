@@ -128,9 +128,9 @@ class TestAPI(TestCase):
         self.tester.api_changeset_delete(changeset_id)
 
         # TRY TO ADD NEW ELEMENTS WITH THE CLOSED CHANGESET
-        self.tester.api_element_create_error_400_bad_request(node)
-        self.tester.api_element_create_error_400_bad_request(way)
-        self.tester.api_element_create_error_400_bad_request(area)
+        self.tester.api_element_create_error_409_conflict(node)
+        self.tester.api_element_create_error_409_conflict(way)
+        self.tester.api_element_create_error_409_conflict(area)
 
     def test_crud_elements_that_not_exist_with_login(self):
         # get the id of layer to use in create a changeset

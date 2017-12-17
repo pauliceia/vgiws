@@ -480,7 +480,7 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_400_bad_request(node)  # return the same element with the id generated
+        self.tester.api_element_create_error_409_conflict(node)  # return the same element with the id generated
 
         way = {
             'type': 'FeatureCollection',
@@ -499,7 +499,7 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_400_bad_request(way)
+        self.tester.api_element_create_error_409_conflict(way)
 
         area = {
             'type': 'FeatureCollection',
@@ -518,7 +518,7 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_400_bad_request(area)
+        self.tester.api_element_create_error_409_conflict(area)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
