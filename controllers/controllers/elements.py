@@ -23,7 +23,8 @@ class APIElementNode(BaseHandlerElement):
     @auth_non_browser_based
     def put(self, param=None):
         # param on this case is "create" or "update"
-        self.put_method_api_element("node", param)
+        # self.put_method_api_element(param, "node")
+        self.put_method_api_feature(param, "node")
 
     @auth_non_browser_based
     def delete(self, param=None):
@@ -45,7 +46,8 @@ class APIElementWay(BaseHandlerElement):
     @auth_non_browser_based
     def put(self, param=None):
         # param on this case is "create" or "update"
-        self.put_method_api_element("way", param)
+        # self.put_method_api_element(param, "way")
+        self.put_method_api_feature(param, "way")
 
     @auth_non_browser_based
     def delete(self, param=None):
@@ -67,7 +69,8 @@ class APIElementArea(BaseHandlerElement):
     @auth_non_browser_based
     def put(self, param=None):
         # param on this case is "create" or "update"
-        self.put_method_api_element("area", param)
+        # self.put_method_api_element(param, "area")
+        self.put_method_api_feature(param, "area")
 
     @auth_non_browser_based
     def delete(self, param=None):

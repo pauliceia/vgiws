@@ -43,7 +43,7 @@ def just_run_on_debug_mode(method):
 
         # if is not in debug mode, so return a 404 Not Found
         if not self.DEBUG_MODE:
-            raise HTTPError(404, "Not Found")
+            raise HTTPError(404, "Invalid URL.")
 
         # if is in debug mode, so execute the method
         return method(self, *args, **kwargs)
@@ -241,6 +241,21 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def _create_feature(self, *args, **kwargs):
         return NotImplementedError
 
+    # @abstractmethod
+    # def put_method_api_feature_create(self, *args, **kwargs):
+    #     # get the JSON sent, to add in DB
+    #     feature_json = self.get_the_json_validated()
+    #     current_user_id = self.get_current_user_id()
+    #
+    #     try:
+    #         json_with_id = self.PGSQLConn.create_layer(feature_json, current_user_id)
+    #     except DataError as error:
+    #         # print("Error: ", error)
+    #         raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
+    #
+    #     # Default: self.set_header('Content-Type', 'application/json')
+    #     self.write(json_encode(json_with_id))
+
     @abstractmethod
     def _update_feature(self, *args, **kwargs):
         return NotImplementedError
@@ -250,16 +265,19 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         return NotImplementedError
 
     def put_method_api_feature(self, *args):
-        # args[0] = param
+        param = args[0]
 
-        if args[0] == "create":
+        # remove the first argument ('param'), because it is not necessary anymore
+        args = args[1:]  # get the second argument and so on
+
+        if param == "create":
             self._create_feature(*args)
-        elif args[0] == "update":
+        elif param == "update":
             self._update_feature(*args)
-        elif args[0] == "close":
+        elif param == "close":
             self._close_feature(*args)
         else:
-            raise HTTPError(404, "Invalid URL")
+            raise HTTPError(404, "Invalid URL.")
 
     # DELETE METHOD
 
@@ -304,14 +322,13 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     def _create_feature(self, *args, **kwargs):
         # get the JSON sent, to add in DB
         feature_json = self.get_the_json_validated()
-
         current_user_id = self.get_current_user_id()
 
         try:
             json_with_id = self.PGSQLConn.create_layer(feature_json, current_user_id)
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(500, "Problem when create a layer. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -321,30 +338,6 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     def _close_feature(self, *args, **kwargs):
         return NotImplementedError
-
-    # def put_method_api_layer_create(self):
-    #     # get the JSON sent, to add in DB
-    #     feature_json = self.get_the_json_validated()
-    #
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     try:
-    #         json_with_id = self.PGSQLConn.create_layer(feature_json, current_user_id)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when create a layer. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(json_with_id))
-
-    # def put_method_api_layer(self, param):
-    #     # param on this case is "create" or "update"
-    #     if param == "create":
-    #         self.put_method_api_layer_create()
-    #     elif param == "update":
-    #         self.write(json_encode({"ok", 1}))
-    #     else:
-    #         raise HTTPError(404, "Invalid URL")
 
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_layer_in_db(*args)
@@ -357,15 +350,14 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 
     def _create_feature(self, *args, **kwargs):
         # get the JSON sent, to add in DB
-        changeset_json = self.get_the_json_validated()
-
+        feature_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
 
         try:
-            json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
+            json_with_id = self.PGSQLConn.create_changeset(feature_json, current_user_id)
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(500, "Problem when create a changeset. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -374,44 +366,11 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         return NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
-        changeset_id = args[1]
         try:
-            self.PGSQLConn.close_changeset(changeset_id)
+            self.PGSQLConn.close_changeset(args[0])
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when close a feature. Please, contact the administrator.")
-
-    # def put_method_api_changeset_create(self):
-    #     # get the JSON sent, to add in DB
-    #     changeset_json = self.get_the_json_validated()
-    #
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     try:
-    #         json_with_id = self.PGSQLConn.create_changeset(changeset_json, current_user_id)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when create a changeset. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(json_with_id))
-
-    # def put_method_api_changeset_close(self, changeset_id):
-    #     try:
-    #         self.PGSQLConn.close_changeset(changeset_id)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when close a changeset. Please, contact the administrator.")
-
-    # def put_method_api_changeset(self, param, param2):
-    #     # param on this case is "create" or "close"
-    #     if param == "create":
-    #         self.put_method_api_changeset_create()
-    #     elif param == "close":
-    #         # param2 on this case is the id of changeset
-    #         self.put_method_api_changeset_close(param2)
-    #     else:
-    #         raise HTTPError(404, "Invalid URL.")
 
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_changeset_in_db(*args)
@@ -424,9 +383,9 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
 
     def _create_feature(self, *args, **kwargs):
         element = args[0]
-        element_json = self.get_the_json_validated()
+        feature_json = self.get_the_json_validated()
 
-        if not self.is_element_type_valid(element, element_json):
+        if not self.is_element_type_valid(element, feature_json):
             raise HTTPError(404, "Invalid URL.")
 
         current_user_id = self.get_current_user_id()
@@ -434,9 +393,9 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
         list_of_id_of_features_created = []
 
         try:
-            for feature in element_json["features"]:
+            for feature in feature_json["features"]:
                 # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-                feature["geometry"]["crs"] = element_json["crs"]
+                feature["geometry"]["crs"] = feature_json["crs"]
 
                 list_of_id_of_features_created.append(
                     # create_element returns the id of the element created
@@ -451,7 +410,7 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
             raise HTTPError(400, str(error.pgerror))
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(list_of_id_of_features_created))
@@ -461,52 +420,6 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
 
     def _close_feature(self, *args, **kwargs):
         return NotImplementedError
-
-    # def put_method_api_element_create(self, element, element_json):
-    #     if not self.is_element_type_valid(element, element_json):
-    #         raise HTTPError(404, "Invalid URL.")
-    #
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     list_of_id_of_features_created = []
-    #
-    #     try:
-    #         for feature in element_json["features"]:
-    #             # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-    #             feature["geometry"]["crs"] = element_json["crs"]
-    #
-    #             list_of_id_of_features_created.append(
-    #                 # create_element returns the id of the element created
-    #                 self.PGSQLConn.create_element(element, feature, current_user_id)
-    #             )
-    #
-    #         # send the elements created to DB
-    #         self.PGSQLConn.commit()
-    #     except InternalError as error:
-    #         # print("Error: ", error)
-    #         self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-    #         raise HTTPError(400, str(error.pgerror))
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when create a element. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(list_of_id_of_features_created))
-
-    def put_method_api_element(self, element, param):
-        if param == "create":
-            # element_json = self.get_the_json_validated()
-            # self.put_method_api_element_create(element, element_json)
-
-            self._create_feature(element)
-
-        elif param == "update":
-            # wiki.openstreetmap.org/wiki/Elements
-            # o id do usuário que fica no element é o do ultimo que modificou
-
-            self.write(json_encode({"ok", 1}))
-        else:
-            raise HTTPError(404, "Invalid URL")
 
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_element_in_db(*args)
