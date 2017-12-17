@@ -23,7 +23,8 @@ class APILayer(BaseHandlerLayer):
 
     @auth_non_browser_based
     def put(self, param=None):
-        self.put_method_api_layer(param)
+        # self.put_method_api_layer(param)
+        self.put_method_api_feature(param)
 
     @auth_non_browser_based
     def delete(self, param=None):
@@ -43,7 +44,8 @@ class APIChangeset(BaseHandlerChangeset):
 
     @auth_non_browser_based
     def put(self, param=None, param2=None):
-        self.put_method_api_changeset(param, param2)
+        # self.put_method_api_changeset(param, param2)
+        self.put_method_api_feature(param, param2)
 
     @auth_non_browser_based
     def delete(self, param=None, param2=None):
