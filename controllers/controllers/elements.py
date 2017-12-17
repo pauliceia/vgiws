@@ -28,7 +28,7 @@ class APIElementNode(BaseHandlerElement):
     @auth_non_browser_based
     def delete(self, param=None):
         # param on this case is the id of element
-        self.delete_method_api_element("node", param)
+        self.delete_method_api_feature("node", param)
 
 
 class APIElementWay(BaseHandlerElement):
@@ -50,7 +50,7 @@ class APIElementWay(BaseHandlerElement):
     @auth_non_browser_based
     def delete(self, param=None):
         # param on this case is the id of element
-        self.delete_method_api_element("way", param)
+        self.delete_method_api_feature("way", param)
 
 
 class APIElementArea(BaseHandlerElement):
@@ -72,7 +72,7 @@ class APIElementArea(BaseHandlerElement):
     @auth_non_browser_based
     def delete(self, param=None):
         # param on this case is the id of element
-        self.delete_method_api_element("area", param)
+        self.delete_method_api_feature("area", param)
 
 
 """

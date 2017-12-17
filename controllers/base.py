@@ -52,7 +52,9 @@ def just_run_on_debug_mode(method):
     return wrapper
 
 
-class BaseHandler(RequestHandler, metaclass=ABCMeta):
+# BASE CLASS
+
+class BaseHandler(RequestHandler):
     """
         Responsible class to be a base handler for the others classes.
         It extends of the RequestHandler class.
@@ -211,11 +213,15 @@ class BaseHandler(RequestHandler, metaclass=ABCMeta):
 
         return query
 
-    # template method
+
+# TEMPLATE METHOD
+
+class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
+    # GET METHOD
 
     @abstractmethod
     def _get_feature(self, *args, **kwargs):
-        pass
+        return NotImplementedError
 
     def get_method_api_feature(self, *args):
         arguments = self.get_aguments()
@@ -230,43 +236,35 @@ class BaseHandler(RequestHandler, metaclass=ABCMeta):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
 
+    # DELETE METHOD
 
-class BaseHandlerUser(BaseHandler):
+    @abstractmethod
+    def _delete_feature(self, *args, **kwargs):
+        return NotImplementedError
+
+    def delete_method_api_feature(self, *args):
+        try:
+            self._delete_feature(*args)
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when delete a feature. Please, contact the administrator.")
+
+
+# SUBCLASSES
+
+
+class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
 
-    # def get_method_api_user(self):
-    #     arguments = self.get_aguments()
-    #
-    #     try:
-    #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_users(**arguments)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(result))
+    def _delete_feature(self, *args, **kwargs):
+        return NotImplementedError
 
-
-class BaseHandlerLayer(BaseHandler):
+class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_layers(**kwargs)
-
-    # def get_method_api_layer(self):
-    #     arguments = self.get_aguments()
-    #
-    #     try:
-    #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_layers(**arguments)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(result))
 
     def put_method_api_layer_create(self):
         # get the JSON sent, to add in DB
@@ -292,32 +290,14 @@ class BaseHandlerLayer(BaseHandler):
         else:
             raise HTTPError(404, "Invalid URL")
 
-    def delete_method_api_layer(self, param):
-        # param on this case is the id of element
-        try:
-            self.PGSQLConn.delete_layer_in_db(param)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a layer. Please, contact the administrator.")
+    def _delete_feature(self, *args, **kwargs):
+        self.PGSQLConn.delete_layer_in_db(*args)
 
 
-class BaseHandlerChangeset(BaseHandler):
+class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_changesets(**kwargs)
-
-    # def get_method_api_changeset(self):
-    #     arguments = self.get_aguments()
-    #
-    #     try:
-    #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_changesets(**arguments)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(result))
 
     def put_method_api_changeset_create(self):
         # get the JSON sent, to add in DB
@@ -351,32 +331,14 @@ class BaseHandlerChangeset(BaseHandler):
         else:
             raise HTTPError(404, "Invalid URL.")
 
-    def delete_method_api_changeset(self, param):
-        # param on this case is the id of feature
-        try:
-            self.PGSQLConn.delete_changeset_in_db(param)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a changeset. Please, contact the administrator.")
+    def _delete_feature(self, *args, **kwargs):
+        self.PGSQLConn.delete_changeset_in_db(*args)
 
 
-class BaseHandlerElement(BaseHandler):
+class BaseHandlerElement(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_elements(args[0], **kwargs)
-
-    # def get_method_api_element(self, element):
-    #     arguments = self.get_aguments()
-    #
-    #     try:
-    #         # break the arguments dict in each parameter of method
-    #         result = self.PGSQLConn.get_elements(element, **arguments)
-    #     except DataError as error:
-    #         # print("Error: ", error)
-    #         raise HTTPError(500, "Problem when get a feature. Please, contact the administrator.")
-    #
-    #     # Default: self.set_header('Content-Type', 'application/json')
-    #     self.write(json_encode(result))
 
     def put_method_api_element_create(self, element, element_json):
         if not self.is_element_type_valid(element, element_json):
@@ -423,15 +385,11 @@ class BaseHandlerElement(BaseHandler):
         else:
             raise HTTPError(404, "Invalid URL")
 
-    def delete_method_api_element(self, element, element_id):
-        try:
-            self.PGSQLConn.delete_element_in_db(element, element_id)
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a element. Please, contact the administrator.")
+    def _delete_feature(self, *args, **kwargs):
+        self.PGSQLConn.delete_element_in_db(*args)
 
 
-class BaseHandlerThemeTree(BaseHandler):
+class BaseHandlerThemeTree(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
         return self.Neo4JConn.get_theme_tree()
@@ -487,20 +445,5 @@ class BaseHandlerThemeTree(BaseHandler):
     #         # print("Error: ", error)
     #         raise HTTPError(500, "Problem when delete a layer. Please, contact the administrator.")
 
-
-class BaseHandlerAuthLogout(BaseHandler):
-
-    def _get_feature(self, *args, **kwargs):
-        pass
-
-
-class BaseHandlerFakeAuthLogin(BaseHandler):
-
-    def _get_feature(self, *args, **kwargs):
-        pass
-
-
-class BaseHandlerCapabilities(BaseHandler):
-
-    def _get_feature(self, *args, **kwargs):
-        pass
+    def _delete_feature(self, *args, **kwargs):
+        return NotImplementedError

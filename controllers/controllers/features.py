@@ -27,7 +27,7 @@ class APILayer(BaseHandlerLayer):
 
     @auth_non_browser_based
     def delete(self, param=None):
-        self.delete_method_api_layer(param)
+        self.delete_method_api_feature(param)
 
 
 # CHANGESET
@@ -47,7 +47,8 @@ class APIChangeset(BaseHandlerChangeset):
 
     @auth_non_browser_based
     def delete(self, param=None, param2=None):
-        self.delete_method_api_changeset(param)
+        # self.delete_method_api_changeset(param)
+        self.delete_method_api_feature(param)
 
 
 # class APIChangesetCreate(BaseHandler):
