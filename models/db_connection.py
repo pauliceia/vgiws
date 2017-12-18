@@ -25,6 +25,7 @@
     The __LIST_TABLES_INFORMATION__ is a list with all tables` name
 """
 
+from abc import ABCMeta, abstractmethod
 
 from tornado.web import HTTPError
 from tornado.escape import json_encode
@@ -43,6 +44,22 @@ from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CO
 from modules.design_pattern import Singleton
 
 from .util import *
+
+
+class BaseDBConnection(metaclass=ABCMeta):
+
+    def __init__(self):
+        self.__DB_STATUS__ = False
+
+    def set_connection_status(self, status=True):
+        self.__DB_STATUS__ = status
+
+    def get_connection_status(self, readable=False):
+        if readable:
+            return "online" if self.__DB_STATUS__ else "offline"
+
+        return self.__DB_STATUS__
+
 
 
 @Singleton
@@ -661,9 +678,11 @@ class PGSQLConnection:
 
 
 @Singleton
-class Neo4JConnection:
+class Neo4JConnection(BaseDBConnection):
 
     def __init__(self, args={}):
+        super().__init__()  # call the __init__ from super class
+
         self.__ARGS__ = args
 
         if self.__ARGS__["DEBUG_MODE"]:
@@ -698,6 +717,20 @@ class Neo4JConnection:
                   "\n- port: ", __connection_settings__["PORT"],
                   "\n- database: ", __connection_settings__["DATABASE"],
                   "\n- URL: ", self.URL, "\n")
+
+        neo4j_status = self.is_connecting_with_db()
+
+        self.set_connection_status(status=neo4j_status)
+
+    def is_connecting_with_db(self):
+        # response = self.session.get(self.URL + '/db/manage/server/ha/master',
+        #                             headers=self.headers)
+        #
+        # result = loads(response.text)
+        #
+        # print("\n\n>>> result: ", result, "\n\n")
+
+        return True
 
     def match(self, query, params={}):
 

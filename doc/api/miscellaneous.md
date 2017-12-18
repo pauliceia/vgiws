@@ -11,8 +11,8 @@ This method return the capabilities of the server.
 - Response: a JSON that contain the capabilities of the server. Example:
     ```javascript
     {
-        "version": "0.0.1",
-        "status": {"database": "online"}
+        "version": "0.0.2",
+        "status": {"postgresql": "online", "neo4j": "online"}
     }
     ```
 - Error codes:

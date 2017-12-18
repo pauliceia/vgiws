@@ -1,7 +1,7 @@
 
 ## Database connection
 
-It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "db_pauliceia_test" does not exist".
+It is necessary to create the database before to start running the server, mainly if the follow error appears: "database "pauliceia_test" does not exist".
 
 This application uses two databases: PostgreSQL with PostGis extension and Neo4J.
 
@@ -57,7 +57,7 @@ $ python tests/util/clean_db.py --debug=True
 
 Install the [Neo4J version 3.3.1](https://neo4j.com/docs/operations-manual/current/installation/linux/debian/) in a Ubuntu machine.
 
-If the service do not run automatic, execute:
+If the service do not run automatically, execute:
 
 ```
 $ sudo service neo4j restart
