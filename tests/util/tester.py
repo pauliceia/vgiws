@@ -18,6 +18,8 @@ class UtilTester:
         # unittest self
         self.ut_self = ut_self
 
+        self.URL = "http://localhost:8888"
+
     # login and logout
 
     def auth_login(self):
@@ -402,13 +404,25 @@ class UtilTester:
 
     # others
 
-    def api_capabilities(self):
-        response = self.session.get('http://localhost:8888/api/capabilities/')
+    def api_capabilities(self, expected):
+        response = self.session.get(self.URL + '/api/capabilities/')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        expected = {"version": "0.0.2", "status": {"database": "online"}}
+        self.ut_self.assertEqual(resulted, expected)
 
-        self.ut_self.assertNotEqual(resulted, expected)
+    def api_session_user(self, expected):
+        response = self.session.get(self.URL + '/api/session/user')
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(resulted, expected)
+
+    def api_session_user_error_404_not_found(self):
+        response = self.session.get(self.URL + '/api/session/user')
+
+        self.ut_self.assertEqual(response.status_code, 404)

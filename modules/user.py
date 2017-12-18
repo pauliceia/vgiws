@@ -12,5 +12,6 @@ __USER_STRUCT_COOKIE__ = {
     }
 }
 
+
 def get_new_user_struct_cookie():
     return deepcopy(__USER_STRUCT_COOKIE__)

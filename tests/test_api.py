@@ -12,7 +12,7 @@ class TestAPI(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-        # DO LOGIN
+        # DO LOGIN BEFORE THE TESTS
         self.tester.auth_login()
 
         # CREATE A layer FOR ALL TESTS

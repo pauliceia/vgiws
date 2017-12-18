@@ -1,5 +1,6 @@
 ## Miscellaneous
 
+
 ### GET /api/capabilities/
 
 This method return the capabilities of the server.
@@ -15,4 +16,25 @@ This method return the capabilities of the server.
     }
     ```
 - Error codes:
+- Notes:
+
+
+### GET /api/session/user/
+
+This method return the current user logged.
+- Parameters:
+- Examples:
+     - Get the current user logged: http://localhost:8888/api/session/user/
+- Send:
+- Response: a JSON that contain the current user logged. Example:
+    ```javascript
+    {
+        'login': {
+            'user': {'username': None, 'email': 'test@fake.login', 'id': 1},
+            'type_login': 'fakelogin'
+        }
+    }
+    ```
+- Error codes:
+    - 404 (Not Found): Not found any user.
 - Notes:
