@@ -79,6 +79,16 @@ class BaseHandler(RequestHandler):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
 
+        self.set_header("Access-Control-Allow-Origin", "http://localhost:8888, http://localhost:8080")
+        # self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+
+    def options(self):
+        # no body
+        self.set_status(204)
+        self.finish()
+
     def get_the_json_validated(self):
         """
             Responsible method to validate the JSON received in the POST method.
