@@ -15,6 +15,7 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
+from settings import HOSTS_ALLOWED
 
 
 def auth_non_browser_based(method):
@@ -79,7 +80,10 @@ class BaseHandler(RequestHandler):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
 
-        self.set_header("Access-Control-Allow-Origin", "http://localhost:8888, http://localhost:8080")
+        # concat the hosts allowed in a string separated by comma
+        hosts_allowed = ",".join(HOSTS_ALLOWED)
+
+        self.set_header("Access-Control-Allow-Origin", hosts_allowed)
         # self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')

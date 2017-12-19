@@ -39,6 +39,5 @@ DEBUG_MODE = False
 # DEBUG_MODE = True
 
 
-# LIST_HOSTS_ALLOW = [
-#     "http://localhost:8888"
-# ]
+# A list of hosts that have permission to access the application
+HOSTS_ALLOWED = ["http://localhost:8888", "http://localhost:8080"]
