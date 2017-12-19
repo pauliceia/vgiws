@@ -17,10 +17,8 @@ class APICapabilities(BaseHandler):
     urls = [r"/api/capabilities/", r"/api/capabilities"]
 
     def get(self):
-        pgsql_status = self.PGSQLConn.get_connection_status(readable=False)
-        pgsql_status = "online" if pgsql_status else "offline"
-
-        neo4j_status = "online"
+        pgsql_status = self.PGSQLConn.get_connection_status(readable=True)
+        neo4j_status = self.Neo4JConn.get_connection_status(readable=True)
 
         capabilities = {
             "version": VERSION,

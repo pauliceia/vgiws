@@ -25,7 +25,8 @@
     The __LIST_TABLES_INFORMATION__ is a list with all tables` name
 """
 
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from requests import exceptions
 
 from tornado.web import HTTPError
 from tornado.escape import json_encode
@@ -46,6 +47,23 @@ from modules.design_pattern import Singleton
 from .util import *
 
 
+def if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status(method):
+
+    def wrapper(self, *args, **kwargs):
+
+        try:
+            result = method(self, *args, **kwargs)
+        except exceptions.ConnectionError:
+            # put DB status on offline
+            self.set_connection_status(status=False)
+
+            raise HTTPError(500, "Neo4J is not running.")
+
+        return result
+
+    return wrapper
+
+
 class BaseDBConnection(metaclass=ABCMeta):
 
     def __init__(self):
@@ -59,7 +77,6 @@ class BaseDBConnection(metaclass=ABCMeta):
             return "online" if self.__DB_STATUS__ else "offline"
 
         return self.__DB_STATUS__
-
 
 
 @Singleton
@@ -723,15 +740,22 @@ class Neo4JConnection(BaseDBConnection):
         self.set_connection_status(status=neo4j_status)
 
     def is_connecting_with_db(self):
-        # response = self.session.get(self.URL + '/db/manage/server/ha/master',
-        #                             headers=self.headers)
-        #
-        # result = loads(response.text)
-        #
-        # print("\n\n>>> result: ", result, "\n\n")
+        """
+        Try to do a connection with Neo4J. If it works, so return True, else return False;
+        :return: one boolean value, depending of the connection status.
+        """
+        try:
+            self.session.get(self.URL + '/db/data/', headers=self.headers)
+
+            # response = self.session.get(self.URL + '/db/data/', headers=self.headers)
+            # result = loads(response.text)
+            # print("\n>>> result: ", result, "\n")
+        except exceptions.ConnectionError:
+            return False
 
         return True
 
+    @if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status
     def match(self, query, params={}):
 
         query_dict = {

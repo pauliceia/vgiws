@@ -10,7 +10,7 @@ from abc import abstractmethod, ABCMeta
 import psycopg2
 from requests import exceptions
 
-from psycopg2._psycopg import DataError, InternalError
+from psycopg2._psycopg import DataError
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
@@ -222,7 +222,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     @abstractmethod
     def _get_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def get_method_api_feature(self, *args):
         arguments = self.get_aguments()
@@ -241,7 +241,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     @abstractmethod
     def _create_feature(self, feature_json, current_user_id):
-        return NotImplementedError
+        raise NotImplementedError
 
     def put_method_api_feature_create(self, *args):
         # get the JSON sent, to add in DB
@@ -260,11 +260,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     @abstractmethod
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     @abstractmethod
     def _close_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def put_method_api_feature(self, *args):
         param = args[0]
@@ -286,7 +286,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     @abstractmethod
     def _delete_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def delete_method_api_feature(self, *args):
         try:
@@ -305,16 +305,16 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         return self.PGSQLConn.get_users(**kwargs)
 
     def _create_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod):
@@ -326,10 +326,10 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         return self.PGSQLConn.create_layer(feature_json, current_user_id)
 
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_layer_in_db(*args)
@@ -344,7 +344,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         return self.PGSQLConn.create_changeset(feature_json, current_user_id)
 
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
         try:
@@ -363,7 +363,7 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
         return self.PGSQLConn.get_elements(args[0], **kwargs)
 
     def _create_feature(self, feature_json, current_user_id):
-        return NotImplementedError
+        raise NotImplementedError
 
     def put_method_api_feature_create(self, *args):
         element = args[0]
@@ -406,10 +406,10 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
         self.write(json_encode(list_of_id_of_features_created))
 
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_element_in_db(*args)
@@ -421,16 +421,16 @@ class BaseHandlerThemeTree(BaseHandlerTemplateMethod):
         return self.Neo4JConn.get_theme_tree()
 
     def _create_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _update_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _close_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        return NotImplementedError
+        raise NotImplementedError
 
     # def get_method_api_theme(self, param):
     #     if param == "tree":
