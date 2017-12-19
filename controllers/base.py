@@ -83,12 +83,15 @@ class BaseHandler(RequestHandler):
         # concat the hosts allowed in a string separated by comma
         hosts_allowed = ",".join(HOSTS_ALLOWED)
 
-        self.set_header("Access-Control-Allow-Origin", hosts_allowed)
-        # self.set_header("Access-Control-Allow-Origin", "*")
+        # self.set_header("Access-Control-Allow-Origin", hosts_allowed)
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
 
     def options(self):
+        """
+        This method is necessary to do the CORS works.
+        """
         # no body
         self.set_status(204)
         self.finish()
