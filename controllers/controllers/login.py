@@ -68,6 +68,9 @@ class FakeAuthLoginHandler(BaseHandler):
         user = {"email": "test@fake.login"}
         self.login(user, type_login="fakelogin")
 
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({}))
+
 
 class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
     """

@@ -81,12 +81,18 @@ class BaseHandler(RequestHandler):
         self.set_header('Content-Type', 'application/json')
 
         # concat the hosts allowed in a string separated by comma
-        hosts_allowed = ",".join(HOSTS_ALLOWED)
+        # hosts_allowed = ",".join(HOSTS_ALLOWED)
 
         # self.set_header("Access-Control-Allow-Origin", hosts_allowed)
-        self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        # self.set_header("Access-Control-Allow-Origin", "*")
+        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+
+        self.set_header("Access-Control-Allow-Origin", "http://localhost:8080")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+        self.set_header("Access-Control-Allow-Credentials", "true")
+
+        # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, x-requested-with")
+        # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
 
     def options(self):
         """
