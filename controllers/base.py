@@ -94,7 +94,7 @@ class BaseHandler(RequestHandler):
         # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, x-requested-with")
         # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
 
-    def options(self):
+    def options(self, *args, **kwargs):
         """
         This method is necessary to do the CORS works.
         """

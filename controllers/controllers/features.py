@@ -30,8 +30,8 @@ class APILayer(BaseHandlerLayer):
     def delete(self, param=None):
         self.delete_method_api_feature(param)
 
-    def options(self, param=None):
-        super().options()
+    # def options(self, param=None):
+    #     super().options()
 
 
 # CHANGESET
