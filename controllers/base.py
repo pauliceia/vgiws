@@ -219,9 +219,9 @@ class BaseHandler(RequestHandler):
     def is_element_type_valid(self, element, element_json):
         multi_element = element_json["features"][0]["geometry"]["type"]
 
-        return ((element == "node" and multi_element == "MultiPoint") or
-                (element == "way" and multi_element == "MultiLineString") or
-                (element == "area" and multi_element == "MultiPolygon"))
+        return ((element == "point" and multi_element == "MultiPoint") or
+                (element == "line" and multi_element == "MultiLineString") or
+                (element == "polygon" and multi_element == "MultiPolygon"))
 
     def get_q_param_as_dict_from_str(self, str_query):
         str_query = str_query.strip()

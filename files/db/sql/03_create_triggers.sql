@@ -29,13 +29,13 @@ CREATE OR REPLACE FUNCTION observe_when_add_new_element_in_current_element_table
 $$ LANGUAGE plpgsql;
 
 -- Create a trigger to observe each current_element table when add a new element
-CREATE TRIGGER trigger_observe_when_add_new_element_in_current_node_table BEFORE INSERT OR UPDATE ON current_node
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_point_table BEFORE INSERT OR UPDATE ON current_point
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
 
-CREATE TRIGGER trigger_observe_when_add_new_element_in_current_way_table BEFORE INSERT OR UPDATE ON current_way
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_line_table BEFORE INSERT OR UPDATE ON current_line
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
 
-CREATE TRIGGER trigger_observe_when_add_new_element_in_current_area_table BEFORE INSERT OR UPDATE ON current_area
+CREATE TRIGGER trigger_observe_when_add_new_element_in_current_polygon_table BEFORE INSERT OR UPDATE ON current_polygon
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_new_element_in_current_element_table();
 
 

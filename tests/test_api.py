@@ -114,12 +114,9 @@ class TestAPI(TestCase):
         self.tester.verify_if_element_was_add_in_db(area)
 
         # REMOVE THE ELEMENTS CREATED
-        element_id = node["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("node", element_id=element_id)
-        element_id = way["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("way", element_id=element_id)
-        element_id = area["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("area", element_id=element_id)
+        self.tester.api_element_delete(node)
+        self.tester.api_element_delete(way)
+        self.tester.api_element_delete(area)
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)

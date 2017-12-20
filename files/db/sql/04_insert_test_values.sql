@@ -184,19 +184,19 @@ INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1008, 'comment', '
 
 
 -- -----------------------------------------------------
--- Table current_node
+-- Table current_point
 -- -----------------------------------------------------
--- clean current_node table
-DELETE FROM current_node;
+-- clean current_point table
+DELETE FROM current_point;
 
 -- add node
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004);
-INSERT INTO current_node (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001);
+INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001);
+INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002);
+INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003);
+INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004);
+INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001);
 -- add node as GeoJSON
-INSERT INTO current_node (id, geom, fk_changeset_id) 
+INSERT INTO current_point (id, geom, fk_changeset_id) 
 VALUES (1006, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -206,7 +206,7 @@ VALUES (1006,
 		}'
 	), 
 	1003);
-INSERT INTO current_node (id, geom, fk_changeset_id) 
+INSERT INTO current_point (id, geom, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -219,33 +219,33 @@ VALUES (1007,
 
 
 -- -----------------------------------------------------
--- Table current_node_tag
+-- Table current_point_tag
 -- -----------------------------------------------------
--- clean current_node_tag table
-DELETE FROM current_node_tag;
+-- clean current_point_tag table
+DELETE FROM current_point_tag;
 
--- insert values in table node_tag
+-- insert values in table current_point_tag
 -- SOURCE: AialaLevy_theaters20170710.xlsx
 -- node 1001
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1001, 'address', 'R. São José', 1001);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1002, 'start_date', '1869', 1001);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1003, 'end_date', '1869', 1001);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1001, 'address', 'R. São José', 1001);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1002, 'start_date', '1869', 1001);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1003, 'end_date', '1869', 1001);
 -- node 1002
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1004, 'address', 'R. Marechal Deodoro', 1002);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1005, 'start_date', '1878', 1002);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1006, 'end_date', '1910', 1002);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1004, 'address', 'R. Marechal Deodoro', 1002);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1005, 'start_date', '1878', 1002);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1006, 'end_date', '1910', 1002);
 -- node 1003
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1007, 'address', 'R. 11 de Junho, 9 = D. José de Barros', 1003);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1008, 'start_date', '1886', 1003);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1009, 'end_date', '1916', 1003);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1007, 'address', 'R. 11 de Junho, 9 = D. José de Barros', 1003);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1008, 'start_date', '1886', 1003);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1009, 'end_date', '1916', 1003);
 -- node 1004
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1010, 'address', 'R. 15 de Novembro, 17A', 1004);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1011, 'start_date', '1890', 1004);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1012, 'end_date', '1911', 1004);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1010, 'address', 'R. 15 de Novembro, 17A', 1004);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1011, 'start_date', '1890', 1004);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1012, 'end_date', '1911', 1004);
 -- node 1005
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1013, 'address', 'R. Barra Funda, 74', 1005);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1014, 'start_date', '1897', 1005);
-INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_date', '1897', 1005);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1013, 'address', 'R. Barra Funda, 74', 1005);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1014, 'start_date', '1897', 1005);
+INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1015, 'end_date', '1897', 1005);
 
 
 -- -----------------------------------------------------
@@ -262,7 +262,7 @@ INSERT INTO current_node_tag (id, k, v, fk_current_node_id) VALUES (1015, 'end_d
 --SELECT * FROM current_node_tag;
 
 -- "remove" some nodes
-UPDATE current_node SET visible = FALSE WHERE id>=1003 AND id<=1005;
+UPDATE current_point SET visible = FALSE WHERE id>=1003 AND id<=1005;
 
 
 
@@ -354,19 +354,19 @@ INSERT INTO node_tag (id, k, v, fk_node_id, fk_node_version) VALUES (1015, 'end_
 
 
 -- -----------------------------------------------------
--- Table current_way
+-- Table current_line
 -- -----------------------------------------------------
--- clean current_way table
-DELETE FROM current_way;
+-- clean current_line table
+DELETE FROM current_line;
 
 -- add way
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004);
-INSERT INTO current_way (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002);
+INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
+INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
+INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003);
+INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004);
+INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002);
 -- add way as GeoJSON
-INSERT INTO current_way (id, geom, fk_changeset_id) 
+INSERT INTO current_line (id, geom, fk_changeset_id) 
 VALUES (1006, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -376,7 +376,7 @@ VALUES (1006,
 		}'
 	), 
 	1002);
-INSERT INTO current_way (id, geom, fk_changeset_id) 
+INSERT INTO current_line (id, geom, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -389,33 +389,33 @@ VALUES (1007,
 
 
 -- -----------------------------------------------------
--- Table current_way_tag
+-- Table current_line_tag
 -- -----------------------------------------------------
--- clean current_way_tag table
-DELETE FROM current_way_tag;
+-- clean current_line_tag table
+DELETE FROM current_line_tag;
 
--- insert values in table way_tag
+-- insert values in table current_line_tag
 -- SOURCE: db_pauliceia
 -- way 1
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1001, 'name', 'rua boa vista', 1001);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1002, 'start_date', '1930', 1001);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1003, 'end_date', '1930', 1001);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1001, 'name', 'rua boa vista', 1001);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1002, 'start_date', '1930', 1001);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1003, 'end_date', '1930', 1001);
 -- way 2
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1004, 'address', 'rua tres de dezembro', 1002);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1005, 'start_date', '1930', 1002);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1006, 'end_date', '1930', 1002);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1004, 'address', 'rua tres de dezembro', 1002);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1005, 'start_date', '1930', 1002);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1006, 'end_date', '1930', 1002);
 -- way 3
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1007, 'address', 'rua joao briccola', 1003);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1008, 'start_date', '1930', 1003);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1009, 'end_date', '1930', 1003);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1007, 'address', 'rua joao briccola', 1003);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1008, 'start_date', '1930', 1003);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1009, 'end_date', '1930', 1003);
 -- way 4
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1010, 'address', 'ladeira porto geral', 1004);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1011, 'start_date', '1930', 1004);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1012, 'end_date', '1930', 1004);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1010, 'address', 'ladeira porto geral', 1004);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1011, 'start_date', '1930', 1004);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1012, 'end_date', '1930', 1004);
 -- way 5
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1013, 'address', 'travessa porto geral', 1005);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1014, 'start_date', '1930', 1005);
-INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1015, 'end_date', '1930', 1005);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1013, 'address', 'travessa porto geral', 1005);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1014, 'start_date', '1930', 1005);
+INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1015, 'end_date', '1930', 1005);
 
 
 -- -----------------------------------------------------
@@ -428,8 +428,8 @@ INSERT INTO current_way_tag (id, k, v, fk_current_way_id) VALUES (1015, 'end_dat
 -- SELECT id, ST_AsText(geom) as geom, version, fk_changeset_id FROM way;
 -- SELECT w.id, ST_AsText(w.geom) as geom, w.version, w.fk_changeset_id, wt.id, wt.k, wt.v FROM way w, way_tag wt WHERE w.id = wt.fk_way_id;
 
--- "remove" some ways
-UPDATE current_way SET visible = FALSE WHERE id>=1003 AND id<=1007;
+-- "remove" some lines
+UPDATE current_line SET visible = FALSE WHERE id>=1003 AND id<=1007;
 
 --SELECT * FROM way_tag;
 
@@ -514,16 +514,16 @@ INSERT INTO way_tag (id, k, v, fk_way_id, fk_way_version) VALUES (1015, 'end_dat
 
 
 -- -----------------------------------------------------
--- Table current_area
+-- Table current_polygon
 -- -----------------------------------------------------
--- clean current_area table
-DELETE FROM current_area;
+-- clean current_polygon table
+DELETE FROM current_polygon;
 
 -- add area
-INSERT INTO current_area (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
-INSERT INTO current_area (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
+INSERT INTO current_polygon (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
+INSERT INTO current_polygon (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
 -- add area as GeoJSON 
-INSERT INTO current_area (id, geom, fk_changeset_id) 
+INSERT INTO current_polygon (id, geom, fk_changeset_id) 
 VALUES (1006, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -533,7 +533,7 @@ VALUES (1006,
 		}'
 	), 
 	1003);
-INSERT INTO current_area (id, geom, fk_changeset_id) 
+INSERT INTO current_polygon (id, geom, fk_changeset_id) 
 VALUES (1007, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -546,21 +546,21 @@ VALUES (1007,
 
 
 -- -----------------------------------------------------
--- Table current_area_tag
+-- Table current_polygon_tag
 -- -----------------------------------------------------
--- clean current_area_tag table
-DELETE FROM current_area_tag;
+-- clean current_polygon_tag table
+DELETE FROM current_polygon_tag;
 
--- insert values in table area_tag
+-- insert values in table current_polygon_tag
 -- SOURCE: -
 -- area 1
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1001, 'building', 'hotel', 1001);
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1002, 'start_date', '1870', 1001);
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1003, 'end_date', '1900', 1001);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1001, 'building', 'hotel', 1001);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1002, 'start_date', '1870', 1001);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1003, 'end_date', '1900', 1001);
 -- area 2
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1004, 'building', 'theater', 1002);
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1005, 'start_date', '1920', 1002);
-INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1006, 'end_date', '1930', 1002);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1004, 'building', 'theater', 1002);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1005, 'start_date', '1920', 1002);
+INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1006, 'end_date', '1930', 1002);
 
 
 -- -----------------------------------------------------
@@ -574,7 +574,7 @@ INSERT INTO current_area_tag (id, k, v, fk_current_area_id) VALUES (1006, 'end_d
 -- SELECT a.id, ST_AsText(a.geom) as geom, a.version, a.fk_changeset_id, at.id, at.k, at.v FROM area a, area_tag at WHERE a.id = at.fk_area_id;
 
 -- "remove" some areas
-UPDATE current_area SET visible = FALSE WHERE id>=1006 AND id<=1007;
+UPDATE current_polygon SET visible = FALSE WHERE id>=1006 AND id<=1007;
 
 
 

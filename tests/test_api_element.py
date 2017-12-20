@@ -53,7 +53,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, element_id="")
+        self.tester.api_element("point", expected, element_id="")
 
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
@@ -83,7 +83,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("way", expected, element_id="")
+        self.tester.api_element("line", expected, element_id="")
 
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
@@ -108,7 +108,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("area", expected, element_id="")
+        self.tester.api_element("polygon", expected, element_id="")
 
     def test_get_api_element_return_element_by_id(self):
         expected = {
@@ -126,7 +126,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, element_id="1001")
+        self.tester.api_element("point", expected, element_id="1001")
 
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
@@ -147,7 +147,7 @@ class TestAPIElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_element("way", expected, element_id="1001")
+        self.tester.api_element("line", expected, element_id="1001")
 
         expected = {
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
@@ -164,7 +164,7 @@ class TestAPIElement(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_element("area", expected, element_id="1001")
+        self.tester.api_element("polygon", expected, element_id="1001")
 
     # helper
     # def test_helper_execute(self):
@@ -202,7 +202,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, layer_id="1001")
+        self.tester.api_element("point", expected, layer_id="1001")
 
         expected = {
             'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -219,7 +219,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("way", expected, layer_id="1001")
+        self.tester.api_element("line", expected, layer_id="1001")
 
         expected = {
             'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'},
@@ -236,7 +236,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("area", expected, layer_id="1001")
+        self.tester.api_element("polygon", expected, layer_id="1001")
 
     def test_get_api_element_return_all_elements_by_changeset_id(self):
         expected = {
@@ -254,7 +254,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, changeset_id="1001")
+        self.tester.api_element("point", expected, changeset_id="1001")
 
         expected = {
             'type': 'FeatureCollection',
@@ -271,7 +271,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("way", expected, changeset_id="1001")
+        self.tester.api_element("line", expected, changeset_id="1001")
 
         expected = {
             'features': [
@@ -287,7 +287,7 @@ class TestAPIElement(TestCase):
             'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
         }
 
-        self.tester.api_element("area", expected, changeset_id="1001")
+        self.tester.api_element("polygon", expected, changeset_id="1001")
 
     def test_get_api_element_return_all_elements_by_user_id(self):
         expected = {
@@ -309,7 +309,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("node", expected, user_id="1001")
+        self.tester.api_element("point", expected, user_id="1001")
 
         expected = {
             'type': 'FeatureCollection',
@@ -326,7 +326,7 @@ class TestAPIElement(TestCase):
             ]
         }
 
-        self.tester.api_element("way", expected, user_id="1001")
+        self.tester.api_element("line", expected, user_id="1001")
 
         expected = {
             'features': [
@@ -343,7 +343,7 @@ class TestAPIElement(TestCase):
             'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
         }
 
-        self.tester.api_element("area", expected, user_id="1001")
+        self.tester.api_element("polygon", expected, user_id="1001")
 
     # element - create and delete
 
@@ -365,7 +365,7 @@ class TestAPIElement(TestCase):
         changeset_id = changeset["changeset"]["properties"]["id"]
 
         # ADD ELEMENTS
-        node = {
+        point = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -381,13 +381,13 @@ class TestAPIElement(TestCase):
                 }
             ]
         }
-        node = self.tester.api_element_create(node)  # return the same element with the id generated
-        way = {
+        point = self.tester.api_element_create(point)  # return the same element with the id generated
+        line = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
+                    'tags': [{'k': 'highline', 'v': 'residential'},
                              {'k': 'start_date', 'v': '1910-12-08'},
                              {'k': 'end_date', 'v': '1930-03-25'}],
                     'type': 'Feature',
@@ -399,8 +399,8 @@ class TestAPIElement(TestCase):
                 }
             ]
         }
-        way = self.tester.api_element_create(way)
-        area = {
+        line = self.tester.api_element_create(line)
+        polygon = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -417,15 +417,12 @@ class TestAPIElement(TestCase):
                 }
             ]
         }
-        area = self.tester.api_element_create(area)
+        polygon = self.tester.api_element_create(polygon)
 
         # REMOVE THE ELEMENTS CREATED
-        element_id = node["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("node", element_id=element_id)
-        element_id = way["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("way", element_id=element_id)
-        element_id = area["features"][0]["properties"]["id"]  # get the id of element
-        self.tester.api_element_delete("area", element_id=element_id)
+        self.tester.api_element_delete(point)
+        self.tester.api_element_delete(line)
+        self.tester.api_element_delete(polygon)
 
         # CLOSE THE CHANGESET
         self.tester.api_changeset_close(changeset_id)
@@ -446,16 +443,16 @@ class TestAPIElementErrors(TestCase):
     # element errors - get
 
     def test_get_api_element_error_400_bad_request(self):
-        self.tester.api_element_error_400_bad_request("node", element_id="abc")
-        self.tester.api_element_error_400_bad_request("way", element_id=0)
-        self.tester.api_element_error_400_bad_request("area", element_id=-1)
-        self.tester.api_element_error_400_bad_request("node", element_id="-1")
-        self.tester.api_element_error_400_bad_request("way", element_id="0")
+        self.tester.api_element_error_400_bad_request("point", element_id="abc")
+        self.tester.api_element_error_400_bad_request("line", element_id=0)
+        self.tester.api_element_error_400_bad_request("polygon", element_id=-1)
+        self.tester.api_element_error_400_bad_request("point", element_id="-1")
+        self.tester.api_element_error_400_bad_request("line", element_id="0")
 
     def test_get_api_element_error_404_not_found(self):
-        self.tester.api_element_error_404_not_found("node", element_id="999")
-        self.tester.api_element_error_404_not_found("way", element_id="998")
-        self.tester.api_element_error_404_not_found("area", element_id="997")
+        self.tester.api_element_error_404_not_found("point", element_id="999")
+        self.tester.api_element_error_404_not_found("line", element_id="998")
+        self.tester.api_element_error_404_not_found("polygon", element_id="997")
 
     # element errors - create
 
@@ -464,7 +461,7 @@ class TestAPIElementErrors(TestCase):
         self.tester.auth_login()
 
         # ADD ELEMENTS
-        node = {
+        point = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -480,9 +477,9 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_409_conflict(node)  # return the same element with the id generated
+        self.tester.api_element_create_error_409_conflict(point)  # return the same element with the id generated
 
-        way = {
+        line = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -499,9 +496,9 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_409_conflict(way)
+        self.tester.api_element_create_error_409_conflict(line)
 
-        area = {
+        polygon = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -518,14 +515,14 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_409_conflict(area)
+        self.tester.api_element_create_error_409_conflict(polygon)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_put_api_element_create_error_403_forbidden(self):
         # ADD ELEMENTS
-        node = {
+        point = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -541,9 +538,9 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_403_forbidden(node)  # return the same element with the id generated
+        self.tester.api_element_create_error_403_forbidden(point)  # return the same element with the id generated
 
-        way = {
+        line = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -560,9 +557,9 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_403_forbidden(way)
+        self.tester.api_element_create_error_403_forbidden(line)
 
-        area = {
+        polygon = {
             'type': 'FeatureCollection',
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
@@ -579,7 +576,7 @@ class TestAPIElementErrors(TestCase):
                 }
             ]
         }
-        self.tester.api_element_create_error_403_forbidden(area)
+        self.tester.api_element_create_error_403_forbidden(polygon)
 
     # element errors - delete
 
@@ -590,22 +587,22 @@ class TestAPIElementErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_element_delete_error_400_bad_request("node", element_id="abc")
-        self.tester.api_element_delete_error_400_bad_request("way", element_id=0)
-        self.tester.api_element_delete_error_400_bad_request("area", element_id=-1)
-        self.tester.api_element_delete_error_400_bad_request("node", element_id="-1")
-        self.tester.api_element_delete_error_400_bad_request("way", element_id="0")
+        self.tester.api_element_delete_error_400_bad_request("point", element_id="abc")
+        self.tester.api_element_delete_error_400_bad_request("line", element_id=0)
+        self.tester.api_element_delete_error_400_bad_request("polygon", element_id=-1)
+        self.tester.api_element_delete_error_400_bad_request("point", element_id="-1")
+        self.tester.api_element_delete_error_400_bad_request("line", element_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_delete_api_element_error_403_forbidden(self):
-        self.tester.api_element_delete_error_403_forbidden("node", element_id="abc")
-        self.tester.api_element_delete_error_403_forbidden("way", element_id=0)
-        self.tester.api_element_delete_error_403_forbidden("node", element_id=-1)
-        self.tester.api_element_delete_error_403_forbidden("area", element_id="-1")
-        self.tester.api_element_delete_error_403_forbidden("way", element_id="0")
-        self.tester.api_element_delete_error_403_forbidden("node", element_id="1001")
+        self.tester.api_element_delete_error_403_forbidden("point", element_id="abc")
+        self.tester.api_element_delete_error_403_forbidden("line", element_id=0)
+        self.tester.api_element_delete_error_403_forbidden("point", element_id=-1)
+        self.tester.api_element_delete_error_403_forbidden("polygon", element_id="-1")
+        self.tester.api_element_delete_error_403_forbidden("line", element_id="0")
+        self.tester.api_element_delete_error_403_forbidden("point", element_id="1001")
 
     def test_delete_api_element_error_404_not_found(self):
         # create a tester passing the unittest self
@@ -614,9 +611,9 @@ class TestAPIElementErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_element_delete_error_404_not_found("node", element_id="5000")
-        self.tester.api_element_delete_error_404_not_found("way", element_id="5001")
-        self.tester.api_element_delete_error_404_not_found("area", element_id="5002")
+        self.tester.api_element_delete_error_404_not_found("point", element_id="5000")
+        self.tester.api_element_delete_error_404_not_found("line", element_id="5001")
+        self.tester.api_element_delete_error_404_not_found("polygon", element_id="5002")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

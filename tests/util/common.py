@@ -4,11 +4,11 @@
 
 def by_multi_element_get_url_name(multi_element):
     if multi_element == "MultiPoint":
-        return "node"
+        return "point"
     if multi_element == "MultiLineString":
-        return "way"
+        return "line"
     if multi_element == "MultiPolygon":
-        return "area"
+        return "polygon"
 
     raise Exception("Invalid multi element: {0}".format(multi_element))
 

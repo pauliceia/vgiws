@@ -308,7 +308,12 @@ class UtilTester:
 
         return element_json
 
-    def api_element_delete(self, element, element_id):
+    def api_element_delete(self, element_json):
+        multi_element = element_json["features"][0]["geometry"]["type"]
+
+        element = by_multi_element_get_url_name(multi_element)
+        element_id = element_json["features"][0]["properties"]["id"]  # get the id of element
+
         response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 200)

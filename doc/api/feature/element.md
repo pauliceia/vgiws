@@ -1,9 +1,9 @@
-## Element (it can be node, way or area)
+## Element (it can be point, line or polygon)
 
 Basic geometric elements: point, line and polygon.
 
 
-###  GET /api/\[node|way|area]/?\<params>
+###  GET /api/\[point|line|polygon]/?\<params>
 
 This method gets elements from DB. If you doesn't put any parameter, so will return all.
 - Parameters:
@@ -12,11 +12,11 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
     - project_id (optional): the id of a project that is a positive integer not null (e.g. 1, 2, 3, ...).
     - changeset_id (optional): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-    - Get one node by id: http://localhost:8888/api/node/?element_id=1001
-    - Get all ways of project: http://localhost:8888/api/way/?project_id=1001
-    - Get all areas of one changeset:  http://localhost:8888/api/area/?changeset_id=1001
-    - Get all ways of one user:  http://localhost:8888/api/way/?user_id=1001
-    - Get all area elements: http://localhost:8888/api/area/
+    - Get one point by id: http://localhost:8888/api/point/?element_id=1001
+    - Get all lines of project: http://localhost:8888/api/line/?project_id=1001
+    - Get all polygons of one changeset:  http://localhost:8888/api/polygon/?changeset_id=1001
+    - Get all lines of one user:  http://localhost:8888/api/line/?user_id=1001
+    - Get all polygon elements: http://localhost:8888/api/polygon/
 - Send:
 - Response: a GeoJSON that contain the features selected. Example:
     ```javascript
@@ -25,7 +25,7 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
         'type': 'FeatureCollection',
         'features': [
             {
-                'attributes': [{'v': 'R. São José', 'k': 'addr:street'},
+                'tags': [{'v': 'R. São José', 'k': 'addr:street'},
                          {'v': '10', 'k': 'addr:housenumber'},
                          {'v': '1870', 'k': 'start_date'},
                          {'v': '1910', 'k': 'end_date'}],
@@ -45,12 +45,12 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
         It means that: whether use the 'element_id' parameter, will be ignored the others (user_id, project_id, ...).
 
 
-### PUT /api/\[node|way|area]/create
+### PUT /api/\[point|line|polygon]/create
 
 This method create a new element described in a GeoJSON.
 - Parameters:
 - Examples:
-    - Create a feature: ```PUT http://localhost:8888/api/node/create```
+    - Create a feature: ```PUT http://localhost:8888/api/point/create```
 - Send: a GeoJSON describing the element. The key 'features' receive a list of features to create. Example:
     ```javascript
     {
@@ -58,7 +58,7 @@ This method create a new element described in a GeoJSON.
         'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
         'features': [
             {
-                'attributes': [{'k': 'event', 'v': 'robbery'},
+                'tags': [{'k': 'event', 'v': 'robbery'},
                          {'k': 'date', 'v': '1910'}],
                 'type': 'Feature',
                 'properties': {'id': -1, 'fk_changeset_id': 1001},
@@ -84,7 +84,7 @@ This method create a new element described in a GeoJSON.
 <!-- when add a element, it starts with a default version 1 and it is saved in current_element table. -->
 
 <!--
-- PUT /api/\[node|way|area]/update
+- PUT /api/\[point|line|polygon]/update
 
  This method update a element described in a GeoJSON.
  - Parameters:
@@ -97,13 +97,13 @@ This method create a new element described in a GeoJSON.
 -->
 
 
-###  DELETE /api/\[node|way|area]/#id
+###  DELETE /api/\[point|line|polygon]/#id
 
 This method delete one element by id = #id.
 - Parameters:
     - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-    - Delete a feature by id: ```DELETE http://localhost:8888/api/way/3```
+    - Delete a feature by id: ```DELETE http://localhost:8888/api/line/3```
 - Send:
 - Response:
 - Error codes:
@@ -115,4 +115,4 @@ This method delete one element by id = #id.
         <!-- when delete a element, it is removed from current_element table (main) and put in element table (historical), with its version. -->
         <!-- After that, is duplicated the row and with this copy, save in element table with new version (increment +1) and with its visibility equals FALSE, because it was removed. -->
 
-<!-- - GET /api/\[node|way|area]/history/#id -->
+<!-- - GET /api/\[point|line|polygon]/history/#id -->
