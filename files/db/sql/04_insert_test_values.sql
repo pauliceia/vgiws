@@ -54,6 +54,75 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 
 
 -- -----------------------------------------------------
+-- Table group_
+-- -----------------------------------------------------
+-- clean group_ table
+DELETE FROM group_;
+
+-- add layer
+INSERT INTO group_ (id, name, description, create_at) VALUES (1001, 'admin', 'just admins', '2017-01-10');
+INSERT INTO group_ (id, name, description, create_at) VALUES (1002, 'friends', '', '2017-02-09');
+INSERT INTO group_ (id, name, description, create_at) VALUES (1003, 'VS', 'vale semideus', '2017-01-17');
+
+
+
+-- -----------------------------------------------------
+-- Table user_group
+-- -----------------------------------------------------
+-- clean user_group table
+DELETE FROM user_group;
+
+-- add user in a group
+-- group 1001
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1001, 1001, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1001, 1002, '2017-01-10');
+-- group 1002
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1002, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1003, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1004, '2017-01-10');
+-- group 1003
+INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1003, 1005, '2017-01-10');
+
+
+
+-- -----------------------------------------------------
+-- Table project
+-- -----------------------------------------------------
+-- clean project table
+DELETE FROM project;
+
+-- add layer
+INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
+INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
+INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
+INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1004, '2017-09-11', 1002, 1004);
+INSERT INTO project (id, create_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
+
+-- SELECT * FROM project;
+-- SELECT * FROM project p WHERE p.id = 1001;
+
+
+
+-- -----------------------------------------------------
+-- Table project_tag
+-- -----------------------------------------------------
+-- clean project_tag table
+DELETE FROM project_tag;
+
+-- insert values in table project_tag
+-- SOURCE: -
+-- project 1001
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'admin', 1001);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default layer', 1001);
+-- project 1002
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1005, 'name', 'test project', 1002);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1006, 'url', 'http://somehost.com', 1002);
+-- project 1003
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1010, 'name', 'hello world', 1003);
+
+
+
+-- -----------------------------------------------------
 -- Table layer
 -- -----------------------------------------------------
 -- clean layer table

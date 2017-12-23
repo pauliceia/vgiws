@@ -632,8 +632,7 @@ class PGSQLConnection:
                         'is_email_valid', is_email_valid,           
                         'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'terms_agreed', terms_agreed,
-                        'terms_seen', terms_seen
+                        'terms_agreed', terms_agreed
                     ),
                     'tags',       tags.jsontags
                 ))

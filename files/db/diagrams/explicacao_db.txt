@@ -1,0 +1,22 @@
+Para um novo usuário poder fazer modificações no sistema, é necessário que o e-mail seja validado (clicar em um link enviado para o e-mail) e aceitar os termos de Política de Uso (campos "is_email_valid" e "terms_agreed" da tabela "user_").
+
+Um usuário pode adicionar quantos elementos geográficos ele quiser (e.g. ponto, linha ou polígono). Estes elementos estarão relacionados a um changeset, que fará o versionamento do dado. Um elemento pode ter atributos dinâmicos, que são descritos na sua tabela de "tag" correspondente.
+
+Lembrando que, todas as tabelas "tag" contêm os atributos dinâmicos de um dado.
+
+Por questão de otimização e controle de histórico, existe as tabelas com a versão mais atual dos elementos (i.e. os que serão renderizados no mapa), que começam com "current_". As tabelas principais dos elementos (i.e. sem "current_") ficam salvas as modificações dos dados.
+
+Um changeset pode ter atributos dinâmicos que o descrevem e ter comentários sobre as suas modificações.
+
+Todo elemento estará relacionado a uma layer que está associado a um tema (i.e. usar o atributo dinâmico "theme"). Esta layer pode ser, por exemplo, crimes de 1930 ou circos de 1920. Um projeto pode ter inúmeras layers. Basicamente o conceito de camada e projeto de um SIG tradicional.
+
+Lembrando que a árvore de temas poderá ser pegas pelo Neo4J e os temas específicos (e.g. robbery, hospital e etc.) serão colocados no PostgreSQL no atributo dinâmico "theme" (e.g. "theme=robbery").
+
+Todo projeto que um usuário faça parte, ele automaticamente estará inscrito nele (tabela "project_subscriber"), para que ele receba notificações relacionadas ao projeto. Um usuário poderá se inscrever em um projeto da qual não faça parte para receber notificações dele.
+
+Um usuário pode fazer parte de vários grupos, sendo que este pode conter inúmeros projetos. Semelhante aos grupos do GitHub. É possível fazer comentários em um grupo, semelhante aos grupos do Facebook.
+
+Os usuários, que façam ou não parte de um projeto, podem fazer comentários nas layers criadas, fazendo uma revisão delas. Eles podem adicionar comentários descrevendo os problemas das layers e os inscritos do projeto receberão notificações, avisando-os dos comentários. Semelhante ao "Issues" do GitHub. O primeiro comentário terá um campo "title", que será um atributo dinâmico.
+
+Um usuário pode ter atributos dinâmicos que o descreva, como instituição que faça parte, CPF, RG e etc. As permissões dele são descritos na tabela "auth". Ele pode seguir ou ser seguido por várias pessoas, e enviar ou receber mensagens de outros usuários. 
+

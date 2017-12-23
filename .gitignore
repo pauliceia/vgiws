@@ -10,6 +10,8 @@ settings/accounts.py
 
 # backup file of MySQL
 *.mwb.bak
+*.bak
+files/db/diagrams/*.bak
 
 # Internal files
 
