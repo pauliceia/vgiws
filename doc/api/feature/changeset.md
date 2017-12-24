@@ -54,11 +54,10 @@ This method create a new changeset described in a JSON.
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
-        'changeset': {
-            'tags': [{'k': 'created_by', 'v': 'Tomás de Aquino'},
-                     {'k': 'comment', 'v': 'Changeset for crimes data.'}],
-            'properties': {'id': -1, "fk_project_id": 1001}
-        }
+        'tags': [{'k': 'created_by', 'v': 'Tomás de Aquino'},
+                 {'k': 'comment', 'v': 'Changeset for crimes data.'}],
+        'properties': {'id': -1, "fk_project_id": 1001},
+        'type': 'Changeset',
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:
@@ -67,7 +66,7 @@ This method create a new changeset described in a JSON.
     ```
 - Error codes:
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a changeset. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
@@ -87,7 +86,7 @@ This method close a changeset by id = #id.
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when close a feature. Please, contact the administrator.
 - Notes:
 
 
@@ -104,5 +103,5 @@ This method delete one changeset by id = #id.
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a changeset. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
 - Notes:

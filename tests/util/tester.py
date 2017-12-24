@@ -23,12 +23,12 @@ class UtilTester:
     # login and logout
 
     def auth_login(self):
-        response = self.session.get('http://localhost:8888/auth/login/fake/')
+        response = self.session.get(self.URL + '/auth/login/fake/')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_logout(self):
-        response = self.session.get('http://localhost:8888/auth/logout')
+        response = self.session.get(self.URL + '/auth/logout')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -37,7 +37,7 @@ class UtilTester:
     def api_user(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -70,14 +70,14 @@ class UtilTester:
     def api_user_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_user_error_404_not_found(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/user/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -86,7 +86,7 @@ class UtilTester:
     def api_project(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -94,37 +94,8 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    # project errors - get
-
-    def api_project_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_project_error_404_not_found(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get('http://localhost:8888/api/project/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    # layer
-
-    def api_layer(self, expected, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get('http://localhost:8888/api/layer/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertEqual(expected, resulted)
-
-    def api_layer_create(self, feature_json):
-        response = self.session.put('http://localhost:8888/api/layer/create/',
+    def api_project_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/project/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -135,12 +106,87 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["id"], -1)
 
         # put the id received in the original JSON of changeset
-        feature_json["layer"]["properties"]["id"] = resulted["id"]
+        feature_json["properties"]["id"] = resulted["id"]
+
+        return feature_json
+
+    def api_project_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # project errors - get
+
+    def api_project_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_project_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # project errors - create
+
+    def api_project_create_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/project/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # project errors - delete
+
+    def api_project_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_project_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_project_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # layer
+
+    def api_layer(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/layer/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_layer_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/layer/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        feature_json["properties"]["id"] = resulted["id"]
 
         return feature_json
 
     def api_layer_delete(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -149,21 +195,21 @@ class UtilTester:
     def api_layer_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/layer/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/layer/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_error_404_not_found(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/layer/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/layer/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # layer errors - create
 
     def api_layer_create_error_403_forbidden(self, feature_json):
-        response = self.session.put('http://localhost:8888/api/layer/create/',
+        response = self.session.put(self.URL + '/api/layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
@@ -171,17 +217,17 @@ class UtilTester:
     # layer errors - delete
 
     def api_layer_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_layer_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -190,7 +236,7 @@ class UtilTester:
     def api_changeset(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/changeset/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -218,10 +264,10 @@ class UtilTester:
         #
         #     self.ut_self.assertTrue(resulted_bool)
 
-    def api_changeset_create(self, changeset_json):
+    def api_changeset_create(self, feature_json):
         # do a GET call, sending a changeset to add in DB
-        response = self.session.put('http://localhost:8888/api/changeset/create/',
-                                    data=dumps(changeset_json), headers=self.headers)
+        response = self.session.put(self.URL + '/api/changeset/create/',
+                                    data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -231,17 +277,17 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["id"], -1)
 
         # put the id received in the original JSON of changeset
-        changeset_json["changeset"]["properties"]["id"] = resulted["id"]
+        feature_json["properties"]["id"] = resulted["id"]
 
-        return changeset_json
+        return feature_json
 
-    def api_changeset_close(self, changeset_id):
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+    def api_changeset_close(self, feature_id):
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
     def api_changeset_delete(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -250,57 +296,57 @@ class UtilTester:
     def api_changeset_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/changeset/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_changeset_error_404_not_found(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get('http://localhost:8888/api/changeset/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # changeset errors - create
 
-    def api_changeset_create_error_403_forbidden(self, changeset_json):
+    def api_changeset_create_error_403_forbidden(self, feature_json):
         # do a GET call, sending a changeset to add in DB
-        response = self.session.put('http://localhost:8888/api/changeset/create/',
-                                    data=dumps(changeset_json), headers=self.headers)
+        response = self.session.put(self.URL + '/api/changeset/create/',
+                                    data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     # changeset errors - close
 
-    def api_changeset_close_error_400_bad_request(self, changeset_id):
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+    def api_changeset_close_error_400_bad_request(self, feature_id):
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_changeset_close_error_403_forbidden(self, changeset_id):
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+    def api_changeset_close_error_403_forbidden(self, feature_id):
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_changeset_close_error_404_not_found(self, changeset_id):
-        response = self.session.put('http://localhost:8888/api/changeset/close/{0}'.format(changeset_id))
+    def api_changeset_close_error_404_not_found(self, feature_id):
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # changeset errors - delete
 
     def api_changeset_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_changeset_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_changeset_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete('http://localhost:8888/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -311,7 +357,7 @@ class UtilTester:
         arguments = get_url_arguments(**arguments)
 
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+        response = self.session.get(self.URL + '/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -324,7 +370,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+        response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
                                     data=dumps(element_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -343,7 +389,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
         element_id = element_json["features"][0]["properties"]["id"]  # get the id of element
 
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
+        response = self.session.delete(self.URL + '/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -366,7 +412,7 @@ class UtilTester:
         arguments = get_url_arguments(element_id=element_id)
 
         # do a GET call with default format (GeoJSON)
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+        response = self.session.get(self.URL + '/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -375,14 +421,14 @@ class UtilTester:
     def api_element_error_400_bad_request(self, element, element_id):
         arguments = get_url_arguments(element_id=element_id)
 
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+        response = self.session.get(self.URL + '/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_element_error_404_not_found(self, element, element_id):
         arguments = get_url_arguments(element_id=element_id)
 
-        response = self.session.get('http://localhost:8888/api/{0}/{1}'.format(element, arguments))
+        response = self.session.get(self.URL + '/api/{0}/{1}'.format(element, arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -393,7 +439,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+        response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
                                     data=dumps(element_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
@@ -403,7 +449,7 @@ class UtilTester:
         element = by_multi_element_get_url_name(multi_element)
 
         # do a PUT call, sending a node to add in DB
-        response = self.session.put('http://localhost:8888/api/{0}/create/'.format(element),
+        response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
                                     data=dumps(element_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 409)
@@ -411,24 +457,24 @@ class UtilTester:
     # element errors - delete
 
     def api_element_delete_error_400_bad_request(self, element, element_id):
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
+        response = self.session.delete(self.URL + '/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_element_delete_error_403_forbidden(self, element, element_id):
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
+        response = self.session.delete(self.URL + '/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_element_delete_error_404_not_found(self,  element, element_id):
-        response = self.session.delete('http://localhost:8888/api/{0}/{1}'.format(element, element_id))
+        response = self.session.delete(self.URL + '/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # THEME TREE
 
     def api_theme_tree(self, expected):
-        response = self.session.get('http://localhost:8888/api/theme_tree')
+        response = self.session.get(self.URL + '/api/theme_tree')
 
         self.ut_self.assertEqual(response.status_code, 200)
 

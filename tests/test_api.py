@@ -17,18 +17,17 @@ class TestAPI(TestCase):
 
         # CREATE A layer FOR ALL TESTS
         layer = {
-            'layer': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'name', 'v': 'layer of data'},
-                         {'k': 'description', 'v': 'description of the layer'}],
-                'properties': {'id': -1}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'name', 'v': 'layer of data'},
+                     {'k': 'description', 'v': 'description of the layer'}],
+            'properties': {'id': -1},
+            'type': 'Layer'
         }
         self.layer = self.tester.api_layer_create(layer)
 
     def tearDown(self):
         # get the id of layer to REMOVE it
-        layer_id = self.layer["layer"]["properties"]["id"]
+        layer_id = self.layer["properties"]["id"]
 
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
@@ -38,20 +37,19 @@ class TestAPI(TestCase):
 
     def test_crud_elements_with_login(self):
         # get the id of layer to use in create a changeset
-        fk_layer_id = self.layer["layer"]["properties"]["id"]
+        fk_layer_id = self.layer["properties"]["id"]
 
         # CREATE A CHANGESET
         changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_layer_id": fk_layer_id}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': -1, "fk_layer_id": fk_layer_id},
+            'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -131,21 +129,20 @@ class TestAPI(TestCase):
 
     def test_crud_elements_that_not_exist_with_login(self):
         # get the id of layer to use in create a changeset
-        fk_layer_id = self.layer["layer"]["properties"]["id"]
+        fk_layer_id = self.layer["properties"]["id"]
 
         # CREATE A CHANGESET
         # send a JSON with the changeset to create a new one
         changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_layer_id": fk_layer_id}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': -1, "fk_layer_id": fk_layer_id},
+            'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["properties"]["id"]
 
         # ADD ELEMENTS
         node = {

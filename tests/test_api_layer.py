@@ -105,21 +105,20 @@ class TestAPILayer(TestCase):
         self.tester.auth_login()
 
         # create a layer
-        layer = {
-            'layer': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'name', 'v': 'layer of data'},
-                         {'k': 'description', 'v': 'description of the layer'}],
-                'properties': {'id': -1}
-            }
+        feature = {
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'name', 'v': 'layer of data'},
+                     {'k': 'description', 'v': 'description of the layer'}],
+            'properties': {'id': -1},
+            'type': 'Layer'
         }
-        self.layer = self.tester.api_layer_create(layer)
+        feature = self.tester.api_layer_create(feature)
 
         # get the id of layer to REMOVE it
-        layer_id = self.layer["layer"]["properties"]["id"]
+        feature_id = feature["properties"]["id"]
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(layer_id)
+        self.tester.api_layer_delete(feature_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -147,15 +146,14 @@ class TestAPILayerErrors(TestCase):
     # layer errors - create
 
     def test_put_api_layer_create_error_403_forbidden(self):
-        layer = {
-            'layer': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'name', 'v': 'layer of data'},
-                         {'k': 'description', 'v': 'description of the layer'}],
-                'properties': {'id': -1}
-            }
+        feature = {
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'name', 'v': 'layer of data'},
+                     {'k': 'description', 'v': 'description of the layer'}],
+            'properties': {'id': -1},
+            'type': 'Layer'
         }
-        self.tester.api_layer_create_error_403_forbidden(layer)
+        self.tester.api_layer_create_error_403_forbidden(feature)
 
     # layer errors - delete
 

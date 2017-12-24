@@ -36,7 +36,7 @@ This method gets projects from DB. If you doesn't put any parameter, so will ret
     - 500 (Internal Server Error): Problem when get a feature. Please, contact the administrator.
 - Notes:
 
-<!--
+
 ### PUT /api/project/create
 
 This method create a new project described in a JSON.
@@ -46,25 +46,23 @@ This method create a new project described in a JSON.
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
-        'project': {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'name', 'v': 'project of data'},
-                     {'k': 'description', 'v': 'description of the project'}],
-            'properties': {'id': -1}
-        }
+        'type': 'Project',
+        'properties': {'id': -1, 'fk_group_id': 1001},
+        'tags': [{'k': 'name', 'v': 'test project'},
+                 {'k': 'url', 'v': 'http://somehost.com'}]
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:
     ```javascript
-    {'id': 7}
+    {'id': 10}
     ```
 - Error codes:
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a project. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- - PUT /api/project/update - ->
+<!-- PUT /api/project/update -->
 
 
 ### DELETE /api/project/delete/#id
@@ -80,6 +78,5 @@ This method delete one project by id = #id.
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a project. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
 - Notes:
--->

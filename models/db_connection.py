@@ -242,64 +242,64 @@ class PGSQLConnection:
 
         return results_of_query
 
-    # def add_layer_in_db(self, fk_user_id):
-    #     query_text = """
-    #         INSERT INTO layer (create_at, fk_user_id)
-    #         VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
-    #     """.format(fk_user_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     result = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     return result
-    #
-    # def add_layer_tag_in_db(self, k, v, fk_layer_id):
-    #     query_text = """
-    #         INSERT INTO layer_tag (k, v, fk_layer_id)
-    #         VALUES ('{0}', '{1}', {2});
-    #     """.format(k, v, fk_layer_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    # def create_layer(self, feature_json, fk_user_id):
-    #
-    #     feature = feature_json["layer"]
-    #
-    #     # add the layer in db and get the id of it
-    #     id_in_json = self.add_layer_in_db(fk_user_id)
-    #
-    #     # add in DB the tags of layer
-    #     for tag in feature["tags"]:
-    #         # add the layer tag in db
-    #         self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
-    #
-    #     # put in DB the layer and its tags
-    #     self.commit()
-    #
-    #     return id_in_json
-    #
-    # def delete_layer_in_db(self, feature_id):
-    #     if is_a_invalid_id(feature_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     query_text = """
-    #         UPDATE layer SET visible = FALSE, removed_at = LOCALTIMESTAMP
-    #         WHERE id={0};
-    #     """.format(feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #     self.commit()
-    #
-    #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any feature.")
+    def add_project_in_db(self, fk_group_id, fk_user_id):
+        query_text = """
+            INSERT INTO project (create_at, fk_group_id, fk_user_id)
+            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
+        """.format(fk_group_id, fk_user_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def add_project_tag_in_db(self, k, v, fk_feature_id):
+        query_text = """
+            INSERT INTO project_tag (k, v, fk_project_id)
+            VALUES ('{0}', '{1}', {2});
+        """.format(k, v, fk_feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_project(self, feature_json, fk_user_id):
+
+        fk_group_id = feature_json["properties"]["fk_group_id"]
+
+        # add the layer in db and get the id of it
+        id_in_json = self.add_project_in_db(fk_group_id, fk_user_id)
+
+        # add in DB the tags of layer
+        for tag in feature_json["tags"]:
+            # add the layer tag in db
+            self.add_project_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+
+        # put in DB the layer and its tags
+        self.commit()
+
+        return id_in_json
+
+    def delete_project_in_db(self, feature_id):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
+            WHERE id={0};
+        """.format(feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # layer
@@ -370,24 +370,22 @@ class PGSQLConnection:
 
         return result
 
-    def add_layer_tag_in_db(self, k, v, fk_layer_id):
+    def add_layer_tag_in_db(self, k, v, fk_feature_id):
         query_text = """
             INSERT INTO layer_tag (k, v, fk_layer_id) 
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_layer_id)
+        """.format(k, v, fk_feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_layer(self, feature_json, fk_user_id):
 
-        feature = feature_json["layer"]
-
         # add the layer in db and get the id of it
         id_in_json = self.add_layer_in_db(fk_user_id)
 
         # add in DB the tags of layer
-        for tag in feature["tags"]:
+        for tag in feature_json["tags"]:
             # add the layer tag in db
             self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
@@ -493,11 +491,11 @@ class PGSQLConnection:
 
         return result
 
-    def add_changeset_tag_in_db(self, k, v, fk_changeset_id):
+    def add_changeset_tag_in_db(self, k, v, fk_feature_id):
         query_text = """
             INSERT INTO changeset_tag (k, v, fk_changeset_id) 
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_changeset_id)
+        """.format(k, v, fk_feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -507,18 +505,16 @@ class PGSQLConnection:
 
         # return id_changeset_tag
 
-    def create_changeset(self, changeset_json, fk_user_id):
-
-        changeset = changeset_json["changeset"]
+    def create_changeset(self, feature_json, fk_user_id):
 
         # get the fields to add in DB
-        fk_layer_id = changeset["properties"]["fk_layer_id"]
+        fk_layer_id = feature_json["properties"]["fk_layer_id"]
 
         # add the chengeset in db and get the id of it
         changeset_id_in_json = self.add_changeset_in_db(fk_layer_id, fk_user_id)
 
         # add in DB the tags of changeset
-        for tag in changeset["tags"]:
+        for tag in feature_json["tags"]:
             # add the chengeset tag in db
             self.add_changeset_tag_in_db(tag["k"], tag["v"], changeset_id_in_json["id"])
 
@@ -527,13 +523,13 @@ class PGSQLConnection:
 
         return changeset_id_in_json
 
-    def close_changeset(self, changeset_id=None):
-        if is_a_invalid_id(changeset_id):
+    def close_changeset(self, feature_id=None):
+        if is_a_invalid_id(feature_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
-        """.format(changeset_id)
+        """.format(feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -266,23 +266,23 @@ class TestAPIChangeset(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_layer_id": 1004}
-            }
+        feature = {
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': -1, "fk_layer_id": 1004},
+            'type': 'Changeset'
+
         }
-        changeset = self.tester.api_changeset_create(changeset)
+        feature = self.tester.api_changeset_create(feature)
 
         # get the id of changeset to CLOSE the changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        feature_id = feature["properties"]["id"]
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id)
+        self.tester.api_changeset_close(feature_id)
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id)
+        self.tester.api_changeset_delete(feature_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -309,14 +309,13 @@ class TestAPIChangesetErrors(TestCase):
     # changeset errors - create
 
     def test_put_api_changeset_create_error_403_forbidden(self):
-        changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_layer_id": 1004}
-            }
+        feature = {
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': -1, "fk_layer_id": 1004},
+            'type': 'Changeset'
         }
-        self.tester.api_changeset_create_error_403_forbidden(changeset)
+        self.tester.api_changeset_create_error_403_forbidden(feature)
 
     # changeset errors - close
 
@@ -327,22 +326,22 @@ class TestAPIChangesetErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_changeset_close_error_400_bad_request(changeset_id="abc")
-        self.tester.api_changeset_close_error_400_bad_request(changeset_id=0)
-        self.tester.api_changeset_close_error_400_bad_request(changeset_id=-1)
-        self.tester.api_changeset_close_error_400_bad_request(changeset_id="-1")
-        self.tester.api_changeset_close_error_400_bad_request(changeset_id="0")
+        self.tester.api_changeset_close_error_400_bad_request("abc")
+        self.tester.api_changeset_close_error_400_bad_request(0)
+        self.tester.api_changeset_close_error_400_bad_request(-1)
+        self.tester.api_changeset_close_error_400_bad_request("-1")
+        self.tester.api_changeset_close_error_400_bad_request("0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_put_api_changeset_close_error_403_forbidden(self):
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id="abc")
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id=0)
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id=-1)
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id="-1")
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id="0")
-        self.tester.api_changeset_close_error_403_forbidden(changeset_id="1001")
+        self.tester.api_changeset_close_error_403_forbidden("abc")
+        self.tester.api_changeset_close_error_403_forbidden(0)
+        self.tester.api_changeset_close_error_403_forbidden(-1)
+        self.tester.api_changeset_close_error_403_forbidden("-1")
+        self.tester.api_changeset_close_error_403_forbidden("0")
+        self.tester.api_changeset_close_error_403_forbidden("1001")
 
     def test_put_api_changeset_close_error_404_not_found(self):
         # create a tester passing the unittest self
@@ -351,8 +350,8 @@ class TestAPIChangesetErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login()
 
-        self.tester.api_changeset_close_error_404_not_found(changeset_id="5000")
-        self.tester.api_changeset_close_error_404_not_found(changeset_id="5001")
+        self.tester.api_changeset_close_error_404_not_found("5000")
+        self.tester.api_changeset_close_error_404_not_found("5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

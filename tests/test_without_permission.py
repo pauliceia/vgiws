@@ -20,16 +20,15 @@ class TestAPIWihoutLogin(TestCase):
         # CREATE A CHANGESET
         # send a JSON with the changeset to create a new one
         changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': 1500, "fk_layer_id": 1500}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': 1500, "fk_layer_id": 1500},
+            'type': 'Changeset'
         }
         self.tester.api_changeset_create_error_403_forbidden(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["properties"]["id"]
 
         # ADD ELEMENTS
         node = {
@@ -102,16 +101,15 @@ class TestAPIWihoutLogin(TestCase):
     def test_api_changeset_create_and_close_without_login(self):
         # do a GET call
         changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': 1700, "fk_layer_id": 1700}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': 1700, "fk_layer_id": 1700},
+            'type': 'Changeset'
         }
         self.tester.api_changeset_create_error_403_forbidden(changeset)
 
         # get the id of changeset to CLOSE changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["properties"]["id"]
 
         self.tester.api_changeset_close_error_403_forbidden(changeset_id)
 
@@ -121,16 +119,15 @@ class TestAPIWihoutLogin(TestCase):
 
             # CREATE A CHANGESET
             changeset = {
-                'changeset': {
-                    'tags': [{'k': 'created_by', 'v': 'test_api'},
-                             {'k': 'comment', 'v': 'testing create changeset'}],
-                    'properties': {'id': -1, "fk_layer_id": 1003}
-                }
+                'tags': [{'k': 'created_by', 'v': 'test_api'},
+                         {'k': 'comment', 'v': 'testing create changeset'}],
+                'properties': {'id': -1, "fk_layer_id": 1003},
+                'type': 'Changeset'
             }
             changeset = self.tester.api_changeset_create(changeset)
 
             # get the id of changeset to use in ADD element and CLOSE changeset
-            changeset_id = changeset["changeset"]["properties"]["id"]
+            changeset_id = changeset["properties"]["id"]
 
             # ADD ELEMENT
             node = {
@@ -170,12 +167,7 @@ class TestAPIWihoutLogin(TestCase):
             # TRY TO CREATE ANOTHER CHANGESET WITHOUT LOGIN
             ################################################################################
 
-            # do a GET call, sending a changeset to add in DB
-            response = self.tester.session.put('http://localhost:8888/api/changeset/create/',
-                                               data=dumps(changeset), headers=self.tester.headers)
-
-            # it is not possible to create a changeset without login, so get a 403 Forbidden
-            self.assertEqual(response.status_code, 403)
+            self.tester.api_changeset_create_error_403_forbidden(changeset)
 
 
 # It is not necessary to pyt the main() of unittest here,

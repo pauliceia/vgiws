@@ -353,16 +353,15 @@ class TestAPIElement(TestCase):
 
         # CREATE A CHANGESET
         changeset = {
-            'changeset': {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
-                'properties': {'id': -1, "fk_layer_id": 1004}
-            }
+            'tags': [{'k': 'created_by', 'v': 'test_api'},
+                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'properties': {'id': -1, "fk_layer_id": 1004},
+            'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
 
         # get the id of changeset to use in ADD element and CLOSE changeset
-        changeset_id = changeset["changeset"]["properties"]["id"]
+        changeset_id = changeset["properties"]["id"]
 
         # ADD ELEMENTS
         point = {

@@ -346,8 +346,7 @@ class BaseHandlerProject(BaseHandlerTemplateMethod):
         return self.PGSQLConn.get_projects(**kwargs)
 
     def _create_feature(self, feature_json, current_user_id):
-        # return self.PGSQLConn.create_layer(feature_json, current_user_id)
-        raise NotImplementedError
+        return self.PGSQLConn.create_project(feature_json, current_user_id)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
@@ -356,8 +355,7 @@ class BaseHandlerProject(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        # self.PGSQLConn.delete_layer_in_db(*args)
-        raise NotImplementedError
+        self.PGSQLConn.delete_project_in_db(*args)
 
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod):

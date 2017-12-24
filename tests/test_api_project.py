@@ -62,7 +62,7 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, project_id="1001")
 
-    def test_get_api_layer_return_project_by_group_id(self):
+    def test_get_api_project_return_project_by_group_id(self):
         expected = {
             'features': [
                 {
@@ -83,7 +83,7 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, group_id="1002")
 
-    def test_get_api_layer_return_project_by_user_id(self):
+    def test_get_api_project_return_project_by_user_id(self):
         expected = {
             'features': [
                 {
@@ -104,31 +104,30 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected, user_id="1002")
 
-    # layer - create and delete
+    # project - create and delete
 
-    # def test_get_api_layer_create_and_delete(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login()
-    #
-    #     # create a layer
-    #     layer = {
-    #         'layer': {
-    #             'tags': [{'k': 'created_by', 'v': 'test_api'},
-    #                      {'k': 'name', 'v': 'layer of data'},
-    #                      {'k': 'description', 'v': 'description of the layer'}],
-    #             'properties': {'id': -1}
-    #         }
-    #     }
-    #     self.layer = self.tester.api_layer_create(layer)
-    #
-    #     # get the id of layer to REMOVE it
-    #     layer_id = self.layer["layer"]["properties"]["id"]
-    #
-    #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_layer_delete(layer_id)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_get_api_project_create_and_delete(self):
+        # DO LOGIN
+        self.tester.auth_login()
+
+        # create a project
+        feature = {
+            'type': 'Project',
+            'properties': {'id': -1, 'fk_group_id': 1001},
+            'tags': [{'k': 'name', 'v': 'test project'},
+                     {'k': 'url', 'v': 'http://somehost.com'}]
+        }
+
+        feature = self.tester.api_project_create(feature)
+
+        # get the id of feature to REMOVE it
+        feature_id = feature["properties"]["id"]
+
+        # REMOVE THE project AFTER THE TESTS
+        self.tester.api_project_delete(feature_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 class TestAPIProjectErrors(TestCase):
@@ -137,70 +136,68 @@ class TestAPIProjectErrors(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # layer errors - get
+    # project errors - get
 
-    def test_get_api_layer_error_400_bad_request(self):
+    def test_get_api_project_error_400_bad_request(self):
         self.tester.api_project_error_400_bad_request(project_id="abc")
         self.tester.api_project_error_400_bad_request(project_id=0)
         self.tester.api_project_error_400_bad_request(project_id=-1)
         self.tester.api_project_error_400_bad_request(project_id="-1")
         self.tester.api_project_error_400_bad_request(project_id="0")
 
-    def test_get_api_layer_error_404_not_found(self):
+    def test_get_api_project_error_404_not_found(self):
         self.tester.api_project_error_404_not_found(project_id="999")
         self.tester.api_project_error_404_not_found(project_id="998")
 
-    # layer errors - create
+    # project errors - create
 
-    # def test_put_api_layer_create_error_403_forbidden(self):
-    #     layer = {
-    #         'layer': {
-    #             'tags': [{'k': 'created_by', 'v': 'test_api'},
-    #                      {'k': 'name', 'v': 'layer of data'},
-    #                      {'k': 'description', 'v': 'description of the layer'}],
-    #             'properties': {'id': -1}
-    #         }
-    #     }
-    #     self.tester.api_layer_create_error_403_forbidden(layer)
-    #
-    # # layer errors - delete
-    #
-    # def test_delete_api_layer_error_400_bad_request(self):
-    #     # create a tester passing the unittest self
-    #     self.tester = UtilTester(self)
-    #
-    #     # DO LOGIN
-    #     self.tester.auth_login()
-    #
-    #     self.tester.api_layer_delete_error_400_bad_request("abc")
-    #     self.tester.api_layer_delete_error_400_bad_request(0)
-    #     self.tester.api_layer_delete_error_400_bad_request(-1)
-    #     self.tester.api_layer_delete_error_400_bad_request("-1")
-    #     self.tester.api_layer_delete_error_400_bad_request("0")
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    #
-    # def test_delete_api_layer_error_403_forbidden(self):
-    #     self.tester.api_layer_delete_error_403_forbidden("abc")
-    #     self.tester.api_layer_delete_error_403_forbidden(0)
-    #     self.tester.api_layer_delete_error_403_forbidden(-1)
-    #     self.tester.api_layer_delete_error_403_forbidden("-1")
-    #     self.tester.api_layer_delete_error_403_forbidden("0")
-    #     self.tester.api_layer_delete_error_403_forbidden("1001")
-    #
-    # def test_delete_api_layer_error_404_not_found(self):
-    #     # create a tester passing the unittest self
-    #     self.tester = UtilTester(self)
-    #
-    #     # DO LOGIN
-    #     self.tester.auth_login()
-    #
-    #     self.tester.api_layer_delete_error_404_not_found("5000")
-    #     self.tester.api_layer_delete_error_404_not_found("5001")
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_put_api_project_create_error_403_forbidden(self):
+        feature = {
+            'type': 'Project',
+            'properties': {'id': -1, 'fk_group_id': 1001},
+            'tags': [{'k': 'name', 'v': 'test project'},
+                     {'k': 'url', 'v': 'http://somehost.com'}]
+        }
+        self.tester.api_project_create_error_403_forbidden(feature)
+
+    # project errors - delete
+
+    def test_delete_api_project_error_400_bad_request(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_project_delete_error_400_bad_request("abc")
+        self.tester.api_project_delete_error_400_bad_request(0)
+        self.tester.api_project_delete_error_400_bad_request(-1)
+        self.tester.api_project_delete_error_400_bad_request("-1")
+        self.tester.api_project_delete_error_400_bad_request("0")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_project_error_403_forbidden(self):
+        self.tester.api_project_delete_error_403_forbidden("abc")
+        self.tester.api_project_delete_error_403_forbidden(0)
+        self.tester.api_project_delete_error_403_forbidden(-1)
+        self.tester.api_project_delete_error_403_forbidden("-1")
+        self.tester.api_project_delete_error_403_forbidden("0")
+        self.tester.api_project_delete_error_403_forbidden("1001")
+
+    def test_delete_api_project_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login()
+
+        self.tester.api_project_delete_error_404_not_found("5000")
+        self.tester.api_project_delete_error_404_not_found("5001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 # It is not necessary to pyt the main() of unittest here,

@@ -45,12 +45,11 @@ This method create a new layer described in a JSON.
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
-        'layer': {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'name', 'v': 'layer of data'},
-                     {'k': 'description', 'v': 'description of the layer'}],
-            'properties': {'id': -1}
-        }
+        'tags': [{'k': 'created_by', 'v': 'test_api'},
+                 {'k': 'name', 'v': 'layer of data'},
+                 {'k': 'description', 'v': 'description of the layer'}],
+        'properties': {'id': -1},
+        'type': 'Layer'
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:
@@ -59,7 +58,7 @@ This method create a new layer described in a JSON.
     ```
 - Error codes:
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a layer. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
@@ -79,5 +78,5 @@ This method delete one layer by id = #id.
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a layer. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
 - Notes:
