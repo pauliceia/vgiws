@@ -5,9 +5,32 @@ There are some standard features described in [OSM Map Features](http://wiki.ope
 There are also others specifics attributes for Pauliceia project, described below.
 
 
-### Generic
+### Attribute Translation
 
-Attributes that are generic.
+The attributes can be described in different languages. To do it, it is recommended to follow the [OSM rules](http://wiki.openstreetmap.org/wiki/Wiki_Translation).
+
+Examples:
+
+| Key                            | Value                                                        | Element                   | Comment                                       |
+| ------------------------------ | ------------------------------------------------------------ | ------------------------- | --------------------------------------------- |
+| description                    | text on english (default) (e.g. "Good morning")              | all                       | Title of a book                               |
+| description:pt-br              | text on brazilian portuguese (e.g. "Bom dia")                | all                       | Title of a newspaper                          |
+| description:jp                 | text on japanese (e.g. "Ohayo")                              | all                       | Title of a article                            |
+
+
+### Authors
+
+How to describe the data author:
+
+| Key                            | Value                               | Element                   | Comment                                                                          |
+| ------------------------------ | ----------------------------------- | ------------------------- | -------------------------------------------------------------------------------- |
+| original_author                | text (e.g. "tolkien")               | all                       | The username of the original user of the data                                    |
+| created_by                     | text (e.g. "jorge")                 | all                       | The username of the user that is feeding the system, who make changes in data    |
+
+
+### Date
+
+How to describe the dates.
 
 | Key                            | Value                               | Element                   | Comment                                                      |
 | ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
@@ -15,34 +38,6 @@ Attributes that are generic.
 | end_date                       | date (e.g. "1900/03/25", "1890/03") | point, line, polygon      | The date that the data finished to exist                     |
 
 The date format accepts are YYYY, YYYY/MM or YYYY/MM/DD.
-
-
-### Themes
-
-How to describe the themes:
-
-| Key                            | Value                               | Element                   | Comment                                                      |
-| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
-| theme                          | text (e.g. "generic", "crime")      | layer                     | The theme of a layer                                         |
-
-
-### Map vectorization
-
-How to describe when the data is provide by map vectorization:
-
-| Key                            | Value                               | Element                   | Comment                                                      |
-| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
-| map_vectorization              | boolean (e.g. "true" or "false")    | line, polygon             | If the data was created by a map vectorization               |
-
-
-### Authors
-
-How to describe the data author:
-
-| Key                            | Value                               | Element                   | Comment                                                      |
-| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
-| original_author                | text (e.g. "J. R. R. Tolkien")      | point, line, polygon      | The original author of the data                              |
-| feeder_author                  | text (e.g. "Jorge")                 | point, line, polygon      | The user that feeding the system, who make changes in data   |
 
 
 ### Documents
@@ -63,6 +58,15 @@ Examples:
 | doc:instagram:01               | link (e.g. "https://www.instagram.com/?hl=pt-br")                 | point, line, polygon      | The first web link for a photo                     |
 
 
+### Map vectorization
+
+How to describe when the data is provide by map vectorization:
+
+| Key                            | Value                               | Element                   | Comment                                                      |
+| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
+| map_vectorization              | boolean (e.g. "true" or "false")    | line, polygon             | If the data was created by a map vectorization               |
+
+
 ### Sources
 
 How to describe the data source following the schema: source:<source_name>:\<attribute>, being:
@@ -77,3 +81,15 @@ Examples:
 | source\:newspaper:title        | text (e.g. "Jornal about SP in 1880")                        | point, line, polygon      | Title of a newspaper                          |
 | source:article:title           | text (e.g. "Article about crimes in 1930")                   | point, line, polygon      | Title of a article                            |
 | source:article:link            | link (e.g. "http://www.scielo.br")                           | point, line, polygon      | Web link of a article                         |
+| source:article:bibtex          | text (e.g. "@article{aquino2017sumat, title={Suma T.}, ...") | point, line, polygon      | Reference of the article on Bibtex            |
+| source:article:apa             | text (e.g. "Aquino (2017). Suma T. Journal, 10(2), 11-21.")  | point, line, polygon      | Reference of the article on APA               |
+
+
+### Themes
+
+How to describe the themes on layers:
+
+| Key                            | Value                               | Element                   | Comment                                                      |
+| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
+| theme                          | text (e.g. "generic", "crime")      | layer                     | The theme of a layer                                         |
+
