@@ -595,6 +595,8 @@ class PGSQLConnection:
                     'geometry',   ST_AsGeoJSON(geom)::jsonb,
                     'properties', json_build_object(
                         'id',               id,
+                        'visible',          visible,
+                        'version',          version,
                         'fk_changeset_id',  fk_changeset_id
                     ),
                     'tags',       tags.jsontags

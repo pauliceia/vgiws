@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
+__select_elements__ = "element.id, element.geom, element.visible, element.version, element.fk_changeset_id"
+
+
 def get_subquery_current_element_table_if_user_id_is_not_none(element, conditions_of_where, **kwargs):
 
     # create the where clause with the conditions
@@ -17,19 +20,19 @@ def get_subquery_current_element_table_if_user_id_is_not_none(element, condition
     current_element_table = """
             (
                 -- get the elements of the changesets of a specific user
-                SELECT element.id, element.geom, element.fk_changeset_id
+                SELECT {0}
                 FROM 
                 (
                     -- get the changesets of a specific project
                     SELECT changeset.id
                     FROM user_ LEFT JOIN changeset ON user_.id = changeset.fk_user_id
-                    {2}
+                    {3}
                 ) AS changeset
-                LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
-                {1}
+                LEFT JOIN current_{1} element ON changeset.id = element.fk_changeset_id
+                {2}
                 ORDER BY id
             ) AS element
-        """.format(element, where_current_element_table, where_join_user_with_changeset)
+        """.format(__select_elements__, element, where_current_element_table, where_join_user_with_changeset)
 
     return current_element_table
 
@@ -49,19 +52,19 @@ def get_subquery_current_element_table_if_layer_id_is_not_none(element, conditio
     current_element_table = """
         (
             -- get the elements of the changesets of a specific layer
-            SELECT element.id, element.geom, element.fk_changeset_id
+            SELECT {0}
             FROM 
             (
                 -- get the changesets of a specific layer
                 SELECT changeset.id
                 FROM layer LEFT JOIN changeset ON layer.id = changeset.fk_layer_id
-                {2}
+                {3}
             ) AS changeset
-            LEFT JOIN current_{0} element ON changeset.id = element.fk_changeset_id
-            {1}
+            LEFT JOIN current_{1} element ON changeset.id = element.fk_changeset_id
+            {2}
             ORDER BY id
         ) AS element
-    """.format(element, where_current_element_table, where_join_layer_with_changeset)
+    """.format(__select_elements__, element, where_current_element_table, where_join_layer_with_changeset)
 
     return current_element_table
 
@@ -76,12 +79,12 @@ def get_subquery_current_element_table_if_changeset_id_is_not_none(element, cond
     # search by changeset_id
     current_element_table = """
         (
-            SELECT element.id, element.geom, element.fk_changeset_id
-            FROM current_{0} element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
-            {1}
+            SELECT {0} 
+            FROM current_{1} element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
+            {2}
             ORDER BY id
         ) AS element
-    """.format(element, where_current_element_table)
+    """.format(__select_elements__, element, where_current_element_table)
 
     return current_element_table
 
@@ -93,12 +96,12 @@ def get_subquery_current_element_table_default(element, conditions_of_where, **k
     # default subquery, get all elements
     current_element_table = """
         (
-            SELECT element.id, element.geom, element.fk_changeset_id
-            FROM current_{0} element
-            {1}
+            SELECT {0}
+            FROM current_{1} element
+            {2}
             ORDER BY id
         ) AS element
-    """.format(element, where_current_element_table)
+    """.format(__select_elements__, element, where_current_element_table)
 
     return current_element_table
 

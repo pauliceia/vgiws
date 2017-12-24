@@ -60,7 +60,7 @@ class TestAPI(TestCase):
                     'tags': [{'k': 'event', 'v': 'robbery'},
                              {'k': 'date', 'v': '1910'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
                         'type': 'MultiPoint',
                         'coordinates': [[-23.546421, -46.635722]]
@@ -78,7 +78,7 @@ class TestAPI(TestCase):
                              {'k': 'start_date', 'v': '1910-12-08'},
                              {'k': 'end_date', 'v': '1930-03-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
                         'type': 'MultiLineString',
                         'coordinates': [[[-54, 33], [-32, 31], [-36, 89]]]
@@ -96,7 +96,7 @@ class TestAPI(TestCase):
                              {'k': 'start_date', 'v': '1900-11-12'},
                              {'k': 'end_date', 'v': '1915-12-25'}],
                     'type': 'Feature',
-                    'properties': {'id': -1, 'fk_changeset_id': changeset_id},
+                    'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
                         'type': 'MultiPolygon',
                         'coordinates': [[[[-12, 32], [-23, 74], [-12, 32]]]]
