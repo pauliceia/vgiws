@@ -6,10 +6,30 @@
 """
 
 
-from ..base import BaseHandlerLayer, BaseHandlerChangeset, auth_non_browser_based
+from ..base import BaseHandlerProject, BaseHandlerLayer, BaseHandlerChangeset, auth_non_browser_based
 
 
-# layer
+# PROJECT
+
+class APIProject(BaseHandlerProject):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
+
+    def get(self, param=None):
+        self.get_method_api_feature()
+
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     self.put_method_api_feature(param)
+    #
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     self.delete_method_api_feature(param)
+
+
+# LAYER
 
 class APILayer(BaseHandlerLayer):
 

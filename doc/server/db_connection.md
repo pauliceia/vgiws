@@ -60,7 +60,7 @@ Install the [Neo4J version 3.3.1](https://neo4j.com/docs/operations-manual/curre
 If the service do not run automatically, execute:
 
 ```
-$ sudo service neo4j restart
+$ sudo service neo4j start
 ```
 
 Open a browser and enter in 'http://localhost:7474/browser/' to show the database interface. If is the once, will appear to change the password.

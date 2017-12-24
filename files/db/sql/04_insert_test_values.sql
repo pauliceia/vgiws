@@ -113,7 +113,7 @@ DELETE FROM project_tag;
 -- SOURCE: -
 -- project 1001
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'admin', 1001);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default layer', 1001);
+INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default project', 1001);
 -- project 1002
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1005, 'name', 'test project', 1002);
 INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1006, 'url', 'http://somehost.com', 1002);

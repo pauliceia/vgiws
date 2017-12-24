@@ -187,6 +187,121 @@ class PGSQLConnection:
         return results_of_query
 
     ################################################################################
+    # project
+    ################################################################################
+
+    def get_projects(self, project_id=None, group_id=None, user_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(project_id) or is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_project_table(project_id=project_id, group_id=group_id, user_id=user_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Project',
+                    'properties', json_build_object(
+                        'id',           id,                        
+                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'fk_group_id', fk_group_id,
+                        'fk_user_id', fk_user_id
+                    ),
+                    'tags',       tags.jsontags
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}
+            CROSS JOIN LATERAL (
+                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
+                FROM project_tag 
+                WHERE fk_project_id = project.id    
+            ) AS tags
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
+        return results_of_query
+
+    # def add_layer_in_db(self, fk_user_id):
+    #     query_text = """
+    #         INSERT INTO layer (create_at, fk_user_id)
+    #         VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
+    #     """.format(fk_user_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+    #
+    # def add_layer_tag_in_db(self, k, v, fk_layer_id):
+    #     query_text = """
+    #         INSERT INTO layer_tag (k, v, fk_layer_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, fk_layer_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    # def create_layer(self, feature_json, fk_user_id):
+    #
+    #     feature = feature_json["layer"]
+    #
+    #     # add the layer in db and get the id of it
+    #     id_in_json = self.add_layer_in_db(fk_user_id)
+    #
+    #     # add in DB the tags of layer
+    #     for tag in feature["tags"]:
+    #         # add the layer tag in db
+    #         self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+    #
+    #     # put in DB the layer and its tags
+    #     self.commit()
+    #
+    #     return id_in_json
+    #
+    # def delete_layer_in_db(self, feature_id):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE layer SET visible = FALSE, removed_at = LOCALTIMESTAMP
+    #         WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     self.commit()
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
+
+    ################################################################################
     # layer
     ################################################################################
 

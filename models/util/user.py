@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-# test
-
 def get_subquery_user_table(**kwargs):
     conditions_of_where = []
 

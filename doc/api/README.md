@@ -2,6 +2,7 @@
 
 - [Miscellaneous](miscellaneous.md)
 - [Login](login.md)
+- [Project](feature/project.md)
 - [Layer](feature/layer.md)
 - [Changeset](feature/changeset.md)
 - [Element](feature/element.md)
