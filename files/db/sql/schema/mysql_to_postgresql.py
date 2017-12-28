@@ -8,111 +8,6 @@ __READ_SQL_FILE__ = "original_schema_msql.sql"
 __OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 
-'''
-pauliceia_line_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.line_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.line_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_line_version INT NOT NULL,
-  fk_line_id INT NOT NULL,
-  PRIMARY KEY (k, fk_line_version, fk_line_id),
-  CONSTRAINT fk_line_tag_line1
-    FOREIGN KEY (fk_line_version, fk_line_id)
-    REFERENCES pauliceia.line (version, id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-pauliceia_point_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.point_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.point_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_point_version INT NOT NULL,
-  fk_point_id INT NOT NULL,
-  PRIMARY KEY (k, fk_point_version, fk_point_id),
-  CONSTRAINT fk_point_tag_point1
-    FOREIGN KEY (fk_point_version, fk_point_id)
-    REFERENCES pauliceia.point (version, id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-pauliceia_polygon_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_polygon_version INT NOT NULL,
-  fk_polygon_id INT NOT NULL,
-  PRIMARY KEY (k, fk_polygon_version, fk_polygon_id),
-  CONSTRAINT fk_polygon_tag_polygon1
-    FOREIGN KEY (fk_polygon_version, fk_polygon_id)
-    REFERENCES pauliceia.polygon (version, id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-
-
-pauliceia_current_line_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_current_line_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_line_id),
-  CONSTRAINT fk_current_line_tag_current_line1
-    FOREIGN KEY (fk_current_line_id)
-    REFERENCES pauliceia.current_line (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-pauliceia_current_point_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_current_point_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_point_id),
-  CONSTRAINT fk_current_point_tag_current_point1
-    FOREIGN KEY (fk_current_point_id)
-    REFERENCES pauliceia.current_point (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-pauliceia_current_polygon_tag = {
-    "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag",
-    "sql": """
-CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NULL,
-  fk_current_polygon_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_polygon_id),
-  CONSTRAINT fk_current_polygon_tag_current_polygon1
-    FOREIGN KEY (fk_current_polygon_id)
-    REFERENCES pauliceia.current_polygon (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-"""
-}
-
-'''
-
 def replace_phrases(text):
     text = text.replace("mydb", "pauliceia")
     text = text.replace("`", "'")
@@ -147,58 +42,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';""", ""
 
     return text
 
-def remove_bad_create_tables(text):
-    break_loop = False
-
-    while not break_loop:
-
-        if (pauliceia_line_tag["create_table_name"] not in text) and \
-                (pauliceia_point_tag["create_table_name"] not in text) and \
-                (pauliceia_polygon_tag["create_table_name"] not in text) and \
-                (pauliceia_current_line_tag["create_table_name"] not in text) and \
-                (pauliceia_current_point_tag["create_table_name"] not in text) and \
-                (pauliceia_current_polygon_tag["create_table_name"] not in text):
-
-            break_loop = True
-            continue
-
-        lines = text.split("\n")            
-        lines_copy = list(lines)  # create a copy to iterate inside it
-
-        for a in range(0, len(lines_copy)):            
-            line = lines_copy[a]
-
-            # if the create clause is in line, remove the SQL
-            if (pauliceia_line_tag["create_table_name"] in line) or \
-                (pauliceia_point_tag["create_table_name"] in line) or \
-                (pauliceia_polygon_tag["create_table_name"] in line) or \
-                (pauliceia_current_line_tag["create_table_name"] in line) or \
-                (pauliceia_current_point_tag["create_table_name"] in line) or \
-                (pauliceia_current_polygon_tag["create_table_name"] in line):
-
-                # find initial_line and final_line
-                initial_line = a
-                final_line = 0                
-                for j in range(initial_line, len(lines_copy)):
-                    line_j = lines_copy[j]
-                    if ");" in line_j:
-                        final_line = j
-                        break
-
-                for k in range(final_line, initial_line-1, -1):
-                    line_k = lines_copy[k]
-
-                    #print(lines[k])
-                    del lines[k]
-
-                lines.insert(initial_line-1, " \n")                    
-
-                break
-
-        text = "\n".join(lines)
-
-    return text
-
 def remove_bad_lines_and_put_default_values(text):
         
     lines = text.split("\n")
@@ -226,22 +69,6 @@ def remove_bad_lines_and_put_default_values(text):
         if "version int" in line_lower and "fk" not in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT 1,")
             #print(lines[i])
-
-    text = "\n".join(lines)
-
-    return text
-
-def add_new_lines(text):        
-    lines = text.split("\n")
-    lines_copy = list(lines)  # create a copy to iterate inside it
-
-    for i in range(0, len(lines_copy)):
-        line = lines_copy[i]
-
-        # insert create extension before create schema
-        if "CREATE SCHEMA IF NOT EXISTS pauliceia ;" in line:                
-            lines.insert(i+2, "CREATE EXTENSION IF NOT EXISTS postgis; \n")
-            break 
 
     text = "\n".join(lines)
 
@@ -283,22 +110,6 @@ def arrange_table_auth(text):
 
     return text
 
-def add_create_tables_updated(text):
-    text += "\n"+"""
--- -----------------------------------------------------
--- Tables pauliceia.*_tag
--- -----------------------------------------------------
-    """
-    
-    text += pauliceia_line_tag["sql"] + "\n"
-    text += pauliceia_point_tag["sql"] + "\n"
-    text += pauliceia_polygon_tag["sql"] + "\n"
-    text += pauliceia_current_line_tag["sql"] + "\n"
-    text += pauliceia_current_point_tag["sql"] + "\n"
-    text += pauliceia_current_polygon_tag["sql"] + "\n"
-
-    return text
-
 def last_modifications(text):
 
     # remove the schema
@@ -334,21 +145,12 @@ def main():
         
 
         text = replace_phrases(text)
-
-        # remove bad create tables
-        #text = remove_bad_create_tables(text)
-
-        # add create tables updated
-        #text = add_create_tables_updated(text)
         
         # remove bad lines     
         text = remove_bad_lines_and_put_default_values(text)
 
         # arrange table 'auth'
         text = arrange_table_auth(text)
-
-        # add new lines
-        #text = add_new_lines(text)
 
         # add SERIAL number in ID
         text = add_serial_number_in_ID(text)
