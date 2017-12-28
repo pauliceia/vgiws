@@ -22,32 +22,32 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
-                    'tags': [{'k': 'name', 'v': 'default'},
-                             {'k': 'description', 'v': 'default layer'},
+                    'tags': [{'k': 'description', 'v': 'default layer'},
+                             {'k': 'name', 'v': 'default'},
                              {'k': 'theme', 'v': 'generic'}],
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
-                    'tags': [{'k': 'name', 'v': 'test_layer'},
-                             {'k': 'description', 'v': 'test_layer'},
+                    'tags': [{'k': 'description', 'v': 'test_layer'},
+                             {'k': 'name', 'v': 'test_layer'},
                              {'k': 'theme', 'v': 'crime'}],
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
-                    'tags': [{'k': 'name', 'v': 'layer 3'},
-                             {'k': 'description', 'v': 'test_layer'},
+                    'tags': [{'k': 'description', 'v': 'test_layer'},
+                             {'k': 'name', 'v': 'layer 3'},
                              {'k': 'theme', 'v': 'addresses'}],
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-09-11 00:00:00',
                                    'fk_user_id': 1003, 'id': 1004},
-                    'tags': [{'k': 'name', 'v': 'layer 4'},
-                             {'k': 'description', 'v': 'test_layer'}],
+                    'tags': [{'k': 'description', 'v': 'test_layer'},
+                             {'k': 'name', 'v': 'layer 4'}],
                     'type': 'Layer'
                 }
             ],
@@ -62,8 +62,8 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
-                    'tags': [{'k': 'name', 'v': 'default'},
-                             {'k': 'description', 'v': 'default layer'},
+                    'tags': [{'k': 'description', 'v': 'default layer'},
+                             {'k': 'name', 'v': 'default'},
                              {'k': 'theme', 'v': 'generic'}],
                     'type': 'Layer'
                 },
@@ -79,16 +79,16 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
-                    'tags': [{'k': 'name', 'v': 'test_layer'},
-                             {'k': 'description', 'v': 'test_layer'},
+                    'tags': [{'k': 'description', 'v': 'test_layer'},
+                             {'k': 'name', 'v': 'test_layer'},
                              {'k': 'theme', 'v': 'crime'}],
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
-                    'tags': [{'k': 'name', 'v': 'layer 3'},
-                             {'k': 'description', 'v': 'test_layer'},
+                    'tags': [{'k': 'description', 'v': 'test_layer'},
+                             {'k': 'name', 'v': 'layer 3'},
                              {'k': 'theme', 'v': 'addresses'}],
                     'type': 'Layer'
                 },
@@ -107,9 +107,9 @@ class TestAPILayer(TestCase):
         # create a layer
         feature = {
             'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'name', 'v': 'layer of data'},
-                     {'k': 'description', 'v': 'description of the layer'}],
-            'properties': {'id': -1},
+                     {'k': 'description', 'v': 'description of the layer'},
+                     {'k': 'name', 'v': 'layer of data'}],
+            'properties': {'id': -1, 'fk_project_id': 1001},
             'type': 'Layer'
         }
         feature = self.tester.api_layer_create(feature)
@@ -148,8 +148,8 @@ class TestAPILayerErrors(TestCase):
     def test_put_api_layer_create_error_403_forbidden(self):
         feature = {
             'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'name', 'v': 'layer of data'},
-                     {'k': 'description', 'v': 'description of the layer'}],
+                     {'k': 'description', 'v': 'description of the layer'},
+                     {'k': 'name', 'v': 'layer of data'}],
             'properties': {'id': -1},
             'type': 'Layer'
         }

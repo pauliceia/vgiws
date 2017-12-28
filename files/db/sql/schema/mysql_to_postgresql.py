@@ -8,20 +8,19 @@ __READ_SQL_FILE__ = "original_schema_msql.sql"
 __OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 
+'''
 pauliceia_line_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.line_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.line_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,  
-  fk_line_id INT NOT NULL,
   fk_line_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  fk_line_id INT NOT NULL,
+  PRIMARY KEY (k, fk_line_version, fk_line_id),
   CONSTRAINT fk_line_tag_line1
-    FOREIGN KEY (fk_line_id, fk_line_version)
-    REFERENCES pauliceia.line (id, version)
+    FOREIGN KEY (fk_line_version, fk_line_id)
+    REFERENCES pauliceia.line (version, id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -31,16 +30,14 @@ pauliceia_point_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.point_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.point_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,
-  fk_point_id INT NOT NULL,
   fk_point_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  fk_point_id INT NOT NULL,
+  PRIMARY KEY (k, fk_point_version, fk_point_id),
   CONSTRAINT fk_point_tag_point1
-    FOREIGN KEY (fk_point_id, fk_point_version)
-    REFERENCES pauliceia.point (id, version)
+    FOREIGN KEY (fk_point_version, fk_point_id)
+    REFERENCES pauliceia.point (version, id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -50,16 +47,14 @@ pauliceia_polygon_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.polygon_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
-  version INT NOT NULL,
-  fk_polygon_id INT NOT NULL,
   fk_polygon_version INT NOT NULL,
-  PRIMARY KEY (id, version, k),
+  fk_polygon_id INT NOT NULL,
+  PRIMARY KEY (k, fk_polygon_version, fk_polygon_id),
   CONSTRAINT fk_polygon_tag_polygon1
-    FOREIGN KEY (fk_polygon_id, fk_polygon_version)
-    REFERENCES pauliceia.polygon (id, version)
+    FOREIGN KEY (fk_polygon_version, fk_polygon_id)
+    REFERENCES pauliceia.polygon (version, id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -71,11 +66,10 @@ pauliceia_current_line_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.current_line_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   fk_current_line_id INT NOT NULL,
-  PRIMARY KEY (id, k),
+  PRIMARY KEY (k, fk_current_line_id),
   CONSTRAINT fk_current_line_tag_current_line1
     FOREIGN KEY (fk_current_line_id)
     REFERENCES pauliceia.current_line (id)
@@ -88,11 +82,10 @@ pauliceia_current_point_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.current_point_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   fk_current_point_id INT NOT NULL,
-  PRIMARY KEY (id, k),
+  PRIMARY KEY (k, fk_current_point_id),
   CONSTRAINT fk_current_point_tag_current_point1
     FOREIGN KEY (fk_current_point_id)
     REFERENCES pauliceia.current_point (id)
@@ -105,11 +98,10 @@ pauliceia_current_polygon_tag = {
     "create_table_name": "CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag",
     "sql": """
 CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag (
-  id INT NOT NULL,
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   fk_current_polygon_id INT NOT NULL,
-  PRIMARY KEY (id, k),
+  PRIMARY KEY (k, fk_current_polygon_id),
   CONSTRAINT fk_current_polygon_tag_current_polygon1
     FOREIGN KEY (fk_current_polygon_id)
     REFERENCES pauliceia.current_polygon (id)
@@ -118,6 +110,8 @@ CREATE TABLE IF NOT EXISTS pauliceia.current_polygon_tag (
 );
 """
 }
+
+'''
 
 def replace_phrases(text):
     text = text.replace("mydb", "pauliceia")
@@ -342,10 +336,10 @@ def main():
         text = replace_phrases(text)
 
         # remove bad create tables
-        text = remove_bad_create_tables(text)
+        #text = remove_bad_create_tables(text)
 
         # add create tables updated
-        text = add_create_tables_updated(text)
+        #text = add_create_tables_updated(text)
         
         # remove bad lines     
         text = remove_bad_lines_and_put_default_values(text)

@@ -15,12 +15,23 @@ class TestAPI(TestCase):
         # DO LOGIN BEFORE THE TESTS
         self.tester.auth_login()
 
+        # create a project
+        project = {
+            'type': 'Project',
+            'properties': {'id': -1, 'fk_group_id': 1001},
+            'tags': [{'k': 'name', 'v': 'test project'},
+                     {'k': 'url', 'v': 'http://somehost.com'}]
+        }
+        self.project = self.tester.api_project_create(project)
+
+        project_id = self.project["properties"]["id"]
+
         # CREATE A layer FOR ALL TESTS
         layer = {
             'tags': [{'k': 'created_by', 'v': 'test_api'},
                      {'k': 'name', 'v': 'layer of data'},
                      {'k': 'description', 'v': 'description of the layer'}],
-            'properties': {'id': -1},
+            'properties': {'id': -1, 'fk_project_id': project_id},
             'type': 'Layer'
         }
         self.layer = self.tester.api_layer_create(layer)
@@ -31,6 +42,12 @@ class TestAPI(TestCase):
 
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
+
+        # get the id of feature to REMOVE it
+        project_id = self.project["properties"]["id"]
+
+        # REMOVE THE project AFTER THE TESTS
+        self.tester.api_project_delete(project_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -57,8 +74,8 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'date', 'v': '1910'},
+                             {'k': 'event', 'v': 'robbery'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -74,9 +91,9 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
+                             {'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -93,8 +110,8 @@ class TestAPI(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                             {'k': 'end_date', 'v': '1915-12-25'},
+                             {'k': 'start_date', 'v': '1900-11-12'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {

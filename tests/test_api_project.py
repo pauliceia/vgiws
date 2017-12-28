@@ -22,7 +22,7 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'admin'}, {'k': 'description', 'v': 'default project'}]
+                    'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
                 },
                 {
                     'type': 'Project',
@@ -54,7 +54,7 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'admin'}, {'k': 'description', 'v': 'default project'}]
+                    'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
                 }
             ],
             'type': 'FeatureCollection'

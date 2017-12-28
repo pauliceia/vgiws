@@ -413,7 +413,7 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
         if not self.is_element_type_valid(element, feature_json):
             raise HTTPError(404, "Invalid URL.")
 
-        current_user_id = self.get_current_user_id()
+        # current_user_id = self.get_current_user_id()
 
         list_of_id_of_features_created = []
 
@@ -424,7 +424,7 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
 
                 list_of_id_of_features_created.append(
                     # create_element returns the id of the element created
-                    self.PGSQLConn.create_element(element, feature, current_user_id)
+                    self.PGSQLConn.create_element(element, feature)
                 )
 
             # send the elements created to DB

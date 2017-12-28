@@ -36,8 +36,7 @@ class TestAPIWihoutLogin(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -54,9 +53,9 @@ class TestAPIWihoutLogin(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
+                             {'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -74,8 +73,8 @@ class TestAPIWihoutLogin(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                             {'k': 'end_date', 'v': '1915-12-25'},
+                             {'k': 'start_date', 'v': '1900-11-12'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -101,8 +100,8 @@ class TestAPIWihoutLogin(TestCase):
     def test_api_changeset_create_and_close_without_login(self):
         # do a GET call
         changeset = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': [{'k': 'comment', 'v': 'testing create changeset'},
+                     {'k': 'created_by', 'v': 'test_api'}],
             'properties': {'id': 1700, "fk_layer_id": 1700},
             'type': 'Changeset'
         }
@@ -119,8 +118,8 @@ class TestAPIWihoutLogin(TestCase):
 
             # CREATE A CHANGESET
             changeset = {
-                'tags': [{'k': 'created_by', 'v': 'test_api'},
-                         {'k': 'comment', 'v': 'testing create changeset'}],
+                'tags': [{'k': 'comment', 'v': 'testing create changeset'},
+                         {'k': 'created_by', 'v': 'test_api'}],
                 'properties': {'id': -1, "fk_layer_id": 1003},
                 'type': 'Changeset'
             }
@@ -135,8 +134,7 @@ class TestAPIWihoutLogin(TestCase):
                 'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
                 'features': [
                     {
-                        'tags': [{'k': 'event', 'v': 'robbery'},
-                                 {'k': 'date', 'v': '1910'}],
+                        'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
                         'type': 'Feature',
                         'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                         'geometry': {

@@ -25,17 +25,17 @@ DELETE FROM user_tag;
 
 -- insert values in table user_tag
 -- user 1001
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1001, 'name', 'Administrator', 1001);
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1002, 'institution', 'INPE', 1001);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Administrator', 1001);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('institution', 'INPE', 1001);
 -- user 1002
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1005, 'name', 'Rodrigo', 1002);
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1006, 'institution', 'INPE', 1002);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Rodrigo', 1002);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('institution', 'INPE', 1002);
 -- user 1003
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1010, 'name', 'Miguel', 1003);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Miguel', 1003);
 -- user 1004
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1015, 'name', 'Rafael', 1004);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Rafael', 1004);
 -- user 1005
-INSERT INTO user_tag (id, k, v, fk_user_id) VALUES (1020, 'name', 'Gabriel', 1005);
+INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Gabriel', 1005);
 
 
 
@@ -112,13 +112,13 @@ DELETE FROM project_tag;
 -- insert values in table project_tag
 -- SOURCE: -
 -- project 1001
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1001, 'name', 'admin', 1001);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1002, 'description', 'default project', 1001);
+INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'admin', 1001);
+INSERT INTO project_tag (k, v, fk_project_id) VALUES ('description', 'default project', 1001);
 -- project 1002
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1005, 'name', 'test project', 1002);
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1006, 'url', 'http://somehost.com', 1002);
+INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'test project', 1002);
+INSERT INTO project_tag (k, v, fk_project_id) VALUES ('url', 'http://somehost.com', 1002);
 -- project 1003
-INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1010, 'name', 'hello world', 1003);
+INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'hello world', 1003);
 
 
 
@@ -129,11 +129,11 @@ INSERT INTO project_tag (id, k, v, fk_project_id) VALUES (1010, 'name', 'hello w
 DELETE FROM layer;
 
 -- add layer
-INSERT INTO layer (id, create_at, fk_user_id) VALUES (1001, '2017-11-20', 1001);
-INSERT INTO layer (id, create_at, fk_user_id) VALUES (1002, '2017-10-12', 1002);
-INSERT INTO layer (id, create_at, fk_user_id) VALUES (1003, '2017-12-23', 1002);
-INSERT INTO layer (id, create_at, fk_user_id) VALUES (1004, '2017-09-11', 1003);
-INSERT INTO layer (id, create_at, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, FALSE);
+INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
+INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
+INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
+INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1004, '2017-09-11', 1004, 1003);
+INSERT INTO layer (id, create_at, fk_project_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1004, FALSE);
 
 -- SELECT * FROM layer;
 -- SELECT * FROM layer p WHERE p.id = 1001;
@@ -148,23 +148,23 @@ DELETE FROM layer_tag;
 -- insert values in table layer_tag
 -- SOURCE: -
 -- layer 1001
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1001, 'name', 'default', 1001);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1002, 'description', 'default layer', 1001);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1003, 'theme', 'generic', 1001);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'default', 1001);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'default layer', 1001);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'generic', 1001);
 -- layer 1002
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1005, 'name', 'test_layer', 1002);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1006, 'description', 'test_layer', 1002);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1007, 'theme', 'crime', 1002);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'test_layer', 1002);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1002);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'crime', 1002);
 -- layer 1003
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1010, 'name', 'layer 3', 1003);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1011, 'description', 'test_layer', 1003);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1012, 'theme', 'addresses', 1003);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 3', 1003);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1003);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'addresses', 1003);
 -- layer 1004
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1015, 'name', 'layer 4', 1004);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1016, 'description', 'test_layer', 1004);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 4', 1004);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1004);
 -- layer layer_tag
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1020, 'name', 'layer 5', 1005);
-INSERT INTO layer_tag (id, k, v, fk_layer_id) VALUES (1021, 'description', 'test_layer', 1005);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 5', 1005);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1005);
 
 
 -- SELECT * FROM layer_tag;
@@ -233,17 +233,17 @@ DELETE FROM changeset_tag;
 -- insert values in table changeset_tag
 -- SOURCE: -
 -- changeset 1001
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1001, 'created_by', 'pauliceia_portal', 1001);
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1002, 'comment', 'a changeset created', 1001);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'pauliceia_portal', 1001);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'a changeset created', 1001);
 -- changeset 1002
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1003, 'created_by', 'test_postgresql', 1002);
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1004, 'comment', 'changeset test', 1002);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'test_postgresql', 1002);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset test', 1002);
 -- changeset 1003
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1005, 'created_by', 'pauliceia_portal', 1003);
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1006, 'comment', 'a changeset created', 1003);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'pauliceia_portal', 1003);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'a changeset created', 1003);
 -- changeset 1004
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1007, 'created_by', 'test_postgresql', 1004);
-INSERT INTO changeset_tag (id, k, v, fk_changeset_id) VALUES (1008, 'comment', 'changeset test', 1004);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'test_postgresql', 1004);
+INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset test', 1004);
 
 -- SELECT * FROM changeset_tag;
 
@@ -296,25 +296,25 @@ DELETE FROM current_point_tag;
 -- insert values in table current_point_tag
 -- SOURCE: AialaLevy_theaters20170710.xlsx
 -- node 1001
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1001, 'address', 'R. São José', 1001);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1002, 'start_date', '1869', 1001);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1003, 'end_date', '1869', 1001);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. São José', 1001);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1869', 1001);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1869', 1001);
 -- node 1002
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1004, 'address', 'R. Marechal Deodoro', 1002);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1005, 'start_date', '1878', 1002);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1006, 'end_date', '1910', 1002);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. Marechal Deodoro', 1002);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1878', 1002);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1910', 1002);
 -- node 1003
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1007, 'address', 'R. 11 de Junho, 9 = D. José de Barros', 1003);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1008, 'start_date', '1886', 1003);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1009, 'end_date', '1916', 1003);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. 11 de Junho, 9 = D. José de Barros', 1003);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1886', 1003);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1916', 1003);
 -- node 1004
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1010, 'address', 'R. 15 de Novembro, 17A', 1004);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1011, 'start_date', '1890', 1004);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1012, 'end_date', '1911', 1004);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. 15 de Novembro, 17A', 1004);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1890', 1004);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1911', 1004);
 -- node 1005
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1013, 'address', 'R. Barra Funda, 74', 1005);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1014, 'start_date', '1897', 1005);
-INSERT INTO current_point_tag (id, k, v, fk_current_point_id) VALUES (1015, 'end_date', '1897', 1005);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. Barra Funda, 74', 1005);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1897', 1005);
+INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1897', 1005);
 
 
 -- -----------------------------------------------------
@@ -466,25 +466,25 @@ DELETE FROM current_line_tag;
 -- insert values in table current_line_tag
 -- SOURCE: db_pauliceia
 -- way 1
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1001, 'name', 'rua boa vista', 1001);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1002, 'start_date', '1930', 1001);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1003, 'end_date', '1930', 1001);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'rua boa vista', 1001);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1001);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1001);
 -- way 2
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1004, 'address', 'rua tres de dezembro', 1002);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1005, 'start_date', '1930', 1002);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1006, 'end_date', '1930', 1002);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'rua tres de dezembro', 1002);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1002);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1002);
 -- way 3
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1007, 'address', 'rua joao briccola', 1003);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1008, 'start_date', '1930', 1003);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1009, 'end_date', '1930', 1003);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'rua joao briccola', 1003);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1003);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1003);
 -- way 4
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1010, 'address', 'ladeira porto geral', 1004);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1011, 'start_date', '1930', 1004);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1012, 'end_date', '1930', 1004);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'ladeira porto geral', 1004);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1004);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1004);
 -- way 5
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1013, 'address', 'travessa porto geral', 1005);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1014, 'start_date', '1930', 1005);
-INSERT INTO current_line_tag (id, k, v, fk_current_line_id) VALUES (1015, 'end_date', '1930', 1005);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'travessa porto geral', 1005);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1005);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1005);
 
 
 -- -----------------------------------------------------
@@ -623,13 +623,13 @@ DELETE FROM current_polygon_tag;
 -- insert values in table current_polygon_tag
 -- SOURCE: -
 -- area 1
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1001, 'building', 'hotel', 1001);
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1002, 'start_date', '1870', 1001);
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1003, 'end_date', '1900', 1001);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('building', 'hotel', 1001);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('start_date', '1870', 1001);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('end_date', '1900', 1001);
 -- area 2
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1004, 'building', 'theater', 1002);
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1005, 'start_date', '1920', 1002);
-INSERT INTO current_polygon_tag (id, k, v, fk_current_polygon_id) VALUES (1006, 'end_date', '1930', 1002);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('building', 'theater', 1002);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('start_date', '1920', 1002);
+INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('end_date', '1930', 1002);
 
 
 -- -----------------------------------------------------
@@ -863,4 +863,3 @@ SELECT element.id, element.geom, element.fk_changeset_id, element.visible
 FROM current_node element LEFT JOIN changeset ON element.fk_changeset_id = changeset.id
 WHERE changeset.id = 1001;
 */
-          

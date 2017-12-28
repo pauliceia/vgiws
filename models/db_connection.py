@@ -216,9 +216,16 @@ class PGSQLConnection:
             FROM 
             {0}
             CROSS JOIN LATERAL (
+                -- (3) get the tags of some feature on JSON format   
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM project_tag 
-                WHERE fk_project_id = project.id    
+                FROM 
+                (
+                    -- (2) get the tags of some feature
+                    SELECT k, v
+                    FROM project_tag 
+                    WHERE fk_project_id = project.id
+                    ORDER BY k, v ASC
+                ) subquery      
             ) AS tags
         """.format(subquery)
 
@@ -242,11 +249,11 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_project_in_db(self, fk_group_id, fk_user_id):
+    def add_project_in_db(self, group_id, user_id):
         query_text = """
             INSERT INTO project (create_at, fk_group_id, fk_user_id)
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(fk_group_id, fk_user_id)
+        """.format(group_id, user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -256,21 +263,21 @@ class PGSQLConnection:
 
         return result
 
-    def add_project_tag_in_db(self, k, v, fk_feature_id):
+    def add_project_tag_in_db(self, k, v, feature_id):
         query_text = """
             INSERT INTO project_tag (k, v, fk_project_id)
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_feature_id)
+        """.format(k, v, feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_project(self, feature_json, fk_user_id):
+    def create_project(self, feature_json, user_id):
 
-        fk_group_id = feature_json["properties"]["fk_group_id"]
+        group_id = feature_json["properties"]["fk_group_id"]
 
         # add the layer in db and get the id of it
-        id_in_json = self.add_project_in_db(fk_group_id, fk_user_id)
+        id_in_json = self.add_project_in_db(group_id, user_id)
 
         # add in DB the tags of layer
         for tag in feature_json["tags"]:
@@ -329,10 +336,17 @@ class PGSQLConnection:
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (
+            CROSS JOIN LATERAL (                
+                -- (3) get the tags of some feature on JSON format   
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM layer_tag 
-                WHERE fk_layer_id = layer.id    
+                FROM 
+                (
+                    -- (2) get the tags of some feature
+                    SELECT k, v
+                    FROM layer_tag 
+                    WHERE fk_layer_id = layer.id
+                    ORDER BY k, v ASC
+                ) subquery      
             ) AS tags
         """.format(subquery)
 
@@ -356,11 +370,11 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_layer_in_db(self, fk_user_id):
+    def add_layer_in_db(self, project_id, user_id):
         query_text = """
-            INSERT INTO layer (create_at, fk_user_id) 
-            VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
-        """.format(fk_user_id)
+            INSERT INTO layer (create_at, fk_project_id, fk_user_id) 
+            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
+        """.format(project_id, user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -370,19 +384,22 @@ class PGSQLConnection:
 
         return result
 
-    def add_layer_tag_in_db(self, k, v, fk_feature_id):
+    def add_layer_tag_in_db(self, k, v, feature_id):
         query_text = """
             INSERT INTO layer_tag (k, v, fk_layer_id) 
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_feature_id)
+        """.format(k, v, feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_layer(self, feature_json, fk_user_id):
+    def create_layer(self, feature_json, user_id):
+
+        # get the fields to add in DB
+        project_id = feature_json["properties"]["fk_project_id"]
 
         # add the layer in db and get the id of it
-        id_in_json = self.add_layer_in_db(fk_user_id)
+        id_in_json = self.add_layer_in_db(project_id, user_id)
 
         # add in DB the tags of layer
         for tag in feature_json["tags"]:
@@ -444,9 +461,16 @@ class PGSQLConnection:
             FROM 
             {0}
             CROSS JOIN LATERAL (
+                -- (3) get the tags of some element on JSON format   
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM changeset_tag 
-                WHERE fk_changeset_id = changeset.id    
+                FROM 
+                (
+                    -- (2) get the tags of some element
+                    SELECT k, v
+                    FROM changeset_tag 
+                    WHERE fk_changeset_id = changeset.id
+                    ORDER BY k, v ASC
+                ) subquery
             ) AS tags
         """.format(subquery)
 
@@ -470,18 +494,18 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_changeset_in_db(self, fk_layer_id, fk_user_id):
+    def add_changeset_in_db(self, layer_id, user_id):
         """
         Add a changeset in DB
-        :param fk_layer_id: id of the layer associated with the changeset
-        :param fk_user_id: id of the user (owner) of the changeset
+        :param layer_id: id of the layer associated with the changeset
+        :param user_id: id of the user (owner) of the changeset
         :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
         query_text = """
             INSERT INTO changeset (create_at, fk_layer_id, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(fk_layer_id, fk_user_id)
+        """.format(layer_id, user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -491,11 +515,11 @@ class PGSQLConnection:
 
         return result
 
-    def add_changeset_tag_in_db(self, k, v, fk_feature_id):
+    def add_changeset_tag_in_db(self, k, v, feature_id):
         query_text = """
             INSERT INTO changeset_tag (k, v, fk_changeset_id) 
             VALUES ('{0}', '{1}', {2});
-        """.format(k, v, fk_feature_id)
+        """.format(k, v, feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -505,13 +529,13 @@ class PGSQLConnection:
 
         # return id_changeset_tag
 
-    def create_changeset(self, feature_json, fk_user_id):
+    def create_changeset(self, feature_json, user_id):
 
         # get the fields to add in DB
-        fk_layer_id = feature_json["properties"]["fk_layer_id"]
+        layer_id = feature_json["properties"]["fk_layer_id"]
 
         # add the chengeset in db and get the id of it
-        changeset_id_in_json = self.add_changeset_in_db(fk_layer_id, fk_user_id)
+        changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id)
 
         # add in DB the tags of changeset
         for tag in feature_json["tags"]:
@@ -605,10 +629,16 @@ class PGSQLConnection:
             FROM 
             {1}
             CROSS JOIN LATERAL ( 
-                -- (2) get the tags of some element
+                -- (3) get the tags of some element on JSON format   
                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM current_{0}_tag 
-                WHERE fk_current_{0}_id = element.id                
+                FROM 
+                (
+                    -- (2) get the tags of some element
+                    SELECT k, v
+                    FROM current_{0}_tag 
+                    WHERE fk_current_{0}_id = element.id
+                    ORDER BY k, v ASC
+                ) subquery             
             ) AS tags
         """.format(element, subquery_current_element_table)
 
@@ -634,13 +664,7 @@ class PGSQLConnection:
 
     # add elements
 
-    def add_element_in_db(self, element, geometry, fk_changeset_id):
-        """
-        :param element:
-        :param element_json:
-        :param fk_id_changeset:
-        :return:
-        """
+    def add_element_in_db(self, element, geometry, changeset_id):
 
         # encode the dict in JSON
         geometry = json_encode(geometry)
@@ -649,7 +673,7 @@ class PGSQLConnection:
             INSERT INTO current_{0} (geom, fk_changeset_id) 
             VALUES (ST_GeomFromGeoJSON('{1}'), {2})
             RETURNING id;
-        """.format(element, geometry, fk_changeset_id)
+        """.format(element, geometry, changeset_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -659,23 +683,16 @@ class PGSQLConnection:
 
         return result["id"]
 
-    def add_element_tag_in_db(self, k, v, element, fk_element_id):
+    def add_element_tag_in_db(self, k, v, element, element_id):
         query_text = """
             INSERT INTO current_{0}_tag (k, v, fk_current_{0}_id) 
             VALUES ('{1}', '{2}', {3});
-        """.format(element, k, v, fk_element_id)
+        """.format(element, k, v, element_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_element(self, element, feature, fk_user_id):
-        """
-        Add a element in DB
-        :param element_json:
-        :param fk_user_id:
-        :return: the id of the element created
-        """
-
+    def create_element(self, element, feature):
         # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
         # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
 
@@ -686,10 +703,10 @@ class PGSQLConnection:
         del feature["tags"]
 
         # get the id of changeset
-        fk_changeset_id = feature["properties"]["fk_changeset_id"]
+        changeset_id = feature["properties"]["fk_changeset_id"]
 
         # add the element in db and get the id of it
-        element_id = self.add_element_in_db(element, feature["geometry"], fk_changeset_id)
+        element_id = self.add_element_in_db(element, feature["geometry"], changeset_id)
 
         for tag in tags:
             # add the element tag in db

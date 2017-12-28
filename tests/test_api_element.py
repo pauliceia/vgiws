@@ -25,16 +25,16 @@ class TestAPIElement(TestCase):
                 {
                     'type': 'Feature',
                     'tags': [{'v': 'R. São José', 'k': 'address'},
-                             {'v': '1869', 'k': 'start_date'},
-                             {'v': '1869', 'k': 'end_date'}],
+                             {'v': '1869', 'k': 'end_date'},
+                             {'v': '1869', 'k': 'start_date'}],
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
                 },
                 {
                     'type': 'Feature',
                     'tags': [{'v': 'R. Marechal Deodoro', 'k': 'address'},
-                             {'v': '1878', 'k': 'start_date'},
-                             {'v': '1910', 'k': 'end_date'}],
+                             {'v': '1910', 'k': 'end_date'},
+                             {'v': '1878', 'k': 'start_date'}],
                     'properties': {'id': 1002, 'fk_changeset_id': 1002, 'version': 1, 'visible': True},
                     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.55045, -46.634272]]}
                 },
@@ -64,9 +64,9 @@ class TestAPIElement(TestCase):
                         [[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836],
                          [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075],
                          [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
-                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
-                             {'k': 'start_date', 'v': '1930'},
-                             {'k': 'end_date', 'v': '1930'}],
+                    'tags': [{'k': 'end_date', 'v': '1930'},
+                             {'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'}],
                     'type': 'Feature',
                     'properties': {'fk_changeset_id': 1001, 'id': 1001, 'version': 1, 'visible': True}
                 },
@@ -75,8 +75,8 @@ class TestAPIElement(TestCase):
                         [[333270.653184563, 7395036.74327773], [333244.47769325, 7395033.35326418],
                          [333204.141105934, 7395028.41654752], [333182.467715735, 7395026.2492085]]]},
                     'tags': [{'k': 'address', 'v': 'rua tres de dezembro'},
-                             {'k': 'start_date', 'v': '1930'},
-                             {'k': 'end_date', 'v': '1930'}],
+                             {'k': 'end_date', 'v': '1930'},
+                             {'k': 'start_date', 'v': '1930'}],
                     'type': 'Feature',
                     'properties': {'fk_changeset_id': 1002, 'id': 1002, 'version': 1, 'visible': True}
                 }
@@ -91,16 +91,16 @@ class TestAPIElement(TestCase):
             'features': [
                 {
                     'tags': [{'v': 'hotel', 'k': 'building'},
-                             {'v': '1870', 'k': 'start_date'},
-                             {'v': '1900', 'k': 'end_date'}],
+                             {'v': '1900', 'k': 'end_date'},
+                             {'v': '1870', 'k': 'start_date'}],
                     'type': 'Feature',
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]},
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True}
                 },
                 {
                     'tags': [{'v': 'theater', 'k': 'building'},
-                             {'v': '1920', 'k': 'start_date'},
-                             {'v': '1930', 'k': 'end_date'}],
+                             {'v': '1930', 'k': 'end_date'},
+                             {'v': '1920', 'k': 'start_date'}],
                     'type': 'Feature',
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[2, 2], [3, 3], [4, 4], [5, 5], [2, 2]]]]},
                     'properties': {'id': 1002, 'fk_changeset_id': 1002, 'version': 1, 'visible': True}
@@ -117,8 +117,8 @@ class TestAPIElement(TestCase):
             'features': [
                 {
                     'tags': [{'v': 'R. São José', 'k': 'address'},
-                             {'v': '1869', 'k': 'start_date'},
-                             {'v': '1869', 'k': 'end_date'}],
+                             {'v': '1869', 'k': 'end_date'},
+                             {'v': '1869', 'k': 'start_date'}],
                     'type': 'Feature',
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
@@ -138,9 +138,9 @@ class TestAPIElement(TestCase):
                          [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075],
                          [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]],
                         'type': 'MultiLineString'},
-                    'tags': [{'v': 'rua boa vista', 'k': 'name'},
-                             {'v': '1930', 'k': 'start_date'},
-                             {'v': '1930', 'k': 'end_date'}],
+                    'tags': [{'v': '1930', 'k': 'end_date'},
+                             {'v': 'rua boa vista', 'k': 'name'},
+                             {'v': '1930', 'k': 'start_date'}],
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True}
                 }
             ],
@@ -155,8 +155,8 @@ class TestAPIElement(TestCase):
                 {
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'tags': [{'k': 'building', 'v': 'hotel'},
-                             {'k': 'start_date', 'v': '1870'},
-                             {'k': 'end_date', 'v': '1900'}],
+                             {'k': 'end_date', 'v': '1900'},
+                             {'k': 'start_date', 'v': '1870'}],
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]},
                     'type': 'Feature'
                 }
@@ -190,8 +190,8 @@ class TestAPIElement(TestCase):
                     'type': 'Feature',
                     'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
                     'tags': [{'k': 'address', 'v': 'R. São José'},
-                             {'k': 'start_date', 'v': '1869'},
-                             {'k': 'end_date', 'v': '1869'}]
+                             {'k': 'end_date', 'v': '1869'},
+                             {'k': 'start_date', 'v': '1869'}]
                 },
                 {
                     'properties': {'fk_changeset_id': 1003, 'id': 1006, 'version': 1, 'visible': True},
@@ -209,9 +209,9 @@ class TestAPIElement(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
-                             {'k': 'start_date', 'v': '1930'},
-                             {'k': 'end_date', 'v': '1930'}],
+                    'tags': [{'k': 'end_date', 'v': '1930'},
+                             {'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'}],
                     'type': 'Feature',
                     'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
                     'properties': {'fk_changeset_id': 1001, 'id': 1001, 'version': 1, 'visible': True}
@@ -229,8 +229,8 @@ class TestAPIElement(TestCase):
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'type': 'Feature',
                     'tags': [{'v': 'hotel', 'k': 'building'},
-                             {'v': '1870', 'k': 'start_date'},
-                             {'v': '1900', 'k': 'end_date'}],
+                             {'v': '1900', 'k': 'end_date'},
+                             {'v': '1870', 'k': 'start_date'}],
                     'geometry': {'type': 'MultiPolygon', 'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]]}
                 }
             ]
@@ -248,8 +248,8 @@ class TestAPIElement(TestCase):
                     'type': 'Feature',
                     'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
                     'tags': [{'k': 'address', 'v': 'R. São José'},
-                             {'k': 'start_date', 'v': '1869'},
-                             {'k': 'end_date', 'v': '1869'}]
+                             {'k': 'end_date', 'v': '1869'},
+                             {'k': 'start_date', 'v': '1869'}]
                 }
             ]
         }
@@ -262,9 +262,9 @@ class TestAPIElement(TestCase):
             'features': [
                 {
                     'properties': {'id': 1001, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
-                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
-                             {'k': 'start_date', 'v': '1930'},
-                             {'k': 'end_date', 'v': '1930'}],
+                    'tags': [{'k': 'end_date', 'v': '1930'},
+                             {'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'}],
                     'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]},
                     'type': 'Feature'
                 }
@@ -278,8 +278,8 @@ class TestAPIElement(TestCase):
                 {
                     'geometry': {'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]], 'type': 'MultiPolygon'},
                     'tags': [{'v': 'hotel', 'k': 'building'},
-                             {'v': '1870', 'k': 'start_date'},
-                             {'v': '1900', 'k': 'end_date'}],
+                             {'v': '1900', 'k': 'end_date'},
+                             {'v': '1870', 'k': 'start_date'}],
                     'type': 'Feature',
                     'properties': {'fk_changeset_id': 1001, 'id': 1001, 'version': 1, 'visible': True}
                 }
@@ -297,8 +297,8 @@ class TestAPIElement(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'address', 'v': 'R. São José'},
-                             {'k': 'start_date', 'v': '1869'},
-                             {'k': 'end_date', 'v': '1869'}],
+                             {'k': 'end_date', 'v': '1869'},
+                             {'k': 'start_date', 'v': '1869'}],
                     'geometry': {'coordinates': [[-23.546421, -46.635722]], 'type': 'MultiPoint'},
                     'properties': {'fk_changeset_id': 1001, 'id': 1001, 'version': 1, 'visible': True},
                     'type': 'Feature'
@@ -321,9 +321,9 @@ class TestAPIElement(TestCase):
                 {
                     'properties': {'fk_changeset_id': 1001, 'id': 1001, 'version': 1, 'visible': True},
                     'type': 'Feature',
-                    'tags': [{'k': 'name', 'v': 'rua boa vista'},
-                             {'k': 'start_date', 'v': '1930'},
-                             {'k': 'end_date', 'v': '1930'}],
+                    'tags': [{'k': 'end_date', 'v': '1930'},
+                             {'k': 'name', 'v': 'rua boa vista'},
+                             {'k': 'start_date', 'v': '1930'}],
                     'geometry': {'type': 'MultiLineString', 'coordinates': [[[333188.261004703, 7395284.32488995], [333205.817689791, 7395247.71277836], [333247.996555184, 7395172.56160195], [333261.133400433, 7395102.3470075], [333270.981533908, 7395034.48052247], [333277.885095545, 7394986.25678192]]]}
                 }
             ]
@@ -338,8 +338,8 @@ class TestAPIElement(TestCase):
                     'type': 'Feature',
                     'geometry': {'coordinates': [[[[0, 0], [1, 1], [2, 2], [3, 3], [0, 0]]]], 'type': 'MultiPolygon'},
                     'tags': [{'v': 'hotel', 'k': 'building'},
-                             {'v': '1870', 'k': 'start_date'},
-                             {'v': '1900', 'k': 'end_date'}]
+                             {'v': '1900', 'k': 'end_date'},
+                             {'v': '1870', 'k': 'start_date'},]
                 }
             ],
             'type': 'FeatureCollection',
@@ -356,8 +356,8 @@ class TestAPIElement(TestCase):
 
         # CREATE A CHANGESET
         changeset = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': [{'k': 'comment', 'v': 'testing create changeset'},
+                     {'k': 'created_by', 'v': 'test_api'}],
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
         }
@@ -372,8 +372,7 @@ class TestAPIElement(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
@@ -389,9 +388,9 @@ class TestAPIElement(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highline', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
+                             {'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
@@ -408,8 +407,8 @@ class TestAPIElement(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                             {'k': 'end_date', 'v': '1915-12-25'},
+                             {'k': 'start_date', 'v': '1900-11-12'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id},
                     'geometry': {
@@ -468,8 +467,7 @@ class TestAPIElementErrors(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {
@@ -486,9 +484,9 @@ class TestAPIElementErrors(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
+                             {'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {
@@ -506,8 +504,8 @@ class TestAPIElementErrors(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                             {'k': 'end_date', 'v': '1915-12-25'},
+                             {'k': 'start_date', 'v': '1900-11-12'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {
@@ -529,8 +527,8 @@ class TestAPIElementErrors(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'robbery'},
-                             {'k': 'date', 'v': '1910'}],
+                    'tags': [{'k': 'date', 'v': '1910'},
+                             {'k': 'event', 'v': 'robbery'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {
@@ -547,9 +545,9 @@ class TestAPIElementErrors(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'},
-                             {'k': 'end_date', 'v': '1930-03-25'}],
+                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
+                             {'k': 'highway', 'v': 'residential'},
+                             {'k': 'start_date', 'v': '1910-12-08'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {
@@ -567,8 +565,8 @@ class TestAPIElementErrors(TestCase):
             'features': [
                 {
                     'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'start_date', 'v': '1900-11-12'},
-                             {'k': 'end_date', 'v': '1915-12-25'}],
+                             {'k': 'end_date', 'v': '1915-12-25'},
+                             {'k': 'start_date', 'v': '1900-11-12'}],
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': 1001, 'version': 1, 'visible': True},
                     'geometry': {

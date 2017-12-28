@@ -20,14 +20,14 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'tags': [{'v': 'Administrator', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Administrator', 'k': 'name'}],
                     'properties': {'id': 1001, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
                                    'email': 'admin@admin.com', 'removed_at': None,
                                    'username': 'admin'}
                 },
                 {
                     'type': 'User',
-                    'tags': [{'v': 'Rodrigo', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Rodrigo', 'k': 'name'}],
                     'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
                                    'email': 'rodrigo@admin.com', 'removed_at': None,
                                    'username': 'rodrigo'}
@@ -64,7 +64,7 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'tags': [{'v': 'Rodrigo', 'k': 'name'}, {'v': 'INPE', 'k': 'institution'}],
+                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Rodrigo', 'k': 'name'}],
                     'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
                                    'email': 'rodrigo@admin.com', 'removed_at': None,
                                    'username': 'rodrigo'}
