@@ -20,3 +20,11 @@ Os usuários, que façam ou não parte de um projeto, podem fazer comentários n
 
 Um usuário pode ter atributos dinâmicos que o descreva, como instituição que faça parte, CPF, RG e etc. As permissões dele são descritos na tabela "auth". Ele pode seguir ou ser seguido por várias pessoas, e enviar ou receber mensagens de outros usuários. 
 
+Uma dos indicadores de qualidade de VGI que será utilizado é o de abordagem social. No projeto Pauliceia, uma abordagem social será a de votação dos elementos geográficos. Um usuário poderá votar se um elemento geográfico está correto ou não, através do conceito de "estrelas". Uma estrela significa votação ruim e cinco estrelas votação excelente, as intermediárias são gradativas dos extremos (i.e. ruim, médio, bom, ótimo, excelente). Isto se materializa pela tabela com pósfixo "award", onde terá um atributo dinâmico "star" e o valor é a quantidade de estrelas dada, indicando também qual usuário deu aquela votação.
+
+Outra abordagem social é a de receber prêmios virtuais. Os usuários poderão receber prêmios por suas ações no sistema (e.g. após 100 votações, ganha um "troféu" ou após 50 colaborações, ganha uma "medalha"). Isto também se materializa no banco na sua tabela "award" correspondente, através dos atributos dinâmicos.
+
+
+Os elementos geográficos podem ser votados
+
+

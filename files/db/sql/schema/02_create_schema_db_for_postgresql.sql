@@ -1,5 +1,5 @@
 
--- Qui 28 Dez 2017 15:11:21 -02
+-- Qui 28 Dez 2017 19:53:00 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -795,6 +795,27 @@ CREATE TABLE IF NOT EXISTS user_award (
   fk_user_id INT NOT NULL,
   PRIMARY KEY (k, fk_user_id),
   CONSTRAINT fk_user_award_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table notification
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS notification CASCADE ;
+
+CREATE TABLE IF NOT EXISTS notification (
+  id SERIAL ,
+  body VARCHAR(128) NULL,
+  url VARCHAR(255) NULL,
+  icon TEXT NULL,
+  is_read BOOLEAN NULL,
+  fk_user_id INT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_notification_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
     ON DELETE CASCADE
