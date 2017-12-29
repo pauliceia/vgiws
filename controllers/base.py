@@ -340,6 +340,26 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
 
+# class BaseHandlerGroup(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         return self.PGSQLConn.get_projects(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id):
+#         # return self.PGSQLConn.create_project(feature_json, current_user_id)
+#         raise NotImplementedError
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _close_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         # self.PGSQLConn.delete_project_in_db(*args)
+#         raise NotImplementedError
+
+
 class BaseHandlerProject(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):
