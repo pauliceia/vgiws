@@ -75,8 +75,8 @@ How to describe the data source following the schema: source:<source_name>:\<att
 
 | Key                            | Value                                                        | Feature                   | Comment                                       |
 | ------------------------------ | ------------------------------------------------------------ | ------------------------- | --------------------------------------------- |
-| source\:book\:title             | text (e.g. "Book of addresses")                              | point, line, polygon      | Title of a book                               |
-| source\:newspaper\:title        | text (e.g. "Jornal about SP in 1880")                        | point, line, polygon      | Title of a newspaper                          |
+| source``:``book:title             | text (e.g. "Book of addresses")                              | point, line, polygon      | Title of a book                               |
+| source``:``newspaper:title        | text (e.g. "Jornal about SP in 1880")                        | point, line, polygon      | Title of a newspaper                          |
 | source:article:title           | text (e.g. "Article about crimes in 1930")                   | point, line, polygon      | Title of a article                            |
 | source:article:link            | link (e.g. "http://www.scielo.br")                           | point, line, polygon      | Web link of a article                         |
 | source:article:bibtex          | text (e.g. "@article{aquino2017sumat, title={Suma T.}, ...") | point, line, polygon      | Reference of the article on Bibtex            |
