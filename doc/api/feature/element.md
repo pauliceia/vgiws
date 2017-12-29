@@ -81,6 +81,7 @@ This method create a new element described in a GeoJSON.
         - PS: Just can use changesets that are open.
     - 500 (Internal Server Error): Problem when create a element. Please, contact the administrator.
 - Notes:
+    - The id of a feature is created AFTER the GeoJSON is sent to server. After the data is save in DB, it is returned the id generated. Because of that, the 'id' key is represented with a -1.
 <!-- when add a element, it starts with a default version 1 and it is saved in current_element table. -->
 
 <!--

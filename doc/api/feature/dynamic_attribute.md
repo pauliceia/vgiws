@@ -5,6 +5,18 @@ There are some standard features described in [OSM Map Features](http://wiki.ope
 There are also others specifics attributes for Pauliceia project, described below.
 
 
+### Address
+
+The attributes of addresses can be described by the **addr=*** key of the [OSM address standard](http://wiki.openstreetmap.org/wiki/Key:addr). Some valid dynamic attributes:
+
+| Key                            | Value                               | Element                   | Comment                                                      |
+| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
+| addr:street                    | text (e.g. "Rua São Francisco")     | point, line, polygon      | The street of a address                                      |
+| addr:housenumber               | text (e.g. "760")                   | point, line, polygon      | The number of a address                                      |
+| addr:city                      | text (e.g. "São Paulo")             | point, line, polygon      | The city of a address                                        |
+| addr:postcode                  | text (e.g. "22345-224")             | point, line, polygon      | The postcode of a address                                    |
+
+
 ### Attribute Translation
 
 The attributes can be described in different languages. To do it, it is recommended to follow the [OSM rules](http://wiki.openstreetmap.org/wiki/Wiki_Translation).
