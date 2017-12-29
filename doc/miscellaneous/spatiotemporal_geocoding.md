@@ -6,8 +6,8 @@ The addresses and the streets can be added in DB using the GeoJSON format defaul
 The GeoJSONs described in the next sections are examples, so can be modified as you want, adding others attributes. For more detail see [Dynamic Attribute](../api/feature/dynamic_attribute.md). For more detail how to add elements, see [Element](../api/feature/element.md).
 
 **Remember yourself:**
-- The 'fk_changeset_id' key have to contain the id of the changeset created to add the feature. In the examples are 200, so change it.
-- The id of a feature is created AFTER the GeoJSON is sent to server. After the data is save in DB, it is returned the id generated. Because of that, the 'id' key is represented with a -1.
+- The 'fk_changeset_id' key has to contain the id of the changeset created to add the feature. In the examples are 200, so change it.
+- The id of a feature is created AFTER the GeoJSON is sent to server. After the data is saved in DB, it is returned the id generated. Because of that, the 'id' key is represented with a -1.
 
 
 ### Insert a address
