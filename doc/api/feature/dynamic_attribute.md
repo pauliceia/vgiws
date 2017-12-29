@@ -19,9 +19,7 @@ The attributes of addresses can be described by the **addr=*** key of the [OSM a
 
 ### Attribute Translation
 
-The attributes can be described in different languages. To do it, it is recommended to follow the [OSM rules](http://wiki.openstreetmap.org/wiki/Wiki_Translation).
-
-Examples:
+The attributes can be described in different languages. To do it, it is recommended to follow the [OSM rules](http://wiki.openstreetmap.org/wiki/Wiki_Translation). Basically is the rule: \<attribute>:\<language>.
 
 | Key                            | Value                                                        | Element                   | Comment                                       |
 | ------------------------------ | ------------------------------------------------------------ | ------------------------- | --------------------------------------------- |
@@ -59,8 +57,6 @@ Attach documents or files in a feature following the schema: doc:<source_name>:\
 - \<number>: it is possible add more than one source with the some name (more than one video, photo and etc.).
 - \<attribute>: the attribute of the source.
 
-Examples:
-
 | Key                            | Value                                                             | Element                   | Comment                                            |
 | ------------------------------ | ----------------------------------------------------------------- | ------------------------- | -------------------------------------------------- |
 | doc:youtube                    | link (e.g. "https://www.youtube.com/")                            | point, line, polygon      | Web link for a video                               |
@@ -75,8 +71,6 @@ Examples:
 How to describe the data source following the schema: source:<source_name>:\<attribute>, being:
 - <source_name>: the name of the source.
 - \<attribute>: the attribute of the source.
-
-Examples:
 
 | Key                            | Value                                                        | Element                   | Comment                                       |
 | ------------------------------ | ------------------------------------------------------------ | ------------------------- | --------------------------------------------- |
