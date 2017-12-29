@@ -58,15 +58,6 @@ Examples:
 | doc:instagram:01               | link (e.g. "https://www.instagram.com/?hl=pt-br")                 | point, line, polygon      | The first web link for a photo                     |
 
 
-### Map vectorization
-
-How to describe when the data is provide by map vectorization:
-
-| Key                            | Value                               | Element                   | Comment                                                      |
-| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
-| map_vectorization              | boolean (e.g. "true" or "false")    | line, polygon             | If the data was created by a map vectorization               |
-
-
 ### Sources
 
 How to describe the data source following the schema: source:<source_name>:\<attribute>, being:
@@ -93,3 +84,11 @@ How to describe the themes on layers:
 | ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
 | theme                          | text (e.g. "generic", "crime")      | layer                     | The theme of a layer                                         |
 
+
+<!-- ### Map vectorization -->
+
+<!-- How to describe when the data is provide by map vectorization: -->
+
+<!-- | Key                            | Value                               | Element                   | Comment                                                      | -->
+<!-- | ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ | -->
+<!-- | map_vectorization              | boolean (e.g. "true" or "false")    | line, polygon             | If the data was created by a map vectorization               | -->

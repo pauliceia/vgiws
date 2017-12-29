@@ -50,8 +50,10 @@ def remove_bad_lines_and_put_default_values(text):
     # iterate reversed
     for i in range(len(lines_copy)-1, -1, -1):
         line = lines_copy[i]
-        # if there is a index line, so remove it in the original list
+        
         line_lower = line.lower()
+
+        # if there is a index line, so remove it in the original list
         if "index" in line_lower or ("brst" in line_lower and "2017" in line_lower):
             del lines[i]
             continue
@@ -64,11 +66,13 @@ def remove_bad_lines_and_put_default_values(text):
         # put default values, but NOT in FKs
         if "visible boolean" in line_lower and "fk" not in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
-            #print(lines[i])
 
         if "version int" in line_lower and "fk" not in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT 1,")
-            #print(lines[i])
+
+        # default FALSE to "is_read" column, because is True, just if the user read the message
+        if "is_read boolean" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
     text = "\n".join(lines)
 

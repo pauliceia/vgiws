@@ -244,7 +244,7 @@ CREATE TABLE IF NOT EXISTS user_message (
   body TEXT NULL,
   create_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
-  is_read BOOLEAN NULL,
+  is_read BOOLEAN NULL DEFAULT FALSE,
   fk_user_id_from INT NOT NULL,
   fk_user_id_to INT NOT NULL,
   PRIMARY KEY (id),
@@ -812,7 +812,7 @@ CREATE TABLE IF NOT EXISTS notification (
   body VARCHAR(128) NULL,
   url VARCHAR(255) NULL,
   icon TEXT NULL,
-  is_read BOOLEAN NULL,
+  is_read BOOLEAN NULL DEFAULT FALSE,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_notification_user_1
