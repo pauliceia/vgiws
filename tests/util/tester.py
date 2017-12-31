@@ -81,6 +81,81 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # group
+
+    def api_group(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_group_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/group/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        feature_json["properties"]["id"] = resulted["id"]
+
+        return feature_json
+
+    def api_group_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # group errors - get
+
+    def api_group_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_group_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # group errors - create
+
+    def api_group_create_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/group/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # group errors - delete
+
+    def api_group_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_group_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_group_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # project
 
     def api_project(self, expected, **arguments):

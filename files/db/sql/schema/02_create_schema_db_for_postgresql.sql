@@ -1,5 +1,5 @@
 
--- Qui 28 Dez 2017 19:53:00 -02
+-- Sáb 30 Dez 2017 22:07:01 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -26,11 +26,16 @@ DROP TABLE IF EXISTS group_ CASCADE ;
 
 CREATE TABLE IF NOT EXISTS group_ (
   id SERIAL ,
-  name TEXT NULL,
-  description TEXT NULL,
   create_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
-  PRIMARY KEY (id)
+  fk_user_id INT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_group__user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
 
 
@@ -615,6 +620,8 @@ CREATE TABLE IF NOT EXISTS group_comment (
   body TEXT NULL,
   create_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_group_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   fk_comment_id_parent INT NOT NULL,
@@ -818,6 +825,24 @@ CREATE TABLE IF NOT EXISTS notification (
   CONSTRAINT fk_notification_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table group_tag
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS group_tag CASCADE ;
+
+CREATE TABLE IF NOT EXISTS group_tag (
+  k VARCHAR(255) NOT NULL,
+  v VARCHAR(255) NULL,
+  fk_group_id INT NOT NULL,
+  PRIMARY KEY (k, fk_group_id),
+  CONSTRAINT fk_group_tag_group_1
+    FOREIGN KEY (fk_group_id)
+    REFERENCES group_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

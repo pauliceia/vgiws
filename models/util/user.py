@@ -7,7 +7,7 @@ def get_subquery_user_table(**kwargs):
 
     # conditions of WHERE CLAUSE
     if "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("user_.id = {0}".format(kwargs["user_id"]))
+        conditions_of_where.append("id = {0}".format(kwargs["user_id"]))
 
     # default get all features, without where clause
     where_clause = ""
@@ -18,10 +18,10 @@ def get_subquery_user_table(**kwargs):
 
     # default get all features
     subquery_table = """
-    (
-        SELECT id, username, email, is_email_valid, create_at, removed_at, terms_agreed
-        FROM user_ {0} ORDER BY id
-    ) AS user_
+        (
+            SELECT id, username, email, is_email_valid, create_at, removed_at, terms_agreed
+            FROM user_ {0} ORDER BY id
+        ) AS user_
     """.format(where_clause)
 
     return subquery_table

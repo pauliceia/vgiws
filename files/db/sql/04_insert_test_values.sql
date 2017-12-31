@@ -60,9 +60,28 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 DELETE FROM group_;
 
 -- add layer
-INSERT INTO group_ (id, name, description, create_at) VALUES (1001, 'admin', 'just admins', '2017-01-10');
-INSERT INTO group_ (id, name, description, create_at) VALUES (1002, 'friends', '', '2017-02-09');
-INSERT INTO group_ (id, name, description, create_at) VALUES (1003, 'VS', 'vale semideus', '2017-01-17');
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1001, '2017-01-10', 1001);
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1002, '2017-02-09', 1001);
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1003, '2017-01-17', 1002);
+
+
+-- -----------------------------------------------------
+-- Table group_tag
+-- -----------------------------------------------------
+-- clean group_tag table
+DELETE FROM group_tag;
+
+-- insert values in table group_tag
+-- SOURCE: -
+-- project 1001
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'admin', 1001);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'just admins', 1001);
+-- project 1002
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'friends', 1002);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002);
+-- project 1003
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'VS', 1003);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'vale semideus', 1003);
 
 
 

@@ -6,28 +6,28 @@
 """
 
 
-from ..base import BaseHandlerProject, BaseHandlerLayer, \
+from ..base import BaseHandlerGroup, BaseHandlerProject, BaseHandlerLayer, \
                     BaseHandlerChangeset, auth_non_browser_based
 
 
 # GROUP
 
-# class APIGroup(BaseHandlerGroup):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/group/?(?P<param>[A-Za-z0-9-]+)?/",
-#             r"/api/group/?(?P<param>[A-Za-z0-9-]+)?"]
-#
-#     def get(self, param=None):
-#         self.get_method_api_feature()
+class APIGroup(BaseHandlerGroup):
 
-    # @auth_non_browser_based
-    # def put(self, param=None):
-    #     self.put_method_api_feature(param)
-    #
-    # @auth_non_browser_based
-    # def delete(self, param=None):
-    #     self.delete_method_api_feature(param)
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/group/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/group/?(?P<param>[A-Za-z0-9-]+)?"]
+
+    def get(self, param=None):
+        self.get_method_api_feature()
+
+    @auth_non_browser_based
+    def put(self, param=None):
+        self.put_method_api_feature(param)
+
+    @auth_non_browser_based
+    def delete(self, param=None):
+        self.delete_method_api_feature(param)
 
 
 # PROJECT

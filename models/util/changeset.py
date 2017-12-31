@@ -9,11 +9,11 @@ def get_subquery_changeset_table(**kwargs):
 
     # conditions of WHERE CLAUSE
     if "changeset_id" in kwargs and kwargs["changeset_id"] is not None:
-        conditions_of_where.append("changeset.id = {0}".format(kwargs["changeset_id"]))
+        conditions_of_where.append("id = {0}".format(kwargs["changeset_id"]))
     elif "layer_id" in kwargs and kwargs["layer_id"] is not None:
-        conditions_of_where.append("changeset.fk_layer_id = {0}".format(kwargs["layer_id"]))
+        conditions_of_where.append("fk_layer_id = {0}".format(kwargs["layer_id"]))
     elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("changeset.fk_user_id = {0}".format(kwargs["user_id"]))
+        conditions_of_where.append("fk_user_id = {0}".format(kwargs["user_id"]))
     else:
         # default get all features, without where clause
         pass
@@ -36,8 +36,7 @@ def get_subquery_changeset_table(**kwargs):
     subquery_table = """
         (
             SELECT id, create_at, closed_at, fk_layer_id, fk_user_id
-            FROM changeset {0}
-            ORDER BY id 
+            FROM changeset {0} ORDER BY id 
         ) AS changeset
     """.format(where_clause)
 
