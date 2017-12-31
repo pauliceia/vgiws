@@ -54,6 +54,39 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 
 
 -- -----------------------------------------------------
+-- Table notification
+-- -----------------------------------------------------
+-- clean notification table
+DELETE FROM notification;
+
+-- add notification
+INSERT INTO notification (id, create_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
+INSERT INTO notification (id, create_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
+INSERT INTO notification (id, create_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
+INSERT INTO notification (id, create_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
+INSERT INTO notification (id, create_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
+INSERT INTO notification (id, create_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
+
+
+
+-- -----------------------------------------------------
+-- Table notification_tag
+-- -----------------------------------------------------
+-- clean notification_tag table
+DELETE FROM notification_tag;
+
+-- insert values in table notification_tag
+-- SOURCE: -
+-- notification 1001
+INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('body', 'Happy Birthday', 1001);
+INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('url', '', 1001);
+INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('type', 'birthday', 1001);  -- so the frontend, by the type, select a icon
+
+
+
+
+
+-- -----------------------------------------------------
 -- Table group_
 -- -----------------------------------------------------
 -- clean group_ table
