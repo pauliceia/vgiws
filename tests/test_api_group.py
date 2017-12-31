@@ -13,112 +13,87 @@ class TestAPIGroup(TestCase):
 
     # group - get
 
-    @unittest.skip(">>> skipping...")
-    def test_get_api_group_return_all_layers(self):
+    def test_get_api_group_return_all_groups(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
-                                   'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default group'}, {'k': 'name', 'v': 'admin'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1001, 'create_at': '2017-01-01 00:00:00',
+                                   'removed_at': None, 'id': 1001, 'visible': True},
+                    'tags': [{'v': 'Just admins', 'k': 'description'}, {'v': 'Admins', 'k': 'name'}]
                 },
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-10-12 00:00:00',
-                                   'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'test group'}, {'k': 'url', 'v': 'http://somehost.com'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1001, 'create_at': '2017-03-25 00:00:00',
+                                   'removed_at': None, 'id': 1002, 'visible': True},
+                    'tags': [{'v': '', 'k': 'description'}, {'v': 'INPE', 'k': 'name'}]
                 },
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
-                                   'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-25 00:00:00',
+                                   'removed_at': None, 'id': 1003, 'visible': True},
+                    'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
                 },
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1004, 'create_at': '2017-09-11 00:00:00',
-                                   'id': 1004, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': None
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1003, 'create_at': '2017-05-13 00:00:00',
+                                   'removed_at': None, 'id': 1004, 'visible': True},
+                    'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP Guarulhos', 'k': 'name'}]
                 }
-            ]
+            ],
         }
 
         self.tester.api_group(expected)
 
-    @unittest.skip(">>> skipping...")
     def test_get_api_layer_return_group_by_group_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
-                                   'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default group'}, {'k': 'name', 'v': 'admin'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-25 00:00:00',
+                                   'removed_at': None, 'id': 1003, 'visible': True},
+                    'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
                 }
             ],
-            'type': 'FeatureCollection'
         }
 
-        self.tester.api_group(expected, group_id="1001")
+        self.tester.api_group(expected, group_id="1003")
 
-    @unittest.skip(">>> skipping...")
-    def test_get_api_group_return_group_by_group_id(self):
-        expected = {
-            'features': [
-                {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
-                                   'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
-                },
-                {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1004, 'create_at': '2017-09-11 00:00:00',
-                                   'id': 1004, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': None
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_group(expected, group_id="1002")
-
-    @unittest.skip(">>> skipping...")
     def test_get_api_group_return_group_by_user_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-10-12 00:00:00',
-                                   'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'test group'}, {'k': 'url', 'v': 'http://somehost.com'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1001, 'create_at': '2017-01-01 00:00:00',
+                                   'removed_at': None, 'id': 1001, 'visible': True},
+                    'tags': [{'v': 'Just admins', 'k': 'description'}, {'v': 'Admins', 'k': 'name'}]
                 },
                 {
-                    'type': 'group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
-                                   'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
+                    'type': 'Group',
+                    'properties': {'fk_user_id': 1001, 'create_at': '2017-03-25 00:00:00',
+                                   'removed_at': None, 'id': 1002, 'visible': True},
+                    'tags': [{'v': '', 'k': 'description'}, {'v': 'INPE', 'k': 'name'}]
                 },
             ],
-            'type': 'FeatureCollection'
         }
 
-        self.tester.api_group(expected, user_id="1002")
+        self.tester.api_group(expected, user_id="1001")
 
     # group - create and delete
-    @unittest.skip(">>> skipping...")
+
     def test_get_api_group_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login()
 
         # create a group
         feature = {
-            'type': 'group',
-            'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'k': 'name', 'v': 'test group'},
-                     {'k': 'url', 'v': 'http://somehost.com'}]
+            'type': 'Group',
+            'properties': {'id': -1, 'fk_user_id': 1002},
+            'tags': [{'k': 'description', 'v': 'group of my institution'},
+                     {'k': 'name', 'v': 'VS'}]
         }
 
         feature = self.tester.api_group_create(feature)

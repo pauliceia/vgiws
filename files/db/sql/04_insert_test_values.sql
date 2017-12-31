@@ -59,10 +59,13 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 -- clean group_ table
 DELETE FROM group_;
 
--- add layer
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1001, '2017-01-10', 1001);
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1002, '2017-02-09', 1001);
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1003, '2017-01-17', 1002);
+-- add group
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
+INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
+INSERT INTO group_ (id, create_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
+INSERT INTO group_ (id, create_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
 
 
 -- -----------------------------------------------------
@@ -74,15 +77,23 @@ DELETE FROM group_tag;
 -- insert values in table group_tag
 -- SOURCE: -
 -- project 1001
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'admin', 1001);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'just admins', 1001);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Admins', 1001);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'Just admins', 1001);
 -- project 1002
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'friends', 1002);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'INPE', 1002);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002);
 -- project 1003
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'VS', 1003);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'vale semideus', 1003);
-
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP SJC', 1003);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1003);
+-- project 1004
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP Guarulhos', 1004);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1004);
+-- project 1005
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Emory', 1005);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1005);
+-- project 1006
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Arquivo Público do Estado de São Paulo', 1006);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006);
 
 
 -- -----------------------------------------------------

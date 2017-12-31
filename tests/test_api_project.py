@@ -14,7 +14,7 @@ class TestAPIProject(TestCase):
 
     # project - get
 
-    def test_get_api_project_return_all_layers(self):
+    def test_get_api_project_return_all_projects(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
