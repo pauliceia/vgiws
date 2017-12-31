@@ -18,7 +18,7 @@ This method gets users from DB. If you doesn't put any parameter, so will return
             {
                 'type': 'User',
                 'tags': [{'v': 'INPE', 'k': 'institution'}],
-                'properties': {'id': 1002, 'is_email_valid': None, 'create_at': None, 'terms_agreed': None,
+                'properties': {'id': 1002, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
                                'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
                                'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
             }

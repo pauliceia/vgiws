@@ -19,25 +19,25 @@ class TestAPIGroup(TestCase):
             'features': [
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-01-01 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-01-01 00:00:00',
                                    'removed_at': None, 'id': 1001, 'visible': True},
                     'tags': [{'v': 'Just admins', 'k': 'description'}, {'v': 'Admins', 'k': 'name'}]
                 },
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-03-25 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-03-25 00:00:00',
                                    'removed_at': None, 'id': 1002, 'visible': True},
                     'tags': [{'v': '', 'k': 'description'}, {'v': 'INPE', 'k': 'name'}]
                 },
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-25 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                    'removed_at': None, 'id': 1003, 'visible': True},
                     'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
                 },
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1003, 'create_at': '2017-05-13 00:00:00',
+                    'properties': {'fk_user_id': 1003, 'created_at': '2017-05-13 00:00:00',
                                    'removed_at': None, 'id': 1004, 'visible': True},
                     'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP Guarulhos', 'k': 'name'}]
                 }
@@ -52,7 +52,7 @@ class TestAPIGroup(TestCase):
             'features': [
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-25 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                    'removed_at': None, 'id': 1003, 'visible': True},
                     'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
                 }
@@ -67,13 +67,13 @@ class TestAPIGroup(TestCase):
             'features': [
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-01-01 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-01-01 00:00:00',
                                    'removed_at': None, 'id': 1001, 'visible': True},
                     'tags': [{'v': 'Just admins', 'k': 'description'}, {'v': 'Admins', 'k': 'name'}]
                 },
                 {
                     'type': 'Group',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-03-25 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-03-25 00:00:00',
                                    'removed_at': None, 'id': 1002, 'visible': True},
                     'tags': [{'v': '', 'k': 'description'}, {'v': 'INPE', 'k': 'name'}]
                 },

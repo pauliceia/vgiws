@@ -60,12 +60,12 @@ INSERT INTO auth (id, is_admin, allow_import_bulk, fk_user_id) VALUES (1002, TRU
 DELETE FROM notification;
 
 -- add notification
-INSERT INTO notification (id, create_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
-INSERT INTO notification (id, create_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
-INSERT INTO notification (id, create_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
-INSERT INTO notification (id, create_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
-INSERT INTO notification (id, create_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
-INSERT INTO notification (id, create_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
+INSERT INTO notification (id, created_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
+INSERT INTO notification (id, created_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
+INSERT INTO notification (id, created_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
+INSERT INTO notification (id, created_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
+INSERT INTO notification (id, created_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
+INSERT INTO notification (id, created_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
 
 
 
@@ -93,12 +93,12 @@ INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('type', 'birthda
 DELETE FROM group_;
 
 -- add group
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
-INSERT INTO group_ (id, create_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
-INSERT INTO group_ (id, create_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
-INSERT INTO group_ (id, create_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
+INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
+INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
+INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
+INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
+INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
+INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
 
 
 -- -----------------------------------------------------
@@ -137,14 +137,14 @@ DELETE FROM user_group;
 
 -- add user in a group
 -- group 1001
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1001, 1001, '2017-01-10');
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1001, 1002, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1001, 1001, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1001, 1002, '2017-01-10');
 -- group 1002
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1002, '2017-01-10');
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1003, '2017-01-10');
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1002, 1004, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1002, 1002, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1002, 1003, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1002, 1004, '2017-01-10');
 -- group 1003
-INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1003, 1005, '2017-01-10');
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at) VALUES (1003, 1005, '2017-01-10');
 
 
 
@@ -155,11 +155,11 @@ INSERT INTO user_group (fk_group_id, fk_user_id, create_at) VALUES (1003, 1005, 
 DELETE FROM project;
 
 -- add layer
-INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
-INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
-INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
-INSERT INTO project (id, create_at, fk_group_id, fk_user_id) VALUES (1004, '2017-09-11', 1002, 1004);
-INSERT INTO project (id, create_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1004, '2017-09-11', 1002, 1004);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
 
 -- SELECT * FROM project;
 -- SELECT * FROM project p WHERE p.id = 1001;
@@ -192,11 +192,11 @@ INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'hello world', 100
 DELETE FROM layer;
 
 -- add layer
-INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
-INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
-INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
-INSERT INTO layer (id, create_at, fk_project_id, fk_user_id) VALUES (1004, '2017-09-11', 1004, 1003);
-INSERT INTO layer (id, create_at, fk_project_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1004, FALSE);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1004, '2017-09-11', 1004, 1003);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1004, FALSE);
 
 -- SELECT * FROM layer;
 -- SELECT * FROM layer p WHERE p.id = 1001;
@@ -233,15 +233,15 @@ INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1
 -- SELECT * FROM layer_tag;
 
 /*
-SELECT p.id, p.create_at, p.removed_at FROM layer p WHERE p.id = 1003;
-SELECT p.id, date(create_at) AS myTime, p.removed_at FROM layer p WHERE p.id = 1003;
-SELECT p.id, to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as create_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM layer p WHERE p.id = 1003;
+SELECT p.id, p.created_at, p.removed_at FROM layer p WHERE p.id = 1003;
+SELECT p.id, date(created_at) AS myTime, p.removed_at FROM layer p WHERE p.id = 1003;
+SELECT p.id, to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at, to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS') as removed_at FROM layer p WHERE p.id = 1003;
 */
 
 -- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
 
 
--- SELECT p.id, p.create_at, p.closed_at, ṕt.id, pt.k, pt.v FROM layer p, layer_tag pt WHERE p.id = pt.fk_layer_id;
+-- SELECT p.id, p.created_at, p.closed_at, ṕt.id, pt.k, pt.v FROM layer p, layer_tag pt WHERE p.id = pt.fk_layer_id;
 
 
 /*
@@ -251,7 +251,7 @@ SELECT jsonb_build_object(
         'type',       'Layer',
         'properties', json_build_object(
             'id', id,
-            'create_at',  to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+            'created_at',  to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
             'removed_at', to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
             'fk_user_id_owner', fk_user_id_owner
         ),
@@ -276,13 +276,13 @@ DELETE FROM changeset;
 
 -- add changeset open
 -- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
 -- open changesets
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
-INSERT INTO changeset (id, create_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
 
 -- SELECT * FROM changeset;
 
@@ -310,7 +310,7 @@ INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset 
 
 -- SELECT * FROM changeset_tag;
 
---SELECT c.id, c.create_at, c.closed_at, ct.id, ct.k, ct.v;
+--SELECT c.id, c.created_at, c.closed_at, ct.id, ct.k, ct.v;
 --FROM changeset c, changeset_tag ct WHERE c.id = ct.fk_changeset_id;
 
 
@@ -897,7 +897,7 @@ CROSS JOIN LATERAL (
 -- get all nodes with its changeset information
 /*
 SELECT cn.id, cn.visible, cn.fk_changeset_id, 
-        cs. id, cs.create_at, cs.closed_at, cs.fk_user_id_owner
+        cs. id, cs.created_at, cs.closed_at, cs.fk_user_id_owner
 FROM current_node cn LEFT JOIN changeset cs 
 ON cn.fk_changeset_id = cs.id
 ORDER BY cn.id;

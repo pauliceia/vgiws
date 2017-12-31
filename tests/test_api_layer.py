@@ -20,7 +20,7 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
                     'tags': [{'k': 'description', 'v': 'default layer'},
                              {'k': 'name', 'v': 'default'},
@@ -28,7 +28,7 @@ class TestAPILayer(TestCase):
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
                     'tags': [{'k': 'description', 'v': 'test_layer'},
                              {'k': 'name', 'v': 'test_layer'},
@@ -36,7 +36,7 @@ class TestAPILayer(TestCase):
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
                     'tags': [{'k': 'description', 'v': 'test_layer'},
                              {'k': 'name', 'v': 'layer 3'},
@@ -44,7 +44,7 @@ class TestAPILayer(TestCase):
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-09-11 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-09-11 00:00:00',
                                    'fk_user_id': 1003, 'id': 1004},
                     'tags': [{'k': 'description', 'v': 'test_layer'},
                              {'k': 'name', 'v': 'layer 4'}],
@@ -60,7 +60,7 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-11-20 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
                     'tags': [{'k': 'description', 'v': 'default layer'},
                              {'k': 'name', 'v': 'default'},
@@ -77,7 +77,7 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-10-12 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
                     'tags': [{'k': 'description', 'v': 'test_layer'},
                              {'k': 'name', 'v': 'test_layer'},
@@ -85,7 +85,7 @@ class TestAPILayer(TestCase):
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'removed_at': None, 'create_at': '2017-12-23 00:00:00',
+                    'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
                     'tags': [{'k': 'description', 'v': 'test_layer'},
                              {'k': 'name', 'v': 'layer 3'},

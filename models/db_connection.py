@@ -205,7 +205,7 @@ class PGSQLConnection:
                     'type',       'Group',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'visible',      visible,
                         'fk_user_id',   fk_user_id
@@ -251,7 +251,7 @@ class PGSQLConnection:
 
     def add_group_in_db(self, user_id):
         query_text = """
-            INSERT INTO group_ (create_at, fk_user_id)
+            INSERT INTO group_ (created_at, fk_user_id)
             VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
         """.format(user_id)
 
@@ -328,7 +328,7 @@ class PGSQLConnection:
                     'type',       'Project',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_group_id', fk_group_id,
                         'fk_user_id', fk_user_id
@@ -374,7 +374,7 @@ class PGSQLConnection:
 
     def add_project_in_db(self, group_id, user_id):
         query_text = """
-            INSERT INTO project (create_at, fk_group_id, fk_user_id)
+            INSERT INTO project (created_at, fk_group_id, fk_user_id)
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
         """.format(group_id, user_id)
 
@@ -450,7 +450,7 @@ class PGSQLConnection:
                     'type',       'Layer',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_user_id', fk_user_id
                     ),
@@ -495,7 +495,7 @@ class PGSQLConnection:
 
     def add_layer_in_db(self, project_id, user_id):
         query_text = """
-            INSERT INTO layer (create_at, fk_project_id, fk_user_id) 
+            INSERT INTO layer (created_at, fk_project_id, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
         """.format(project_id, user_id)
 
@@ -573,7 +573,7 @@ class PGSQLConnection:
                     'type',       'Changeset',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_layer_id',    fk_layer_id,
                         'fk_user_id', fk_user_id
@@ -626,7 +626,7 @@ class PGSQLConnection:
         """
 
         query_text = """
-            INSERT INTO changeset (create_at, fk_layer_id, fk_user_id) 
+            INSERT INTO changeset (created_at, fk_layer_id, fk_user_id) 
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
         """.format(layer_id, user_id)
 
@@ -883,7 +883,7 @@ class PGSQLConnection:
                         'username', username,
                         'email', email,
                         'is_email_valid', is_email_valid,           
-                        'create_at',    to_char(create_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'terms_agreed', terms_agreed
                     ),

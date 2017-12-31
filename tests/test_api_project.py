@@ -20,25 +20,25 @@ class TestAPIProject(TestCase):
             'features': [
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
                     'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
                 },
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-10-12 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-10-12 00:00:00',
                                    'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
                     'tags': [{'k': 'name', 'v': 'test project'}, {'k': 'url', 'v': 'http://somehost.com'}]
                 },
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': [{'k': 'name', 'v': 'hello world'}]
                 },
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1004, 'create_at': '2017-09-11 00:00:00',
+                    'properties': {'fk_user_id': 1004, 'created_at': '2017-09-11 00:00:00',
                                    'id': 1004, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': None
                 }
@@ -52,7 +52,7 @@ class TestAPIProject(TestCase):
             'features': [
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1001, 'create_at': '2017-11-20 00:00:00',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
                     'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
                 }
@@ -67,13 +67,13 @@ class TestAPIProject(TestCase):
             'features': [
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': [{'k': 'name', 'v': 'hello world'}]
                 },
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1004, 'create_at': '2017-09-11 00:00:00',
+                    'properties': {'fk_user_id': 1004, 'created_at': '2017-09-11 00:00:00',
                                    'id': 1004, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': None
                 }
@@ -88,13 +88,13 @@ class TestAPIProject(TestCase):
             'features': [
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-10-12 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-10-12 00:00:00',
                                    'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
                     'tags': [{'k': 'name', 'v': 'test project'}, {'k': 'url', 'v': 'http://somehost.com'}]
                 },
                 {
                     'type': 'Project',
-                    'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': [{'k': 'name', 'v': 'hello world'}]
                 },

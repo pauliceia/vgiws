@@ -28,8 +28,7 @@ def get_subquery_layer_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT id, create_at, removed_at, fk_user_id 
-            FROM layer {0} ORDER BY id
+            SELECT * FROM layer {0} ORDER BY id
         ) AS layer
     """.format(where_clause)
 

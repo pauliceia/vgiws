@@ -22,7 +22,7 @@ This method gets projects from DB. If you doesn't put any parameter, so will ret
         'features': [
             {
                 'type': 'Project',
-                'properties': {'fk_user_id': 1002, 'create_at': '2017-12-23 00:00:00',
+                'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
                 'tags': [{'k': 'name', 'v': 'hello world'}]
             }

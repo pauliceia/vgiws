@@ -20,7 +20,7 @@ This method gets groups from DB. If you doesn't put any parameter, so will retur
         'features': [
             {
                 'type': 'Group',
-                'properties': {'fk_user_id': 1002, 'create_at': '2017-12-25 00:00:00',
+                'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                'removed_at': None, 'id': 1003, 'visible': True},
                 'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
             }

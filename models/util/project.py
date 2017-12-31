@@ -31,8 +31,7 @@ def get_subquery_project_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT id, create_at, removed_at, fk_group_id, fk_user_id 
-            FROM project {0} ORDER BY id
+            SELECT * FROM project {0} ORDER BY id
         ) AS project
     """.format(where_clause)
 

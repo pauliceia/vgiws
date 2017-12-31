@@ -1,5 +1,5 @@
 
--- Sáb 30 Dez 2017 22:07:01 -02
+-- Dom 31 Dez 2017 18:06:20 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS user_ (
   email VARCHAR(45) NULL,
   password VARCHAR(45) NULL,
   is_email_valid BOOLEAN NULL,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   removed_at TIMESTAMP NULL,
   terms_agreed BOOLEAN NULL,
   PRIMARY KEY (id)
@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS group_ CASCADE ;
 
 CREATE TABLE IF NOT EXISTS group_ (
   id SERIAL ,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   fk_user_id INT NOT NULL,
@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS project CASCADE ;
 
 CREATE TABLE IF NOT EXISTS project (
   id SERIAL ,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   fk_group_id INT NOT NULL,
@@ -72,7 +72,7 @@ DROP TABLE IF EXISTS layer CASCADE ;
 
 CREATE TABLE IF NOT EXISTS layer (
   id SERIAL ,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   fk_project_id INT NOT NULL,
@@ -98,7 +98,7 @@ DROP TABLE IF EXISTS changeset CASCADE ;
 
 CREATE TABLE IF NOT EXISTS changeset (
   id SERIAL ,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   closed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   fk_layer_id INT NOT NULL,
@@ -163,10 +163,13 @@ DROP TABLE IF EXISTS changeset_comment CASCADE ;
 CREATE TABLE IF NOT EXISTS changeset_comment (
   id SERIAL ,
   body TEXT NULL,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
   visible BOOLEAN NULL DEFAULT TRUE,
   fk_changeset_id INT NOT NULL,
   fk_user_id INT NOT NULL,
+  fk_comment_id_parent INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_node_comment_change_group1
     FOREIGN KEY (fk_changeset_id)
@@ -176,6 +179,11 @@ CREATE TABLE IF NOT EXISTS changeset_comment (
   CONSTRAINT fk_node_comment_user1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_changeset_comment_changeset_comment1
+    FOREIGN KEY (fk_comment_id_parent)
+    REFERENCES changeset_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -240,18 +248,21 @@ CREATE TABLE IF NOT EXISTS point_tag (
 
 
 -- -----------------------------------------------------
--- Table user_message
+-- Table user_comment
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_message CASCADE ;
+DROP TABLE IF EXISTS user_comment CASCADE ;
 
-CREATE TABLE IF NOT EXISTS user_message (
+CREATE TABLE IF NOT EXISTS user_comment (
   id SERIAL ,
   body TEXT NULL,
-  create_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
   is_read BOOLEAN NULL DEFAULT FALSE,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_user_id_from INT NOT NULL,
   fk_user_id_to INT NOT NULL,
+  fk_comment_id_parent INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_message_user1
     FOREIGN KEY (fk_user_id_from)
@@ -261,6 +272,11 @@ CREATE TABLE IF NOT EXISTS user_message (
   CONSTRAINT fk_user_message_user_1
     FOREIGN KEY (fk_user_id_to)
     REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_user_message_user_message1
+    FOREIGN KEY (fk_comment_id_parent)
+    REFERENCES user_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -352,9 +368,10 @@ CREATE TABLE IF NOT EXISTS polygon_tag (
 DROP TABLE IF EXISTS project_subscriber CASCADE ;
 
 CREATE TABLE IF NOT EXISTS project_subscriber (
+  added_at TIMESTAMP NULL,
+  permission VARCHAR(45) NULL,
   fk_project_id INT NOT NULL,
   fk_user_id INT NOT NULL,
-  permission VARCHAR(45) NULL,
   PRIMARY KEY (fk_project_id, fk_user_id),
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (fk_user_id)
@@ -546,10 +563,12 @@ CREATE TABLE IF NOT EXISTS layer_comment (
   id SERIAL ,
   body TEXT NULL,
   create_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
   closed_at TIMESTAMP NULL,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
-  fk_comment_id INT NOT NULL,
+  fk_comment_id_parent INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_review_layer1
     FOREIGN KEY (fk_layer_id)
@@ -562,7 +581,7 @@ CREATE TABLE IF NOT EXISTS layer_comment (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_comment_layer_comment1
-    FOREIGN KEY (fk_comment_id)
+    FOREIGN KEY (fk_comment_id_parent)
     REFERENCES layer_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -570,18 +589,24 @@ CREATE TABLE IF NOT EXISTS layer_comment (
 
 
 -- -----------------------------------------------------
--- Table layer_comment_tag
+-- Table layer_comment_award
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_comment_tag CASCADE ;
+DROP TABLE IF EXISTS layer_comment_award CASCADE ;
 
-CREATE TABLE IF NOT EXISTS layer_comment_tag (
+CREATE TABLE IF NOT EXISTS layer_comment_award (
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   fk_comment_id INT NOT NULL,
+  fk_user_id INT NOT NULL,
   PRIMARY KEY (k, fk_comment_id),
   CONSTRAINT fk_layer_comment_tag_layer_comment1
     FOREIGN KEY (fk_comment_id)
     REFERENCES layer_comment (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_layer_comment_award_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -593,9 +618,10 @@ CREATE TABLE IF NOT EXISTS layer_comment_tag (
 DROP TABLE IF EXISTS user_group CASCADE ;
 
 CREATE TABLE IF NOT EXISTS user_group (
+  added_at TIMESTAMP NULL,
+  permission VARCHAR(45) NULL,
   fk_group_id INT NOT NULL,
   fk_user_id INT NOT NULL,
-  create_at TIMESTAMP NULL,
   PRIMARY KEY (fk_group_id, fk_user_id),
   CONSTRAINT fk_user_group_user_1
     FOREIGN KEY (fk_user_id)
@@ -605,40 +631,6 @@ CREATE TABLE IF NOT EXISTS user_group (
   CONSTRAINT fk_user_group_group1
     FOREIGN KEY (fk_group_id)
     REFERENCES group_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table group_comment
--- -----------------------------------------------------
-DROP TABLE IF EXISTS group_comment CASCADE ;
-
-CREATE TABLE IF NOT EXISTS group_comment (
-  id SERIAL ,
-  body TEXT NULL,
-  create_at TIMESTAMP NULL,
-  updated_at TIMESTAMP NULL,
-  removed_at TIMESTAMP NULL,
-  visible BOOLEAN NULL DEFAULT TRUE,
-  fk_group_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  fk_comment_id_parent INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_group_comment_group1
-    FOREIGN KEY (fk_group_id)
-    REFERENCES group_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_group_comment_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_group_comment_group_comment1
-    FOREIGN KEY (fk_comment_id_parent)
-    REFERENCES group_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -816,10 +808,10 @@ DROP TABLE IF EXISTS notification CASCADE ;
 
 CREATE TABLE IF NOT EXISTS notification (
   id SERIAL ,
-  body VARCHAR(128) NULL,
-  url VARCHAR(255) NULL,
-  icon TEXT NULL,
+  created_at TIMESTAMP NULL,
+  removed_at TIMESTAMP NULL,
   is_read BOOLEAN NULL DEFAULT FALSE,
+  visible BOOLEAN NULL DEFAULT TRUE,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_notification_user_1
@@ -843,6 +835,24 @@ CREATE TABLE IF NOT EXISTS group_tag (
   CONSTRAINT fk_group_tag_group_1
     FOREIGN KEY (fk_group_id)
     REFERENCES group_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table notification_tag
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS notification_tag CASCADE ;
+
+CREATE TABLE IF NOT EXISTS notification_tag (
+  k VARCHAR(255) NOT NULL,
+  v VARCHAR(255) NULL,
+  fk_notification_id INT NOT NULL,
+  PRIMARY KEY (k),
+  CONSTRAINT fk_notification_tag_notification1
+    FOREIGN KEY (fk_notification_id)
+    REFERENCES notification (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

@@ -19,8 +19,7 @@ def get_subquery_user_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT id, username, email, is_email_valid, create_at, removed_at, terms_agreed
-            FROM user_ {0} ORDER BY id
+            SELECT * FROM user_ {0} ORDER BY id
         ) AS user_
     """.format(where_clause)
 

@@ -35,8 +35,7 @@ def get_subquery_changeset_table(**kwargs):
 
     subquery_table = """
         (
-            SELECT id, create_at, closed_at, fk_layer_id, fk_user_id
-            FROM changeset {0} ORDER BY id 
+            SELECT * FROM changeset {0} ORDER BY id 
         ) AS changeset
     """.format(where_clause)
 

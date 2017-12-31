@@ -27,7 +27,7 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
                          {'k': 'end_date', 'v': '1930/12/31'},
                          {'k': 'theme', 'v': 'robbery'}],
                 'properties': {'removed_at': None, 'fk_user_id': 1002,
-                               'id': 1001, 'create_at': '2017-10-20 00:00:00'}
+                               'id': 1001, 'created_at': '2017-10-20 00:00:00'}
             }
         ],
         'type': 'FeatureCollection'

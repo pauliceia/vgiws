@@ -28,8 +28,7 @@ def get_subquery_group_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT id, create_at, removed_at, visible, fk_user_id 
-            FROM group_ {0} ORDER BY id
+            SELECT * FROM group_ {0} ORDER BY id
         ) AS group_
     """.format(where_clause)
 
