@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import unittest
+
 from unittest import TestCase
 from util.tester import UtilTester
 
@@ -46,7 +46,7 @@ class TestAPIGroup(TestCase):
 
         self.tester.api_group(expected)
 
-    def test_get_api_layer_return_group_by_group_id(self):
+    def test_get_api_group_return_group_by_group_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [

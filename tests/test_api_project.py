@@ -47,7 +47,7 @@ class TestAPIProject(TestCase):
 
         self.tester.api_project(expected)
 
-    def test_get_api_layer_return_project_by_project_id(self):
+    def test_get_api_project_return_project_by_project_id(self):
         expected = {
             'features': [
                 {

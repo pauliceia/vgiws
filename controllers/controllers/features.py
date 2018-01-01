@@ -7,27 +7,7 @@
 
 
 from ..base import BaseHandlerGroup, BaseHandlerProject, BaseHandlerLayer, \
-                    BaseHandlerChangeset, auth_non_browser_based
-
-
-# NOTIFICATION
-
-# class APINotification(BaseHandlerGroup):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/notification/?(?P<param>[A-Za-z0-9-]+)?/",
-#             r"/api/notification/?(?P<param>[A-Za-z0-9-]+)?"]
-#
-#     def get(self, param=None):
-#         self.get_method_api_feature()
-#
-#     @auth_non_browser_based
-#     def put(self, param=None):
-#         self.put_method_api_feature(param)
-#
-#     @auth_non_browser_based
-#     def delete(self, param=None):
-#         self.delete_method_api_feature(param)
+                    BaseHandlerChangeset, BaseHandlerNotification, auth_non_browser_based
 
 
 # GROUP
@@ -114,4 +94,24 @@ class APIChangeset(BaseHandlerChangeset):
     @auth_non_browser_based
     def delete(self, param=None, param2=None):
         # self.delete_method_api_changeset(param)
+        self.delete_method_api_feature(param)
+
+
+# NOTIFICATION
+
+class APINotification(BaseHandlerNotification):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/notification/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/notification/?(?P<param>[A-Za-z0-9-]+)?"]
+
+    def get(self, param=None):
+        self.get_method_api_feature()
+
+    @auth_non_browser_based
+    def put(self, param=None):
+        self.put_method_api_feature(param)
+
+    @auth_non_browser_based
+    def delete(self, param=None):
         self.delete_method_api_feature(param)

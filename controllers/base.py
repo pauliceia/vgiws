@@ -416,6 +416,24 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         self.PGSQLConn.delete_changeset_in_db(*args)
 
 
+class BaseHandlerNotification(BaseHandlerTemplateMethod):
+
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_notification(**kwargs)
+
+    def _create_feature(self, feature_json, current_user_id):
+        return self.PGSQLConn.create_notification(feature_json, current_user_id)
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _close_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _delete_feature(self, *args, **kwargs):
+        self.PGSQLConn.delete_notification_in_db(*args)
+
+
 class BaseHandlerElement(BaseHandlerTemplateMethod):
 
     def _get_feature(self, *args, **kwargs):

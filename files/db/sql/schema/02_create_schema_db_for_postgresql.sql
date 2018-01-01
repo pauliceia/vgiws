@@ -1,5 +1,5 @@
 
--- Dom 31 Dez 2017 18:06:20 -02
+-- Seg 01 Jan 2018 17:48:06 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -849,7 +849,7 @@ CREATE TABLE IF NOT EXISTS notification_tag (
   k VARCHAR(255) NOT NULL,
   v VARCHAR(255) NULL,
   fk_notification_id INT NOT NULL,
-  PRIMARY KEY (k),
+  PRIMARY KEY (k, fk_notification_id),
   CONSTRAINT fk_notification_tag_notification1
     FOREIGN KEY (fk_notification_id)
     REFERENCES notification (id)
