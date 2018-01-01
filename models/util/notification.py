@@ -24,7 +24,6 @@ def get_subquery_notification_table(**kwargs):
 
         conditions_of_where.append("is_read = {0}".format(condition))
 
-
     # default get all features, without where clause
     where_clause = ""
 
