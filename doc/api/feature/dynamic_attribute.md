@@ -67,6 +67,26 @@ Attach documents or files in a feature following the schema: doc:<source_name>:\
 | doc:instagram:02               | link (e.g. "https://www.instagram.com/?hl=pt-br")                 | point, line, polygon      | The second web link for a photo                    |
 
 
+### Notification's attributes
+
+To create a new notification, is necessary to insert at least three dynamic attributes: body, type and url, where:
+- body: is the textual description of the notification;
+- type: is the type of the notification. With it, the consumer can choose a icon or do other computation;
+- url: is the url of the notification. Clicking in it, will redirect to a page with more information about the notification.
+
+The **type=*** key can be one of these options:
+
+| Key                            | Value                               | Feature                   | Comment                                                      |
+| ------------------------------ | ----------------------------------- | ------------------------- | ------------------------------------------------------------ |
+| type                           | award                               | notification              | Notification about a award gained                            |
+| type                           | birthday                            | notification              | Notification received when is the user's birthday            |
+| type                           | group                               | notification              | Notification about a group                                   |
+| type                           | layer                               | notification              | Notification about a layer                                   |
+| type                           | point                               | notification              | Notification when the user receive some punctuation          |
+| type                           | project                             | notification              | Notification about a project                                 |
+| type                           | review                              | notification              | Notification when there is some review on a layer            |
+
+
 ### Sources
 
 How to describe the data source following the schema: source:<source_name>:\<attribute>, being:
