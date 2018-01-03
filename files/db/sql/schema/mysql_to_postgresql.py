@@ -74,6 +74,20 @@ def remove_bad_lines_and_put_default_values(text):
         if "is_read boolean" in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
+        # USER
+        if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
+        if ("is_admin boolean" in line_lower) or ("allow_bulk_import boolean" in line_lower):            
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
+        # GROUP
+        if "can_receive_notification boolean" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
+
+        if "group_permission varchar(10)" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT 'member',")
+
     text = "\n".join(lines)
 
     return text
@@ -92,23 +106,6 @@ def add_serial_number_in_ID(text):
             line_splited = line.replace("NOT NULL", "").split(" ")
             line_splited[3] = "SERIAL"                
             lines[i] = " ".join(line_splited)
-
-    text = "\n".join(lines)
-
-    return text
-
-def arrange_table_auth(text):   
-    lines = text.split("\n")
-    lines_copy = list(lines)  # create a copy to iterate inside it
-
-    for i in range(0, len(lines_copy)):
-        line = lines_copy[i]
-
-        line_lower = line.lower()
-
-        # put default values to 'is_admin' and 'allow_import_bulk'
-        if ("is_admin boolean" in line_lower) or ("allow_import_bulk boolean" in line_lower):
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
     text = "\n".join(lines)
 
@@ -152,9 +149,6 @@ def main():
         
         # remove bad lines     
         text = remove_bad_lines_and_put_default_values(text)
-
-        # arrange table 'auth'
-        text = arrange_table_auth(text)
 
         # add SERIAL number in ID
         text = add_serial_number_in_ID(text)
