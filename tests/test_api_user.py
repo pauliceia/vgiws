@@ -19,39 +19,39 @@ class TestAPIUser(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Administrator', 'k': 'name'}],
-                    'properties': {'id': 1001, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'admin@admin.com', 'removed_at': None,
-                                   'username': 'admin'}
+                    'properties': {'removed_at': None, 'username': 'admin', 'terms_agreed': True,
+                                   'is_email_valid': True, 'email': 'admin@admin.com', 'id': 1001,
+                                   'created_at': '2017-01-01 00:00:00'},
+                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Administrator'}],
+                    'type': 'User'
                 },
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Rodrigo', 'k': 'name'}],
-                    'properties': {'id': 1002, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'rodrigo@admin.com', 'removed_at': None,
-                                   'username': 'rodrigo'}
+                    'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
+                                   'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
+                                   'created_at': '2017-03-03 00:00:00'},
+                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Rodrigo'}],
+                    'type': 'User'
                 },
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'Miguel', 'k': 'name'}],
-                    'properties': {'id': 1003, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'miguel@admin.com', 'removed_at': None,
-                                   'username': 'miguel'}
+                    'properties': {'removed_at': None, 'username': 'miguel', 'terms_agreed': True,
+                                   'is_email_valid': False, 'email': 'miguel@admin.com', 'id': 1003,
+                                   'created_at': '2017-05-08 00:00:00'},
+                    'tags': [{'k': 'name', 'v': 'Miguel'}],
+                    'type': 'User'
                 },
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'Rafael', 'k': 'name'}],
-                    'properties': {'id': 1004, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'rafael@admin.com', 'removed_at': None,
-                                   'username': 'rafael'}
+                    'properties': {'removed_at': None, 'username': 'rafael', 'terms_agreed': False,
+                                   'is_email_valid': True, 'email': 'rafael@admin.com', 'id': 1004,
+                                   'created_at': '2017-06-09 00:00:00'},
+                    'tags': [{'k': 'name', 'v': 'Rafael'}],
+                    'type': 'User'
                 },
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'Gabriel', 'k': 'name'}],
-                    'properties': {'id': 1005, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'gabriel@admin.com', 'removed_at': None,
-                                   'username': 'gabriel'}
+                    'properties': {'removed_at': None, 'username': 'gabriel', 'terms_agreed': False,
+                                   'is_email_valid': False, 'email': 'gabriel@admin.com', 'id': 1005,
+                                   'created_at': '2017-09-20 00:00:00'},
+                    'tags': [{'k': 'name', 'v': 'Gabriel'}],
+                    'type': 'User'
                 }
             ]
         }
@@ -63,12 +63,12 @@ class TestAPIUser(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'User',
-                    'tags': [{'v': 'INPE', 'k': 'institution'}, {'v': 'Rodrigo', 'k': 'name'}],
-                    'properties': {'id': 1002, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                                   'email': 'rodrigo@admin.com', 'removed_at': None,
-                                   'username': 'rodrigo'}
-                },
+                    'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
+                                   'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
+                                   'created_at': '2017-03-03 00:00:00'},
+                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Rodrigo'}],
+                    'type': 'User'
+                }
             ]
         }
 

@@ -187,6 +187,115 @@ class PGSQLConnection:
         return results_of_query
 
     ################################################################################
+    # user group
+    ################################################################################
+
+    def get_user_group(self, group_id=None, user_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_user_group_table(group_id=group_id, user_id=user_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'UserGroup',
+                    'properties', json_build_object(
+                        'fk_group_id',              fk_group_id,
+                        'fk_user_id',               fk_user_id,
+                        'added_at',                 to_char(added_at, 'YYYY-MM-DD HH24:MI:SS'),                    
+                        'group_permission',         group_permission,
+                        'can_receive_notification', can_receive_notification,
+                        'fk_user_id_added_by',      fk_user_id_added_by                        
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
+        return results_of_query
+
+    def add_user_group_in_db(self, properties):
+        p = properties
+
+        # change can_receive_notification boolean to string to can add in DB
+        p['can_receive_notification'] = "TRUE" if p['can_receive_notification'] else "FALSE"
+
+        query_text = """
+            INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
+            VALUES ({0}, {1], LOCALTIMESTAMP, {2}, {3})
+        """.format(p['fk_group_id'], p['fk_user_id'], p['can_receive_notification'], p['fk_user_id_added_by'])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    # def add_user_group_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO group_tag (k, v, fk_group_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_user_group(self, feature_json, user_id):
+
+        properties = feature_json["properties"]
+
+        # add the user in a group
+        self.add_user_group_in_db(properties)
+
+        # put in DB the feature
+        self.commit()
+
+    def delete_user_group(self, group_id, user_id):
+        if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            DELETE FROM project_watcher 
+            WHERE fk_user_id = {0} AND fk_group_id = {1};
+        """.format(user_id, group_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
+
+
+    ################################################################################
     # group
     ################################################################################
 
@@ -205,7 +314,7 @@ class PGSQLConnection:
                     'type',       'Group',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'visible',      visible,
                         'fk_user_id',   fk_user_id
@@ -327,7 +436,7 @@ class PGSQLConnection:
                     'type',       'Project',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_group_id', fk_group_id,
                         'fk_user_id', fk_user_id
@@ -449,7 +558,7 @@ class PGSQLConnection:
                     'type',       'Layer',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_user_id', fk_user_id
                     ),
@@ -572,7 +681,7 @@ class PGSQLConnection:
                     'type',       'Changeset',
                     'properties', json_build_object(
                         'id',           id,                        
-                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_layer_id',    fk_layer_id,
                         'fk_user_id', fk_user_id
@@ -985,15 +1094,15 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
-    # USER
+    # user
     ################################################################################
 
-    def get_users(self, user_id=None):
+    def get_users(self, user_id=None, email=None):
         # the id have to be a int
         if is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_user_table(user_id=user_id)
+        subquery = get_subquery_user_table(user_id=user_id, email=email)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -1042,10 +1151,27 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def get_user_in_db(self, email):
+    # def get_user_in_db(self, email):
+    #     query_text = """
+    #         SELECT id, username, email FROM user_ WHERE email='{0}';
+    #         """.format(email)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+
+    def add_user_in_db(self, properties):
+        p = properties
+
         query_text = """
-            SELECT id, username, email FROM user_ WHERE email='{0}';
-            """.format(email)
+            INSERT INTO user_ (email, username, password, created_at) 
+            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP)
+            RETURNING id;
+        """.format(p["email"], p["username"], p["password"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1055,18 +1181,34 @@ class PGSQLConnection:
 
         return result
 
-    def create_user_in_db(self, email):
-        query_text = """INSERT INTO user_ (email) VALUES ('{0}');""".format(email)
+    def add_user_tag_in_db(self, k, v, feature_id):
+        query_text = """
+            INSERT INTO user_tag (k, v, fk_user_id)
+            VALUES ('{0}', '{1}', {2});
+        """.format(k, v, feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the user information (id, name, username, email, etc)
-        result = self.get_user_in_db(email)
+    def create_user(self, feature_json):
 
+        properties = feature_json["properties"]
+
+        id_in_json = self.add_user_in_db(properties)
+
+        # add in DB the tags of layer
+        for tag in feature_json["tags"]:
+            # add the layer tag in db
+            self.add_user_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+
+        # put in DB the layer and its tags
         self.commit()
 
-        return result
+        return id_in_json
+
+
+
+
 
 
 @Singleton

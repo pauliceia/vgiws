@@ -65,8 +65,13 @@ class FakeAuthLoginHandler(BaseHandler):
 
     @just_run_on_debug_mode
     def get(self):
-        user = {"email": "test@fake.login"}
-        self.login(user, type_login="fakelogin")
+        user_json = {
+            'type': 'User',
+            'tags': [{'k': 'type_login', 'v': 'fakelogin'}],
+            'properties': {'id': -1, 'email': 'test@fake.login', 'username': 'test', 'password': ''}
+        }
+
+        self.login(user_json)
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode({}))
@@ -101,7 +106,14 @@ class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
 
             # self.set_current_user(email=user["email"], type_login="google", new_user=True)
 
-            self.login(user, type_login="google")
+            # to social login, create a blank password
+            user_json = {
+                'type': 'User',
+                'tags': [{'k': 'type_login', 'v': 'google'}],
+                'properties': {'id': -1, 'email': user["email"], 'username': '', 'password': ''}
+            }
+
+            self.login(user_json)
 
             # user_cookie = self.get_current_user()
             #
@@ -159,7 +171,14 @@ class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
 
             # self.set_current_user(email=user["email"], type_login="facebook", new_user=True)
 
-            self.login(user,  type_login="facebook")
+            # to social login, create a blank password
+            user_json = {
+                'type': 'User',
+                'tags': [{'k': 'type_login', 'v': 'facebook'}],
+                'properties': {'id': -1, 'email': user["email"], 'username': '', 'password': ''}
+            }
+
+            self.login(user_json)
 
             # user_cookie = self.get_current_user()
             #

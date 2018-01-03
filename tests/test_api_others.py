@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase
+from unittest import TestCase, skip
 from util.tester import UtilTester
 
 
@@ -27,17 +27,20 @@ class TestAPISessionUser(TestCase):
         self.tester = UtilTester(self)
 
     def test_api_session_user_with_login(self):
-        expected = {
-            'login': {
-                'user': {'username': None, 'email': 'test@fake.login', 'id': 1},
-                'type_login': 'fakelogin'
+        # do not put the "id" and "created_at" attributes, because they are created dynamically
+        expected_at_least = {
+            'user': {
+                'properties': {'username': 'test', 'terms_agreed': False, 'is_email_valid': False,
+                               'removed_at': None, 'email': 'test@fake.login'},
+                'tags': [{'k': 'type_login', 'v': 'fakelogin'}],
+                'type': 'User'
             }
         }
 
         # DO LOGIN BEFORE THE TEST
         self.tester.auth_login()
 
-        self.tester.api_session_user(expected)
+        self.tester.api_session_user(expected_at_least)
 
         # DO LOGOUT AFTER THE TEST
         self.tester.auth_logout()

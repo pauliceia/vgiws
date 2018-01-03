@@ -135,15 +135,25 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
-    def login(self, user, type_login):
+    def login(self, user_json):
         # looking for a user in db, if not exist user, so create a new one
-        user_in_db = self.PGSQLConn.get_user_in_db(user["email"])
+        # user_in_db = self.PGSQLConn.get_user_in_db(user["email"])
 
-        if not user_in_db:
-            user_in_db = self.PGSQLConn.create_user_in_db(user["email"])
+        try:
+            user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])
+        except HTTPError as error:
+            # if the error is different of 404, raise a exception...
+            if error.status_code != 404:
+                raise HTTPError(500, str(error))
+            # ... because I expected a 404 to create a new user
+            id_in_json = self.PGSQLConn.create_user(user_json)
+            user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["id"]))
+
+        # get the only one user in list returned
+        user_in_db = user_in_db["features"][0]
 
         # insert the user in cookie
-        self.set_current_user(user=user_in_db, type_login=type_login, new_user=True)
+        self.set_current_user(user=user_in_db, new_user=True)
 
     def logout(self):
         # if there is no user logged, so raise a exception
@@ -157,7 +167,7 @@ class BaseHandler(RequestHandler):
 
     # COOKIES
 
-    def set_current_user(self, user={}, type_login="", new_user=True):
+    def set_current_user(self, user={}, new_user=True):
         if new_user:
             # if new user, so create a new cookie
             user_cookie = get_new_user_struct_cookie()
@@ -166,8 +176,7 @@ class BaseHandler(RequestHandler):
             user_cookie = json_decode(self.get_secure_cookie("user"))
 
         # insert the information
-        user_cookie["login"]["user"] = user
-        user_cookie["login"]["type_login"] = type_login
+        user_cookie["user"] = user
 
         # set the cookie (it needs to be separated)
         # transform dictionary in JSON and add in cookie
@@ -187,7 +196,7 @@ class BaseHandler(RequestHandler):
 
         if user_cookie:
             user = json_decode(user_cookie)
-            return user["login"]["user"]["id"]
+            return user["user"]["properties"]["id"]
         else:
             return None
 
@@ -338,6 +347,24 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     def _delete_feature(self, *args, **kwargs):
         raise NotImplementedError
+
+
+class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
+
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_user_group(**kwargs)
+
+    def _create_feature(self, feature_json, current_user_id):
+        return self.PGSQLConn.create_user_group(feature_json, current_user_id)
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _close_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _delete_feature(self, *args, **kwargs):
+        self.PGSQLConn.delete_user_group(*args)
 
 
 class BaseHandlerGroup(BaseHandlerTemplateMethod):

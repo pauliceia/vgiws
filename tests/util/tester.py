@@ -47,23 +47,7 @@ class UtilTester:
             self.ut_self.assertEqual(expected, resulted)
 
         elif expected_at_least is not None:
-            """
-            Test Case: When log with a fake login, a new user is created, because of this, the result returned
-            may be larger than the expected.
-            """
-
-            """ Explanation: Generator creating booleans by looping through list
-                'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
-                all() returns True if every item is truthy, else False.
-                https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
-            """
-            __set__ = resulted["features"]  # set returned
-            __subset__ = expected_at_least["features"]  # subset expected
-
-            # verify if the elements of a subset is in a set, if OK, return True, else False
-            resulted_bool = all(element in __set__ for element in __subset__)
-
-            self.ut_self.assertTrue(resulted_bool)
+            self.compare_sets(expected_at_least, resulted)
 
     # user errors - get
 
@@ -81,7 +65,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # group
+    # GROUP
 
     def api_group(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -156,7 +140,82 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # project
+    # USER_GROUP
+
+    def api_user_group(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_user_group_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/user_group/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        feature_json["properties"]["id"] = resulted["id"]
+
+        return feature_json
+
+    def api_user_group_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user_group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # user_group errors - get
+
+    def api_user_group_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_group_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # user_group errors - create
+
+    def api_user_group_create_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/user_group/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # user_group errors - delete
+
+    def api_user_group_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user_group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_group_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user_group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_user_group_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user_group/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # PROJECT
 
     def api_project(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -231,7 +290,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # layer
+    # LAYER
 
     def api_layer(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -425,7 +484,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # notification
+    # NOTIFICATION
 
     def api_notification(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -632,7 +691,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    # others
+    # OTHERS
 
     def api_capabilities(self, expected):
         response = self.session.get(self.URL + '/api/capabilities/')
@@ -643,16 +702,47 @@ class UtilTester:
 
         self.ut_self.assertEqual(resulted, expected)
 
-    def api_session_user(self, expected):
+    def api_session_user(self, expected_at_least):
         response = self.session.get(self.URL + '/api/session/user')
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertEqual(resulted, expected)
+        # comparing the items in a isolated way
+
+        # iterate in expected_at_least dict, because it contains the AT LEAST
+        # that have to exist in result.
+        # with these way, do not compare the "id" and "created_at" attributes, because
+        # these attributes are created in a dynamic way
+        for key in expected_at_least["user"]["properties"]:
+            self.ut_self.assertEqual(resulted["user"]["properties"][key],
+                                     expected_at_least["user"]["properties"][key])
+        self.ut_self.assertEqual(resulted["user"]["tags"], expected_at_least["user"]["tags"])
+        self.ut_self.assertEqual(resulted["user"]["type"], expected_at_least["user"]["type"])
 
     def api_session_user_error_404_not_found(self):
         response = self.session.get(self.URL + '/api/session/user')
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    # auxiliar methods
+
+    def compare_sets(self, expected_at_least, resulted):
+        """
+        Test Case: When log with a fake login, a new user is created, because of this,
+        the result returned may be larger than the expected.
+        """
+
+        """ Explanation: Generator creating booleans by looping through list
+            'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
+            all() returns True if every item is truthy, else False.
+            https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
+        """
+        __set__ = resulted["features"]  # set returned
+        __subset__ = expected_at_least["features"]  # subset expected
+
+        # verify if the elements of a subset is in a set, if OK, return True, else False
+        resulted_bool = all(element in __set__ for element in __subset__)
+
+        self.ut_self.assertTrue(resulted_bool)

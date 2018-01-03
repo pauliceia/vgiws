@@ -10,16 +10,16 @@ INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, te
 VALUES (1001, 'admin', 'admin@admin.com', 'admin', '2017-01-01', TRUE, TRUE);
 
 INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
-VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', '2017-01-01', TRUE, TRUE);
+VALUES (1002, 'rodrigo', 'rodrigo@admin.com', 'rodrigo', '2017-03-03', TRUE, TRUE);
 
 INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
-VALUES (1003, 'miguel', 'miguel@admin.com', 'miguel', '2017-01-01', FALSE, TRUE);
+VALUES (1003, 'miguel', 'miguel@admin.com', 'miguel', '2017-05-08', FALSE, TRUE);
 
 INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
-VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael', '2017-01-01', TRUE, FALSE);
+VALUES (1004, 'rafael', 'rafael@admin.com', 'rafael', '2017-06-09', TRUE, FALSE);
 
 INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
-VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel', '2017-01-01', FALSE, FALSE);
+VALUES (1005, 'gabriel', 'gabriel@admin.com', 'gabriel', '2017-09-20', FALSE, FALSE);
 
 
 -- -----------------------------------------------------
