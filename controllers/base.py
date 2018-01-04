@@ -252,7 +252,7 @@ class BaseHandler(RequestHandler):
 class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     # GET METHOD
 
-    @abstractmethod
+    # @abstractmethod
     def _get_feature(self, *args, **kwargs):
         raise NotImplementedError
 
@@ -271,7 +271,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     # PUT METHOD
 
-    @abstractmethod
+    # @abstractmethod
     def _create_feature(self, feature_json, current_user_id):
         raise NotImplementedError
 
@@ -290,12 +290,20 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    @abstractmethod
+    # @abstractmethod
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    @abstractmethod
+    # @abstractmethod
     def _close_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # @abstractmethod
+    def _request_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # @abstractmethod
+    def _accept_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def put_method_api_feature(self, *args):
@@ -311,12 +319,16 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self._update_feature(*args)
         elif param == "close":
             self._close_feature(*args)
+        elif param == "request":
+            self._request_feature(*args)
+        elif param == "accept":
+            self._accept_feature(*args)
         else:
             raise HTTPError(404, "Invalid URL.")
 
     # DELETE METHOD
 
-    @abstractmethod
+    # @abstractmethod
     def _delete_feature(self, *args, **kwargs):
         raise NotImplementedError
 
@@ -342,9 +354,6 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _close_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
     def _delete_feature(self, *args, **kwargs):
         raise NotImplementedError
 
@@ -360,7 +369,10 @@ class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _close_feature(self, *args, **kwargs):
+    def _request_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _accept_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
@@ -381,9 +393,6 @@ class BaseHandlerGroup(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _close_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_group_in_db(*args)
 
@@ -399,9 +408,6 @@ class BaseHandlerProject(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _close_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_project_in_db(*args)
 
@@ -415,9 +421,6 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         return self.PGSQLConn.create_layer(feature_json, current_user_id)
 
     def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _close_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
@@ -455,9 +458,6 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         return self.PGSQLConn.create_notification(feature_json, current_user_id)
 
     def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _close_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
@@ -515,9 +515,6 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _close_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
     def _delete_feature(self, *args, **kwargs):
         self.PGSQLConn.delete_element_in_db(*args)
 
@@ -531,9 +528,6 @@ class BaseHandlerThemeTree(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
     def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _close_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):

@@ -78,6 +78,10 @@ def remove_bad_lines_and_put_default_values(text):
         if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
+        if "email varchar(45)" in line_lower:
+            lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
+
+        # USER AUTH
         if ("is_admin boolean" in line_lower) or ("allow_bulk_import boolean" in line_lower):            
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
@@ -87,6 +91,9 @@ def remove_bad_lines_and_put_default_values(text):
 
         if "group_permission varchar(10)" in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT 'member',")
+
+        if "group_status varchar(10)" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT 'pending',")
 
     text = "\n".join(lines)
 

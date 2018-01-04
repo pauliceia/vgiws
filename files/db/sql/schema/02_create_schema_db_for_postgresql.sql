@@ -1,5 +1,5 @@
 
--- Ter 02 Jan 2018 16:13:29 -02
+-- Qui 04 Jan 2018 19:22:27 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS user_ CASCADE ;
 
 CREATE TABLE IF NOT EXISTS user_ (
   id SERIAL ,
+  email VARCHAR(45) NOT NULL UNIQUE,
   username VARCHAR(45) NOT NULL,
-  email VARCHAR(45) NOT NULL,
   password VARCHAR(45) NOT NULL,
   is_email_valid BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL,
@@ -620,6 +620,7 @@ CREATE TABLE IF NOT EXISTS user_group (
   fk_user_id INT NOT NULL,
   added_at TIMESTAMP NOT NULL,
   group_permission VARCHAR(10) NOT NULL DEFAULT 'member',
+  group_status VARCHAR(10) NOT NULL DEFAULT 'pending',
   can_receive_notification BOOLEAN NOT NULL DEFAULT TRUE,
   fk_user_id_added_by INT NOT NULL,
   PRIMARY KEY (fk_group_id, fk_user_id),

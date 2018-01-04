@@ -90,21 +90,27 @@ DELETE FROM group_tag;
 -- group 1001
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Admins', 1001);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'Just admins', 1001);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1001);
 -- group 1002
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'INPE', 1002);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1002);
 -- group 1003
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP SJC', 1003);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1003);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1003);
 -- group 1004
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP Guarulhos', 1004);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1004);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1004);
 -- group 1005
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Emory', 1005);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1005);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1005);
 -- group 1006
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Arquivo Público do Estado de São Paulo', 1006);
 INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1006);
 
 
 -- -----------------------------------------------------
@@ -116,26 +122,41 @@ DELETE FROM user_group;
 -- add user in a group
 -- PS: When add a user in a group, so the user is added as watcher in all projects of that group
 -- group 1001
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1001, 1001, '2017-01-01', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1001, 1002, '2017-03-25', 'admin', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1001, 1001, '2017-01-01', 'admin', 'joined', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1001, 1002, '2017-03-25', 'admin', 'joined', 1001);
 -- group 1002
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1002, 1001, '2017-05-13', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1002, 1002, '2017-06-13', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1002, 1003, '2017-08-15', FALSE, 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) VALUES (1002, 1004, '2017-12-08', 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1002, 1001, '2017-05-13', 'admin', 'joined', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by)
+VALUES (1002, 1002, '2017-06-13', 'admin', 'joined', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
+VALUES (1002, 1003, '2017-08-15', FALSE, 'joined', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_status, fk_user_id_added_by) 
+VALUES (1002, 1004, '2017-12-08', 'joined', 1002);
 -- group 1003
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1003, 1002, '2017-12-12', 'admin', 1002);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1003, 1003, '2017-12-15', FALSE, 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1003, 1002, '2017-12-12', 'admin', 'joined', 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
+VALUES (1003, 1003, '2017-12-15', FALSE, 'joined', 1002);
 -- group 1004
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1004, 1003, '2017-01-11', 'admin', 1003);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1004, 1004, '2017-05-02', 'admin', 1003);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1004, 1001, '2017-06-15', FALSE, 1004);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1004, 1002, '2017-12-19', FALSE, 1004);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) VALUES (1004, 1005, '2017-12-20', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1004, 1003, '2017-01-11', 'admin', 'joined', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1004, 1004, '2017-05-02', 'admin', 'joined', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
+VALUES (1004, 1001, '2017-06-15', FALSE, 'joined', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
+VALUES (1004, 1002, '2017-12-19', FALSE, 'joined', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_status, fk_user_id_added_by) 
+VALUES (1004, 1005, '2017-12-20', 'joined', 1004);
 -- group 1005
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1005, 1003, '2017-01-10', 'admin', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1005, 1003, '2017-01-10', 'admin', 'joined', 1003);
 -- group 1006
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1006, 1004, '2017-01-10', 'admin', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
+VALUES (1006, 1004, '2017-01-10', 'admin', 'joined', 1004);
 
 
 
