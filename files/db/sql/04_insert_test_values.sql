@@ -114,42 +114,28 @@ INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006);
 DELETE FROM user_group;
 
 -- add user in a group
+-- PS: When add a user in a group, so the user is added as watcher in all projects of that group
 -- group 1001
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1001, 1001, '2017-01-01', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1001, 1002, '2017-03-25', 'admin', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1001, 1001, '2017-01-01', 'admin', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1001, 1002, '2017-03-25', 'admin', 1001);
 -- group 1002
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1002, 1001, '2017-05-13', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1002, 1002, '2017-06-13', 'admin', 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
-VALUES (1002, 1003, '2017-08-15', FALSE, 1001);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) 
-VALUES (1002, 1004, '2017-12-08', 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1002, 1001, '2017-05-13', 'admin', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1002, 1002, '2017-06-13', 'admin', 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1002, 1003, '2017-08-15', FALSE, 1001);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) VALUES (1002, 1004, '2017-12-08', 1002);
 -- group 1003
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1003, 1002, '2017-12-12', 'admin', 1002);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
-VALUES (1003, 1003, '2017-12-15', FALSE, 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1003, 1002, '2017-12-12', 'admin', 1002);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1003, 1003, '2017-12-15', FALSE, 1002);
 -- group 1004
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1004, 1003, '2017-01-11', 'admin', 1003);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1004, 1004, '2017-05-02', 'admin', 1003);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
-VALUES (1004, 1001, '2017-06-15', FALSE, 1004);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
-VALUES (1004, 1002, '2017-12-19', FALSE, 1004);
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) 
-VALUES (1004, 1005, '2017-12-20', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1004, 1003, '2017-01-11', 'admin', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1004, 1004, '2017-05-02', 'admin', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1004, 1001, '2017-06-15', FALSE, 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) VALUES (1004, 1002, '2017-12-19', FALSE, 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, fk_user_id_added_by) VALUES (1004, 1005, '2017-12-20', 1004);
 -- group 1005
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1005, 1003, '2017-01-10', 'admin', 1003);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1005, 1003, '2017-01-10', 'admin', 1003);
 -- group 1006
-INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) 
-VALUES (1006, 1004, '2017-01-10', 'admin', 1004);
+INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, fk_user_id_added_by) VALUES (1006, 1004, '2017-01-10', 'admin', 1004);
 
 
 
@@ -184,6 +170,17 @@ INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'test project', 10
 INSERT INTO project_tag (k, v, fk_project_id) VALUES ('url', 'http://somehost.com', 1002);
 -- project 1003
 INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'hello world', 1003);
+
+
+
+-- -----------------------------------------------------
+-- Table project_watcher
+-- -----------------------------------------------------
+-- clean project_watcher table
+DELETE FROM project_watcher;
+
+-- PS: When add a user in a group, so the user is added as watcher in all projects of that group
+-- because of that, is not necessary add them manually
 
 
 

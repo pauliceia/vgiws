@@ -31,7 +31,7 @@ from requests import exceptions
 from tornado.web import HTTPError
 from tornado.escape import json_encode
 
-from psycopg2 import connect, DatabaseError
+from psycopg2 import connect, DatabaseError, IntegrityError
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
 
@@ -244,17 +244,33 @@ class PGSQLConnection:
         p['can_receive_notification'] = "TRUE" if p['can_receive_notification'] else "FALSE"
 
         query_text = """
-            INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, fk_user_id_added_by) 
-            VALUES ({0}, {1], LOCALTIMESTAMP, {2}, {3})
-        """.format(p['fk_group_id'], p['fk_user_id'], p['can_receive_notification'], p['fk_user_id_added_by'])
+            INSERT INTO user_group (fk_group_id, fk_user_id, added_at, 
+                   can_receive_notification, fk_user_id_added_by) 
+            VALUES ({0}, {1}, LOCALTIMESTAMP, 
+                   {2}, {3})
+        """.format(p['fk_group_id'], p['fk_user_id'],
+                   p['can_receive_notification'], p['fk_user_id_added_by'])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        try:
+            # do the query in database
+            self.__PGSQL_CURSOR__.execute(query_text)
+        except IntegrityError as error:
+            # how the error is of PostgreSQL, so it is necessary do a rollback
+            # to be in a safe state
+            self.rollback()
+
+            # 23505 - unique_violation
+            if error.pgcode == "23505":
+                raise HTTPError(400, "The user_id is already added in group_id")
+
+            raise HTTPError(500, "Undefined Integrity Error. Please, contact the administrator.")
+
+        # return nothing, because is not generated a new ID when put a user in a group
 
         # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+        # result = self.__PGSQL_CURSOR__.fetchone()
+        #
+        # return result
 
     # def add_user_group_tag_in_db(self, k, v, feature_id):
     #     query_text = """
@@ -275,12 +291,13 @@ class PGSQLConnection:
         # put in DB the feature
         self.commit()
 
-    def delete_user_group(self, group_id, user_id):
-        if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+    def delete_user_group(self, group_id=None, user_id=None):
+        if (is_a_invalid_id(group_id) or is_a_invalid_id(user_id)) or \
+                (group_id is None or user_id is None):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            DELETE FROM project_watcher 
+            DELETE FROM user_group 
             WHERE fk_user_id = {0} AND fk_group_id = {1};
         """.format(user_id, group_id)
 

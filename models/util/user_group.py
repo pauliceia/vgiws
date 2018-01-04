@@ -11,12 +11,8 @@ def get_subquery_user_group_table(**kwargs):
     if "group_id" in kwargs and kwargs["group_id"] is not None:
         conditions_of_where.append("fk_group_id = {0}".format(kwargs["group_id"]))
 
-    elif "user_id" in kwargs and kwargs["user_id"] is not None:
+    if "user_id" in kwargs and kwargs["user_id"] is not None:
         conditions_of_where.append("fk_user_id = {0}".format(kwargs["user_id"]))
-
-    else:
-        # default get all features, without where clause
-        pass
 
     # default get all features, without where clause
     where_clause = ""

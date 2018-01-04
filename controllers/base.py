@@ -364,7 +364,10 @@ class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        self.PGSQLConn.delete_user_group(*args)
+        # receive user_id and group_id as argument
+        arguments = self.get_aguments()
+
+        self.PGSQLConn.delete_user_group(**arguments)
 
 
 class BaseHandlerGroup(BaseHandlerTemplateMethod):

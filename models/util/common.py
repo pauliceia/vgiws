@@ -11,8 +11,39 @@ def is_a_invalid_id(feature_id):
     :param feature_id: id of a feature in string format.
     :return: if id is invalid, return True, else False
     """
-    return (feature_id is not None and not feature_id.isdigit()) or \
-           (feature_id is not None and feature_id.isdigit() and feature_id == "0")
+
+    # if the id is None, so it is 'valid', because I can receive a None id, so it is not used
+    if feature_id is None:
+        return False
+
+    # if the id is not string, so it is invalid
+    if not isinstance(feature_id, str):
+        return True
+
+    # if feature_id is not a digit, so it is invalid
+    if not feature_id.isdigit():
+        return True
+
+    # if feature_id is digit and is 0, so it is invalid
+    if (feature_id.isdigit()) and (feature_id == "0"):
+        return True
+
+    # so it is VALID
+    return False
+
+    # # if feature_id is None or is not a digit, so it is invalid
+    # if (feature_id is None) or (not feature_id.isdigit()):
+    #     return True
+    #
+    # # if feature_id is digit and is 0, so it is invalid
+    # if (feature_id.isdigit()) and (feature_id == "0"):
+    #     return True
+    #
+    # # so it is VALID
+    # return False
+
+    # return (feature_id is not None and not feature_id.isdigit()) or \
+    #        (feature_id is not None and feature_id.isdigit() and feature_id == "0")
 
 
 def are_arguments_valid_to_get_elements(**arguments):
