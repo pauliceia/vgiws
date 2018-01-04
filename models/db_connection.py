@@ -208,6 +208,7 @@ class PGSQLConnection:
                         'fk_user_id',               fk_user_id,
                         'added_at',                 to_char(added_at, 'YYYY-MM-DD HH24:MI:SS'),                    
                         'group_permission',         group_permission,
+                        'group_status',             group_status,
                         'can_receive_notification', can_receive_notification,
                         'fk_user_id_added_by',      fk_user_id_added_by                        
                     )

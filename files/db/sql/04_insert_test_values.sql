@@ -120,7 +120,11 @@ INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1006);
 DELETE FROM user_group;
 
 -- add user in a group
+
 -- PS: When add a user in a group, so the user is added as watcher in all projects of that group
+-- group_permission: member (default) / admin (if created the group)
+-- group_status: pending (default, if group is private, wait to accept) / joined (if created the group or if group is public)
+
 -- group 1001
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
 VALUES (1001, 1001, '2017-01-01', 'admin', 'joined', 1001);
@@ -134,12 +138,12 @@ VALUES (1002, 1002, '2017-06-13', 'admin', 'joined', 1001);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
 VALUES (1002, 1003, '2017-08-15', FALSE, 'joined', 1001);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_status, fk_user_id_added_by) 
-VALUES (1002, 1004, '2017-12-08', 'joined', 1002);
+VALUES (1002, 1004, '2017-12-08', 'pending', 1002);
 -- group 1003
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
 VALUES (1003, 1002, '2017-12-12', 'admin', 'joined', 1002);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
-VALUES (1003, 1003, '2017-12-15', FALSE, 'joined', 1002);
+VALUES (1003, 1003, '2017-12-15', FALSE, 'pending', 1002);
 -- group 1004
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
 VALUES (1004, 1003, '2017-01-11', 'admin', 'joined', 1003);
@@ -148,9 +152,9 @@ VALUES (1004, 1004, '2017-05-02', 'admin', 'joined', 1003);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
 VALUES (1004, 1001, '2017-06-15', FALSE, 'joined', 1004);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, can_receive_notification, group_status, fk_user_id_added_by) 
-VALUES (1004, 1002, '2017-12-19', FALSE, 'joined', 1004);
+VALUES (1004, 1002, '2017-12-19', FALSE, 'pending', 1004);
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_status, fk_user_id_added_by) 
-VALUES (1004, 1005, '2017-12-20', 'joined', 1004);
+VALUES (1004, 1005, '2017-12-20', 'pending', 1004);
 -- group 1005
 INSERT INTO user_group (fk_group_id, fk_user_id, added_at, group_permission, group_status, fk_user_id_added_by) 
 VALUES (1005, 1003, '2017-01-10', 'admin', 'joined', 1003);

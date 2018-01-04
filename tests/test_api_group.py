@@ -208,91 +208,106 @@ class TestAPIUserGroup(TestCase):
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'admin', 'fk_group_id': 1001,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-03-25 00:00:00', 'fk_user_id': 1002,
                                    'group_permission': 'admin', 'fk_group_id': 1001,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-05-13 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'admin', 'fk_group_id': 1002,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-06-13 00:00:00', 'fk_user_id': 1002,
                                    'group_permission': 'admin', 'fk_group_id': 1002,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-08-15 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'member', 'fk_group_id': 1002,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-08 00:00:00', 'fk_user_id': 1004,
                                    'group_permission': 'member', 'fk_group_id': 1002,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1002}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1002,
+                                   'group_status': 'pending'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-12 00:00:00', 'fk_user_id': 1002,
                                    'group_permission': 'admin', 'fk_group_id': 1003,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1002}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1002,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-15 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'member', 'fk_group_id': 1003,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1002}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1002,
+                                   'group_status': 'pending'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-06-15 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-19 00:00:00', 'fk_user_id': 1002,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'pending'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-11 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'admin', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-05-02 00:00:00', 'fk_user_id': 1004,
                                    'group_permission': 'admin', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-20 00:00:00', 'fk_user_id': 1005,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'pending'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-10 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'admin', 'fk_group_id': 1005,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-10 00:00:00', 'fk_user_id': 1004,
                                    'group_permission': 'admin', 'fk_group_id': 1006,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'joined'}
                 }
             ]
         }
@@ -307,31 +322,36 @@ class TestAPIUserGroup(TestCase):
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-06-15 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-19 00:00:00', 'fk_user_id': 1002,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'pending'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-11 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'admin', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-05-02 00:00:00', 'fk_user_id': 1004,
                                    'group_permission': 'admin', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1003,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-20 00:00:00', 'fk_user_id': 1005,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'pending'}
                 }
             ]
         }
@@ -346,19 +366,22 @@ class TestAPIUserGroup(TestCase):
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'admin', 'fk_group_id': 1001,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-05-13 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'admin', 'fk_group_id': 1002,
-                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001}
+                                   'can_receive_notification': True, 'fk_user_id_added_by': 1001,
+                                   'group_status': 'joined'}
                 },
                 {
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-06-15 00:00:00', 'fk_user_id': 1001,
                                    'group_permission': 'member', 'fk_group_id': 1004,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1004,
+                                   'group_status': 'joined'}
                 }
             ]
         }
@@ -377,7 +400,8 @@ class TestAPIUserGroup(TestCase):
                     'type': 'UserGroup',
                     'properties': {'added_at': '2017-12-15 00:00:00', 'fk_user_id': 1003,
                                    'group_permission': 'member', 'fk_group_id': 1003,
-                                   'can_receive_notification': False, 'fk_user_id_added_by': 1002}
+                                   'can_receive_notification': False, 'fk_user_id_added_by': 1002,
+                                   'group_status': 'pending'}
                 }
             ]
         }
