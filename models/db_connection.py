@@ -26,7 +26,8 @@
 """
 
 from abc import ABCMeta
-from requests import exceptions
+from requests import exceptions, Session
+from json import loads, dumps
 
 from tornado.web import HTTPError
 from tornado.escape import json_encode
@@ -35,14 +36,11 @@ from psycopg2 import connect, DatabaseError, IntegrityError
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
 
-from json import loads, dumps
-from requests import Session
-
-from base64 import b64encode
+from modules.common import get_username_and_password_as_string_in_base64
+from modules.design_pattern import Singleton
 
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__, \
                                 __NEO4J_CONNECTION_SETTINGS__, __DEBUG_NEO4J_CONNECTION_SETTINGS__
-from modules.design_pattern import Singleton
 
 from .util import *
 
@@ -317,12 +315,13 @@ class PGSQLConnection:
     # group
     ################################################################################
 
-    def get_group(self, group_id=None, user_id=None):
+    def get_group(self, group_id=None, user_id=None, group_status=None):
         # the id have to be a int
         if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_group_table(group_id=group_id, user_id=user_id)
+        subquery = get_subquery_group_table(group_id=group_id, user_id=user_id,
+                                            group_status=group_status)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -1225,10 +1224,6 @@ class PGSQLConnection:
         return id_in_json
 
 
-
-
-
-
 @Singleton
 class Neo4JConnection(BaseDBConnection):
 
@@ -1253,9 +1248,11 @@ class Neo4JConnection(BaseDBConnection):
         # create a session to do the requests
         self.session = Session()
 
-        username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
+        # username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
+        # string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
 
-        string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+        string_in_base64 = get_username_and_password_as_string_in_base64(__connection_settings__["USERNAME"],
+                                                                         __connection_settings__["PASSWORD"])
 
         self.headers = {'Content-type': 'application/json',
                         'Accept': 'application/json; charset=UTF-8',

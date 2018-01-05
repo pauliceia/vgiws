@@ -282,7 +282,7 @@ class TestAPINotification(TestCase):
 
     def test_get_api_notification_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create a notification
         feature = {
@@ -344,7 +344,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_notification_delete_error_400_bad_request("abc")
         self.tester.api_notification_delete_error_400_bad_request(0)
@@ -368,7 +368,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_notification_delete_error_404_not_found("5000")
         self.tester.api_notification_delete_error_404_not_found("5001")

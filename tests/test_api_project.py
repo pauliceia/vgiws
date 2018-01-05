@@ -108,7 +108,7 @@ class TestAPIProject(TestCase):
 
     def test_get_api_project_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create a project
         feature = {
@@ -167,7 +167,7 @@ class TestAPIProjectErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_project_delete_error_400_bad_request("abc")
         self.tester.api_project_delete_error_400_bad_request(0)
@@ -191,7 +191,7 @@ class TestAPIProjectErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_project_delete_error_404_not_found("5000")
         self.tester.api_project_delete_error_404_not_found("5001")

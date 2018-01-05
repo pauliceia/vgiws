@@ -4,6 +4,8 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
+# from modules.common import get_username_and_password_as_string_in_base64
+
 
 class TestAPIGroup(TestCase):
 
@@ -100,7 +102,7 @@ class TestAPIGroup(TestCase):
 
     def test_get_api_group_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create a group
         feature = {
@@ -159,7 +161,7 @@ class TestAPIGroupErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_group_delete_error_400_bad_request("abc")
         self.tester.api_group_delete_error_400_bad_request(0)
@@ -183,7 +185,7 @@ class TestAPIGroupErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_group_delete_error_404_not_found("5000")
         self.tester.api_group_delete_error_404_not_found("5001")
@@ -410,9 +412,48 @@ class TestAPIUserGroup(TestCase):
 
     # user group - create and delete
 
+    # def test_get_api_user_group_create_and_delete(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login_fake()
+    # 
+    #     # create user in a group that can receive notification
+    #     feature = {
+    #         'type': 'UserGroup',
+    #         'properties': {'fk_user_id': 1004, 'fk_group_id': 1003,
+    #                        'can_receive_notification': True, 'fk_user_id_added_by': 1002}
+    #     }
+    # 
+    #     self.tester.api_user_group_create(feature)
+    # 
+    #     # get the id of feature to REMOVE it
+    #     user_id = feature["properties"]["fk_user_id"]
+    #     group_id = feature["properties"]["fk_group_id"]
+    # 
+    #     # REMOVE THE group AFTER THE TESTS
+    #     self.tester.api_user_group_delete(user_id=user_id, group_id=group_id)
+    # 
+    #     # create user in a group that cannot receive notification
+    #     feature = {
+    #         'type': 'UserGroup',
+    #         'properties': {'fk_user_id': 1002, 'fk_group_id': 1005,
+    #                        'can_receive_notification': False, 'fk_user_id_added_by': 1003}
+    #     }
+    # 
+    #     self.tester.api_user_group_create(feature)
+    # 
+    #     # get the id of feature to REMOVE it
+    #     user_id = feature["properties"]["fk_user_id"]
+    #     group_id = feature["properties"]["fk_group_id"]
+    # 
+    #     # REMOVE THE group AFTER THE TESTS
+    #     self.tester.api_user_group_delete(user_id=user_id, group_id=group_id)
+    # 
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+
     def test_get_api_user_group_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create user in a group that can receive notification
         feature = {
@@ -505,7 +546,7 @@ class TestAPIUserGroupErrors(TestCase):
         """
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create user in a group that can receive notification
         feature = {
@@ -535,7 +576,7 @@ class TestAPIUserGroupErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_user_group_delete_error_400_bad_request(user_id="abc", group_id="0")
         self.tester.api_user_group_delete_error_400_bad_request(user_id=0, group_id="abc")
@@ -567,7 +608,7 @@ class TestAPIUserGroupErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_user_group_delete_error_404_not_found(user_id="998", group_id="998")
         self.tester.api_user_group_delete_error_404_not_found(user_id="1001", group_id="998")

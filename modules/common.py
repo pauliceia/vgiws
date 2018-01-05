@@ -3,6 +3,7 @@
 
 
 from datetime import datetime
+from base64 import b64encode
 
 
 def get_current_datetime(formatted=True):
@@ -13,6 +14,13 @@ def get_current_datetime(formatted=True):
 
     return now
 
+
+def get_username_and_password_as_string_in_base64(username, password):
+    username_and_password = username + ":" + password
+
+    string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+
+    return string_in_base64
 
 
 # from copy import deepcopy

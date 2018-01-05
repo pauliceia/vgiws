@@ -265,7 +265,7 @@ class TestAPIChangeset(TestCase):
 
     def test_get_api_changeset_create_close_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         feature = {
             'tags': [{'k': 'created_by', 'v': 'test_api'},
@@ -325,7 +325,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_changeset_close_error_400_bad_request("abc")
         self.tester.api_changeset_close_error_400_bad_request(0)
@@ -349,7 +349,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_changeset_close_error_404_not_found("5000")
         self.tester.api_changeset_close_error_404_not_found("5001")
@@ -364,7 +364,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_changeset_delete_error_400_bad_request("abc")
         self.tester.api_changeset_delete_error_400_bad_request(0)
@@ -388,7 +388,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_changeset_delete_error_404_not_found("5000")
         self.tester.api_changeset_delete_error_404_not_found("5001")

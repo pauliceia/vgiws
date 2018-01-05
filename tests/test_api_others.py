@@ -38,7 +38,7 @@ class TestAPISessionUser(TestCase):
         }
 
         # DO LOGIN BEFORE THE TEST
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_session_user(expected_at_least)
 

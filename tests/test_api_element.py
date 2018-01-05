@@ -356,7 +356,7 @@ class TestAPIElement(TestCase):
 
     def test_get_api_element_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # CREATE A CHANGESET
         changeset = {
@@ -463,7 +463,7 @@ class TestAPIElementErrors(TestCase):
 
     def test_get_api_element_create_400_bad_request(self):
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # ADD ELEMENTS
         point = {
@@ -589,7 +589,7 @@ class TestAPIElementErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_element_delete_error_400_bad_request("point", element_id="abc")
         self.tester.api_element_delete_error_400_bad_request("line", element_id=0)
@@ -613,7 +613,7 @@ class TestAPIElementErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         self.tester.api_element_delete_error_404_not_found("point", element_id="5000")
         self.tester.api_element_delete_error_404_not_found("line", element_id="5001")

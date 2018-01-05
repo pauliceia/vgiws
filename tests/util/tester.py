@@ -22,7 +22,12 @@ class UtilTester:
 
     # login and logout
 
-    def auth_login(self):
+    # def auth_login(self):
+    #     response = self.session.get(self.URL + '/auth/login/fake/')
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+
+    def auth_login_fake(self):
         response = self.session.get(self.URL + '/auth/login/fake/')
 
         self.ut_self.assertEqual(response.status_code, 200)

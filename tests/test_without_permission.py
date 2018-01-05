@@ -114,7 +114,7 @@ class TestAPIWihoutLogin(TestCase):
 
     def test_api_create_changeset_with_and_without_login(self):
             # DO LOGIN
-            self.tester.auth_login()
+            self.tester.auth_login_fake()
 
             # CREATE A CHANGESET
             changeset = {

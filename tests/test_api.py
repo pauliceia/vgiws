@@ -13,7 +13,7 @@ class TestAPI(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN BEFORE THE TESTS
-        self.tester.auth_login()
+        self.tester.auth_login_fake()
 
         # create a project
         project = {

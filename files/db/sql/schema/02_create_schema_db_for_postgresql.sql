@@ -1,5 +1,5 @@
 
--- Qui 04 Jan 2018 19:22:27 -02
+-- Sex 05 Jan 2018 16:07:39 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS user_ (
   id SERIAL ,
   email VARCHAR(45) NOT NULL UNIQUE,
   username VARCHAR(45) NOT NULL,
-  password VARCHAR(45) NOT NULL,
+  password VARCHAR(255) NOT NULL,
   is_email_valid BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
