@@ -7,6 +7,26 @@ from requests import Session
 
 from .common import *
 
+from copy import deepcopy
+
+
+# from modules.common import get_username_and_password_as_string_in_base64
+
+from base64 import b64encode
+from hashlib import sha512
+
+
+def get_username_and_password_as_string_in_base64(username, password):
+    username_and_password = username + ":" + password
+
+    string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+
+    return string_in_base64
+
+
+def get_string_in_hash_sha512(string):
+    return sha512(string.encode()).hexdigest()
+
 
 class UtilTester:
 
@@ -14,7 +34,8 @@ class UtilTester:
         # create a session, simulating a browser. It is necessary to create cookies on server
         self.session = Session()
         # headers
-        self.headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        # self.headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+        self.headers = {'Content-type': 'application/json', 'Accept': 'application/json; charset=UTF-8'}
         # unittest self
         self.ut_self = ut_self
 
@@ -22,10 +43,23 @@ class UtilTester:
 
     # login and logout
 
-    # def auth_login(self):
-    #     response = self.session.get(self.URL + '/auth/login/fake/')
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
+    def auth_login(self, email, password):
+
+        password = get_string_in_hash_sha512(password)
+
+        email_and_password_in_base64 = get_username_and_password_as_string_in_base64(email, password)
+
+        # self.headers = {'Content-type': 'application/json',
+        #                 'Accept': 'application/json; charset=UTF-8',
+        #                 'Authorization': 'Basic ' + username_and_password_in_base64}
+
+        headers = deepcopy(self.headers)
+
+        headers["Authorization"] = "Basic " + email_and_password_in_base64
+
+        response = self.session.get(self.URL + '/auth/login/', headers=headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_login_fake(self):
         response = self.session.get(self.URL + '/auth/login/fake/')

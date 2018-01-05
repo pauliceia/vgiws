@@ -4,8 +4,6 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
-# from modules.common import get_username_and_password_as_string_in_base64
-
 
 class TestAPIGroup(TestCase):
 

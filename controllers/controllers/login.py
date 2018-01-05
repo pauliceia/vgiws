@@ -5,6 +5,8 @@
     Responsible module to create controllers.
 """
 
+from base64 import b64decode
+
 from ..base import *
 
 from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
@@ -72,6 +74,31 @@ class FakeAuthLoginHandler(BaseHandler):
         }
 
         self.login(user_json)
+
+        # Default: self.set_header('Content-Type', 'application/json')
+        self.write(json_encode({}))
+
+
+class AuthLoginHandler(BaseHandler):
+
+    urls = [r"/auth/login/", r"/auth/login"]
+
+    def get(self):
+
+        auth_header = self.request.headers.get('Authorization')
+
+        if auth_header is None or not auth_header.startswith('Basic '):
+            self.set_status(401)
+            self.set_header('WWW-Authenticate', 'Basic realm=Restricted')
+            self._transforms = []
+            self.finish()
+            return False
+
+        auth_decoded = (b64decode(auth_header[6:])).decode()
+
+        email, password = auth_decoded.split(':', 2)
+
+        self.auth_login(email, password)
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode({}))

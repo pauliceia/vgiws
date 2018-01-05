@@ -137,6 +137,16 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
+    def auth_login(self, email, password):
+
+        user_in_db = self.PGSQLConn.get_users(email=email, password=password)
+
+        # get the only one user in list returned
+        user_in_db = user_in_db["features"][0]
+
+        # insert the user in cookie
+        self.set_current_user(user=user_in_db, new_user=True)
+
     def login(self, user_json):
         # looking for a user in db, if not exist user, so create a new one
         # user_in_db = self.PGSQLConn.get_user_in_db(user["email"])

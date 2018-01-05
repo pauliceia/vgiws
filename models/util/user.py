@@ -11,6 +11,10 @@ def get_subquery_user_table(**kwargs):
     elif "email" in kwargs and kwargs["email"] is not None:
         conditions_of_where.append("email = '{0}'".format(kwargs["email"]))
 
+        # if put email and password, so they are trying do a login
+        if "password" in kwargs and kwargs["password"] is not None:
+            conditions_of_where.append("password = '{0}'".format(kwargs["password"]))
+
     # default get all features, without where clause
     where_clause = ""
 
