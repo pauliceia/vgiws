@@ -28,6 +28,20 @@ VALUES (1004, 'rafael', 'rafael@admin.com', 'c5663337df01fe3ab80478e78963534956a
 INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
 VALUES (1005, 'gabriel', 'gabriel@admin.com', '5dbe7d079067809bb06f7c80de78ecb9d914f5735265148cd704f85353fc0b5114ebbfc960539cd3f430e7b12eb3fdc261726bb756bab9658c6db6a302913df1', '2017-09-20', FALSE, FALSE);
 
+-- password - fernanda
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
+VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda', '2017-01-19', TRUE, FALSE, FALSE);
+
+-- password - ana
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
+VALUES (1007, 'ana', 'ana@gmail.com', 'ana', '2017-01-18', FALSE, TRUE, FALSE);
+
+-- password - bea
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
+VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', FALSE, FALSE, FALSE);
+
+
+--select * from user_;
 
 -- -----------------------------------------------------
 -- Table user_tag

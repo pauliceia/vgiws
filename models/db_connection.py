@@ -1168,19 +1168,6 @@ class PGSQLConnection:
 
         return results_of_query
 
-    # def get_user_in_db(self, email):
-    #     query_text = """
-    #         SELECT id, username, email FROM user_ WHERE email='{0}';
-    #         """.format(email)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     result = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     return result
-
     def add_user_in_db(self, properties):
         p = properties
 
@@ -1223,6 +1210,26 @@ class PGSQLConnection:
 
         return id_in_json
 
+    # delete user
+
+    def delete_user(self, feature_id):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            UPDATE user_ SET visible = FALSE, removed_at = LOCALTIMESTAMP
+            WHERE id={0};
+        """.format(feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
 @Singleton
 class Neo4JConnection(BaseDBConnection):

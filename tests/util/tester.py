@@ -71,6 +71,13 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
+    # logout error
+
+    def auth_logout_404_not_found(self):
+        response = self.session.get(self.URL + '/auth/logout')
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # USER
 
     def api_user(self, expected=None, expected_at_least=None, **arguments):
@@ -88,6 +95,22 @@ class UtilTester:
         elif expected_at_least is not None:
             self.compare_sets(expected_at_least, resulted)
 
+    def api_user_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/user/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # put the id received in the original JSON of changeset
+        feature_json["properties"]["id"] = resulted["id"]
+
+        return feature_json
+
     # user errors - get
 
     def api_user_error_400_bad_request(self, **arguments):
@@ -101,6 +124,23 @@ class UtilTester:
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # user errors - delete
+
+    def api_user_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_user_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 404)
 

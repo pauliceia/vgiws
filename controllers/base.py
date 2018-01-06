@@ -170,7 +170,7 @@ class BaseHandler(RequestHandler):
     def logout(self):
         # if there is no user logged, so raise a exception
         if not self.get_current_user():
-            raise HTTPError(400, "There is no user to logout.")
+            raise HTTPError(404, "Not found any user to logout.")
 
         # if there is a user logged, so remove it from cookie
         self.clear_cookie("user")
@@ -293,7 +293,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         current_user_id = self.get_current_user_id()
 
         try:
-            # json_with_id = self.PGSQLConn.create_layer(feature_json, current_user_id)
             json_with_id = self._create_feature(feature_json, current_user_id)
         except DataError as error:
             # print("Error: ", error)
@@ -360,14 +359,23 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
 
-    def _create_feature(self, *args, **kwargs):
-        raise NotImplementedError
+    def _create_feature(self, feature_json, current_user_id):
+        return self.PGSQLConn.create_user(feature_json)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        raise NotImplementedError
+        # TODO: one user just can delete itself or if the user is a admin
+        user_id = args[0]
+
+        self.PGSQLConn.delete_user(user_id)
+
+        current_user_id = self.get_current_user_id()
+
+        # If the user delete itself (the owner of account), so logout it
+        if current_user_id == user_id:
+            self.logout()
 
 
 class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
@@ -536,7 +544,7 @@ class BaseHandlerThemeTree(BaseHandlerTemplateMethod):
     def _get_feature(self, *args, **kwargs):
         return self.Neo4JConn.get_theme_tree()
 
-    def _create_feature(self, *args, **kwargs):
+    def _create_feature(self, feature_json, current_user_id):
         raise NotImplementedError
 
     def _update_feature(self, *args, **kwargs):

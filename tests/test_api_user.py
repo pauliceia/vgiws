@@ -74,6 +74,33 @@ class TestAPIUser(TestCase):
 
         self.tester.api_user(expected, user_id="1002")
 
+    # user - create and delete
+
+    def test_get_api_user_create_and_delete(self):
+        # create a feature
+        feature = {
+            'type': 'User',
+            'tags': [],
+            'properties': {'id': -1, 'email': 'roger@roger.com', 'password': 'roger', 'username': ''}
+        }
+
+        feature = self.tester.api_user_create(feature)
+
+        email = feature["properties"]["email"]
+        password = feature["properties"]["password"]
+
+        # login with the user created
+        self.tester.auth_login(email, password)
+
+        # get the id of feature to REMOVE it
+        feature_id = feature["properties"]["id"]
+
+        # remove the user created
+        self.tester.api_user_delete(feature_id)
+
+        # when the user delete itself, it is automatically logout, because of that, raise a 404
+        self.tester.auth_logout_404_not_found()
+
 
 class TestAPIUserErrors(TestCase):
 
@@ -94,6 +121,44 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_error_404_not_found(user_id="999")
         self.tester.api_user_error_404_not_found(user_id="998")
 
+    # user errors - delete
+
+    def test_delete_api_user_error_400_bad_request(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login_fake()
+
+        self.tester.api_user_delete_error_400_bad_request("abc")
+        self.tester.api_user_delete_error_400_bad_request(0)
+        self.tester.api_user_delete_error_400_bad_request(-1)
+        self.tester.api_user_delete_error_400_bad_request("-1")
+        self.tester.api_user_delete_error_400_bad_request("0")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_user_error_403_forbidden(self):
+        self.tester.api_user_delete_error_403_forbidden("abc")
+        self.tester.api_user_delete_error_403_forbidden(0)
+        self.tester.api_user_delete_error_403_forbidden(-1)
+        self.tester.api_user_delete_error_403_forbidden("-1")
+        self.tester.api_user_delete_error_403_forbidden("0")
+        self.tester.api_user_delete_error_403_forbidden("1001")
+
+    def test_delete_api_user_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login_fake()
+
+        self.tester.api_user_delete_error_404_not_found("5000")
+        self.tester.api_user_delete_error_404_not_found("5001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

@@ -1,5 +1,5 @@
 
--- Sex 05 Jan 2018 16:07:39 -02
+-- Sex 05 Jan 2018 17:59:55 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS user_ (
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
+  visible BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (id)
 );
 

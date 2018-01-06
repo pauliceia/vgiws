@@ -6,7 +6,7 @@
 """
 
 
-from ..base import BaseHandlerUser
+from ..base import BaseHandlerUser, auth_non_browser_based
 
 
 # USER
@@ -20,3 +20,10 @@ class APIUser(BaseHandlerUser):
     def get(self, param=None):
         # self.get_method_api_user()
         self.get_method_api_feature()
+
+    def put(self, param=None):
+        self.put_method_api_feature(param)
+
+    @auth_non_browser_based
+    def delete(self, param=None):
+        self.delete_method_api_feature(param)
