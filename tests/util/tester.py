@@ -96,8 +96,14 @@ class UtilTester:
             self.compare_sets(expected_at_least, resulted)
 
     def api_user_create(self, feature_json):
+        # create a copy to send to server (with the password encrypted)
+        feature_json_copy = deepcopy(feature_json)
+
+        # cryptography the password before to send
+        feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
+
         response = self.session.put(self.URL + '/api/user/create/',
-                                    data=dumps(feature_json), headers=self.headers)
+                                    data=dumps(feature_json_copy), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -110,6 +116,11 @@ class UtilTester:
         feature_json["properties"]["id"] = resulted["id"]
 
         return feature_json
+
+    def api_user_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     # user errors - get
 

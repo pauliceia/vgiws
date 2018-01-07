@@ -5,6 +5,16 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
+from string import ascii_uppercase, digits
+from random import choice
+
+
+def generate_random_string(size=6, chars=ascii_uppercase + digits):
+    """
+    Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+    """
+    return ''.join(choice(chars) for _ in range(size))
+
 
 class TestAPIUser(TestCase):
 
@@ -77,11 +87,15 @@ class TestAPIUser(TestCase):
     # user - create and delete
 
     def test_get_api_user_create_and_delete(self):
+        # create a fake email to avoid the error when exist the same email in DB
+        email = generate_random_string() + "@roger.com"
+
         # create a feature
         feature = {
             'type': 'User',
             'tags': [],
-            'properties': {'id': -1, 'email': 'roger@roger.com', 'password': 'roger', 'username': ''}
+            'properties': {'id': -1, 'email': email,
+                           'password': 'roger', 'username': 'roger'}
         }
 
         feature = self.tester.api_user_create(feature)

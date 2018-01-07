@@ -374,7 +374,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         current_user_id = self.get_current_user_id()
 
         # If the user delete itself (the owner of account), so logout it
-        if current_user_id == user_id:
+        if current_user_id == int(user_id):
             self.logout()
 
 

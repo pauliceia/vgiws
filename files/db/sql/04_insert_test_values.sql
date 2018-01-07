@@ -41,7 +41,7 @@ INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, te
 VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', FALSE, FALSE, FALSE);
 
 
---select * from user_;
+select * from user_;
 
 -- -----------------------------------------------------
 -- Table user_tag

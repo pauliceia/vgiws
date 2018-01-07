@@ -1177,8 +1177,19 @@ class PGSQLConnection:
             RETURNING id;
         """.format(p["email"], p["username"], p["password"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        try:
+            # do the query in database
+            self.__PGSQL_CURSOR__.execute(query_text)
+        except IntegrityError as error:
+            # how the error is of PostgreSQL, so it is necessary do a rollback
+            # to be in a safe state
+            self.rollback()
+
+            # 23505 - unique_violation
+            if error.pgcode == "23505":
+                raise HTTPError(400, "This email already exist in DB.")
+
+            raise HTTPError(500, "Undefined Integrity Error. Please, contact the administrator.")
 
         # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
