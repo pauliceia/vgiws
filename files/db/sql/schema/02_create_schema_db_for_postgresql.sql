@@ -1,5 +1,5 @@
 
--- Sex 05 Jan 2018 17:59:55 -02
+-- Dom 14 Jan 2018 15:25:58 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -243,41 +243,6 @@ CREATE TABLE IF NOT EXISTS point_tag (
   CONSTRAINT fk_point_tag_point1
     FOREIGN KEY (fk_point_id , fk_point_version)
     REFERENCES point (id , version)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table user_comment
--- -----------------------------------------------------
-DROP TABLE IF EXISTS user_comment CASCADE ;
-
-CREATE TABLE IF NOT EXISTS user_comment (
-  id SERIAL ,
-  body TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NULL,
-  removed_at TIMESTAMP NULL,
-  is_read BOOLEAN NOT NULL DEFAULT FALSE,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_user_id_from INT NOT NULL,
-  fk_user_id_to INT NOT NULL,
-  fk_comment_id_parent INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_message_user1
-    FOREIGN KEY (fk_user_id_from)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_user_message_user_1
-    FOREIGN KEY (fk_user_id_to)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_user_message_user_message1
-    FOREIGN KEY (fk_comment_id_parent)
-    REFERENCES user_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -554,11 +519,11 @@ CREATE TABLE IF NOT EXISTS project_tag (
 
 
 -- -----------------------------------------------------
--- Table layer_comment
+-- Table layer_review
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_comment CASCADE ;
+DROP TABLE IF EXISTS layer_review CASCADE ;
 
-CREATE TABLE IF NOT EXISTS layer_comment (
+CREATE TABLE IF NOT EXISTS layer_review (
   id SERIAL ,
   body TEXT NOT NULL,
   create_at TIMESTAMP NOT NULL,
@@ -567,7 +532,7 @@ CREATE TABLE IF NOT EXISTS layer_comment (
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
-  fk_comment_id_parent INT NOT NULL,
+  fk_review_id_parent INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_review_layer1
     FOREIGN KEY (fk_layer_id)
@@ -580,8 +545,8 @@ CREATE TABLE IF NOT EXISTS layer_comment (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_comment_layer_comment1
-    FOREIGN KEY (fk_comment_id_parent)
-    REFERENCES layer_comment (id)
+    FOREIGN KEY (fk_review_id_parent)
+    REFERENCES layer_review (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -600,7 +565,7 @@ CREATE TABLE IF NOT EXISTS layer_comment_award (
   PRIMARY KEY (k, fk_comment_id),
   CONSTRAINT fk_layer_comment_tag_layer_comment1
     FOREIGN KEY (fk_comment_id)
-    REFERENCES layer_comment (id)
+    REFERENCES layer_review (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_comment_award_user_1

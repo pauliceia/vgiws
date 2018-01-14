@@ -528,16 +528,6 @@ class TestAPIUserGroupErrors(TestCase):
 
     # group errors - create
 
-    def test_put_api_user_group_create_error_403_forbidden(self):
-        feature = {
-            'type': 'group',
-            'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'k': 'name', 'v': 'test group'},
-                     {'k': 'url', 'v': 'http://somehost.com'}]
-        }
-
-        self.tester.api_user_group_create_error_403_forbidden(feature)
-
     def test_put_api_user_group_create_error_400_bad_request(self):
         """
         The user_id is already added in group_id
@@ -566,6 +556,15 @@ class TestAPIUserGroupErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+
+    def test_put_api_user_group_create_error_403_forbidden(self):
+        feature = {
+            'type': 'UserGroup',
+            'properties': {'fk_user_id': 1003, 'fk_group_id': 1003,
+                           'can_receive_notification': True, 'fk_user_id_added_by': 1002}
+        }
+
+        self.tester.api_user_group_create_error_403_forbidden(feature)
 
     # group errors - delete
 
