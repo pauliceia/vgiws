@@ -90,7 +90,8 @@ class BaseHandler(RequestHandler):
         # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
 
         self.set_header("Access-Control-Allow-Origin", "http://localhost:8080")
-        self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
+        self.set_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+        self.set_header('Access-Control-Allow-Methods', ' POST, GET, PUT, DELETE, OPTIONS')
         self.set_header("Access-Control-Allow-Credentials", "true")
 
         # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, x-requested-with")
@@ -100,6 +101,7 @@ class BaseHandler(RequestHandler):
         """
         This method is necessary to do the CORS works.
         """
+        print("entrei no options (vai que) '-'")
         # no body
         self.set_status(204)
         self.finish()
