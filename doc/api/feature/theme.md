@@ -1,5 +1,6 @@
 ## Theme
 
+The layer themes are saved in a Neo4j database. To access the Neo4j, use: ```http://localhost:7474/browser/```
 
 ### GET /api/theme/tree
 
