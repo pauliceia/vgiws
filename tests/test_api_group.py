@@ -92,8 +92,7 @@ class TestAPIGroup(TestCase):
         feature = {
             'type': 'Group',
             'properties': {'id': -1, 'fk_user_id': 1002},
-            'tags': [{'k': 'description', 'v': 'group of my institution'},
-                     {'k': 'name', 'v': 'VS'}]
+            'tags': {'description': 'group of my institution', 'name': 'VS'}
         }
 
         feature = self.tester.api_group_create(feature)

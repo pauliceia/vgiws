@@ -19,8 +19,7 @@ class TestAPI(TestCase):
         project = {
             'type': 'Project',
             'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'k': 'name', 'v': 'test project'},
-                     {'k': 'url', 'v': 'http://somehost.com'}]
+            'tags': {'name': 'test project', 'url': 'http://somehost.com'}
         }
         self.project = self.tester.api_project_create(project)
 
@@ -28,9 +27,7 @@ class TestAPI(TestCase):
 
         # CREATE A layer FOR ALL TESTS
         layer = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'name', 'v': 'layer of data'},
-                     {'k': 'description', 'v': 'description of the layer'}],
+            'tags': {'created_by': 'test_api', 'name': 'layer of data', 'description': 'description of the layer'},
             'properties': {'id': -1, 'fk_project_id': project_id},
             'type': 'Layer'
         }
@@ -58,8 +55,7 @@ class TestAPI(TestCase):
 
         # CREATE A CHANGESET
         changeset = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': -1, "fk_layer_id": fk_layer_id},
             'type': 'Changeset'
         }
@@ -151,8 +147,7 @@ class TestAPI(TestCase):
         # CREATE A CHANGESET
         # send a JSON with the changeset to create a new one
         changeset = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': -1, "fk_layer_id": fk_layer_id},
             'type': 'Changeset'
         }

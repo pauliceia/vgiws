@@ -251,8 +251,7 @@ class TestAPIChangeset(TestCase):
         self.tester.auth_login_fake()
 
         feature = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
 

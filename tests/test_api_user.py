@@ -93,7 +93,7 @@ class TestAPIUser(TestCase):
         # create a feature
         feature = {
             'type': 'User',
-            'tags': [],
+            'tags': {},
             'properties': {'id': -1, 'email': email,
                            'password': 'roger', 'username': 'roger'}
         }

@@ -360,8 +360,7 @@ class TestAPIElement(TestCase):
 
         # CREATE A CHANGESET
         changeset = {
-            'tags': [{'k': 'comment', 'v': 'testing create changeset'},
-                     {'k': 'created_by', 'v': 'test_api'}],
+            'tags': {'comment': 'testing create changeset', 'created_by': 'test_api'},
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
         }

@@ -93,9 +93,7 @@ class TestAPILayer(TestCase):
 
         # create a layer
         feature = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'description', 'v': 'description of the layer'},
-                     {'k': 'name', 'v': 'layer of data'}],
+            'tags': {'created_by': 'test_api', 'description': 'description of the layer', 'name': 'layer of data'},
             'properties': {'id': -1, 'fk_project_id': 1001},
             'type': 'Layer'
         }

@@ -20,8 +20,7 @@ class TestAPIWihoutLogin(TestCase):
         # CREATE A CHANGESET
         # send a JSON with the changeset to create a new one
         changeset = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': 1500, "fk_layer_id": 1500},
             'type': 'Changeset'
         }
@@ -100,8 +99,7 @@ class TestAPIWihoutLogin(TestCase):
     def test_api_changeset_create_and_close_without_login(self):
         # do a GET call
         changeset = {
-            'tags': [{'k': 'comment', 'v': 'testing create changeset'},
-                     {'k': 'created_by', 'v': 'test_api'}],
+            'tags': {'comment': 'testing create changeset', 'created_by': 'test_api'},
             'properties': {'id': 1700, "fk_layer_id": 1700},
             'type': 'Changeset'
         }
@@ -118,8 +116,7 @@ class TestAPIWihoutLogin(TestCase):
 
             # CREATE A CHANGESET
             changeset = {
-                'tags': [{'k': 'comment', 'v': 'testing create changeset'},
-                         {'k': 'created_by', 'v': 'test_api'}],
+                'tags': {'comment': 'testing create changeset', 'created_by': 'test_api'},
                 'properties': {'id': -1, "fk_layer_id": 1003},
                 'type': 'Changeset'
             }

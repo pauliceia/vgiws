@@ -32,7 +32,7 @@ class TestAPISessionUser(TestCase):
             'user': {
                 'properties': {'username': 'test', 'terms_agreed': False, 'is_email_valid': False,
                                'removed_at': None, 'email': 'test@fake.login'},
-                'tags': [{'k': 'type_login', 'v': 'fakelogin'}],
+                'tags': {'type_login': 'fakelogin'},
                 'type': 'User'
             }
         }

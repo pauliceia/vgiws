@@ -114,8 +114,7 @@ class TestAPIProject(TestCase):
         feature = {
             'type': 'Project',
             'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'name': 'test project'},
-                     {'url': 'http://somehost.com'}]
+            'tags': {'name': 'test project', 'url': 'http://somehost.com'}
         }
 
         feature = self.tester.api_project_create(feature)
