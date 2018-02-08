@@ -1,5 +1,5 @@
 
--- Qui 08 Fev 2018 14:42:25 -02
+-- Qui 08 Fev 2018 14:58:28 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS changeset (
   created_at TIMESTAMP NOT NULL,
   closed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -449,24 +450,6 @@ CREATE TABLE IF NOT EXISTS current_point_tag (
 
 
 -- -----------------------------------------------------
--- Table changeset_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS changeset_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS changeset_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (k, fk_changeset_id),
-  CONSTRAINT fk_way_tag_copy1_changeset1
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
 -- Table layer_tag
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS layer_tag CASCADE ;
@@ -740,24 +723,6 @@ CREATE TABLE IF NOT EXISTS current_polygon_award (
 
 
 -- -----------------------------------------------------
--- Table user_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS user_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS user_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_user_id),
-  CONSTRAINT fk_user_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
 -- Table notification
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS notification CASCADE ;
@@ -768,6 +733,7 @@ CREATE TABLE IF NOT EXISTS notification (
   removed_at TIMESTAMP NULL,
   is_read BOOLEAN NOT NULL DEFAULT FALSE,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_notification_user_1
@@ -791,24 +757,6 @@ CREATE TABLE IF NOT EXISTS group_tag (
   CONSTRAINT fk_group_tag_group_1
     FOREIGN KEY (fk_group_id)
     REFERENCES group_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table notification_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS notification_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS notification_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_notification_id INT NOT NULL,
-  PRIMARY KEY (k, fk_notification_id),
-  CONSTRAINT fk_notification_tag_notification1
-    FOREIGN KEY (fk_notification_id)
-    REFERENCES notification (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

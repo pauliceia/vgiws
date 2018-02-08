@@ -20,29 +20,25 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'changeset test', 'k': 'comment'},
-                             {'v': 'test_postgresql', 'k': 'created_by'}],
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
                     'properties': {'id': 1002, 'created_at': '2017-11-10 00:00:00', 'fk_layer_id': 1002,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'changeset test', 'k': 'comment'},
-                             {'v': 'test_postgresql', 'k': 'created_by'}],
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
                     'properties': {'id': 1004, 'created_at': '2017-01-20 00:00:00', 'fk_layer_id': 1002,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
                     'type': 'Changeset'
@@ -72,8 +68,7 @@ class TestAPIChangeset(TestCase):
                     'type': 'Changeset',
                     'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001,
                                    'created_at': '2017-10-20 00:00:00', 'id': 1001, 'fk_layer_id': 1001},
-                    'tags': [{'k': 'comment', 'v': 'a changeset created'},
-                             {'k': 'created_by', 'v': 'pauliceia_portal'}]
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'}
                 }
             ],
             'type': 'FeatureCollection'
@@ -88,15 +83,13 @@ class TestAPIChangeset(TestCase):
                 {
                     'properties': {'id': 1001, 'fk_user_id': 1001, 'created_at': '2017-10-20 00:00:00',
                                    'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1001},
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'type': 'Changeset'
                 },
                 {
                     'properties': {'id': 1003, 'fk_user_id': 1001, 'created_at': '2017-11-15 00:00:00',
                                    'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1001},
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'type': 'Changeset'
                 }
             ]
@@ -112,15 +105,13 @@ class TestAPIChangeset(TestCase):
                     'type': 'Changeset',
                     'properties': {'id': 1002, 'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1002,
                                    'created_at': '2017-11-10 00:00:00', 'fk_user_id': 1002},
-                    'tags': [{'k': 'comment', 'v': 'changeset test'},
-                             {'k': 'created_by', 'v': 'test_postgresql'}]
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'}
                 },
                 {
                     'type': 'Changeset',
                     'properties': {'id': 1004, 'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1002,
                                    'created_at': '2017-01-20 00:00:00', 'fk_user_id': 1002},
-                    'tags': [{'k': 'comment', 'v': 'changeset test'},
-                             {'k': 'created_by', 'v': 'test_postgresql'}]
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'}
                 }
             ]
         }
@@ -152,29 +143,25 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'changeset test', 'k': 'comment'},
-                             {'v': 'test_postgresql', 'k': 'created_by'}],
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
                     'properties': {'id': 1002, 'created_at': '2017-11-10 00:00:00', 'fk_layer_id': 1002,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'changeset test', 'k': 'comment'},
-                             {'v': 'test_postgresql', 'k': 'created_by'}],
+                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
                     'properties': {'id': 1004, 'created_at': '2017-01-20 00:00:00', 'fk_layer_id': 1002,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
                     'type': 'Changeset'
@@ -204,15 +191,13 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
@@ -242,15 +227,13 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': [{'v': 'a changeset created', 'k': 'comment'},
-                             {'v': 'pauliceia_portal', 'k': 'created_by'}],
+                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
                     'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
                                    'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Changeset'

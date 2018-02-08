@@ -295,15 +295,27 @@ DELETE FROM changeset;
 
 -- add changeset open
 -- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1001, '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1002, '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1003, '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1004, '2017-01-20', 1002, 1002);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id, tags) VALUES (1001, '2017-10-20', 1001, 1001, 
+'{"created_by": "pauliceia_portal", "comment": "a changeset created"}');
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id, tags) VALUES (1002, '2017-11-10', 1002, 1002, 
+'{"created_by": "test_postgresql", "comment": "changeset test"}');
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id, tags) VALUES (1003, '2017-11-15', 1001, 1001, 
+'{"created_by": "pauliceia_portal", "comment": "a changeset created"}');
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id, tags) VALUES (1004, '2017-01-20', 1002, 1002, 
+'{"created_by": "test_postgresql", "comment": "changeset test"}');
 -- open changesets
 INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
 INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
 
 
+select tags from changeset;
+
+select tags from changeset ORDER BY tags->>'created_by' ASC;
+
+select tags from changeset ORDER BY tags->>'created_by' ASC;
+
+
+/*
 -- -----------------------------------------------------
 -- Table changeset_tag
 -- -----------------------------------------------------
@@ -324,7 +336,7 @@ INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'a changese
 -- changeset 1004
 INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'test_postgresql', 1004);
 INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset test', 1004);
-
+*/
 
 
 -- -----------------------------------------------------

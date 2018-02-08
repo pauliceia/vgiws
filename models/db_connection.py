@@ -691,6 +691,38 @@ class PGSQLConnection:
                                                 user_id=user_id, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
+
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type', 'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'Changeset',
+        #             'properties', json_build_object(
+        #                 'id',           id,
+        #                 'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'fk_layer_id',    fk_layer_id,
+        #                 'fk_user_id', fk_user_id
+        #             ),
+        #             'tags',       tags.jsontags
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        #     CROSS JOIN LATERAL (
+        #         -- (3) get the tags of some element on JSON format
+        #         SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #         FROM
+        #         (
+        #             -- (2) get the tags of some element
+        #             SELECT k, v
+        #             FROM changeset_tag
+        #             WHERE fk_changeset_id = changeset.id
+        #             ORDER BY k, v ASC
+        #         ) subquery
+        #     ) AS tags
+        # """.format(subquery)
+
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -703,23 +735,11 @@ class PGSQLConnection:
                         'fk_layer_id',    fk_layer_id,
                         'fk_user_id', fk_user_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (
-                -- (3) get the tags of some element on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some element
-                    SELECT k, v
-                    FROM changeset_tag 
-                    WHERE fk_changeset_id = changeset.id
-                    ORDER BY k, v ASC
-                ) subquery
-            ) AS tags
         """.format(subquery)
 
         # do the query in database
@@ -742,7 +762,7 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_changeset_in_db(self, layer_id, user_id):
+    def add_changeset_in_db(self, layer_id, user_id, tags):
         """
         Add a changeset in DB
         :param layer_id: id of the layer associated with the changeset
@@ -750,10 +770,12 @@ class PGSQLConnection:
         :return: the id of the changeset created inside a JSON, example: {"id": -1}
         """
 
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO changeset (created_at, fk_layer_id, fk_user_id) 
-            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(layer_id, user_id)
+            INSERT INTO changeset (created_at, fk_layer_id, fk_user_id, tags) 
+            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
+        """.format(layer_id, user_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -781,14 +803,15 @@ class PGSQLConnection:
 
         # get the fields to add in DB
         layer_id = feature_json["properties"]["fk_layer_id"]
+        tags = feature_json["tags"]
 
         # add the chengeset in db and get the id of it
-        changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id)
+        changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, tags)
 
         # add in DB the tags of changeset
-        for tag in feature_json["tags"]:
-            # add the chengeset tag in db
-            self.add_changeset_tag_in_db(tag["k"], tag["v"], changeset_id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the chengeset tag in db
+        #     self.add_changeset_tag_in_db(tag["k"], tag["v"], changeset_id_in_json["id"])
 
         # put in DB the changeset and its tags
         self.commit()
