@@ -18,6 +18,23 @@ from modules.user import get_new_user_struct_cookie
 from settings import HOSTS_ALLOWED
 
 
+def catch_generic_exception(method):
+
+    def wrapper(self, *args, **kwargs):
+
+        try:
+            # try to execute the method
+            return method(self, *args, **kwargs)
+
+        # all methods can raise a psycopg exception, so catch it
+        except psycopg2.Error as error:
+            # print(">>>> ", error)
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Psycopg2 error. Please, contact the administrator. Information: " + str(error))
+
+    return wrapper
+
+
 def auth_non_browser_based(method):
     """
     Authentication to non browser based service
@@ -139,6 +156,7 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
+    @catch_generic_exception
     def auth_login(self, email, password):
 
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
@@ -149,6 +167,7 @@ class BaseHandler(RequestHandler):
         # insert the user in cookie
         self.set_current_user(user=user_in_db, new_user=True)
 
+    @catch_generic_exception
     def login(self, user_json):
         # looking for a user in db, if not exist user, so create a new one
         # user_in_db = self.PGSQLConn.get_user_in_db(user["email"])
@@ -270,6 +289,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def _get_feature(self, *args, **kwargs):
         raise NotImplementedError
 
+    @catch_generic_exception
     def get_method_api_feature(self, *args):
         arguments = self.get_aguments()
 
@@ -494,6 +514,7 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
     def _create_feature(self, feature_json, current_user_id):
         raise NotImplementedError
 
+    @catch_generic_exception
     def put_method_api_feature_create(self, *args):
         element = args[0]
         feature_json = self.get_the_json_validated()
@@ -526,7 +547,11 @@ class BaseHandlerElement(BaseHandlerTemplateMethod):
                 # VW001 - The changeset with id=#ID was closed at #CLOSED_AT, so it is not possible to use it
                 raise HTTPError(409, str(error))
 
-            raise HTTPError(500, "Psycopg2 error. Please, contact the administrator.")
+            # if the db error is undefined so raise it again...
+            raise error
+            # raise HTTPError(500, "Psycopg2 error. Please, contact the administrator.")
+            # raise HTTPError(500, "Psycopg2 error. Please, contact the administrator. Information: " + str(error))
+
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")

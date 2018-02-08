@@ -1,5 +1,5 @@
 
--- Dom 14 Jan 2018 15:25:58 -02
+-- Qui 08 Fev 2018 14:42:25 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS user_ (
   removed_at TIMESTAMP NULL,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
+  awards JSON NULL,
   PRIMARY KEY (id)
 );
 
@@ -133,24 +135,6 @@ CREATE TABLE IF NOT EXISTS point (
   CONSTRAINT fk_tb_contribution_tb_project1
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table user_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS user_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS user_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_user_id),
-  CONSTRAINT fk_account_user1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

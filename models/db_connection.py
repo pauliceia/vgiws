@@ -1122,6 +1122,33 @@ class PGSQLConnection:
         subquery = get_subquery_user_table(user_id=user_id, email=email, password=password)
 
         # CREATE THE QUERY AND EXECUTE IT
+
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type', 'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'User',
+        #             'properties', json_build_object(
+        #                 'id',           id,
+        #                 'username', username,
+        #                 'email', email,
+        #                 'is_email_valid', is_email_valid,
+        #                 'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'terms_agreed', terms_agreed
+        #             ),
+        #             'tags',       tags.jsontags
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        #     CROSS JOIN LATERAL (
+        #         SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #         FROM user_tag
+        #         WHERE fk_user_id = user_.id
+        #     ) AS tags
+        # """.format(subquery)
+
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -1136,16 +1163,11 @@ class PGSQLConnection:
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'terms_agreed', terms_agreed
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
-            {0}
-            CROSS JOIN LATERAL (
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM user_tag 
-                WHERE fk_user_id = user_.id    
-            ) AS tags
+            {0}            
         """.format(subquery)
 
         # do the query in database
@@ -1168,14 +1190,16 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_user_in_db(self, properties):
+    def add_user_in_db(self, properties, tags):
         p = properties
 
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO user_ (email, username, password, created_at) 
-            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP)
+            INSERT INTO user_ (email, username, password, created_at, tags) 
+            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP, '{3}')
             RETURNING id;
-        """.format(p["email"], p["username"], p["password"])
+        """.format(p["email"], p["username"], p["password"], tags)
 
         try:
             # do the query in database
@@ -1196,25 +1220,26 @@ class PGSQLConnection:
 
         return result
 
-    def add_user_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO user_tag (k, v, fk_user_id)
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_user_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO user_tag (k, v, fk_user_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_user(self, feature_json):
 
         properties = feature_json["properties"]
+        tags = feature_json["tags"]
 
-        id_in_json = self.add_user_in_db(properties)
+        id_in_json = self.add_user_in_db(properties, tags)
 
         # add in DB the tags of layer
-        for tag in feature_json["tags"]:
-            # add the layer tag in db
-            self.add_user_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the layer tag in db
+        #     self.add_user_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
         # put in DB the layer and its tags
         self.commit()

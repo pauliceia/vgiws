@@ -32,35 +32,35 @@ class TestAPIUser(TestCase):
                     'properties': {'removed_at': None, 'username': 'admin', 'terms_agreed': True,
                                    'is_email_valid': True, 'email': 'admin@admin.com', 'id': 1001,
                                    'created_at': '2017-01-01 00:00:00'},
-                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Administrator'}],
+                    'tags': {'institution': 'INPE', 'name': 'Administrator'},
                     'type': 'User'
                 },
                 {
                     'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
                                    'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
                                    'created_at': '2017-03-03 00:00:00'},
-                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Rodrigo'}],
+                    'tags': {'institution': 'INPE', 'name': 'Rodrigo'},
                     'type': 'User'
                 },
                 {
                     'properties': {'removed_at': None, 'username': 'miguel', 'terms_agreed': True,
                                    'is_email_valid': False, 'email': 'miguel@admin.com', 'id': 1003,
                                    'created_at': '2017-05-08 00:00:00'},
-                    'tags': [{'k': 'name', 'v': 'Miguel'}],
+                    'tags': {'name': 'Miguel'},
                     'type': 'User'
                 },
                 {
                     'properties': {'removed_at': None, 'username': 'rafael', 'terms_agreed': False,
                                    'is_email_valid': True, 'email': 'rafael@admin.com', 'id': 1004,
                                    'created_at': '2017-06-09 00:00:00'},
-                    'tags': [{'k': 'name', 'v': 'Rafael'}],
+                    'tags': {'name': 'Rafael'},
                     'type': 'User'
                 },
                 {
                     'properties': {'removed_at': None, 'username': 'gabriel', 'terms_agreed': False,
                                    'is_email_valid': False, 'email': 'gabriel@admin.com', 'id': 1005,
                                    'created_at': '2017-09-20 00:00:00'},
-                    'tags': [{'k': 'name', 'v': 'Gabriel'}],
+                    'tags': {'name': 'Gabriel'},
                     'type': 'User'
                 }
             ]
@@ -76,7 +76,7 @@ class TestAPIUser(TestCase):
                     'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
                                    'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
                                    'created_at': '2017-03-03 00:00:00'},
-                    'tags': [{'k': 'institution', 'v': 'INPE'}, {'k': 'name', 'v': 'Rodrigo'}],
+                    'tags': {'name': 'Rodrigo', 'institution': 'INPE'},
                     'type': 'User'
                 }
             ]
