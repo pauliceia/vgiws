@@ -1,5 +1,5 @@
 
--- Qui 08 Fev 2018 14:58:28 -02
+-- Qui 08 Fev 2018 18:22:06 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS group_ (
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_group__user_1
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS project (
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   fk_group_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -78,6 +80,7 @@ CREATE TABLE IF NOT EXISTS layer (
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   fk_project_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -450,42 +453,6 @@ CREATE TABLE IF NOT EXISTS current_point_tag (
 
 
 -- -----------------------------------------------------
--- Table layer_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS layer_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_layer_id INT NOT NULL,
-  PRIMARY KEY (k, fk_layer_id),
-  CONSTRAINT fk_project_tag_project1
-    FOREIGN KEY (fk_layer_id)
-    REFERENCES layer (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table project_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS project_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS project_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_project_id INT NOT NULL,
-  PRIMARY KEY (k, fk_project_id),
-  CONSTRAINT fk_project_project1
-    FOREIGN KEY (fk_project_id)
-    REFERENCES project (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
 -- Table layer_review
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS layer_review CASCADE ;
@@ -739,24 +706,6 @@ CREATE TABLE IF NOT EXISTS notification (
   CONSTRAINT fk_notification_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table group_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS group_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS group_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_group_id INT NOT NULL,
-  PRIMARY KEY (k, fk_group_id),
-  CONSTRAINT fk_group_tag_group_1
-    FOREIGN KEY (fk_group_id)
-    REFERENCES group_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

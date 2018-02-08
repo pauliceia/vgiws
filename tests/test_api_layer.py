@@ -22,32 +22,25 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default layer'},
-                             {'k': 'name', 'v': 'default'},
-                             {'k': 'theme', 'v': 'generic'}],
+                    'tags': {'description': 'default layer', 'name': 'default', 'theme': 'generic'},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
-                    'tags': [{'k': 'description', 'v': 'test_layer'},
-                             {'k': 'name', 'v': 'test_layer'},
-                             {'k': 'theme', 'v': 'crime'}],
+                    'tags': {'description': 'test_layer', 'name': 'test_layer', 'theme': 'crime'},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
-                    'tags': [{'k': 'description', 'v': 'test_layer'},
-                             {'k': 'name', 'v': 'layer 3'},
-                             {'k': 'theme', 'v': 'addresses'}],
+                    'tags': {'description': 'test_layer', 'name': 'layer 3', 'theme': 'addresses'},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-09-11 00:00:00',
                                    'fk_user_id': 1003, 'id': 1004},
-                    'tags': [{'k': 'description', 'v': 'test_layer'},
-                             {'k': 'name', 'v': 'layer 4'}],
+                    'tags': {'description': 'test_layer', 'name': 'layer 4'},
                     'type': 'Layer'
                 }
             ],
@@ -62,9 +55,7 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
                                    'fk_user_id': 1001, 'id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default layer'},
-                             {'k': 'name', 'v': 'default'},
-                             {'k': 'theme', 'v': 'generic'}],
+                    'tags': {'description': 'default layer', 'name': 'default', 'theme': 'generic'},
                     'type': 'Layer'
                 },
             ],
@@ -79,17 +70,13 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
                                    'fk_user_id': 1002, 'id': 1002},
-                    'tags': [{'k': 'description', 'v': 'test_layer'},
-                             {'k': 'name', 'v': 'test_layer'},
-                             {'k': 'theme', 'v': 'crime'}],
+                    'tags': {'description': 'test_layer', 'name': 'test_layer', 'theme': 'crime'},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
                                    'fk_user_id': 1002, 'id': 1003},
-                    'tags': [{'k': 'description', 'v': 'test_layer'},
-                             {'k': 'name', 'v': 'layer 3'},
-                             {'k': 'theme', 'v': 'addresses'}],
+                    'tags': {'description': 'test_layer', 'name': 'layer 3', 'theme': 'addresses'},
                     'type': 'Layer'
                 },
             ],

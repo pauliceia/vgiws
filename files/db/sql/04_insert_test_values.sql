@@ -103,14 +103,21 @@ INSERT INTO auth (id, is_admin, allow_bulk_import, fk_user_id) VALUES (1005, FAL
 DELETE FROM group_;
 
 -- add group
-INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
-INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
-INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1003, '2017-12-25', 1002);
-INSERT INTO group_ (id, created_at, fk_user_id) VALUES (1004, '2017-05-13', 1003);
-INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE);
-INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE);
+INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1001, '2017-01-01', 1001,
+'{"name": "Admins", "description": "Just admins", "type": "private"}');
+INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1002, '2017-03-25', 1001,
+'{"name": "INPE", "description": "", "type": "private"}');
+INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1003, '2017-12-25', 1002,
+'{"name": "UNIFESP SJC", "description": "", "type": "public"}');
+INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1004, '2017-05-13', 1003,
+'{"name": "UNIFESP Guarulhos", "description": "", "type": "private"}');
+INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE,
+'{"name": "Emory", "description": "", "type": "public"}');
+INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE,
+'{"name": "Arquivo Público do Estado de São Paulo", "description": "", "type": "private"}');
 
 
+/*
 -- -----------------------------------------------------
 -- Table group_tag
 -- -----------------------------------------------------
@@ -120,30 +127,18 @@ DELETE FROM group_tag;
 -- insert values in table group_tag
 -- SOURCE: -
 -- group 1001
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Admins', 1001);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'Just admins', 1001);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1001);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Admins', 1001); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'Just admins', 1001); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1001);
 -- group 1002
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'INPE', 1002);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1002);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'INPE', 1002); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1002);
 -- group 1003
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP SJC', 1003);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1003);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1003);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP SJC', 1003); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1003); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1003);
 -- group 1004
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP Guarulhos', 1004);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1004);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1004);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP Guarulhos', 1004); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1004); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1004);
 -- group 1005
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Emory', 1005);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1005);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1005);
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Emory', 1005); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1005); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1005);
 -- group 1006
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Arquivo Público do Estado de São Paulo', 1006);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006);
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1006);
-
+INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Arquivo Público do Estado de São Paulo', 1006); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1006);
+*/
 
 -- -----------------------------------------------------
 -- Table user_group
@@ -203,14 +198,18 @@ VALUES (1006, 1004, '2017-01-10', 'admin', 'joined', 1004);
 DELETE FROM project;
 
 -- add layer
-INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
-INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
-INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1001, '2017-11-20', 1001, 1001, 
+'{"name": "admin", "description": "default project"}');
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1002, '2017-10-12', 1001, 1002,
+'{"name": "test project", "url": "http://somehost.com"}');
+INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1003, '2017-12-23', 1002, 1002,
+'{"name": "hello world"}');
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1004, '2017-09-11', 1002, 1004);
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
 
 
 
+/*
 -- -----------------------------------------------------
 -- Table project_tag
 -- -----------------------------------------------------
@@ -227,7 +226,7 @@ INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'test project', 10
 INSERT INTO project_tag (k, v, fk_project_id) VALUES ('url', 'http://somehost.com', 1002);
 -- project 1003
 INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'hello world', 1003);
-
+*/
 
 
 -- -----------------------------------------------------
@@ -248,14 +247,20 @@ DELETE FROM project_watcher;
 DELETE FROM layer;
 
 -- add layer
-INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1001, '2017-11-20', 1001, 1001);
-INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1002, '2017-10-12', 1001, 1002);
-INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1003, '2017-12-23', 1002, 1002);
-INSERT INTO layer (id, created_at, fk_project_id, fk_user_id) VALUES (1004, '2017-09-11', 1004, 1003);
-INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1004, FALSE);
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, tags) VALUES (1001, '2017-11-20', 1001, 1001,
+'{"name": "default", "description": "default layer", "theme": "generic"}');
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, tags) VALUES (1002, '2017-10-12', 1001, 1002,
+'{"name": "test_layer", "description": "test_layer", "theme": "crime"}');
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, tags) VALUES (1003, '2017-12-23', 1002, 1002,
+'{"name": "layer 3", "description": "test_layer", "theme": "addresses"}');
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, tags) VALUES (1004, '2017-09-11', 1004, 1003,
+'{"name": "layer 4", "description": "test_layer"}');
+INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, visible, tags) VALUES (1005, '2017-06-04', 1003, 1004, FALSE,
+'{"name": "layer 5", "description": "test_layer"}');
 
 
 
+/*
 -- -----------------------------------------------------
 -- Table layer_tag
 -- -----------------------------------------------------
@@ -265,26 +270,20 @@ DELETE FROM layer_tag;
 -- insert values in table layer_tag
 -- SOURCE: -
 -- layer 1001
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'default', 1001);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'default layer', 1001);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'generic', 1001);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'default', 1001); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'default layer', 1001); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'generic', 1001);
 -- layer 1002
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'test_layer', 1002);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1002);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'crime', 1002);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'test_layer', 1002); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1002); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'crime', 1002);
 -- layer 1003
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 3', 1003);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1003);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'addresses', 1003);
+INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 3', 1003); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1003); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'addresses', 1003);
 -- layer 1004
 INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 4', 1004);
 INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1004);
--- layer layer_tag
+-- layer 1005
 INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 5', 1005);
 INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1005);
 
 -- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
-
+*/
 
 
 -- -----------------------------------------------------

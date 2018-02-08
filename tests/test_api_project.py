@@ -22,19 +22,19 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
+                    'tags': {'description': 'default project', 'name': 'admin'}
                 },
                 {
                     'type': 'Project',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-10-12 00:00:00',
                                    'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'test project'}, {'k': 'url', 'v': 'http://somehost.com'}]
+                    'tags': {'name': 'test project', 'url': 'http://somehost.com'}
                 },
                 {
                     'type': 'Project',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
+                    'tags': {'name': 'hello world'}
                 },
                 {
                     'type': 'Project',
@@ -54,7 +54,7 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-11-20 00:00:00',
                                    'id': 1001, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'description', 'v': 'default project'}, {'k': 'name', 'v': 'admin'}]
+                    'tags': {'description': 'default project', 'name': 'admin'}
                 }
             ],
             'type': 'FeatureCollection'
@@ -69,7 +69,7 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
+                    'tags': {'name': 'hello world'}
                 },
                 {
                     'type': 'Project',
@@ -90,13 +90,13 @@ class TestAPIProject(TestCase):
                     'type': 'Project',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-10-12 00:00:00',
                                    'id': 1002, 'removed_at': None, 'fk_group_id': 1001},
-                    'tags': [{'k': 'name', 'v': 'test project'}, {'k': 'url', 'v': 'http://somehost.com'}]
+                    'tags': {'name': 'test project', 'url': 'http://somehost.com'}
                 },
                 {
                     'type': 'Project',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                    'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                    'tags': [{'k': 'name', 'v': 'hello world'}]
+                    'tags': {'name': 'hello world'}
                 },
             ],
             'type': 'FeatureCollection'
@@ -114,8 +114,8 @@ class TestAPIProject(TestCase):
         feature = {
             'type': 'Project',
             'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'k': 'name', 'v': 'test project'},
-                     {'k': 'url', 'v': 'http://somehost.com'}]
+            'tags': [{'name': 'test project'},
+                     {'url': 'http://somehost.com'}]
         }
 
         feature = self.tester.api_project_create(feature)
@@ -155,8 +155,8 @@ class TestAPIProjectErrors(TestCase):
         feature = {
             'type': 'Project',
             'properties': {'id': -1, 'fk_group_id': 1001},
-            'tags': [{'k': 'name', 'v': 'test project'},
-                     {'k': 'url', 'v': 'http://somehost.com'}]
+            'tags': [{'name': 'test project'},
+                     {'url': 'http://somehost.com'}]
         }
         self.tester.api_project_create_error_403_forbidden(feature)
 

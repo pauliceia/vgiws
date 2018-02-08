@@ -336,24 +336,43 @@ class PGSQLConnection:
                         'visible',      visible,
                         'fk_user_id',   fk_user_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (
-                -- (3) get the tags of some feature on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some feature
-                    SELECT k, v
-                    FROM group_tag 
-                    WHERE fk_group_id = group_.id
-                    ORDER BY k, v ASC
-                ) subquery      
-            ) AS tags
         """.format(subquery)
+
+        # query_text = """
+        #             SELECT jsonb_build_object(
+        #                 'type', 'FeatureCollection',
+        #                 'features',   jsonb_agg(jsonb_build_object(
+        #                     'type',       'Group',
+        #                     'properties', json_build_object(
+        #                         'id',           id,
+        #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'visible',      visible,
+        #                         'fk_user_id',   fk_user_id
+        #                     ),
+        #                     'tags',       tags.jsontags
+        #                 ))
+        #             ) AS row_to_json
+        #             FROM
+        #             {0}
+        #             CROSS JOIN LATERAL (
+        #                 -- (3) get the tags of some feature on JSON format
+        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #                 FROM
+        #                 (
+        #                     -- (2) get the tags of some feature
+        #                     SELECT k, v
+        #                     FROM group_tag
+        #                     WHERE fk_group_id = group_.id
+        #                     ORDER BY k, v ASC
+        #                 ) subquery
+        #             ) AS tags
+        #         """.format(subquery)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -375,11 +394,13 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_group_in_db(self, user_id):
+    def add_group_in_db(self, user_id, tags):
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO group_ (created_at, fk_user_id)
-            VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
-        """.format(user_id)
+            INSERT INTO group_ (created_at, fk_user_id, tags)
+            VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
+        """.format(user_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -389,28 +410,29 @@ class PGSQLConnection:
 
         return result
 
-    def add_group_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO group_tag (k, v, fk_group_id)
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_group_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO group_tag (k, v, fk_group_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_group(self, feature_json, user_id):
 
         # group_id = feature_json["properties"]["fk_group_id"]
+        tags = feature_json["tags"]
 
-        # add the layer in db and get the id of it
-        id_in_json = self.add_group_in_db(user_id)
+        # add the group in db and get the id of it
+        id_in_json = self.add_group_in_db(user_id, tags)
 
         # add in DB the tags of layer
-        for tag in feature_json["tags"]:
-            # add the layer tag in db
-            self.add_group_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the layer tag in db
+        #     self.add_group_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
-        # put in DB the layer and its tags
+        # put in DB the group and its tags
         self.commit()
 
         return id_in_json
@@ -446,6 +468,38 @@ class PGSQLConnection:
         subquery = get_subquery_project_table(project_id=project_id, group_id=group_id, user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
+
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type', 'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'Project',
+        #             'properties', json_build_object(
+        #                 'id',           id,
+        #                 'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'fk_group_id', fk_group_id,
+        #                 'fk_user_id', fk_user_id
+        #             ),
+        #             'tags',       tags.jsontags
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        #     CROSS JOIN LATERAL (
+        #         -- (3) get the tags of some feature on JSON format
+        #         SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #         FROM
+        #         (
+        #             -- (2) get the tags of some feature
+        #             SELECT k, v
+        #             FROM project_tag
+        #             WHERE fk_project_id = project.id
+        #             ORDER BY k, v ASC
+        #         ) subquery
+        #     ) AS tags
+        # """.format(subquery)
+
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
@@ -458,23 +512,11 @@ class PGSQLConnection:
                         'fk_group_id', fk_group_id,
                         'fk_user_id', fk_user_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (
-                -- (3) get the tags of some feature on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some feature
-                    SELECT k, v
-                    FROM project_tag 
-                    WHERE fk_project_id = project.id
-                    ORDER BY k, v ASC
-                ) subquery      
-            ) AS tags
         """.format(subquery)
 
         # do the query in database
@@ -497,11 +539,14 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_project_in_db(self, group_id, user_id):
+    def add_project_in_db(self, group_id, user_id, tags):
+
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO project (created_at, fk_group_id, fk_user_id)
-            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(group_id, user_id)
+            INSERT INTO project (created_at, fk_group_id, fk_user_id, tags)
+            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
+        """.format(group_id, user_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -511,26 +556,27 @@ class PGSQLConnection:
 
         return result
 
-    def add_project_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO project_tag (k, v, fk_project_id)
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_project_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO project_tag (k, v, fk_project_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_project(self, feature_json, user_id):
 
         group_id = feature_json["properties"]["fk_group_id"]
+        tags = feature_json["tags"]
 
-        # add the layer in db and get the id of it
-        id_in_json = self.add_project_in_db(group_id, user_id)
+        # add the project in db and get the id of it
+        id_in_json = self.add_project_in_db(group_id, user_id, tags)
 
         # add in DB the tags of layer
-        for tag in feature_json["tags"]:
-            # add the layer tag in db
-            self.add_project_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the layer tag in db
+        #     self.add_project_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
         # put in DB the layer and its tags
         self.commit()
@@ -579,24 +625,42 @@ class PGSQLConnection:
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'fk_user_id', fk_user_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (                
-                -- (3) get the tags of some feature on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some feature
-                    SELECT k, v
-                    FROM layer_tag 
-                    WHERE fk_layer_id = layer.id
-                    ORDER BY k, v ASC
-                ) subquery      
-            ) AS tags
         """.format(subquery)
+
+        # query_text = """
+        #             SELECT jsonb_build_object(
+        #                 'type', 'FeatureCollection',
+        #                 'features',   jsonb_agg(jsonb_build_object(
+        #                     'type',       'Layer',
+        #                     'properties', json_build_object(
+        #                         'id',           id,
+        #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'fk_user_id', fk_user_id
+        #                     ),
+        #                     'tags',       tags.jsontags
+        #                 ))
+        #             ) AS row_to_json
+        #             FROM
+        #             {0}
+        #             CROSS JOIN LATERAL (
+        #                 -- (3) get the tags of some feature on JSON format
+        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #                 FROM
+        #                 (
+        #                     -- (2) get the tags of some feature
+        #                     SELECT k, v
+        #                     FROM layer_tag
+        #                     WHERE fk_layer_id = layer.id
+        #                     ORDER BY k, v ASC
+        #                 ) subquery
+        #             ) AS tags
+        #         """.format(subquery)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -618,11 +682,13 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_layer_in_db(self, project_id, user_id):
+    def add_layer_in_db(self, project_id, user_id, tags):
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO layer (created_at, fk_project_id, fk_user_id) 
-            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING id;
-        """.format(project_id, user_id)
+            INSERT INTO layer (created_at, fk_project_id, fk_user_id, tags) 
+            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
+        """.format(project_id, user_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -632,27 +698,28 @@ class PGSQLConnection:
 
         return result
 
-    def add_layer_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO layer_tag (k, v, fk_layer_id) 
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_layer_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO layer_tag (k, v, fk_layer_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_layer(self, feature_json, user_id):
 
         # get the fields to add in DB
         project_id = feature_json["properties"]["fk_project_id"]
+        tags = feature_json["tags"]
 
         # add the layer in db and get the id of it
-        id_in_json = self.add_layer_in_db(project_id, user_id)
+        id_in_json = self.add_layer_in_db(project_id, user_id, tags)
 
         # add in DB the tags of layer
-        for tag in feature_json["tags"]:
-            # add the layer tag in db
-            self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the layer tag in db
+        #     self.add_layer_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
         # put in DB the layer and its tags
         self.commit()
