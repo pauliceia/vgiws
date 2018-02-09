@@ -1,5 +1,5 @@
 
--- Sex 09 Fev 2018 14:38:59 -02
+-- Sex 09 Fev 2018 16:38:10 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS user_ (
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   tags JSON NULL,
-  awards JSON NULL,
   PRIMARY KEY (id)
 );
 
@@ -600,6 +599,30 @@ CREATE TABLE IF NOT EXISTS notification (
   PRIMARY KEY (id),
   CONSTRAINT fk_notification_user_1
     FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table user_award
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS user_award CASCADE ;
+
+CREATE TABLE IF NOT EXISTS user_award (
+  k INT NOT NULL,
+  v VARCHAR(45) NULL,
+  fk_user_id INT NOT NULL,
+  fk_user_id_gave INT NOT NULL,
+  PRIMARY KEY (k),
+  CONSTRAINT fk_table1_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_table1_user_2
+    FOREIGN KEY (fk_user_id_gave)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
