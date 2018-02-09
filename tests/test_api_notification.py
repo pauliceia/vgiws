@@ -20,65 +20,49 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Happy Birthday'},
-                             {'k': 'type', 'v': 'birthday'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
                                    'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-                             {'k': 'type', 'v': 'group'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
                 },
                 {
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new project in group X'},
-                             {'k': 'type', 'v': 'project'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new layer in project Y'},
-                             {'k': 'type', 'v': 'layer'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'A new review was made in layer Z'},
-                             {'k': 'type', 'v': 'review'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1006,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1003},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained a new trophy'},
-                             {'k': 'type', 'v': 'award'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained a new trophy', 'type': 'award', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1008,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1004},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained more points'},
-                             {'k': 'type', 'v': 'point'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
                 },
                 {
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1010,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1005},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained more points'},
-                             {'k': 'type', 'v': 'point'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
                 }
             ],
             'type': 'FeatureCollection'
@@ -94,9 +78,7 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
                                    'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-                             {'k': 'type', 'v': 'group'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
                 }
             ],
         }
@@ -111,25 +93,19 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Happy Birthday'},
-                             {'k': 'type', 'v': 'birthday'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
                                    'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-                             {'k': 'type', 'v': 'group'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
                 },
                 {
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new project in group X'},
-                             {'k': 'type', 'v': 'project'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
                 }
             ],
         }
@@ -143,17 +119,13 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new project in group X'},
-                             {'k': 'type', 'v': 'project'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
                 },
                 {
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1010,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1005},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained more points'},
-                             {'k': 'type', 'v': 'point'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
                 }
             ],
             'type': 'FeatureCollection'
@@ -168,49 +140,37 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Happy Birthday'},
-                             {'k': 'type', 'v': 'birthday'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
                                    'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-                             {'k': 'type', 'v': 'group'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new layer in project Y'},
-                             {'k': 'type', 'v': 'layer'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'A new review was made in layer Z'},
-                             {'k': 'type', 'v': 'review'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1006,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1003},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained a new trophy'},
-                             {'k': 'type', 'v': 'award'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained a new trophy', 'type': 'award', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1008,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1004},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'You gained more points'},
-                             {'k': 'type', 'v': 'point'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
                 }
             ],
             'type': 'FeatureCollection'
@@ -225,9 +185,7 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new project in group X'},
-                             {'k': 'type', 'v': 'project'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
                 },
             ],
             'type': 'FeatureCollection'
@@ -238,18 +196,18 @@ class TestAPINotification(TestCase):
         #         {
         #             'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-01-01 00:00:00',
         #                            'id': 1001, 'is_read': False, 'fk_user_id': 1001},
-        #             'tags': [{'k': 'body', 'v': 'Happy Birthday'},
-        #                      {'k': 'type', 'v': 'birthday'},
-        #                      {'k': 'url', 'v': ''}],
+        #             'tags': [{'body': 'Happy Birthday'},
+        #                      {'type': 'birthday'},
+        #                      {'url': ''}],
         #             'type': 'Notification'
         #         },
         #         {'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-03-25 00:00:00',
         #                         'id': 1002, 'is_read': False, 'fk_user_id': 1001},
-        #          'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-        #                   {'k': 'type', 'v': 'group'},
-        #                   {'k': 'url', 'v': ''}], 'type': 'Notification'
+        #          'tags': [{'body': 'You was added in a group called X'},
+        #                   {'type': 'group'},
+        #                   {'url': ''}], 'type': 'Notification'
         #          },
-        #         {'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-12-25 00:00:00', 'id': 1003, 'is_read': True, 'fk_user_id': 1001}, 'tags': [{'k': 'body', 'v': 'Created a new project in group X'}, {'k': 'type', 'v': 'project'}, {'k': 'url', 'v': ''}], 'type': 'Notification'}], 'type': 'FeatureCollection'}
+        #         {'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-12-25 00:00:00', 'id': 1003, 'is_read': True, 'fk_user_id': 1001}, 'tags': [{'body': 'Created a new project in group X'}, {'type': 'project'}, {'url': ''}], 'type': 'Notification'}], 'type': 'FeatureCollection'}
 
         self.tester.api_notification(expected, user_id="1001", is_read=True)
 
@@ -260,17 +218,13 @@ class TestAPINotification(TestCase):
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
                                    'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'Created a new layer in project Y'},
-                             {'k': 'type', 'v': 'layer'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
                 },
                 {
                     'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
                                    'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': [{'k': 'body', 'v': 'A new review was made in layer Z'},
-                             {'k': 'type', 'v': 'review'},
-                             {'k': 'url', 'v': ''}]
+                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
                 }
             ],
             'type': 'FeatureCollection'
@@ -288,9 +242,7 @@ class TestAPINotification(TestCase):
         feature = {
             'properties': {'id': -1, 'fk_user_id': 1002},
             'type': 'Notification',
-            'tags': [{'k': 'body', 'v': 'You gained more points'},
-                     {'k': 'type', 'v': 'point'},
-                     {'k': 'url', 'v': ''}]
+            'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
         }
 
         feature = self.tester.api_notification_create(feature)
@@ -330,9 +282,7 @@ class TestAPINotificationErrors(TestCase):
         feature = {
             'properties': {'id': -1, 'fk_user_id': 1003},
             'type': 'Notification',
-            'tags': [{'k': 'body', 'v': 'You gained more points'},
-                     {'k': 'type', 'v': 'point'},
-                     {'k': 'url', 'v': ''}]
+            'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
         }
 
         self.tester.api_notification_create_error_403_forbidden(feature)

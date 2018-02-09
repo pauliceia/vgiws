@@ -30,7 +30,12 @@ def catch_generic_exception(method):
         except psycopg2.Error as error:
             # print(">>>> ", error)
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(500, "Psycopg2 error. Please, contact the administrator. Information: " + str(error))
+            raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. Information: " + str(error))
+
+        except psycopg2.ProgrammingError as error:
+            # print(">>>> ", error)
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. Information: " + str(error))
 
     return wrapper
 
@@ -339,6 +344,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def _accept_feature(self, *args, **kwargs):
         raise NotImplementedError
 
+    @catch_generic_exception
     def put_method_api_feature(self, *args):
         param = args[0]
 
@@ -365,6 +371,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def _delete_feature(self, *args, **kwargs):
         raise NotImplementedError
 
+    @catch_generic_exception
     def delete_method_api_feature(self, *args):
         try:
             self._delete_feature(*args)

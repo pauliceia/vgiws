@@ -688,19 +688,19 @@ class PGSQLConnection:
 
         return result
 
-    def add_changeset_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO changeset_tag (k, v, fk_changeset_id) 
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
-
-        # return id_changeset_tag
+    # def add_changeset_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO changeset_tag (k, v, fk_changeset_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     # return id_changeset_tag
 
     def create_changeset(self, feature_json, user_id):
 
@@ -780,24 +780,44 @@ class PGSQLConnection:
                         'visible',      visible,
                         'fk_user_id',   fk_user_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (
-                -- (3) get the tags of some feature on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some feature
-                    SELECT k, v
-                    FROM notification_tag 
-                    WHERE fk_notification_id = notification.id
-                    ORDER BY k, v ASC
-                ) subquery      
-            ) AS tags
         """.format(subquery)
+
+        # query_text = """
+        #             SELECT jsonb_build_object(
+        #                 'type', 'FeatureCollection',
+        #                 'features',   jsonb_agg(jsonb_build_object(
+        #                     'type',       'Notification',
+        #                     'properties', json_build_object(
+        #                         'id',           id,
+        #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                         'is_read',      is_read,
+        #                         'visible',      visible,
+        #                         'fk_user_id',   fk_user_id
+        #                     ),
+        #                     'tags',       tags.jsontags
+        #                 ))
+        #             ) AS row_to_json
+        #             FROM
+        #             {0}
+        #             CROSS JOIN LATERAL (
+        #                 -- (3) get the tags of some feature on JSON format
+        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #                 FROM
+        #                 (
+        #                     -- (2) get the tags of some feature
+        #                     SELECT k, v
+        #                     FROM notification_tag
+        #                     WHERE fk_notification_id = notification.id
+        #                     ORDER BY k, v ASC
+        #                 ) subquery
+        #             ) AS tags
+        #         """.format(subquery)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -819,11 +839,13 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_notification_in_db(self, user_id):
+    def add_notification_in_db(self, user_id, tags):
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO notification (created_at, fk_user_id)
-            VALUES (LOCALTIMESTAMP, {0}) RETURNING id;
-        """.format(user_id)
+            INSERT INTO notification (created_at, fk_user_id, tags)
+            VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
+        """.format(user_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -833,26 +855,28 @@ class PGSQLConnection:
 
         return result
 
-    def add_notification_tag_in_db(self, k, v, feature_id):
-        query_text = """
-            INSERT INTO notification_tag (k, v, fk_notification_id)
-            VALUES ('{0}', '{1}', {2});
-        """.format(k, v, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_notification_tag_in_db(self, k, v, feature_id):
+    #     query_text = """
+    #         INSERT INTO notification_tag (k, v, fk_notification_id)
+    #         VALUES ('{0}', '{1}', {2});
+    #     """.format(k, v, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_notification(self, feature_json, user_id):
+
+        validate_feature_json(feature_json)
 
         # group_id = feature_json["properties"]["fk_group_id"]
 
         # add the layer in db and get the id of it
-        id_in_json = self.add_notification_in_db(user_id)
+        id_in_json = self.add_notification_in_db(user_id, feature_json["tags"])
 
         # add in DB the tags of layer
-        for tag in feature_json["tags"]:
-            # add the layer tag in db
-            self.add_notification_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
+        # for tag in feature_json["tags"]:
+        #     # add the layer tag in db
+        #     self.add_notification_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
         # put in DB the layer and its tags
         self.commit()
@@ -917,24 +941,49 @@ class PGSQLConnection:
                         'version',          version,
                         'fk_changeset_id',  fk_changeset_id
                     ),
-                    'tags',       tags.jsontags
+                    'tags',       tags
                 ))
             ) AS row_to_json
             FROM 
-            {1}
-            CROSS JOIN LATERAL ( 
-                -- (3) get the tags of some element on JSON format   
-                SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the tags of some element
-                    SELECT k, v
-                    FROM current_{0}_tag 
-                    WHERE fk_current_{0}_id = element.id
-                    ORDER BY k, v ASC
-                ) subquery             
-            ) AS tags
-        """.format(element, subquery_current_element_table)
+            {0}
+        """.format(subquery_current_element_table)
+
+        # query_text = """
+        #             SELECT jsonb_build_object(
+        #                 'type',       'FeatureCollection',
+        #                 'crs',  json_build_object(
+        #                     'type',      'name',
+        #                     'properties', json_build_object(
+        #                         'name', 'EPSG:4326'
+        #                     )
+        #                 ),
+        #                 'features',   jsonb_agg(jsonb_build_object(
+        #                     'type',       'Feature',
+        #                     'geometry',   ST_AsGeoJSON(geom)::jsonb,
+        #                     'properties', json_build_object(
+        #                         'id',               id,
+        #                         'visible',          visible,
+        #                         'version',          version,
+        #                         'fk_changeset_id',  fk_changeset_id
+        #                     ),
+        #                     'tags',       tags.jsontags
+        #                 ))
+        #             ) AS row_to_json
+        #             FROM
+        #             {1}
+        #             CROSS JOIN LATERAL (
+        #                 -- (3) get the tags of some element on JSON format
+        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+        #                 FROM
+        #                 (
+        #                     -- (2) get the tags of some element
+        #                     SELECT k, v
+        #                     FROM current_{0}_tag
+        #                     WHERE fk_current_{0}_id = element.id
+        #                     ORDER BY k, v ASC
+        #                 ) subquery
+        #             ) AS tags
+        #         """.format(element, subquery_current_element_table)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -958,16 +1007,18 @@ class PGSQLConnection:
 
     # add elements
 
-    def add_element_in_db(self, element, geometry, changeset_id):
+    def add_element_in_db(self, element, geometry, changeset_id, tags):
 
         # encode the dict in JSON
         geometry = json_encode(geometry)
 
+        tags = dumps(tags)  # convert python dict to json to save in db
+
         query_text = """
-            INSERT INTO current_{0} (geom, fk_changeset_id) 
-            VALUES (ST_GeomFromGeoJSON('{1}'), {2})
+            INSERT INTO current_{0} (geom, fk_changeset_id, tags) 
+            VALUES (ST_GeomFromGeoJSON('{1}'), {2}, '{3}')
             RETURNING id;
-        """.format(element, geometry, changeset_id)
+        """.format(element, geometry, changeset_id, tags)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -977,18 +1028,20 @@ class PGSQLConnection:
 
         return result["id"]
 
-    def add_element_tag_in_db(self, k, v, element, element_id):
-        query_text = """
-            INSERT INTO current_{0}_tag (k, v, fk_current_{0}_id) 
-            VALUES ('{1}', '{2}', {3});
-        """.format(element, k, v, element_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def add_element_tag_in_db(self, k, v, element, element_id):
+    #     query_text = """
+    #         INSERT INTO current_{0}_tag (k, v, fk_current_{0}_id)
+    #         VALUES ('{1}', '{2}', {3});
+    #     """.format(element, k, v, element_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_element(self, element, feature):
         # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
         # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
+
+        validate_feature_json(feature)
 
         # get the tags
         tags = feature["tags"]
@@ -1000,12 +1053,12 @@ class PGSQLConnection:
         changeset_id = feature["properties"]["fk_changeset_id"]
 
         # add the element in db and get the id of it
-        element_id = self.add_element_in_db(element, feature["geometry"], changeset_id)
+        element_id = self.add_element_in_db(element, feature["geometry"], changeset_id, tags)
 
-        for tag in tags:
-            # add the element tag in db
-            # PS: how the element is new in db, so the fk_element_version = 1
-            self.add_element_tag_in_db(tag["k"], tag["v"], element, element_id)
+        # for tag in tags:
+        #     # add the element tag in db
+        #     # PS: how the element is new in db, so the fk_element_version = 1
+        #     self.add_element_tag_in_db(tag["k"], tag["v"], element, element_id)
 
         # put in DB the element and its tags
         # self.commit()

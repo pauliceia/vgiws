@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-__select_elements__ = "element.id, element.geom, element.visible, element.version, element.fk_changeset_id"
+__select_elements__ = "element.id, element.geom, element.visible, element.version, element.fk_changeset_id, element.tags"
 
 
 def get_subquery_current_element_table_if_user_id_is_not_none(element, conditions_of_where, **kwargs):
@@ -128,8 +128,8 @@ def get_subquery_current_element_table(element, **kwargs):
     elif "layer_id" in kwargs and kwargs["layer_id"] is not None:
         # if there is a layer_id
         current_element_table = get_subquery_current_element_table_if_layer_id_is_not_none(element,
-                                                                                             conditions_of_where,
-                                                                                             **kwargs)
+                                                                                           conditions_of_where,
+                                                                                           **kwargs)
 
     elif "changeset_id" in kwargs and kwargs["changeset_id"] is not None:
         # if there is a changeset_id

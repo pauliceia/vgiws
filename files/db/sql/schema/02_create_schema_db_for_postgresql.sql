@@ -1,5 +1,5 @@
 
--- Qui 08 Fev 2018 18:22:06 -02
+-- Sex 09 Fev 2018 14:38:59 -02
 
 -- -----------------------------------------------------
 -- Table user_
@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS point (
   id SERIAL ,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   version INT NOT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -173,64 +174,6 @@ CREATE TABLE IF NOT EXISTS changeset_comment (
   CONSTRAINT fk_changeset_comment_changeset_comment1
     FOREIGN KEY (fk_comment_id_parent)
     REFERENCES changeset_comment (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table line
--- -----------------------------------------------------
-DROP TABLE IF EXISTS line CASCADE ;
-
-CREATE TABLE IF NOT EXISTS line (
-  id SERIAL ,
-  geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id, version),
-  CONSTRAINT fk_table1_changeset1
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table line_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS line_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS line_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_line_version INT NOT NULL,
-  fk_line_id INT NOT NULL,
-  PRIMARY KEY (k, fk_line_version, fk_line_id),
-  CONSTRAINT fk_line_tag_line1
-    FOREIGN KEY (fk_line_id , fk_line_version)
-    REFERENCES line (id , version)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table point_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS point_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS point_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_point_version INT NOT NULL,
-  fk_point_id INT NOT NULL,
-  PRIMARY KEY (k, fk_point_version, fk_point_id),
-  CONSTRAINT fk_point_tag_point1
-    FOREIGN KEY (fk_point_id , fk_point_version)
-    REFERENCES point (id , version)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -286,31 +229,13 @@ CREATE TABLE IF NOT EXISTS polygon (
   id SERIAL ,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
   version INT NOT NULL DEFAULT 1,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
   CONSTRAINT fk_area_change_set1
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table polygon_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS polygon_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS polygon_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_polygon_version INT NOT NULL,
-  fk_polygon_id INT NOT NULL,
-  PRIMARY KEY (k, fk_polygon_version, fk_polygon_id),
-  CONSTRAINT fk_polygon_tag_polygon1
-    FOREIGN KEY (fk_polygon_id , fk_polygon_version)
-    REFERENCES polygon (id , version)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -339,6 +264,27 @@ CREATE TABLE IF NOT EXISTS project_watcher (
 
 
 -- -----------------------------------------------------
+-- Table line
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS line CASCADE ;
+
+CREATE TABLE IF NOT EXISTS line (
+  id SERIAL ,
+  geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
+  visible BOOLEAN NOT NULL DEFAULT TRUE,
+  tags JSON NULL,
+  version INT NOT NULL DEFAULT 1,
+  fk_changeset_id INT NOT NULL,
+  PRIMARY KEY (id, version),
+  CONSTRAINT fk_table1_changeset1
+    FOREIGN KEY (fk_changeset_id)
+    REFERENCES changeset (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
 -- Table current_point
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS current_point CASCADE ;
@@ -348,6 +294,7 @@ CREATE TABLE IF NOT EXISTS current_point (
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
+  tags JSON NULL,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_contribution_tb_project10
@@ -368,29 +315,12 @@ CREATE TABLE IF NOT EXISTS current_polygon (
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
+  tags JSON NULL,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_area_change_set10
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_polygon_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_polygon_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_polygon_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_polygon_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_polygon_id),
-  CONSTRAINT fk_current_area_tag_current_area1
-    FOREIGN KEY (fk_current_polygon_id)
-    REFERENCES current_polygon (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -406,47 +336,12 @@ CREATE TABLE IF NOT EXISTS current_line (
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   version INT NOT NULL DEFAULT 1,
+  tags JSON NULL,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_table1_changeset10
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_line_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_line_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_line_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_line_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_line_id),
-  CONSTRAINT fk_current_way_tag_current_way1
-    FOREIGN KEY (fk_current_line_id)
-    REFERENCES current_line (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_point_tag
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_point_tag CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_point_tag (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_point_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_point_id),
-  CONSTRAINT fk_current_node_tag_current_node1
-    FOREIGN KEY (fk_current_point_id)
-    REFERENCES current_point (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

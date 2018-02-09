@@ -4,9 +4,6 @@
 
 from unittest import TestCase
 
-from json import dumps
-from requests import put
-
 from util.tester import UtilTester
 
 
@@ -35,7 +32,7 @@ class TestAPIWihoutLogin(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
+                    'tags': {'date': '1910', 'event': 'robbery'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -52,9 +49,7 @@ class TestAPIWihoutLogin(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
-                             {'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'}],
+                    'tags': {'end_date': '1930-03-25', 'highway': 'residential', 'start_date': '1910-12-08'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -71,9 +66,7 @@ class TestAPIWihoutLogin(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'end_date', 'v': '1915-12-25'},
-                             {'k': 'start_date', 'v': '1900-11-12'}],
+                    'tags': {'building': 'cathedral', 'end_date': '1915-12-25', 'start_date': '1900-11-12'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -131,7 +124,7 @@ class TestAPIWihoutLogin(TestCase):
                 'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
                 'features': [
                     {
-                        'tags': [{'k': 'date', 'v': '1910'}, {'k': 'event', 'v': 'robbery'}],
+                        'tags': {'date': '1910', 'event': 'robbery'},
                         'type': 'Feature',
                         'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                         'geometry': {

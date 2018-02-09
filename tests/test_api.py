@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase
+from unittest import TestCase, skip
 from util.tester import UtilTester
 
 
@@ -70,8 +70,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'date', 'v': '1910'},
-                             {'k': 'event', 'v': 'robbery'}],
+                    'tags': {'date': '1910', 'event': 'robbery'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -87,9 +86,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'end_date', 'v': '1930-03-25'},
-                             {'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1910-12-08'}],
+                    'tags': {'end_date': '1930-03-25', 'highway': 'residential', 'start_date': '1910-12-08'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -105,9 +102,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'building', 'v': 'cathedral'},
-                             {'k': 'end_date', 'v': '1915-12-25'},
-                             {'k': 'start_date', 'v': '1900-11-12'}],
+                    'tags': {'building': 'cathedral', 'end_date': '1915-12-25', 'start_date': '1900-11-12'},
                     'type': 'Feature',
                     'properties': {'id': -1, 'fk_changeset_id': changeset_id, 'version': 1, 'visible': True},
                     'geometry': {
@@ -162,8 +157,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'event', 'v': 'assault'},
-                             {'k': 'date', 'v': '1912'}],
+                    'tags': {'event': 'assault', 'date': '1912'},
                     'type': 'Feature',
                     'properties': {'id': 5000, 'fk_changeset_id': changeset_id},
                     'geometry': {
@@ -179,9 +173,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'highway', 'v': 'residential'},
-                             {'k': 'start_date', 'v': '1914-02-18'},
-                             {'k': 'end_date', 'v': '1927-03-21'}],
+                    'tags': {'highway': 'residential', 'start_date': '1914-02-18', 'end_date': '1927-03-21'},
                     'type': 'Feature',
                     'properties': {'id': 5001, 'fk_changeset_id': changeset_id},
                     'geometry': {
@@ -197,8 +189,7 @@ class TestAPI(TestCase):
             'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
             'features': [
                 {
-                    'tags': [{'k': 'building', 'v': 'church'},
-                             {'k': 'start_date', 'v': '1880-03-30'}],
+                    'tags': {'building': 'church', 'start_date': '1880-03-30'},
                     'type': 'Feature',
                     'properties': {'id': 5002, 'fk_changeset_id': changeset_id},
                     'geometry': {

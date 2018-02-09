@@ -46,36 +46,6 @@ INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, te
 VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', FALSE, FALSE, FALSE);
 
 
-select * from user_;
-
-
--- select tag from user_;
--- select tag->'name' from user_;
-
-
-/*
--- -----------------------------------------------------
--- Table user_tag
--- -----------------------------------------------------
--- clean user_tag table
-DELETE FROM user_tag;
-
--- insert values in table user_tag
--- user 1001
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Administrator', 1001);
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('institution', 'INPE', 1001);
--- user 1002
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Rodrigo', 1002);
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('institution', 'INPE', 1002);
--- user 1003
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Miguel', 1003);
--- user 1004
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Rafael', 1004);
--- user 1005
-INSERT INTO user_tag (k, v, fk_user_id) VALUES ('name', 'Gabriel', 1005);
-*/
-
-
 -- -----------------------------------------------------
 -- Table auth
 -- -----------------------------------------------------
@@ -117,28 +87,6 @@ INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible, tags) VALUE
 '{"name": "Arquivo Público do Estado de São Paulo", "description": "", "type": "private"}');
 
 
-/*
--- -----------------------------------------------------
--- Table group_tag
--- -----------------------------------------------------
--- clean group_tag table
-DELETE FROM group_tag;
-
--- insert values in table group_tag
--- SOURCE: -
--- group 1001
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Admins', 1001); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', 'Just admins', 1001); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1001);
--- group 1002
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'INPE', 1002); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1002); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1002);
--- group 1003
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP SJC', 1003); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1003); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1003);
--- group 1004
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'UNIFESP Guarulhos', 1004); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1004); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1004);
--- group 1005
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Emory', 1005); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1005); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'public', 1005);
--- group 1006
-INSERT INTO group_tag (k, v, fk_group_id) VALUES ('name', 'Arquivo Público do Estado de São Paulo', 1006); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('description', '', 1006); INSERT INTO group_tag (k, v, fk_group_id) VALUES ('type', 'private', 1006);
-*/
 
 -- -----------------------------------------------------
 -- Table user_group
@@ -208,27 +156,6 @@ INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1004, '201
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
 
 
-
-/*
--- -----------------------------------------------------
--- Table project_tag
--- -----------------------------------------------------
--- clean project_tag table
-DELETE FROM project_tag;
-
--- insert values in table project_tag
--- SOURCE: -
--- project 1001
-INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'admin', 1001);
-INSERT INTO project_tag (k, v, fk_project_id) VALUES ('description', 'default project', 1001);
--- project 1002
-INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'test project', 1002);
-INSERT INTO project_tag (k, v, fk_project_id) VALUES ('url', 'http://somehost.com', 1002);
--- project 1003
-INSERT INTO project_tag (k, v, fk_project_id) VALUES ('name', 'hello world', 1003);
-*/
-
-
 -- -----------------------------------------------------
 -- Table project_watcher
 -- -----------------------------------------------------
@@ -258,32 +185,8 @@ INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, tags) VALUES (1004
 INSERT INTO layer (id, created_at, fk_project_id, fk_user_id, visible, tags) VALUES (1005, '2017-06-04', 1003, 1004, FALSE,
 '{"name": "layer 5", "description": "test_layer"}');
 
-
-
-/*
--- -----------------------------------------------------
--- Table layer_tag
--- -----------------------------------------------------
--- clean layer_tag table
-DELETE FROM layer_tag;
-
--- insert values in table layer_tag
--- SOURCE: -
--- layer 1001
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'default', 1001); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'default layer', 1001); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'generic', 1001);
--- layer 1002
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'test_layer', 1002); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1002); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'crime', 1002);
--- layer 1003
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 3', 1003); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1003); INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('theme', 'addresses', 1003);
--- layer 1004
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 4', 1004);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1004);
--- layer 1005
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('name', 'layer 5', 1005);
-INSERT INTO layer_tag (k, v, fk_layer_id) VALUES ('description', 'test_layer', 1005);
-
 -- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
-*/
+
 
 
 -- -----------------------------------------------------
@@ -307,36 +210,6 @@ INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2
 INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
 
 
-select tags from changeset;
-
-select tags from changeset ORDER BY tags->>'created_by' ASC;
-
-select tags from changeset ORDER BY tags->>'created_by' ASC;
-
-
-/*
--- -----------------------------------------------------
--- Table changeset_tag
--- -----------------------------------------------------
--- clean changeset_tag table
-DELETE FROM changeset_tag;
-
--- insert values in table changeset_tag
--- SOURCE: -
--- changeset 1001
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'pauliceia_portal', 1001);
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'a changeset created', 1001);
--- changeset 1002
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'test_postgresql', 1002);
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset test', 1002);
--- changeset 1003
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'pauliceia_portal', 1003);
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'a changeset created', 1003);
--- changeset 1004
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('created_by', 'test_postgresql', 1004);
-INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset test', 1004);
-*/
-
 
 -- -----------------------------------------------------
 -- Table notification
@@ -345,19 +218,29 @@ INSERT INTO changeset_tag (k, v, fk_changeset_id) VALUES ('comment', 'changeset 
 DELETE FROM notification;
 
 -- add notification
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1001, '2017-01-01', 1001);
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1002, '2017-03-25', 1001);
-INSERT INTO notification (id, created_at, fk_user_id, is_read) VALUES (1003, '2017-12-25', 1001, TRUE);
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1004, '2017-05-13', 1002);
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1005, '2017-12-25', 1002);
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1006, '2017-05-13', 1003);
-INSERT INTO notification (id, created_at, removed_at, fk_user_id, is_read, visible) VALUES (1007, '2017-08-15', '2017-10-25', 1003, TRUE, FALSE);
-INSERT INTO notification (id, created_at, fk_user_id) VALUES (1008, '2017-12-25', 1004);
-INSERT INTO notification (id, created_at, removed_at, fk_user_id, visible) VALUES (1009, '2017-06-24', '2017-12-25', 1005, FALSE);
-INSERT INTO notification (id, created_at, fk_user_id, is_read) VALUES (1010, '2017-05-13', 1005, TRUE);
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1001, '2017-01-01', 1001,
+'{"body": "Happy Birthday", "url": "", "type": "birthday"}');
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1002, '2017-03-25', 1001,
+'{"body": "You was added in a group called X", "url": "", "type": "group"}');
+INSERT INTO notification (id, created_at, fk_user_id, is_read, tags) VALUES (1003, '2017-12-25', 1001, TRUE,
+'{"body": "Created a new project in group X", "url": "", "type": "project"}');
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1004, '2017-05-13', 1002,
+'{"body": "Created a new layer in project Y", "url": "", "type": "layer"}');
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1005, '2017-12-25', 1002,
+'{"body": "A new review was made in layer Z", "url": "", "type": "review"}');
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1006, '2017-05-13', 1003,
+'{"body": "You gained a new trophy", "url": "", "type": "award"}');
+INSERT INTO notification (id, created_at, removed_at, fk_user_id, is_read, visible, tags) VALUES (1007, '2017-08-15', '2017-10-25', 1003, TRUE, FALSE,
+'{"body": "Created a new project in group X", "url": "", "type": "project"}');
+INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1008, '2017-12-25', 1004,
+'{"body": "You gained more points", "url": "", "type": "point"}');
+INSERT INTO notification (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1009, '2017-06-24', '2017-12-25', 1005, FALSE,
+'{"body": "A new review was made in layer Z", "url": "", "type": "review"}');
+INSERT INTO notification (id, created_at, fk_user_id, is_read, tags) VALUES (1010, '2017-05-13', 1005, TRUE,
+'{"body": "You gained more points", "url": "", "type": "point"}');
 
 
-
+/*
 -- -----------------------------------------------------
 -- Table notification_tag
 -- -----------------------------------------------------
@@ -407,7 +290,7 @@ INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('type', 'review'
 INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('body', 'You gained more points', 1010);
 INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('url', '', 1010);
 INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('type', 'point', 1010);
-
+*/
 
 
 -- -----------------------------------------------------
@@ -417,11 +300,16 @@ INSERT INTO notification_tag (k, v, fk_notification_id) VALUES ('type', 'point',
 DELETE FROM current_point;
 
 -- add node
-INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001);
-INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002);
-INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003);
-INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004);
-INSERT INTO current_point (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001);
+INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001, 
+'{"address": "R. São José", "start_date": "1869", "end_date": "1869"}');
+INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002,
+'{"address": "R. Marechal Deodoro", "start_date": "1878", "end_date": "1910"}');
+INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003,
+'{"address": "R. 11 de Junho, 9 = D. José de Barros", "start_date": "1886", "end_date": "1916"}');
+INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004,
+'{"address": "R. 15 de Novembro, 17A", "start_date": "1890", "end_date": "1911"}');
+INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001,
+'{"address": "R. Barra Funda, 74", "start_date": "1897", "end_date": "1897"}');
 -- add node as GeoJSON
 INSERT INTO current_point (id, geom, fk_changeset_id) 
 VALUES (1006, 
@@ -446,6 +334,7 @@ VALUES (1007,
 
 
 
+/*
 -- -----------------------------------------------------
 -- Table current_point_tag
 -- -----------------------------------------------------
@@ -474,7 +363,7 @@ INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1
 INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('address', 'R. Barra Funda, 74', 1005);
 INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('start_date', '1897', 1005);
 INSERT INTO current_point_tag (k, v, fk_current_point_id) VALUES ('end_date', '1897', 1005);
-
+*/
 
 -- -----------------------------------------------------
 -- Operations with current_node
@@ -492,11 +381,16 @@ UPDATE current_point SET visible = FALSE WHERE id>=1003 AND id<=1005;
 DELETE FROM current_line;
 
 -- add way
-INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001);
-INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002);
-INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003);
-INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004);
-INSERT INTO current_line (id, geom, fk_changeset_id) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002);
+INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001,
+'{"name": "rua boa vista", "start_date": "1930", "end_date": "1930"}');
+INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002,
+'{"name": "rua tres de dezembro", "start_date": "1930", "end_date": "1930"}');
+INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003,
+'{"name": "rua joao briccola", "start_date": "1930", "end_date": "1930"}');
+INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004,
+'{"name": "ladeira porto geral", "start_date": "1930", "end_date": "1930"}');
+INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002,
+'{"name": "travessa porto geral", "start_date": "1930", "end_date": "1930"}');
 -- add way as GeoJSON
 INSERT INTO current_line (id, geom, fk_changeset_id) 
 VALUES (1006, 
@@ -520,6 +414,7 @@ VALUES (1007,
 	1003);
 
 
+/*
 -- -----------------------------------------------------
 -- Table current_line_tag
 -- -----------------------------------------------------
@@ -533,21 +428,22 @@ INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'rua boa
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1001);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1001);
 -- way 2
-INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'rua tres de dezembro', 1002);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'rua tres de dezembro', 1002);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1002);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1002);
 -- way 3
-INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'rua joao briccola', 1003);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'rua joao briccola', 1003);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1003);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1003);
 -- way 4
-INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'ladeira porto geral', 1004);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'ladeira porto geral', 1004);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1004);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1004);
 -- way 5
-INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('address', 'travessa porto geral', 1005);
+INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('name', 'travessa porto geral', 1005);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('start_date', '1930', 1005);
 INSERT INTO current_line_tag (k, v, fk_current_line_id) VALUES ('end_date', '1930', 1005);
+*/
 
 
 -- -----------------------------------------------------
@@ -566,8 +462,10 @@ UPDATE current_line SET visible = FALSE WHERE id>=1003 AND id<=1007;
 DELETE FROM current_polygon;
 
 -- add area
-INSERT INTO current_polygon (id, geom, fk_changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001);
-INSERT INTO current_polygon (id, geom, fk_changeset_id) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002);
+INSERT INTO current_polygon (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001,
+'{"building": "hotel", "start_date": "1870", "end_date": "1900"}');
+INSERT INTO current_polygon (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002,
+'{"building": "theater", "start_date": "1920", "end_date": "1930"}');
 -- add area as GeoJSON 
 INSERT INTO current_polygon (id, geom, fk_changeset_id) 
 VALUES (1006, 
@@ -591,6 +489,7 @@ VALUES (1007,
 	1004);
 
 
+/*
 -- -----------------------------------------------------
 -- Table current_polygon_tag
 -- -----------------------------------------------------
@@ -607,6 +506,7 @@ INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('end_date'
 INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('building', 'theater', 1002);
 INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('start_date', '1920', 1002);
 INSERT INTO current_polygon_tag (k, v, fk_current_polygon_id) VALUES ('end_date', '1930', 1002);
+*/
 
 
 -- -----------------------------------------------------
