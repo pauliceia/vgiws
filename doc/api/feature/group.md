@@ -22,7 +22,7 @@ This method gets groups from DB. If you doesn't put any parameter, so will retur
                 'type': 'Group',
                 'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                'removed_at': None, 'id': 1003, 'visible': True},
-                'tags': [{'v': '', 'k': 'description'}, {'v': 'UNIFESP SJC', 'k': 'name'}]
+                'tags': {'name': 'UNIFESP SJC', 'description': ''}
             }
         ],
         'type': 'FeatureCollection'
@@ -46,8 +46,7 @@ This method create a new group described in a JSON.
     {
         'type': 'Group',
         'properties': {'id': -1, 'fk_user_id': 1002},
-        'tags': [{'k': 'description', 'v': 'group of my institution'},
-                 {'k': 'name', 'v': 'VS'}]
+        'tags': {'name': 'VS', 'description': 'group of my institution'}
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:

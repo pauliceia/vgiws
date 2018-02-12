@@ -24,7 +24,7 @@ This method gets projects from DB. If you doesn't put any parameter, so will ret
                 'type': 'Project',
                 'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
                                'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
-                'tags': [{'k': 'name', 'v': 'hello world'}]
+                'tags': {'name': 'my new project'}
             }
         ],
         'type': 'FeatureCollection'
@@ -48,8 +48,7 @@ This method create a new project described in a JSON.
     {
         'type': 'Project',
         'properties': {'id': -1, 'fk_group_id': 1001},
-        'tags': [{'k': 'name', 'v': 'test project'},
-                 {'k': 'url', 'v': 'http://somehost.com'}]
+        'tags': {'name': 'test project', 'url': 'http://somehost.com'}
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:

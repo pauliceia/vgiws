@@ -20,12 +20,9 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
         'features': [
             {
                 'type': 'Layer',
-                'tags': [{'k': 'created_by', 'v': 'escolástica'},
-                         {'k': 'name', 'v': 'Robberies on 1930'},
-                         {'k': 'description', 'v': ''},
-                         {'k': 'start_date', 'v': '1930/01/01'},
-                         {'k': 'end_date', 'v': '1930/12/31'},
-                         {'k': 'theme', 'v': 'robbery'}],
+                'tags': {'created_by': 'escolástica', 'name': 'Robberies on 1930',
+                         'description': '', 'start_date': '1930/01/01',
+                         'end_date': '1930/12/31', 'theme': 'robbery'},
                 'properties': {'removed_at': None, 'fk_user_id': 1002,
                                'id': 1001, 'created_at': '2017-10-20 00:00:00'}
             }
@@ -49,12 +46,9 @@ This method create a new layer described in a JSON.
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
-        'tags': [{'k': 'created_by', 'v': 'agostinho'},
-                 {'k': 'name', 'v': 'layer of theathers'},
-                 {'k': 'description', 'v': 'theathers on 1930'},
-                 {'k': 'start_date', 'v': '1930/01/01'},
-                 {'k': 'end_date', 'v': '1930/12/31'},
-                 {'k': 'theme', 'v': 'theather'}],
+        'tags': {'created_by': 'agostinho', 'name': 'layer of theathers',
+                 'description': 'theathers on 1930', 'start_date': '1930/01/01',
+                 'end_date': '1930/12/31', 'theme': 'theather'},
         'properties': {'id': -1},
         'type': 'Layer'
     }

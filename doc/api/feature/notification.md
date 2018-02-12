@@ -24,9 +24,8 @@ This method gets notifications from DB. If you doesn't put any parameter, so wil
                 'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
                                'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                 'type': 'Notification',
-                'tags': [{'k': 'body', 'v': 'You was added in a group called X'},
-                         {'k': 'type', 'v': 'group'},
-                         {'k': 'url', 'v': ''}]
+                'tags': {'body': 'You was added in a group called X',
+                         'type': 'group', 'url': ''}
             },
         ],
         'type': 'FeatureCollection'
@@ -50,9 +49,7 @@ This method create a new notification described in a JSON.
     {
         'properties': {'id': -1, 'fk_user_id': 1002},
         'type': 'Notification',
-        'tags': [{'k': 'body', 'v': 'You gained more points'},
-                 {'k': 'type', 'v': 'point'},
-                 {'k': 'url', 'v': ''}]
+        'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:

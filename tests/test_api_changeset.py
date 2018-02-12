@@ -254,7 +254,6 @@ class TestAPIChangeset(TestCase):
             'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
-
         }
         feature = self.tester.api_changeset_create(feature)
 
@@ -293,8 +292,7 @@ class TestAPIChangesetErrors(TestCase):
 
     def test_put_api_changeset_create_error_403_forbidden(self):
         feature = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'comment', 'v': 'testing create changeset'}],
+            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
         }
@@ -377,6 +375,7 @@ class TestAPIChangesetErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

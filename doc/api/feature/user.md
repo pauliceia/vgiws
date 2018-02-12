@@ -17,7 +17,7 @@ This method gets users from DB. If you doesn't put any parameter, so will return
         'features': [
             {
                 'type': 'User',
-                'tags': [{'v': 'INPE', 'k': 'institution'}],
+                'tags': {'institution': 'INPE'},
                 'properties': {'id': 1002, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
                                'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
                                'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
@@ -42,7 +42,7 @@ This method create a new user described in a JSON.
     ```javascript
     {
         'type': 'User',
-        'tags': [],
+        'tags': {},
         'properties': {'id': -1, 'email': 'roger@roger.com',
                        'password': 'roger', 'username': ''}
     }

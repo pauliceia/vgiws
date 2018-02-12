@@ -25,13 +25,13 @@ This method gets elements from DB. If you doesn't put any parameter, so will ret
         'type': 'FeatureCollection',
         'features': [
             {
-                'tags': [{'v': 'R. São José', 'k': 'addr:street'},
-                         {'v': '10', 'k': 'addr:housenumber'},
-                         {'v': '1870', 'k': 'start_date'},
-                         {'v': '1910', 'k': 'end_date'}],
+                'tags': {'addr:street': 'R. São José', 'addr:housenumber': '10',
+                        'start_date': '1870', 'end_date': '1910'},
                 'type': 'Feature',
                 'properties': {'id': 1001, 'fk_changeset_id': 1001},
-                'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
+                'geometry': {
+                    'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]
+                }
             }
         ]
     }
@@ -58,13 +58,11 @@ This method create a new element described in a GeoJSON.
         'crs': {"properties": {"name": "EPSG:4326"}, "type": "name"},
         'features': [
             {
-                'tags': [{'k': 'event', 'v': 'robbery'},
-                         {'k': 'date', 'v': '1910'}],
+                'tags': {'event': 'robbery', 'date': '1910'},
                 'type': 'Feature',
                 'properties': {'id': -1, 'fk_changeset_id': 1001},
                 'geometry': {
-                    'type': 'MultiPoint',
-                    'coordinates': [[-23.546421, -46.635722]]
+                    'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]
                 },
             },
             ...

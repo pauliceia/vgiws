@@ -25,11 +25,10 @@ This method gets changesets from DB. If you doesn't put any parameter, so will r
     {
         'features': [
             {
-                'type': 'Changeset',
-                'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001,
-                               'created_at': '2017-10-20 00:00:00', 'id': 1001},
-                'tags': [{'k': 'created_by', 'v': 'pauliceia_portal'},
-                         {'k': 'comment', 'v': 'a changeset created'}]
+                'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
+                'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
+                               'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                'type': 'Changeset'
             }
         ],
         'type': 'FeatureCollection'
@@ -54,8 +53,7 @@ This method create a new changeset described in a JSON.
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
-        'tags': [{'k': 'created_by', 'v': 'Tomás de Aquino'},
-                 {'k': 'comment', 'v': 'Changeset for crimes data.'}],
+        'tags': {'created_by': 'Tomás de Aquino', 'comment': 'Changeset for crimes data.'},
         'properties': {'id': -1, "fk_project_id": 1001},
         'type': 'Changeset',
     }
