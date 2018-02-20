@@ -321,6 +321,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             json_with_id = self._create_feature(feature_json, current_user_id)
+
+            # do commit after create a feature
+            self.PGSQLConn.commit()
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
@@ -375,6 +378,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def delete_method_api_feature(self, *args):
         try:
             self._delete_feature(*args)
+
+            # do commit after delete the feature
+            self.PGSQLConn.commit()
         except DataError as error:
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a feature. Please, contact the administrator.")

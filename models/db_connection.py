@@ -291,7 +291,7 @@ class PGSQLConnection:
         self.add_user_group_in_db(properties)
 
         # put in DB the feature
-        self.commit()
+        # self.commit()
 
     def delete_user_group(self, group_id=None, user_id=None):
         if (is_a_invalid_id(group_id) or is_a_invalid_id(user_id)) or \
@@ -308,7 +308,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -389,7 +389,7 @@ class PGSQLConnection:
         id_in_json = self.add_group_in_db(user_id, feature_json["tags"])
 
         # put in DB the group and its tags
-        self.commit()
+        # self.commit()
 
         return id_in_json
 
@@ -407,7 +407,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -490,7 +490,7 @@ class PGSQLConnection:
         id_in_json = self.add_project_in_db(group_id, user_id, feature_json["tags"])
 
         # put in DB the layer and its tags
-        self.commit()
+        # self.commit()
 
         return id_in_json
 
@@ -508,7 +508,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -590,7 +590,7 @@ class PGSQLConnection:
         id_in_json = self.add_layer_in_db(project_id, user_id, feature_json["tags"])
 
         # put in DB the layer and its tags
-        self.commit()
+        # self.commit()
 
         return id_in_json
 
@@ -608,7 +608,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -713,7 +713,7 @@ class PGSQLConnection:
         changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
 
         # put in DB the changeset and its tags
-        self.commit()
+        # self.commit()
 
         return changeset_id_in_json
 
@@ -749,7 +749,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -879,7 +879,7 @@ class PGSQLConnection:
         #     self.add_notification_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
 
         # put in DB the layer and its tags
-        self.commit()
+        # self.commit()
 
         return id_in_json
 
@@ -897,7 +897,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -1080,7 +1080,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -1175,7 +1175,7 @@ class PGSQLConnection:
         id_in_json = self.add_user_in_db(feature_json["properties"], feature_json["tags"])
 
         # put in DB the layer and its tags
-        self.commit()
+        # self.commit()
 
         return id_in_json
 
@@ -1195,7 +1195,7 @@ class PGSQLConnection:
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
-        self.commit()
+        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
