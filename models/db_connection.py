@@ -290,9 +290,6 @@ class PGSQLConnection:
         # add the user in a group
         self.add_user_group_in_db(properties)
 
-        # put in DB the feature
-        # self.commit()
-
     def delete_user_group(self, group_id=None, user_id=None):
         if (is_a_invalid_id(group_id) or is_a_invalid_id(user_id)) or \
                 (group_id is None or user_id is None):
@@ -307,8 +304,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -388,10 +383,24 @@ class PGSQLConnection:
         # add the group in db and get the id of it
         id_in_json = self.add_group_in_db(user_id, feature_json["tags"])
 
-        # put in DB the group and its tags
-        # self.commit()
-
         return id_in_json
+
+    def update_group(self, feature_json):
+
+        feature_id = feature_json["properties"]["id"]
+        tags = dumps(feature_json["tags"])  # convert python dict "tags" to json to save in db
+
+        query_text = """
+            UPDATE group_ SET tags = '{0}' WHERE id = {1};
+        """.format(tags, feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     def delete_group_in_db(self, feature_id):
         if is_a_invalid_id(feature_id):
@@ -406,8 +415,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -489,9 +496,6 @@ class PGSQLConnection:
         # add the project in db and get the id of it
         id_in_json = self.add_project_in_db(group_id, user_id, feature_json["tags"])
 
-        # put in DB the layer and its tags
-        # self.commit()
-
         return id_in_json
 
     def delete_project_in_db(self, feature_id):
@@ -507,8 +511,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -589,9 +591,6 @@ class PGSQLConnection:
         # add the layer in db and get the id of it
         id_in_json = self.add_layer_in_db(project_id, user_id, feature_json["tags"])
 
-        # put in DB the layer and its tags
-        # self.commit()
-
         return id_in_json
 
     def delete_layer_in_db(self, feature_id):
@@ -607,8 +606,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -712,9 +709,6 @@ class PGSQLConnection:
         # add the chengeset in db and get the id of it
         changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
 
-        # put in DB the changeset and its tags
-        # self.commit()
-
         return changeset_id_in_json
 
     def close_changeset(self, feature_id=None):
@@ -748,8 +742,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -868,18 +860,8 @@ class PGSQLConnection:
 
         validate_feature_json(feature_json)
 
-        # group_id = feature_json["properties"]["fk_group_id"]
-
         # add the layer in db and get the id of it
         id_in_json = self.add_notification_in_db(user_id, feature_json["tags"])
-
-        # add in DB the tags of layer
-        # for tag in feature_json["tags"]:
-        #     # add the layer tag in db
-        #     self.add_notification_tag_in_db(tag["k"], tag["v"], id_in_json["id"])
-
-        # put in DB the layer and its tags
-        # self.commit()
 
         return id_in_json
 
@@ -896,8 +878,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -1055,14 +1035,6 @@ class PGSQLConnection:
         # add the element in db and get the id of it
         element_id = self.add_element_in_db(element, feature["geometry"], changeset_id, tags)
 
-        # for tag in tags:
-        #     # add the element tag in db
-        #     # PS: how the element is new in db, so the fk_element_version = 1
-        #     self.add_element_tag_in_db(tag["k"], tag["v"], element, element_id)
-
-        # put in DB the element and its tags
-        # self.commit()
-
         return element_id
 
     # delete elements
@@ -1079,8 +1051,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
@@ -1174,9 +1144,6 @@ class PGSQLConnection:
 
         id_in_json = self.add_user_in_db(feature_json["properties"], feature_json["tags"])
 
-        # put in DB the layer and its tags
-        # self.commit()
-
         return id_in_json
 
     # delete user
@@ -1194,8 +1161,6 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        # self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")

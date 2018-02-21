@@ -1,0 +1,31 @@
+Tabelas: 
+
+* user_:
+Tabela com as informações dos usuários.
+
+- Um usuário pode criar um grupo de usuários, relacionado a sua pesquisa. Por exemplo: um pesquisador cria um grupo e adiciona seus alunos, para juntos fazerem o mapeamento histórico dos crimes em 1930.
+- Caso o usuário não queira criar um grupo, ele pode criar seus projetos pessoais direto.
+
+
+* group_:
+Tabela com as informações dos grupos.
+
+
+* user_group:
+Tabela com as informações dos usuários que estão em grupos.
+
+
+* project:
+Tabela com as informações dos projetos.
+
+
+* layer:
+Tabela com as informações das camadas.
+
+
+* changeset:
+Tabela com as informações dos changesets.
+
+
+* elements:
+

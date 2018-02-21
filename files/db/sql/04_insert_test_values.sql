@@ -74,17 +74,17 @@ DELETE FROM group_;
 
 -- add group
 INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1001, '2017-01-01', 1001,
-'{"name": "Admins", "description": "Just admins", "type": "private"}');
+'{"name": "Admins", "description": "Just admins", "visibility": "private"}');
 INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1002, '2017-03-25', 1001,
-'{"name": "INPE", "description": "", "type": "private"}');
+'{"name": "INPE", "description": "", "visibility": "private"}');
 INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1003, '2017-12-25', 1002,
-'{"name": "UNIFESP SJC", "description": "", "type": "public"}');
+'{"name": "UNIFESP SJC", "description": "", "visibility": "public"}');
 INSERT INTO group_ (id, created_at, fk_user_id, tags) VALUES (1004, '2017-05-13', 1003,
-'{"name": "UNIFESP Guarulhos", "description": "", "type": "private"}');
+'{"name": "UNIFESP Guarulhos", "description": "", "visibility": "private"}');
 INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1005, '2017-08-15', '2017-10-25', 1003, FALSE,
-'{"name": "Emory", "description": "", "type": "public"}');
+'{"name": "Emory", "description": "", "visibility": "public"}');
 INSERT INTO group_ (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1006, '2017-06-24', '2017-12-25', 1004, FALSE,
-'{"name": "Arquivo Público do Estado de São Paulo", "description": "", "type": "private"}');
+'{"name": "Arquivo Público do Estado de São Paulo", "description": "", "visibility": "private"}');
 
 
 
@@ -145,7 +145,7 @@ VALUES (1006, 1004, '2017-01-10', 'admin', 'joined', 1004);
 -- clean project table
 DELETE FROM project;
 
--- add layer
+-- projects in groups
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1001, '2017-11-20', 1001, 1001, 
 '{"name": "admin", "description": "default project"}');
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1002, '2017-10-12', 1001, 1002,
@@ -154,6 +154,12 @@ INSERT INTO project (id, created_at, fk_group_id, fk_user_id, tags) VALUES (1003
 '{"name": "hello world"}');
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id) VALUES (1004, '2017-09-11', 1002, 1004);
 INSERT INTO project (id, created_at, fk_group_id, fk_user_id, visible) VALUES (1005, '2017-06-04', 1003, 1005, FALSE);
+-- projects by users
+INSERT INTO project (id, created_at, fk_user_id, tags) VALUES (1006, '2017-02-22', 1001,
+'{"name": "crimes in 1900", "description": "my research about crimes in 1900"}');
+INSERT INTO project (id, created_at, fk_user_id, tags) VALUES (1007, '2017-02-23', 1003,
+'{"name": "cinemas in 1900", "description": "cinemas in SP in 1900"}');
+
 
 
 -- -----------------------------------------------------

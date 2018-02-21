@@ -14,7 +14,9 @@ This method gets projects from DB. If you doesn't put any parameter, so will ret
      - Get all projects: http://localhost:8888/api/project/
      - Get one project by id: http://localhost:8888/api/project/?project_id=1001
      - Get projects by group id: http://localhost:8888/api/project/?group_id=1001
-     - Get projects by user id: http://localhost:8888/api/project/?user_id=1001
+     - Get projects by user id (may belong to groups): http://localhost:8888/api/project/?user_id=1001
+     - Get projects by user id and group id: http://localhost:8888/api/project/?user_id=1001&group_id=1001
+     - Get projects of a user id (don't belong to groups): http://localhost:8888/api/project/?user_id=1001&group_id=NULL
 - Send:
 - Response: a JSON that contain the features selected. Example:
     ```javascript

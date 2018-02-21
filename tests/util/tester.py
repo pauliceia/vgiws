@@ -157,7 +157,14 @@ class UtilTester:
 
     # GROUP
 
-    def api_group(self, expected, **arguments):
+    # get
+
+    def api_group_select(self, **arguments):
+        """
+        Do a SELECT in DB looking for groups
+        :param arguments: a dictionary with arguments to search
+        :return: groups found
+        """
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
@@ -165,6 +172,18 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
+
+        return resulted
+
+    def api_group(self, expected, **arguments):
+        """
+        DO a COMPARISON between the group(s) expected and the group(s) found by search
+        :param expected: a dictionary expected
+        :param arguments: a dictionary with arguments to search
+        :return:
+        """
+
+        resulted = self.api_group_select(**arguments)
 
         self.ut_self.assertEqual(expected, resulted)
 
@@ -184,10 +203,38 @@ class UtilTester:
 
         return feature_json
 
+    def api_group_update(self, feature_json):
+        response = self.session.put(self.URL + '/api/group/update/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
     def api_group_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    # group - verify
+
+    def verify_if_one_group_exist_in_db(self, feature_expected):
+
+        feature_id = feature_expected["properties"]["id"]
+        feature_tags = feature_expected["tags"]
+        feature_type = feature_expected["type"]
+
+        # do a GET in db to obtain the newest version
+        feature_resulted = self.api_group_select(group_id=feature_id)
+        feature_resulted = feature_resulted["features"][0]
+
+        feature_resulted_id = feature_resulted["properties"]["id"]
+        feature_resulted_tags = feature_resulted["tags"]
+        feature_resulted_type = feature_resulted["type"]
+
+        # compare parts of the features, because there are some attributes that just the server works
+        # with, for example: visible or created_at, so don't compare them
+        self.ut_self.assertEqual(feature_id, feature_resulted_id)
+        self.ut_self.assertEqual(feature_tags, feature_resulted_tags)
+        self.ut_self.assertEqual(feature_type, feature_resulted_type)
 
     # group errors - get
 
@@ -707,6 +754,8 @@ class UtilTester:
         response = self.session.delete(self.URL + '/api/{0}/{1}'.format(element, element_id))
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    # elements - verify
 
     def verify_if_element_was_add_in_db(self, element_json_expected):
         element_id = element_json_expected["features"][0]["properties"]["id"]  # get the id of element

@@ -21,25 +21,25 @@ class TestAPIGroup(TestCase):
                     'type': 'Group',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-01-01 00:00:00',
                                    'removed_at': None, 'id': 1001, 'visible': True},
-                    'tags': {'description': 'Just admins', 'name': 'Admins', 'type': 'private'}
+                    'tags': {'description': 'Just admins', 'name': 'Admins', 'visibility': 'private'}
                 },
                 {
                     'type': 'Group',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-03-25 00:00:00',
                                    'removed_at': None, 'id': 1002, 'visible': True},
-                    'tags': {'description': '', 'name': 'INPE', 'type': 'private'}
+                    'tags': {'description': '', 'name': 'INPE', 'visibility': 'private'}
                 },
                 {
                     'type': 'Group',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                    'removed_at': None, 'id': 1003, 'visible': True},
-                    'tags': {'description': '', 'name': 'UNIFESP SJC', 'type': 'public'}
+                    'tags': {'description': '', 'name': 'UNIFESP SJC', 'visibility': 'public'}
                 },
                 {
                     'type': 'Group',
                     'properties': {'fk_user_id': 1003, 'created_at': '2017-05-13 00:00:00',
                                    'removed_at': None, 'id': 1004, 'visible': True},
-                    'tags': {'description': '', 'name': 'UNIFESP Guarulhos', 'type': 'private'}
+                    'tags': {'description': '', 'name': 'UNIFESP Guarulhos', 'visibility': 'private'}
                 }
             ],
         }
@@ -54,7 +54,7 @@ class TestAPIGroup(TestCase):
                     'type': 'Group',
                     'properties': {'fk_user_id': 1002, 'created_at': '2017-12-25 00:00:00',
                                    'removed_at': None, 'id': 1003, 'visible': True},
-                    'tags': {'description': '', 'name': 'UNIFESP SJC', 'type': 'public'}
+                    'tags': {'description': '', 'name': 'UNIFESP SJC', 'visibility': 'public'}
                 }
             ],
         }
@@ -69,13 +69,13 @@ class TestAPIGroup(TestCase):
                     'type': 'Group',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-01-01 00:00:00',
                                    'removed_at': None, 'id': 1001, 'visible': True},
-                    'tags': {'description': 'Just admins', 'name': 'Admins', 'type': 'private'}
+                    'tags': {'description': 'Just admins', 'name': 'Admins', 'visibility': 'private'}
                 },
                 {
                     'type': 'Group',
                     'properties': {'fk_user_id': 1001, 'created_at': '2017-03-25 00:00:00',
                                    'removed_at': None, 'id': 1002, 'visible': True},
-                    'tags': {'description': '', 'name': 'INPE', 'type': 'private'}
+                    'tags': {'description': '', 'name': 'INPE', 'visibility': 'private'}
                 },
             ],
         }
@@ -88,22 +88,34 @@ class TestAPIGroup(TestCase):
         # DO LOGIN
         self.tester.auth_login_fake()
 
-        # create a group
+        # --> CREATE a group
         feature = {
             'type': 'Group',
             'properties': {'id': -1, 'fk_user_id': 1002},
-            'tags': {'description': 'group of my institution', 'name': 'VS'}
+            'tags': {'description': 'group of my institution', 'name': 'VS', "visibility": "private"}
         }
 
         feature = self.tester.api_group_create(feature)
 
+        # --> VERIFY if the group was added in DB
+        self.tester.verify_if_one_group_exist_in_db(feature)
+
+        # --> UPDATE a group
+        feature["tags"]["description"] = "updated the description"
+        feature["tags"]["visibility"] = "public"  # add new tag
+
+        self.tester.api_group_update(feature)
+
+        # --> VERIFY if the group was updated in DB
+        self.tester.verify_if_one_group_exist_in_db(feature)
+
+        # --> REMOVE the group
         # get the id of feature to REMOVE it
         feature_id = feature["properties"]["id"]
 
-        # REMOVE THE group AFTER THE TESTS
         self.tester.api_group_delete(feature_id)
 
-        # DO LOGOUT AFTER THE TESTS
+        # --> DO LOGOUT after tests
         self.tester.auth_logout()
 
 

@@ -1,5 +1,5 @@
 
--- Sex 09 Fev 2018 16:38:10 -02
+-- Qua 21 Fev 2018 14:14:30 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS project (
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
   tags JSON NULL,
-  fk_group_id INT NOT NULL,
+  fk_group_id INT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user_1

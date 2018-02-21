@@ -12,13 +12,17 @@ def is_a_invalid_id(feature_id):
     :return: if id is invalid, return True, else False
     """
 
-    # if the id is None, so it is 'valid', because I can receive a None id, so it is not used
+    # if the id is None it is 'valid', because I can receive a None id, so it is not used
     if feature_id is None:
         return False
 
     # if the id is not string, so it is invalid
     if not isinstance(feature_id, str):
         return True
+
+    # if the id is "NULL" it is "valid", because I can receive a "NULL" id to search
+    if feature_id == "NULL":
+        return False
 
     # if feature_id is not a digit, so it is invalid
     if not feature_id.isdigit():

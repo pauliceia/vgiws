@@ -11,15 +11,14 @@ def get_subquery_project_table(**kwargs):
     if "project_id" in kwargs and kwargs["project_id"] is not None:
         conditions_of_where.append("id = {0}".format(kwargs["project_id"]))
 
-    elif "user_id" in kwargs and kwargs["user_id"] is not None:
+    if "user_id" in kwargs and kwargs["user_id"] is not None:
         conditions_of_where.append("fk_user_id = {0}".format(kwargs["user_id"]))
 
-    elif "group_id" in kwargs and kwargs["group_id"] is not None:
-        conditions_of_where.append("fk_group_id = {0}".format(kwargs["group_id"]))
-
-    else:
-        # default get all features, without where clause
-        pass
+    if "group_id" in kwargs and kwargs["group_id"] is not None:
+        if kwargs["group_id"] != "NULL":  # if is number
+            conditions_of_where.append("fk_group_id = {0}".format(kwargs["group_id"]))
+        else:  # if is NULL
+            conditions_of_where.append("fk_group_id is NULL")
 
     # default get all features, without where clause
     where_clause = ""

@@ -41,7 +41,20 @@ class TestAPIProject(TestCase):
                     'properties': {'fk_user_id': 1004, 'created_at': '2017-09-11 00:00:00',
                                    'id': 1004, 'removed_at': None, 'fk_group_id': 1002},
                     'tags': None
+                },
+                {
+                    'type': 'Project',
+                    'properties': {'fk_user_id': 1001, 'created_at': '2017-02-22 00:00:00',
+                                   'id': 1006, 'removed_at': None, 'fk_group_id': None},
+                    'tags': {"name": "crimes in 1900", "description": "my research about crimes in 1900"}
+                },
+                {
+                    'type': 'Project',
+                    'properties': {'fk_user_id': 1003, 'created_at': '2017-02-23 00:00:00',
+                                   'id': 1007, 'removed_at': None, 'fk_group_id': None},
+                    'tags': {"name": "cinemas in 1900", "description": "cinemas in SP in 1900"}
                 }
+
             ]
         }
 
@@ -103,6 +116,36 @@ class TestAPIProject(TestCase):
         }
 
         self.tester.api_project(expected, user_id="1002")
+
+    def test_get_api_project_return_project_by_group_id_and_user_id(self):
+        expected = {
+            'features': [
+                {
+                    'type': 'Project',
+                    'properties': {'fk_user_id': 1002, 'created_at': '2017-12-23 00:00:00',
+                                   'id': 1003, 'removed_at': None, 'fk_group_id': 1002},
+                    'tags': {'name': 'hello world'}
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_project(expected, group_id="1002", user_id="1002")
+
+    def test_get_api_project_return_project_by_group_id_is_NULL_and_user_id(self):
+        expected = {
+            'features': [
+                {
+                    'type': 'Project',
+                    'properties': {'fk_user_id': 1003, 'created_at': '2017-02-23 00:00:00',
+                                   'id': 1007, 'removed_at': None, 'fk_group_id': None},
+                    'tags': {"name": "cinemas in 1900", "description": "cinemas in SP in 1900"}
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_project(expected, group_id="NULL", user_id="1003")
 
     # project - create and delete
 
