@@ -46,7 +46,8 @@ This method create a new group described in a JSON.
     {
         'type': 'Group',
         'properties': {'id': -1, 'fk_user_id': 1002},
-        'tags': {'name': 'VS', 'description': 'group of my institution'}
+        'tags': {'name': 'VS', 'description': 'group of my institution',
+                'visibility': 'public'}
     }
     ```
 - Response: a JSON that contain the id of the feature created. Example:
@@ -59,7 +60,25 @@ This method create a new group described in a JSON.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- PUT /api/group/update -->
+### PUT /api/group/update
+
+This method update a group described in a JSON.
+- Parameters:
+- Examples:
+     - Create a feature: ```PUT http://localhost:8888/api/group/update```
+- Send: a JSON describing the feature. Example:
+    ```javascript
+    {
+        'type': 'Group',
+        'properties': {'id': 1003, 'fk_user_id': 1002},
+        'tags': {'name': 'UNIFESP SJC', 'description': 'group of UNIFESP SJC',
+                'visibility': 'private'}
+    }
+    ```
+- Response:
+- Error codes:
+    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 500 (Internal Server Error): Problem when update a feature. Please, contact the administrator.
 
 
 ### DELETE /api/group/delete/#id

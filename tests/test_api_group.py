@@ -84,7 +84,7 @@ class TestAPIGroup(TestCase):
 
     # group - create and delete
 
-    def test_get_api_group_create_and_delete(self):
+    def test_get_api_group_create_update_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
 
