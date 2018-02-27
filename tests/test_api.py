@@ -15,17 +15,30 @@ class TestAPI(TestCase):
         # DO LOGIN BEFORE THE TESTS
         self.tester.auth_login_fake()
 
-        # create a project
+        # --> CREATE A GROUP
+        group = {
+            'type': 'Group',
+            'properties': {'id': -1, 'fk_user_id': 1001},
+            'tags': {'description': 'group of my institution', 'name': 'VS', "visibility": "private"}
+        }
+        self.group = self.tester.api_group_create(group)
+
+        # VERIFY if the group was added in DB
+        self.tester.verify_if_one_group_exist_in_db(self.group)
+
+        group_id = self.group["properties"]["id"]
+
+        # --> CREATE A PROJECT
         project = {
             'type': 'Project',
-            'properties': {'id': -1, 'fk_group_id': 1001},
+            'properties': {'id': -1, 'fk_group_id': group_id},
             'tags': {'name': 'test project', 'url': 'http://somehost.com'}
         }
         self.project = self.tester.api_project_create(project)
 
         project_id = self.project["properties"]["id"]
 
-        # CREATE A layer FOR ALL TESTS
+        # --> CREATE A LAYER
         layer = {
             'tags': {'created_by': 'test_api', 'name': 'layer of data', 'description': 'description of the layer'},
             'properties': {'id': -1, 'fk_project_id': project_id},
@@ -34,6 +47,12 @@ class TestAPI(TestCase):
         self.layer = self.tester.api_layer_create(layer)
 
     def tearDown(self):
+        # get the id of group to REMOVE it
+        group_id = self.project["properties"]["id"]
+
+        # REMOVE THE project AFTER THE TESTS
+        self.tester.api_group_delete(group_id)
+
         # get the id of layer to REMOVE it
         layer_id = self.layer["properties"]["id"]
 
@@ -210,6 +229,9 @@ class TestAPI(TestCase):
 
         # DELETE THE CHANGESET
         self.tester.api_changeset_delete(changeset_id)
+
+    # def test_update_group_information(self):
+    #     self.group = self.tester.api_group_create(group)
 
 
 # It is not necessary to pyt the main() of unittest here,
