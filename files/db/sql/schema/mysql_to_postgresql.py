@@ -39,6 +39,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';""", ""
         text = text.replace("MULTILINESTRING", "GEOMETRY(MULTILINESTRING, 4326)")
     if "GEOMETRY(MULTIPOLYGON, 4326)" not in text:
         text = text.replace("MULTIPOLYGON", "GEOMETRY(MULTIPOLYGON, 4326)")
+    if "GEOMETRY(GEOMETRYCOLLECTION, 4326)" not in text:
+        text = text.replace("GEOMETRYCOLLECTION", "GEOMETRY(GEOMETRYCOLLECTION, 4326)")
 
     return text
 
@@ -82,10 +84,15 @@ def remove_bad_lines_and_put_default_values(text):
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
         # USER AUTH
-        if ("is_admin boolean" in line_lower) or ("allow_bulk_import boolean" in line_lower):            
+        if ("is_admin boolean" in line_lower) or ("is_moderator boolean" in line_lower):            
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
+        # LAYER
+        if "table_name text" in line_lower:
+            lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
+
         # GROUP
+        '''
         if "can_receive_notification boolean" in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
 
@@ -94,6 +101,8 @@ def remove_bad_lines_and_put_default_values(text):
 
         if "group_status varchar(10)" in line_lower:
             lines[i] = lines[i].replace(",", " DEFAULT 'pending',")
+        '''
+            
 
     text = "\n".join(lines)
 
@@ -137,6 +146,8 @@ CREATE SCHEMA IF NOT EXISTS pauliceia ;""", "")
     text = text.replace("\n\n\n\n", "\n")
 
     text = text.replace(" user ", " user_ ")
+
+    text = text.replace("BLOB", "BYTEA")
 
     return text
 

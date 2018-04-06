@@ -4,6 +4,11 @@ VGI WS Errors:
 VW001 - The changeset with id=#ID was closed at #CLOSED_AT, so it is not possible to use it
 */
 
+
+
+/*
+
+
 -- -----------------------------------------------------
 -- Triggers to current_element table
 -- -----------------------------------------------------
@@ -44,7 +49,7 @@ INSERT INTO current_way (geom, fk_changeset_id) VALUES (ST_GeomFromText('MULTILI
 INSERT INTO current_area (geom, fk_changeset_id) VALUES (ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1003);
 
 SELECT closed_at FROM changeset WHERE changeset.id = 1003;
-*/
+* /
 
 
 -- -----------------------------------------------------
@@ -58,7 +63,7 @@ CREATE OR REPLACE FUNCTION observe_when_add_or_update_user_in_group_put_the_user
     Create a function to observe when add or update a new user in a group, if it can receive notifications, 
     so put it as watchers of the projects of a group. if it cannot receive notifications, remove the user as
     watchers of the projects of a group.
-    */
+    * /
     
     DECLARE
         field RECORD;
@@ -69,7 +74,7 @@ CREATE OR REPLACE FUNCTION observe_when_add_or_update_user_in_group_put_the_user
         RAISE NOTICE '';
         RAISE NOTICE 'NEW.fk_group_id % - NEW.fk_user_id % - NEW.added_at %', NEW.fk_group_id, NEW.fk_user_id, NEW.added_at;
         RAISE NOTICE 'NEW.group_permission % - NEW.can_receive_notification % - NEW.fk_user_id_added_by %', NEW.group_permission, NEW.can_receive_notification, NEW.fk_user_id_added_by;
-        */
+        * /
 
         -- create a temporary table (like a 'table variable') with the projects of a group
         CREATE TEMP TABLE temp_projects_by_group ON COMMIT DROP AS
@@ -83,7 +88,7 @@ CREATE OR REPLACE FUNCTION observe_when_add_or_update_user_in_group_put_the_user
         FOR field IN SELECT * FROM temp_projects_by_group LOOP
             RAISE NOTICE 'project_id: %, group_id: %', field.project_id, field.group_id;
         END LOOP;
-        */
+        * /
         
         -- if the user can receive notification
         IF NEW.can_receive_notification THEN
@@ -102,7 +107,7 @@ CREATE OR REPLACE FUNCTION observe_when_add_or_update_user_in_group_put_the_user
             FOR field IN SELECT * FROM project_watcher WHERE fk_user_id = NEW.fk_user_id LOOP
                 RAISE NOTICE 'fk_project_id: %, fk_user_id: %', field.fk_project_id, field.fk_user_id;
             END LOOP;
-            */
+            * /
 
         -- IF USER can NOT receive_notification THEN
         ELSE
@@ -119,7 +124,7 @@ CREATE OR REPLACE FUNCTION observe_when_add_or_update_user_in_group_put_the_user
             FOR field IN SELECT * FROM temp_projects_that_user_is_watcher_from_group LOOP
                 RAISE NOTICE 'project_id: %s, group_id: %s, user_id: %s', field.project_id, field.group_id, field.user_id;
             END LOOP;  
-            */
+            * /
 
             -- remove the user as watcher of the projects of a group
             FOR field IN SELECT * FROM temp_projects_that_user_is_watcher_from_group LOOP
@@ -141,3 +146,5 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_observe_when_add_or_update_user_in_group_put_the_user_as_watchers_of_projects BEFORE INSERT OR UPDATE ON user_group
     FOR EACH ROW EXECUTE PROCEDURE observe_when_add_or_update_user_in_group_put_the_user_as_watchers_of_projects();
+
+*/

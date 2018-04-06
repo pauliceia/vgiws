@@ -1,5 +1,5 @@
 
--- Qua 21 Fev 2018 14:14:30 -03
+-- Qua 04 Abr 2018 20:00:47 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -8,33 +8,35 @@ DROP TABLE IF EXISTS user_ CASCADE ;
 
 CREATE TABLE IF NOT EXISTS user_ (
   id SERIAL ,
-  email VARCHAR(45) NOT NULL UNIQUE,
-  username VARCHAR(45) NOT NULL,
+  email TEXT NOT NULL,
   password VARCHAR(255) NOT NULL,
+  username TEXT NOT NULL,
+  name TEXT NULL,
   is_email_valid BOOLEAN NOT NULL DEFAULT FALSE,
-  created_at TIMESTAMP NOT NULL,
-  removed_at TIMESTAMP NULL,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
   PRIMARY KEY (id)
 );
 
 
 -- -----------------------------------------------------
--- Table group_
+-- Table theme
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS group_ CASCADE ;
+DROP TABLE IF EXISTS theme CASCADE ;
 
-CREATE TABLE IF NOT EXISTS group_ (
+CREATE TABLE IF NOT EXISTS theme (
   id SERIAL ,
-  created_at TIMESTAMP NOT NULL,
-  removed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
+  name VARCHAR(45) NULL,
+  fk_parent_id INT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT fk_group__user_1
+  CONSTRAINT fk_theme_theme1
+    FOREIGN KEY (fk_parent_id)
+    REFERENCES theme (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_theme_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
     ON DELETE CASCADE
@@ -49,21 +51,22 @@ DROP TABLE IF EXISTS project CASCADE ;
 
 CREATE TABLE IF NOT EXISTS project (
   id SERIAL ,
+  name TEXT NOT NULL,
+  description TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
-  fk_group_id INT NULL,
   fk_user_id INT NOT NULL,
+  fk_theme_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT fk_project_group1
-    FOREIGN KEY (fk_group_id)
-    REFERENCES group_ (id)
+  CONSTRAINT fk_project_theme1
+    FOREIGN KEY (fk_theme_id)
+    REFERENCES theme (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -76,12 +79,16 @@ DROP TABLE IF EXISTS layer CASCADE ;
 
 CREATE TABLE IF NOT EXISTS layer (
   id SERIAL ,
+  table_name TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  description TEXT NULL,
+  source TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
   fk_project_id INT NOT NULL,
   fk_user_id INT NOT NULL,
+  fk_theme_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user1
     FOREIGN KEY (fk_user_id)
@@ -91,6 +98,11 @@ CREATE TABLE IF NOT EXISTS layer (
   CONSTRAINT fk_layer_project1
     FOREIGN KEY (fk_project_id)
     REFERENCES project (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_layer_theme1
+    FOREIGN KEY (fk_theme_id)
+    REFERENCES theme (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -103,12 +115,11 @@ DROP TABLE IF EXISTS changeset CASCADE ;
 
 CREATE TABLE IF NOT EXISTS changeset (
   id SERIAL ,
+  description VARCHAR(45) NULL,
   created_at TIMESTAMP NOT NULL,
   closed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
-  fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
+  fk_layer_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_project_tb_user1
     FOREIGN KEY (fk_user_id)
@@ -124,55 +135,23 @@ CREATE TABLE IF NOT EXISTS changeset (
 
 
 -- -----------------------------------------------------
--- Table point
+-- Table version_feature
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS point CASCADE ;
+DROP TABLE IF EXISTS version_feature CASCADE ;
 
-CREATE TABLE IF NOT EXISTS point (
+CREATE TABLE IF NOT EXISTS version_feature (
   id SERIAL ,
-  geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
+  geom GEOMETRY(GEOMETRYCOLLECTION, 4326) NOT NULL,
+  start_date TIMESTAMP NULL,
+  end_date TIMESTAMP NULL,
+  file TEXT NULL,
   version INT NOT NULL DEFAULT 1,
+  visible BOOLEAN NOT NULL DEFAULT TRUE,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
   CONSTRAINT fk_tb_contribution_tb_project1
     FOREIGN KEY (fk_changeset_id)
     REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table changeset_comment
--- -----------------------------------------------------
-DROP TABLE IF EXISTS changeset_comment CASCADE ;
-
-CREATE TABLE IF NOT EXISTS changeset_comment (
-  id SERIAL ,
-  body TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NULL,
-  removed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_changeset_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  fk_comment_id_parent INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_node_comment_change_group1
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_node_comment_user1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_changeset_comment_changeset_comment1
-    FOREIGN KEY (fk_comment_id_parent)
-    REFERENCES changeset_comment (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -186,7 +165,7 @@ DROP TABLE IF EXISTS auth CASCADE ;
 CREATE TABLE IF NOT EXISTS auth (
   id SERIAL ,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-  allow_bulk_import BOOLEAN NOT NULL DEFAULT FALSE,
+  is_moderator BOOLEAN NOT NULL DEFAULT FALSE,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_auth_user1
@@ -198,57 +177,15 @@ CREATE TABLE IF NOT EXISTS auth (
 
 
 -- -----------------------------------------------------
--- Table follow
+-- Table user_project
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS follow CASCADE ;
+DROP TABLE IF EXISTS user_project CASCADE ;
 
-CREATE TABLE IF NOT EXISTS follow (
+CREATE TABLE IF NOT EXISTS user_project (
   fk_user_id INT NOT NULL,
-  fk_user_id_friend INT NOT NULL,
-  PRIMARY KEY (fk_user_id, fk_user_id_friend),
-  CONSTRAINT fk_friend_user1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_friend_user2
-    FOREIGN KEY (fk_user_id_friend)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table polygon
--- -----------------------------------------------------
-DROP TABLE IF EXISTS polygon CASCADE ;
-
-CREATE TABLE IF NOT EXISTS polygon (
-  id SERIAL ,
-  geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
-  version INT NOT NULL DEFAULT 1,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id, version),
-  CONSTRAINT fk_area_change_set1
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table project_watcher
--- -----------------------------------------------------
-DROP TABLE IF EXISTS project_watcher CASCADE ;
-
-CREATE TABLE IF NOT EXISTS project_watcher (
   fk_project_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (fk_project_id, fk_user_id),
+  added_at TIMESTAMP NULL,
+  PRIMARY KEY (fk_user_id, fk_project_id),
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
@@ -263,37 +200,17 @@ CREATE TABLE IF NOT EXISTS project_watcher (
 
 
 -- -----------------------------------------------------
--- Table line
+-- Table feature
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS line CASCADE ;
+DROP TABLE IF EXISTS feature CASCADE ;
 
-CREATE TABLE IF NOT EXISTS line (
+CREATE TABLE IF NOT EXISTS feature (
   id SERIAL ,
-  geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
+  geom GEOMETRY(GEOMETRYCOLLECTION, 4326) NOT NULL,
+  start_date TIMESTAMP NULL,
+  end_date TIMESTAMP NULL,
+  file TEXT NULL,
   version INT NOT NULL DEFAULT 1,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id, version),
-  CONSTRAINT fk_table1_changeset1
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_point
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_point CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_point (
-  id SERIAL ,
-  geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
-  tags JSON NULL,
   fk_changeset_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_tb_contribution_tb_project10
@@ -305,62 +222,19 @@ CREATE TABLE IF NOT EXISTS current_point (
 
 
 -- -----------------------------------------------------
--- Table current_polygon
+-- Table review
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS current_polygon CASCADE ;
+DROP TABLE IF EXISTS review CASCADE ;
 
-CREATE TABLE IF NOT EXISTS current_polygon (
+CREATE TABLE IF NOT EXISTS review (
   id SERIAL ,
-  geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
-  tags JSON NULL,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_area_change_set10
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_line
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_line CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_line (
-  id SERIAL ,
-  geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  version INT NOT NULL DEFAULT 1,
-  tags JSON NULL,
-  fk_changeset_id INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_table1_changeset10
-    FOREIGN KEY (fk_changeset_id)
-    REFERENCES changeset (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table layer_review
--- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_review CASCADE ;
-
-CREATE TABLE IF NOT EXISTS layer_review (
-  id SERIAL ,
-  body TEXT NOT NULL,
+  description TEXT NOT NULL,
   create_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NULL,
   closed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_layer_id INT NOT NULL,
   fk_user_id INT NOT NULL,
-  fk_review_id_parent INT NOT NULL,
+  fk_layer_id INT NOT NULL,
+  fk_parent_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_review_layer1
     FOREIGN KEY (fk_layer_id)
@@ -373,211 +247,8 @@ CREATE TABLE IF NOT EXISTS layer_review (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_comment_layer_comment1
-    FOREIGN KEY (fk_review_id_parent)
-    REFERENCES layer_review (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table layer_comment_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_comment_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS layer_comment_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_comment_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_comment_id),
-  CONSTRAINT fk_layer_comment_tag_layer_comment1
-    FOREIGN KEY (fk_comment_id)
-    REFERENCES layer_review (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_layer_comment_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table user_group
--- -----------------------------------------------------
-DROP TABLE IF EXISTS user_group CASCADE ;
-
-CREATE TABLE IF NOT EXISTS user_group (
-  fk_group_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  added_at TIMESTAMP NOT NULL,
-  group_permission VARCHAR(10) NOT NULL DEFAULT 'member',
-  group_status VARCHAR(10) NOT NULL DEFAULT 'pending',
-  can_receive_notification BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_user_id_added_by INT NOT NULL,
-  PRIMARY KEY (fk_group_id, fk_user_id),
-  CONSTRAINT fk_user_group_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_user_group_group1
-    FOREIGN KEY (fk_group_id)
-    REFERENCES group_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_user_group_user_2
-    FOREIGN KEY (fk_user_id_added_by)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table polygon_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS polygon_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS polygon_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_polygon_version INT NOT NULL,
-  fk_polygon_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_polygon_version, fk_polygon_id),
-  CONSTRAINT fk_polygon_award_polygon1
-    FOREIGN KEY (fk_polygon_id , fk_polygon_version)
-    REFERENCES polygon (id , version)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_polygon_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table point_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS point_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS point_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_point_version INT NOT NULL,
-  fk_point_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_point_version, fk_point_id),
-  CONSTRAINT fk_point_award_point1
-    FOREIGN KEY (fk_point_id , fk_point_version)
-    REFERENCES point (id , version)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_point_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table line_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS line_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS line_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_line_version INT NOT NULL,
-  fk_line_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_line_version, fk_line_id),
-  CONSTRAINT fk_line_award_line1
-    FOREIGN KEY (fk_line_id , fk_line_version)
-    REFERENCES line (id , version)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_line_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_point_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_point_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_point_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_point_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_point_id),
-  CONSTRAINT fk_current_point_award_current_point1
-    FOREIGN KEY (fk_current_point_id)
-    REFERENCES current_point (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_current_point_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_line_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_line_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_line_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_line_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_line_id),
-  CONSTRAINT fk_current_line_award_current_line1
-    FOREIGN KEY (fk_current_line_id)
-    REFERENCES current_line (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_current_line_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
--- Table current_polygon_award
--- -----------------------------------------------------
-DROP TABLE IF EXISTS current_polygon_award CASCADE ;
-
-CREATE TABLE IF NOT EXISTS current_polygon_award (
-  k VARCHAR(255) NOT NULL,
-  v VARCHAR(255) NOT NULL,
-  fk_current_polygon_id INT NOT NULL,
-  fk_user_id INT NOT NULL,
-  PRIMARY KEY (k, fk_current_polygon_id),
-  CONSTRAINT fk_current_polygon_award_current_polygon1
-    FOREIGN KEY (fk_current_polygon_id)
-    REFERENCES current_polygon (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_current_polygon_award_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
+    FOREIGN KEY (fk_parent_id)
+    REFERENCES review (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -590,39 +261,81 @@ DROP TABLE IF EXISTS notification CASCADE ;
 
 CREATE TABLE IF NOT EXISTS notification (
   id SERIAL ,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  icon TEXT NULL,
   created_at TIMESTAMP NOT NULL,
-  removed_at TIMESTAMP NULL,
-  is_read BOOLEAN NOT NULL DEFAULT FALSE,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  tags JSON NULL,
-  fk_user_id INT NOT NULL,
+  fk_project_id INT NULL,
+  fk_layer_id INT NULL,
+  fk_review_id INT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT fk_notification_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
+  CONSTRAINT fk_notification_layer1
+    FOREIGN KEY (fk_layer_id)
+    REFERENCES layer (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_notification_layer_review1
+    FOREIGN KEY (fk_review_id)
+    REFERENCES review (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_notification_project1
+    FOREIGN KEY (fk_project_id)
+    REFERENCES project (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 
 -- -----------------------------------------------------
--- Table user_award
+-- Table user_notification
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_award CASCADE ;
+DROP TABLE IF EXISTS user_notification CASCADE ;
 
-CREATE TABLE IF NOT EXISTS user_award (
-  k INT NOT NULL,
-  v VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS user_notification (
   fk_user_id INT NOT NULL,
-  fk_user_id_gave INT NOT NULL,
-  PRIMARY KEY (k),
-  CONSTRAINT fk_table1_user_1
+  fk_notification_id INT NOT NULL,
+  CONSTRAINT fk_user_notification_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT fk_table1_user_2
-    FOREIGN KEY (fk_user_id_gave)
+  CONSTRAINT fk_user_notification_notification1
+    FOREIGN KEY (fk_notification_id)
+    REFERENCES notification (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table bulk_import
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS bulk_import CASCADE ;
+
+CREATE TABLE IF NOT EXISTS bulk_import (
+  id SERIAL ,
+  file BYTEA NULL,
+  description TEXT NULL,
+  accepted BOOLEAN NULL,
+  created_at VARCHAR(45) NULL,
+  accepted_at VARCHAR(45) NULL,
+  fk_user_id INT NOT NULL,
+  fk_layer_id INT NOT NULL,
+  fk_user_id_moderator INT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_bulk_import_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_bulk_import_layer1
+    FOREIGN KEY (fk_layer_id)
+    REFERENCES layer (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_bulk_import_user_2
+    FOREIGN KEY (fk_user_id_moderator)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
