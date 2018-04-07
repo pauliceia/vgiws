@@ -1,5 +1,5 @@
 
--- Qua 04 Abr 2018 20:00:47 -03
+-- Sex 06 Abr 2018 20:35:42 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -45,34 +45,6 @@ CREATE TABLE IF NOT EXISTS theme (
 
 
 -- -----------------------------------------------------
--- Table project
--- -----------------------------------------------------
-DROP TABLE IF EXISTS project CASCADE ;
-
-CREATE TABLE IF NOT EXISTS project (
-  id SERIAL ,
-  name TEXT NOT NULL,
-  description TEXT NULL,
-  created_at TIMESTAMP NOT NULL,
-  removed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_user_id INT NOT NULL,
-  fk_theme_id INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_project_user_1
-    FOREIGN KEY (fk_user_id)
-    REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_project_theme1
-    FOREIGN KEY (fk_theme_id)
-    REFERENCES theme (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
--- -----------------------------------------------------
 -- Table layer
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS layer CASCADE ;
@@ -86,18 +58,12 @@ CREATE TABLE IF NOT EXISTS layer (
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   visible BOOLEAN NOT NULL DEFAULT TRUE,
-  fk_project_id INT NOT NULL,
   fk_user_id INT NOT NULL,
   fk_theme_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_layer_project1
-    FOREIGN KEY (fk_project_id)
-    REFERENCES project (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_theme1
@@ -115,7 +81,7 @@ DROP TABLE IF EXISTS changeset CASCADE ;
 
 CREATE TABLE IF NOT EXISTS changeset (
   id SERIAL ,
-  description VARCHAR(45) NULL,
+  description TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   closed_at TIMESTAMP NULL,
   fk_user_id INT NOT NULL,
@@ -165,7 +131,8 @@ DROP TABLE IF EXISTS auth CASCADE ;
 CREATE TABLE IF NOT EXISTS auth (
   id SERIAL ,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-  is_moderator BOOLEAN NOT NULL DEFAULT FALSE,
+  is_manager BOOLEAN NOT NULL,
+  is_curator BOOLEAN NOT NULL,
   fk_user_id INT NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_auth_user1
@@ -177,23 +144,23 @@ CREATE TABLE IF NOT EXISTS auth (
 
 
 -- -----------------------------------------------------
--- Table user_project
+-- Table user_collaborates_layer
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS user_project CASCADE ;
+DROP TABLE IF EXISTS user_collaborates_layer CASCADE ;
 
-CREATE TABLE IF NOT EXISTS user_project (
+CREATE TABLE IF NOT EXISTS user_collaborates_layer (
   fk_user_id INT NOT NULL,
-  fk_project_id INT NOT NULL,
+  fk_layer_id INT NOT NULL,
   added_at TIMESTAMP NULL,
-  PRIMARY KEY (fk_user_id, fk_project_id),
+  PRIMARY KEY (fk_user_id, fk_layer_id),
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT fk_project_subscriber_project1
-    FOREIGN KEY (fk_project_id)
-    REFERENCES project (id)
+  CONSTRAINT fk_user_layer_layer1
+    FOREIGN KEY (fk_layer_id)
+    REFERENCES layer (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -265,8 +232,9 @@ CREATE TABLE IF NOT EXISTS notification (
   description TEXT NOT NULL,
   icon TEXT NULL,
   created_at TIMESTAMP NOT NULL,
-  fk_project_id INT NULL,
   fk_layer_id INT NULL,
+  fk_user_id INT NULL,
+  fk_theme_id INT NULL,
   fk_review_id INT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_notification_layer1
@@ -279,9 +247,14 @@ CREATE TABLE IF NOT EXISTS notification (
     REFERENCES review (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT fk_notification_project1
-    FOREIGN KEY (fk_project_id)
-    REFERENCES project (id)
+  CONSTRAINT fk_notification_theme1
+    FOREIGN KEY (fk_theme_id)
+    REFERENCES theme (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_notification_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -322,7 +295,7 @@ CREATE TABLE IF NOT EXISTS bulk_import (
   accepted_at VARCHAR(45) NULL,
   fk_user_id INT NOT NULL,
   fk_layer_id INT NOT NULL,
-  fk_user_id_moderator INT NULL,
+  fk_user_id_curator INT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_bulk_import_user_1
     FOREIGN KEY (fk_user_id)
@@ -335,8 +308,52 @@ CREATE TABLE IF NOT EXISTS bulk_import (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_bulk_import_user_2
-    FOREIGN KEY (fk_user_id_moderator)
+    FOREIGN KEY (fk_user_id_curator)
     REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table user_follows_user
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS user_follows_user CASCADE ;
+
+CREATE TABLE IF NOT EXISTS user_follows_user (
+  fk_user_id INT NOT NULL,
+  fk_user_id_follow INT NOT NULL,
+  PRIMARY KEY (fk_user_id_follow, fk_user_id),
+  CONSTRAINT fk_user_follow_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_user_follow_user_2
+    FOREIGN KEY (fk_user_id_follow)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table user_follows_layer
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS user_follows_layer CASCADE ;
+
+CREATE TABLE IF NOT EXISTS user_follows_layer (
+  fk_user_id INT NOT NULL,
+  fk_layer_id INT NOT NULL,
+  PRIMARY KEY (fk_user_id, fk_layer_id),
+  CONSTRAINT fk_user_follows_layer_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_user_follows_layer_layer1
+    FOREIGN KEY (fk_layer_id)
+    REFERENCES layer (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

@@ -1,7 +1,8 @@
 * user: 1001 à 1008
 1001 e 1002 são administradores
-1003 e 1004 são moderadores
-1005 à 1008 são normais
+1003 é gestor
+1004 e 1006 são curadores
+1007 à 1008 são normais
 
 * project: 1001 à 1005
 id  |   title   | owner
@@ -11,8 +12,8 @@ id  |   title   | owner
 1004| crimes    | 1005
 1005| cinemas   | 1007
 
-* user_project:
-project | user
+* user_layer:
+layer   | user
 1001    | 1001
 1001    | 1002
 1002    | 1003
@@ -24,6 +25,8 @@ project | user
 1004    | 1007
 1004    | 1008
 1005    | 1007
+1006    | 1007
+1006    | 1008
 
 * layer:
 id  | project   | user 
