@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 from util.tester import UtilTester
-
+"""
 
 class TestAPITheme(TestCase):
 
@@ -44,3 +44,5 @@ class TestAPITheme(TestCase):
         }
 
         self.tester.api_theme_tree(expected)
+
+"""

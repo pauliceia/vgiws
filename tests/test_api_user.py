@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+"""
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
@@ -10,9 +11,9 @@ from random import choice
 
 
 def generate_random_string(size=6, chars=ascii_uppercase + digits):
-    """
-    Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
-    """
+"""
+#Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+"""
     return ''.join(choice(chars) for _ in range(size))
 
 
@@ -174,5 +175,6 @@ class TestAPIUserErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+"""
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

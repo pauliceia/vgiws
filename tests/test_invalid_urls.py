@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 from requests import get
-
+"""
 
 class TestInvalidURLs(TestCase):
 
@@ -25,6 +25,6 @@ class TestInvalidURLs(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-
+"""
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

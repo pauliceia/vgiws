@@ -3,7 +3,7 @@
 
 from unittest import TestCase, skip
 from util.tester import UtilTester
-
+"""
 
 class TestAPINotification(TestCase):
 
@@ -326,6 +326,6 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-
+"""
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+"""
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
@@ -386,10 +388,6 @@ class TestAPIUserGroup(TestCase):
         self.tester.api_user_group(expected, user_id="1001")
 
     def test_get_api_user_group_return_information_by_user_id_and_group_id(self):
-        """
-        Return the information of that user in that group
-        """
-
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -526,10 +524,6 @@ class TestAPIUserGroupErrors(TestCase):
     # group errors - create
 
     def test_put_api_user_group_create_error_400_bad_request(self):
-        """
-        The user_id is already added in group_id
-        """
-
         # DO LOGIN
         self.tester.auth_login_fake()
 
@@ -611,6 +605,7 @@ class TestAPIUserGroupErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

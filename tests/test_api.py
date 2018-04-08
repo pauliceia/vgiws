@@ -5,6 +5,7 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
+"""
 
 class TestAPI(TestCase):
 
@@ -233,6 +234,7 @@ class TestAPI(TestCase):
     # def test_update_group_information(self):
     #     self.group = self.tester.api_group_create(group)
 
+"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

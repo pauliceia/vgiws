@@ -5,7 +5,7 @@
 from unittest import TestCase
 
 from util.tester import UtilTester
-
+"""
 
 class TestAPIWihoutLogin(TestCase):
 
@@ -157,6 +157,6 @@ class TestAPIWihoutLogin(TestCase):
 
             self.tester.api_changeset_create_error_403_forbidden(changeset)
 
-
+"""
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
