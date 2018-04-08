@@ -45,16 +45,16 @@ VALUES (1005, 'gabriel', 'gabriel@admin.com', '5dbe7d079067809bb06f7c80de78ecb9d
 'Gabriel', '2017-09-20', FALSE, FALSE);
 
 -- password - fernanda
-INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
-VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda', '2017-01-19', TRUE, FALSE, FALSE);
+INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
+VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda', '2017-01-19', '2017-04-23', TRUE, FALSE);
 
 -- password - ana
-INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
-VALUES (1007, 'ana', 'ana@gmail.com', 'ana', '2017-01-18', FALSE, TRUE, FALSE);
+INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
+VALUES (1007, 'ana', 'ana@gmail.com', 'ana', '2017-01-18', '2017-08-02', FALSE, TRUE);
 
 -- password - bea
-INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed, visible) 
-VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', FALSE, FALSE, FALSE);
+INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
+VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', '2017-10-03', FALSE, FALSE);
 
 
 -- -----------------------------------------------------
@@ -448,7 +448,7 @@ SELECT * FROM changeset WHERE id=1003;
 
 -- add layer_1004
 INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
-(1004, 'layer_1004', 'Streets in 1920', 'crimes', '', '2017-06-15', '2017-09-25', 1005, 1040);
+(1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', '2017-09-25', 1005, 1040);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1004 CASCADE ;
@@ -529,7 +529,7 @@ SELECT * FROM changeset WHERE id=1004;
 
 -- add layer_1005
 INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some crimes', '', '2017-08-04', 1007, 1023);
+(1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '', '2017-08-04', 1007, 1023);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1005 CASCADE ;
@@ -600,8 +600,8 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 -- add layer_1006
-INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id, visible) VALUES 
-(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '', '2017-09-04', '2017-10-24', 1004, 1031, FALSE);
+INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
+(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '', '2017-09-04', '2017-10-24', 1004, 1031);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1006 CASCADE ;
@@ -672,11 +672,14 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 
-
-
-
-
 -- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
+
+
+SELECT * FROM layer;
+
+SELECT * FROM layer WHERE removed_at is NULL;
+
+SELECT * FROM layer WHERE removed_at is NULL ORDER BY id;
 
 
 

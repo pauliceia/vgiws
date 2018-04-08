@@ -533,12 +533,16 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Layer',
                     'properties', json_build_object(
-                        'id',           id,                        
+                        'id',           id,
+                        'table_name',   table_name,
+                        'name',         name,
+                        'description',  description,
+                        'source',       source,
                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_user_id', fk_user_id
-                    ),
-                    'tags',       tags
+                        'fk_user_id',   fk_user_id,
+                        'fk_theme_id',  fk_theme_id
+                    )
                 ))
             ) AS row_to_json
             FROM 

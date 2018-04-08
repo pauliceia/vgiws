@@ -1,5 +1,5 @@
 
--- Sex 06 Abr 2018 20:35:42 -03
+-- Dom 08 Abr 2018 16:16:29 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS user_ (
   is_email_valid BOOLEAN NOT NULL DEFAULT FALSE,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
+  removed_at TIMESTAMP NULL,
   PRIMARY KEY (id)
 );
 
@@ -57,7 +57,6 @@ CREATE TABLE IF NOT EXISTS layer (
   source TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
-  visible BOOLEAN NOT NULL DEFAULT TRUE,
   fk_user_id INT NOT NULL,
   fk_theme_id INT NOT NULL,
   PRIMARY KEY (id),

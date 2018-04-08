@@ -5,7 +5,7 @@
 from unittest import TestCase
 from util.tester import UtilTester
 
-"""
+
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 class TestAPILayer(TestCase):
@@ -20,28 +20,32 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
-                                   'fk_user_id': 1001, 'id': 1001},
-                    'tags': {'description': 'default layer', 'name': 'default', 'theme': 'generic'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': '', 'removed_at': None, 'name': 'Addresses in 1869',
+                                   'fk_theme_id': 1041, 'table_name': 'layer_1001',
+                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
+                                   'id': 1001, 'description': ''}
                 },
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
-                                   'fk_user_id': 1002, 'id': 1002},
-                    'tags': {'description': 'test_layer', 'name': 'test_layer', 'theme': 'crime'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                                   'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
+                                   'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
+                                   'fk_user_id': 1003, 'id': 1002, 'description': ''}
                 },
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
-                                   'fk_user_id': 1002, 'id': 1003},
-                    'tags': {'description': 'test_layer', 'name': 'layer 3', 'theme': 'addresses'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                                   'name': 'Streets in 1930', 'fk_theme_id': 1040,
+                                   'table_name': 'layer_1003', 'created_at': '2017-04-10 00:00:00',
+                                   'fk_user_id': 1005, 'id': 1003, 'description': ''}
                 },
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-09-11 00:00:00',
-                                   'fk_user_id': 1003, 'id': 1004},
-                    'tags': {'description': 'test_layer', 'name': 'layer 4'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': '', 'removed_at': None, 'name': 'Hospitals between 1800 to 1950',
+                                   'fk_theme_id': 1023, 'table_name': 'layer_1005',
+                                   'created_at': '2017-08-04 00:00:00', 'fk_user_id': 1007,
+                                   'id': 1005, 'description': 'some hospitals'}
                 }
             ],
             'type': 'FeatureCollection'
@@ -53,10 +57,11 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-11-20 00:00:00',
-                                   'fk_user_id': 1001, 'id': 1001},
-                    'tags': {'description': 'default layer', 'name': 'default', 'theme': 'generic'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': '', 'removed_at': None, 'name': 'Addresses in 1869',
+                                   'fk_theme_id': 1041, 'table_name': 'layer_1001',
+                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
+                                   'id': 1001, 'description': ''}
                 },
             ],
             'type': 'FeatureCollection'
@@ -68,25 +73,20 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'removed_at': None, 'created_at': '2017-10-12 00:00:00',
-                                   'fk_user_id': 1002, 'id': 1002},
-                    'tags': {'description': 'test_layer', 'name': 'test_layer', 'theme': 'crime'},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'removed_at': None, 'created_at': '2017-12-23 00:00:00',
-                                   'fk_user_id': 1002, 'id': 1003},
-                    'tags': {'description': 'test_layer', 'name': 'layer 3', 'theme': 'addresses'},
-                    'type': 'Layer'
+                    'type': 'Layer',
+                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                                   'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
+                                   'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
+                                   'fk_user_id': 1003, 'id': 1002, 'description': ''}
                 },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_layer(expected, user_id="1002")
+        self.tester.api_layer(expected, user_id="1003")
 
     # layer - create and delete
-
+    """
     def test_get_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
@@ -107,7 +107,10 @@ class TestAPILayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    """
 
+
+"""
 
 class TestAPILayerErrors(TestCase):
 

@@ -11,7 +11,7 @@ from ..base import BaseHandlerUserGroup, BaseHandlerGroup, BaseHandlerProject, B
 
 
 # USER IN GROUP
-
+"""
 class APIUserGroup(BaseHandlerUserGroup):
 
     # A list of URLs that can be use for the HTTP methods
@@ -68,7 +68,7 @@ class APIProject(BaseHandlerProject):
     @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_feature(param)
-
+"""
 
 # LAYER
 
@@ -95,6 +95,7 @@ class APILayer(BaseHandlerLayer):
     #     super().options()
 
 
+"""
 # CHANGESET
 
 class APIChangeset(BaseHandlerChangeset):
@@ -135,3 +136,4 @@ class APINotification(BaseHandlerNotification):
     @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_feature(param)
+"""
