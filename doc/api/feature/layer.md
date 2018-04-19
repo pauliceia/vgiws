@@ -58,6 +58,7 @@ This method create a new layer described in a JSON.
     {'id': 7}
     ```
 - Error codes:
+    - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter source needs to be a list.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -81,4 +82,30 @@ This method delete one layer by id = #id.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
+- Notes:
+
+
+
+## Feature Table
+
+### PUT /api/feature_table/create
+
+This method create a new feature table described in a JSON.
+- Parameters:
+- Examples:
+     - Create a resource: ```PUT http://localhost:8888/api/feature_table/create```
+- Send: a JSON describing the resource. Example:
+    ```javascript
+    {
+        'type': 'FeatureTable',
+        'table_name': 'new_layer',
+        'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+        'geometry': {"type": "MultiPoint"}
+    }
+    ```
+- Response:
+- Error codes:
+    - 400 (Bad Request): Feature table already exist.
+    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:

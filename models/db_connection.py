@@ -32,7 +32,7 @@ from json import loads, dumps
 from tornado.web import HTTPError
 from tornado.escape import json_encode
 
-from psycopg2 import connect, DatabaseError, IntegrityError
+from psycopg2 import connect, DatabaseError, IntegrityError, ProgrammingError, Error
 from psycopg2._psycopg import ProgrammingError
 from psycopg2.extras import RealDictCursor
 
@@ -72,6 +72,11 @@ def validate_feature_json(feature_json):
 
     if not isinstance(properties, dict):
         raise HTTPError(400, "The 'properties' attribute must be a JSON, it is " + str(type(properties)))
+
+
+def format_the_table_name_to_standard(table_name, user_id):
+    # the table name follow the standard: _<user_id>_<table_name>
+    return "_" + str(user_id) + "_" + table_name
 
 
 class BaseDBConnection(metaclass=ABCMeta):
@@ -567,6 +572,18 @@ class PGSQLConnection:
         if results_of_query["features"] is None:
             raise HTTPError(404, "Not found any feature.")
 
+        # POST PROCESSING
+
+        # iterate in features to change the original table name (_<user_id>_<table_name>) by just table_name
+        for feature in results_of_query["features"]:
+            table_name = feature["properties"]["table_name"]
+
+            # get just the table name, without the user id
+            second_underscore = table_name.find("_", 2)
+            table_name_without_user_id = table_name[second_underscore+1:]
+
+            feature["properties"]["table_name"] = table_name_without_user_id
+
         return results_of_query
 
     def add_layer_in_db(self, properties, user_id):
@@ -595,17 +612,29 @@ class PGSQLConnection:
 
     def create_layer(self, resource_json, user_id):
 
+        # pre-processing
+
         validate_feature_json(resource_json)
 
         properties = resource_json["properties"]
 
+        # just can add source that is a list (list of sources/references)
         if not isinstance(properties["source"], list):
             raise HTTPError(400, "The parameter source needs to be a list.")
 
-        # add the layer in db and get the id of it
-        id_in_json = self.add_layer_in_db(properties, user_id)
+        # the table name follow the standard: _<user_id>_<table_name>
+        properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
 
-        # TODO: create a new feature table
+        try:
+            # add the layer in db and get the id of it
+            id_in_json = self.add_layer_in_db(properties, user_id)
+        except Error as error:
+            if error.pgcode == "23505":
+                self.rollback()  # do a rollback to comeback in a safe state of DB
+                raise HTTPError(400, "Table name already exists.")
+            else:
+                # if is other error, so raise it up
+                raise error
 
         return id_in_json
 
@@ -630,6 +659,137 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
+
+    ################################################################################
+    # feature table
+    ################################################################################
+
+    # def get_layers(self, layer_id=None, user_id=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_layer_table(layer_id=layer_id, user_id=user_id)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Layer',
+    #                 'properties', json_build_object(
+    #                     'id',           id,
+    #                     'table_name',   table_name,
+    #                     'name',         name,
+    #                     'description',  description,
+    #                     'source',       source,
+    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'fk_user_id',   fk_user_id,
+    #                     'fk_theme_id',  fk_theme_id
+    #                 )
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_layer_in_db(self, properties, user_id):
+    #     # tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     # get the fields to add in DB
+    #     table_name = properties["table_name"]
+    #     name = properties["name"]
+    #     description = properties["description"]
+    #     source = properties["source"]
+    #     # fk_user_id = properties["fk_user_id"]
+    #     fk_theme_id = properties["fk_theme_id"]
+    #
+    #     query_text = """
+    #         INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_theme_id, created_at)
+    #         VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
+    #     """.format(table_name, name, description, source, user_id, fk_theme_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+
+    def create_feature_table(self, resource_json, user_id):
+
+        # get the table of the feature table
+        # table_name = resource_json["table_name"]
+        table_name = format_the_table_name_to_standard(resource_json["table_name"], user_id)
+
+        # get the geometry of the feature table
+        geometry = resource_json["geometry"]["type"]
+
+        # get the attributes of the feature table
+        properties = ""
+        for property in resource_json["properties"]:
+            properties += property + " " + resource_json["properties"][property] + ", \n"
+
+        # create the feature table in __feature__ schema and create the version feature table in __version__ schema
+        for schema in ["__feature__", "__version__"]:
+            # build the query to create a new feature table
+            query_text = """        
+                CREATE TABLE {0}.{1} (
+                  id SERIAL,              
+                  geom GEOMETRY({2}, 4326) NOT NULL,              
+                  {3}              
+                  version INT NOT NULL DEFAULT 1,
+                  fk_changeset_id INT NOT NULL,
+                  PRIMARY KEY (id),
+                  CONSTRAINT constraint_fk_changeset_id
+                    FOREIGN KEY (fk_changeset_id)
+                    REFERENCES changeset (id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );        
+            """.format(schema, table_name, geometry, properties)
+
+            self.__PGSQL_CURSOR__.execute(query_text)
+
+    def delete_feature_table(self, table_name, user_id):
+
+        table_name = format_the_table_name_to_standard(table_name, user_id)
+
+        # create the feature table in __feature__ schema and create the version feature table in __version__ schema
+        for schema in ["__feature__", "__version__"]:
+            # build the query to create a new feature table
+            query_text = """        
+                DROP TABLE IF EXISTS {0}.{1} CASCADE ;
+            """.format(schema, table_name)
+
+            try:
+                self.__PGSQL_CURSOR__.execute(query_text)
+            except ProgrammingError as error:
+                self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+                raise HTTPError(400, str(error))
+
 
     ################################################################################
     # CHANGESET

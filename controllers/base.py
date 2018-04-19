@@ -7,7 +7,7 @@
 from json import loads
 from abc import abstractmethod, ABCMeta
 
-import psycopg2
+from psycopg2 import Error, ProgrammingError
 from requests import exceptions
 
 from psycopg2._psycopg import DataError
@@ -27,15 +27,17 @@ def catch_generic_exception(method):
             return method(self, *args, **kwargs)
 
         # all methods can raise a psycopg exception, so catch it
-        except psycopg2.Error as error:
+        except ProgrammingError as error:
             # print(">>>> ", error)
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. Information: " + str(error))
+            raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. " +
+                                 "\nInformation: " + str(error) + "\npgcode: " + str(error.pgcode))
 
-        except psycopg2.ProgrammingError as error:
-            # print(">>>> ", error)
+        except Error as error:
+            # print(">>>> ", dir(error))
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. Information: " + str(error))
+            raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. " +
+                                 "\n Information: " + str(error) + "\npgcode: " + str(error.pgcode))
 
     return wrapper
 
@@ -493,6 +495,39 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         #TODO: can user delete the layer?
 
         self.PGSQLConn.delete_layer_in_db(*args)
+
+
+class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
+
+    def _get_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @catch_generic_exception
+    def _create_feature(self):
+        # get the JSON sent, to add in DB
+        feature_json = self.get_the_json_validated()
+        current_user_id = self.get_current_user_id()
+
+        try:
+            self.PGSQLConn.create_feature_table(feature_json, current_user_id)
+
+            # do commit after create a feature
+            self.PGSQLConn.commit()
+        except DataError as error:
+            # print("Error: ", error)
+            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
+        except ProgrammingError as error:
+            if error.pgcode == "42P07":
+                self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+                raise HTTPError(400, "Feature table already exist.")
+            else:
+                raise error
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _delete_feature(self, *args, **kwargs):
+        raise NotImplementedError
 
 
 class BaseHandlerChangeset(BaseHandlerTemplateMethod):

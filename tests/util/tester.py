@@ -524,6 +524,40 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # FEATURE TABLE
+
+    # def api_layer(self, expected, **arguments):
+    #     arguments = get_url_arguments(**arguments)
+    #
+    #     response = self.session.get(self.URL + '/api/layer/{0}'.format(arguments))
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+    #
+    #     resulted = loads(response.text)  # convert string to dict/JSON
+    #
+    #     self.ut_self.assertEqual(expected, resulted)
+
+    def api_feature_table_create(self, feature_json):
+        response = self.session.put(self.URL + '/api/feature_table/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        # resulted = loads(response.text)  # convert string to dict/JSON
+        #
+        # self.ut_self.assertIn("id", resulted)
+        # self.ut_self.assertNotEqual(resulted["id"], -1)
+        #
+        # # put the id received in the original JSON of changeset
+        # feature_json["properties"]["id"] = resulted["id"]
+        #
+        # return feature_json
+
+    # def api_feature_table_delete(self, feature_id):
+    #     response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+
     # CHANGESET
 
     def api_changeset(self, expected, **arguments):

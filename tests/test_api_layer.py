@@ -102,6 +102,15 @@ class TestAPILayer(TestCase):
         }
         resource = self.tester.api_layer_create(resource)
 
+        # create the feature table for the layer
+        feature_table = {
+            'type': 'FeatureTable',
+            'table_name': 'new_layer',
+            'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+            'geometry': {"type": "MultiPoint"}
+        }
+        self.tester.api_feature_table_create(feature_table)
+
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["id"]
 
