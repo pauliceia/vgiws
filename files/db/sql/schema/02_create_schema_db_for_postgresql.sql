@@ -1,5 +1,5 @@
 
--- Dom 08 Abr 2018 16:16:29 -03
+-- Ter 10 Abr 2018 19:16:21 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS layer (
   table_name TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   description TEXT NULL,
-  source TEXT NULL,
+  source JSON NULL,
   created_at TIMESTAMP NOT NULL,
   removed_at TIMESTAMP NULL,
   fk_user_id INT NOT NULL,
@@ -353,6 +353,28 @@ CREATE TABLE IF NOT EXISTS user_follows_layer (
   CONSTRAINT fk_user_follows_layer_layer1
     FOREIGN KEY (fk_layer_id)
     REFERENCES layer (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+-- -----------------------------------------------------
+-- Table user_follows_theme
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS user_follows_theme CASCADE ;
+
+CREATE TABLE IF NOT EXISTS user_follows_theme (
+  fk_user_id INT NOT NULL,
+  fk_theme_id INT NOT NULL,
+  PRIMARY KEY (fk_theme_id, fk_user_id),
+  CONSTRAINT fk_user_follows_theme_user_1
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_user_follows_theme_theme1
+    FOREIGN KEY (fk_theme_id)
+    REFERENCES theme (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

@@ -21,28 +21,28 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'type': 'Layer',
-                    'properties': {'source': '', 'removed_at': None, 'name': 'Addresses in 1869',
+                    'properties': {'source': ["book1", "article2"], 'removed_at': None, 'name': 'Addresses in 1869',
                                    'fk_theme_id': 1041, 'table_name': 'layer_1001',
                                    'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
                                    'id': 1001, 'description': ''}
                 },
                 {
                     'type': 'Layer',
-                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
                                    'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
                                    'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
                                    'fk_user_id': 1003, 'id': 1002, 'description': ''}
                 },
                 {
                     'type': 'Layer',
-                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
                                    'name': 'Streets in 1930', 'fk_theme_id': 1040,
                                    'table_name': 'layer_1003', 'created_at': '2017-04-10 00:00:00',
                                    'fk_user_id': 1005, 'id': 1003, 'description': ''}
                 },
                 {
                     'type': 'Layer',
-                    'properties': {'source': '', 'removed_at': None, 'name': 'Hospitals between 1800 to 1950',
+                    'properties': {'source': [], 'removed_at': None, 'name': 'Hospitals between 1800 to 1950',
                                    'fk_theme_id': 1023, 'table_name': 'layer_1005',
                                    'created_at': '2017-08-04 00:00:00', 'fk_user_id': 1007,
                                    'id': 1005, 'description': 'some hospitals'}
@@ -58,7 +58,7 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'type': 'Layer',
-                    'properties': {'source': '', 'removed_at': None, 'name': 'Addresses in 1869',
+                    'properties': {'source': ["book1", "article2"], 'removed_at': None, 'name': 'Addresses in 1869',
                                    'fk_theme_id': 1041, 'table_name': 'layer_1001',
                                    'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
                                    'id': 1001, 'description': ''}
@@ -74,7 +74,7 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'type': 'Layer',
-                    'properties': {'source': 'http://link_to_document', 'removed_at': None,
+                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
                                    'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
                                    'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
                                    'fk_user_id': 1003, 'id': 1002, 'description': ''}
@@ -97,12 +97,10 @@ class TestAPILayer(TestCase):
             # 'properties': {'id': -1, 'fk_project_id': 1001},
             # 'type': 'Layer',
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': [],
                            'description': '', 'fk_theme_id': 1041}
         }
         resource = self.tester.api_layer_create(resource)
-
-        print("resource: ", resource)
 
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["id"]
@@ -115,9 +113,6 @@ class TestAPILayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-
-
 
 
 class TestAPILayerErrors(TestCase):
@@ -141,14 +136,25 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - create
 
-    """
+    def test_put_api_layer_create_error_400_bad_request(self):
+        # DO LOGIN
+        self.tester.auth_login_fake()
+
+        # create a layer
+        resource = {
+            'type': 'Layer',
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
+                           'description': '', 'fk_theme_id': 1041}
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     def test_put_api_layer_create_error_403_forbidden(self):
         feature = {
-            'tags': [{'k': 'created_by', 'v': 'test_api'},
-                     {'k': 'description', 'v': 'description of the layer'},
-                     {'k': 'name', 'v': 'layer of data'}],
-            'properties': {'id': -1},
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
+                           'description': '', 'fk_theme_id': 1041},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_403_forbidden(feature)
@@ -192,6 +198,6 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    """
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

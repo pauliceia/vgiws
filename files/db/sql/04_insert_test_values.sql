@@ -212,7 +212,7 @@ DELETE FROM layer;
 
 -- add layer 1001
 INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01', 1001, 1041);
+(1001, 'layer_1001', 'Addresses in 1869', '', '["book1", "article2"]', '2017-01-01', 1001, 1041);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1001 CASCADE ;
@@ -287,10 +287,9 @@ SELECT * FROM changeset WHERE id=1001;
 */
 
 
-
 -- add layer 1002
 INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1002, 'layer_1002', 'Robberies between 1880 to 1900', '', 'http://link_to_document', '2017-03-05', 1003, 1010);
+(1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '["http://link_to_document"]', '2017-03-05', 1003, 1010);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1002 CASCADE ;
@@ -367,7 +366,7 @@ SELECT * FROM changeset WHERE id=1002;
 
 -- add layer_1003
 INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1003, 'layer_1003', 'Streets in 1930', '', 'http://link_to_document', '2017-04-10', 1005, 1040);
+(1003, 'layer_1003', 'Streets in 1930', '', '["http://link_to_document"]', '2017-04-10', 1005, 1040);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1003 CASCADE ;
@@ -448,7 +447,7 @@ SELECT * FROM changeset WHERE id=1003;
 
 -- add layer_1004
 INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
-(1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', '2017-09-25', 1005, 1040);
+(1004, 'layer_1004', 'Streets in 1920', 'streets', '[]', '2017-06-15', '2017-09-25', 1005, 1040);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1004 CASCADE ;
@@ -529,7 +528,7 @@ SELECT * FROM changeset WHERE id=1004;
 
 -- add layer_1005
 INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '', '2017-08-04', 1007, 1023);
+(1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '[]', '2017-08-04', 1007, 1023);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1005 CASCADE ;
@@ -601,7 +600,7 @@ SELECT * FROM changeset WHERE id=1005;
 
 -- add layer_1006
 INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
-(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '', '2017-09-04', '2017-10-24', 1004, 1031);
+(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '["bookA"]', '2017-09-04', '2017-10-24', 1004, 1031);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__.layer_1006 CASCADE ;
@@ -682,6 +681,9 @@ SELECT * FROM layer WHERE removed_at is NULL;
 SELECT * FROM layer WHERE removed_at is NULL ORDER BY id;
 
 DELETE FROM layer WHERE id = 2;
+
+
+
 
 
 

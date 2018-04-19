@@ -580,8 +580,6 @@ class PGSQLConnection:
         # fk_user_id = properties["fk_user_id"]
         fk_theme_id = properties["fk_theme_id"]
 
-        print("user_id: ", user_id)
-
         query_text = """
             INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_theme_id, created_at) 
             VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
@@ -599,8 +597,13 @@ class PGSQLConnection:
 
         validate_feature_json(resource_json)
 
+        properties = resource_json["properties"]
+
+        if not isinstance(properties["source"], list):
+            raise HTTPError(400, "The parameter source needs to be a list.")
+
         # add the layer in db and get the id of it
-        id_in_json = self.add_layer_in_db(resource_json["properties"], user_id)
+        id_in_json = self.add_layer_in_db(properties, user_id)
 
         # TODO: create a new feature table
 

@@ -495,6 +495,12 @@ class UtilTester:
 
     # layer errors - create
 
+    def api_layer_create_error_400_bad_request(self, feature_json):
+        response = self.session.put(self.URL + '/api/layer/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
     def api_layer_create_error_403_forbidden(self, feature_json):
         response = self.session.put(self.URL + '/api/layer/create/',
                                     data=dumps(feature_json), headers=self.headers)

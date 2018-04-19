@@ -58,6 +58,7 @@ This method create a new layer described in a JSON.
     {'id': 7}
     ```
 - Error codes:
+    - 400 (Bad Request): The parameter source needs to be a list.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
