@@ -107,8 +107,8 @@ def prepare_test_db_before_tests(arguments):
         print("\nCleaning and creating the schema of DB.")
         PGSQLConn.execute(schema_data, modify_information=True)
 
-        print("Inserting the triggers in DB.")
-        PGSQLConn.execute(trigger_data, modify_information=True)
+        # print("Inserting the triggers in DB.")
+        # PGSQLConn.execute(trigger_data, modify_information=True)
 
         # just insert test data if it is in debug mode
         if "--debug" in arguments and arguments["--debug"] is True:

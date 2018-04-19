@@ -5,7 +5,7 @@
 def get_subquery_user_table(**kwargs):
     # DEFAULT WHERE
     # by default, get all results that are visible (that exist)
-    conditions_of_where = ["visible=TRUE"]
+    conditions_of_where = ["removed_at is NULL"]  # visible=TRUE
 
     # conditions of WHERE CLAUSE
     if "user_id" in kwargs and kwargs["user_id"] is not None:

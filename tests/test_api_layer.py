@@ -86,31 +86,39 @@ class TestAPILayer(TestCase):
         self.tester.api_layer(expected, user_id="1003")
 
     # layer - create and delete
-    """
+
     def test_get_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
 
         # create a layer
-        feature = {
-            'tags': {'created_by': 'test_api', 'description': 'description of the layer', 'name': 'layer of data'},
-            'properties': {'id': -1, 'fk_project_id': 1001},
-            'type': 'Layer'
+        resource = {
+            # 'tags': {'created_by': 'test_api', 'description': 'description of the layer', 'name': 'layer of data'},
+            # 'properties': {'id': -1, 'fk_project_id': 1001},
+            # 'type': 'Layer',
+            'type': 'Layer',
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
+                           'description': '', 'fk_theme_id': 1041}
         }
-        feature = self.tester.api_layer_create(feature)
+        resource = self.tester.api_layer_create(resource)
+
+        print("resource: ", resource)
 
         # get the id of layer to REMOVE it
-        feature_id = feature["properties"]["id"]
+        resource_id = resource["properties"]["id"]
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(feature_id)
+        self.tester.api_layer_delete(resource_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 
-"""
+
+
 
 class TestAPILayerErrors(TestCase):
 
@@ -132,6 +140,8 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_error_404_not_found(layer_id="998")
 
     # layer errors - create
+
+    """
 
     def test_put_api_layer_create_error_403_forbidden(self):
         feature = {
@@ -182,6 +192,6 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-"""
+    """
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

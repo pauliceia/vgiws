@@ -681,6 +681,13 @@ SELECT * FROM layer WHERE removed_at is NULL;
 
 SELECT * FROM layer WHERE removed_at is NULL ORDER BY id;
 
+DELETE FROM layer WHERE id = 2;
+
+
+
+
+-- TODO: create a new layer with a JSON field and open in the QGIS, to see the JSON field
+
 
 
 

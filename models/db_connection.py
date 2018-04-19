@@ -64,11 +64,11 @@ def if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status(method)
 
 def validate_feature_json(feature_json):
     properties = feature_json["properties"]
-    tags = feature_json["tags"]
+    # tags = feature_json["tags"]
 
     # if tags if not instance of dict, raise exception
-    if not isinstance(tags, dict):
-        raise HTTPError(400, "The 'tags' attribute must be a JSON, it is " + str(type(tags)))
+    # if not isinstance(tags, dict):
+    #     raise HTTPError(400, "The 'tags' attribute must be a JSON, it is " + str(type(tags)))
 
     if not isinstance(properties, dict):
         raise HTTPError(400, "The 'properties' attribute must be a JSON, it is " + str(type(properties)))
@@ -569,13 +569,23 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_layer_in_db(self, project_id, user_id, tags):
-        tags = dumps(tags)  # convert python dict to json to save in db
+    def add_layer_in_db(self, properties, user_id):
+        # tags = dumps(tags)  # convert python dict to json to save in db
+
+        # get the fields to add in DB
+        table_name = properties["table_name"]
+        name = properties["name"]
+        description = properties["description"]
+        source = properties["source"]
+        # fk_user_id = properties["fk_user_id"]
+        fk_theme_id = properties["fk_theme_id"]
+
+        print("user_id: ", user_id)
 
         query_text = """
-            INSERT INTO layer (created_at, fk_project_id, fk_user_id, tags) 
-            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
-        """.format(project_id, user_id, tags)
+            INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_theme_id, created_at) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
+        """.format(table_name, name, description, source, user_id, fk_theme_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -585,26 +595,30 @@ class PGSQLConnection:
 
         return result
 
-    def create_layer(self, feature_json, user_id):
+    def create_layer(self, resource_json, user_id):
 
-        validate_feature_json(feature_json)
-
-        # get the fields to add in DB
-        project_id = feature_json["properties"]["fk_project_id"]
+        validate_feature_json(resource_json)
 
         # add the layer in db and get the id of it
-        id_in_json = self.add_layer_in_db(project_id, user_id, feature_json["tags"])
+        id_in_json = self.add_layer_in_db(resource_json["properties"], user_id)
+
+        # TODO: create a new feature table
 
         return id_in_json
 
-    def delete_layer_in_db(self, feature_id):
-        if is_a_invalid_id(feature_id):
+    def delete_layer_in_db(self, resource_id):
+        if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
+        # query_text = """
+        #     UPDATE layer SET removed_at = LOCALTIMESTAMP WHERE id={0};
+        # """.format(feature_id)
+
         query_text = """
-            UPDATE layer SET visible = FALSE, removed_at = LOCALTIMESTAMP
-            WHERE id={0};
-        """.format(feature_id)
+            DELETE FROM layer WHERE id={0};
+        """.format(resource_id)
+
+        # TODO: new delete the table created
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1084,8 +1098,7 @@ class PGSQLConnection:
                         'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'terms_agreed', terms_agreed
-                    ),
-                    'tags',       tags
+                    )
                 ))
             ) AS row_to_json
             FROM 
@@ -1115,13 +1128,13 @@ class PGSQLConnection:
     def add_user_in_db(self, properties, tags):
         p = properties
 
-        tags = dumps(tags)  # convert python dict to json to save in db
+        # tags = dumps(tags)  # convert python dict to json to save in db
 
         query_text = """
-            INSERT INTO user_ (email, username, password, created_at, tags) 
-            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP, '{3}')
+            INSERT INTO user_ (email, username, password, created_at) 
+            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP)
             RETURNING id;
-        """.format(p["email"], p["username"], p["password"], tags)
+        """.format(p["email"], p["username"], p["password"])
 
         try:
             # do the query in database

@@ -366,9 +366,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         if param == "create":
             # self._create_feature(*args)
             self.put_method_api_feature_create(*args)
-        elif param == "update":
-            # self._update_feature(*args)
-            self.put_method_api_feature_update(*args)
+        # elif param == "update":
+        #     # self._update_feature(*args)
+        #     self.put_method_api_feature_update(*args)
         elif param == "close":
             self._close_feature(*args)
         elif param == "request":
@@ -488,6 +488,10 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
+        current_user_id = self.get_current_user_id()
+
+        #TODO: can user delete the layer?
+
         self.PGSQLConn.delete_layer_in_db(*args)
 
 

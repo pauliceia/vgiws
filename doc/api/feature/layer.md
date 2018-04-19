@@ -14,7 +14,7 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
      - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
      - Get layers by user id: http://localhost:8888/api/layer/?user_id=1001
 - Send:
-- Response: a JSON that contain the features selected. Example:
+- Response: a JSON that contains the resources selected. Example:
     ```javascript
     {
         'features': [
@@ -32,8 +32,8 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when get a feature. Please, contact the administrator.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
 
@@ -42,8 +42,8 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
 This method create a new layer described in a JSON.
 - Parameters:
 - Examples:
-     - Create a feature: ```PUT http://localhost:8888/api/layer/create```
-- Send: a JSON describing the feature. Example:
+     - Create a resource: ```PUT http://localhost:8888/api/layer/create```
+- Send: a JSON describing the resource. Example:
     ```javascript
     {
         'tags': {'created_by': 'agostinho', 'name': 'layer of theathers',
@@ -53,13 +53,13 @@ This method create a new layer described in a JSON.
         'type': 'Layer'
     }
     ```
-- Response: a JSON that contain the id of the feature created. Example:
+- Response: a JSON that contains the id of the resource created. Example:
     ```javascript
     {'id': 7}
     ```
 - Error codes:
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
@@ -70,14 +70,14 @@ This method create a new layer described in a JSON.
 
 This method delete one layer by id = #id.
 - Parameters:
-    - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a feature by id: ```DELETE http://localhost:8888/api/layer/7```
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/layer/7```
 - Send:
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
