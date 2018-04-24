@@ -225,8 +225,8 @@ DELETE FROM layer;
 -- - table_name: <user_id>_<name>, example: 1001_layer_1001
 
 -- add layer 1001
-INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author) VALUES 
-(1001, '_1001_layer_1001', 'Addresses in 1869', '', '', '2017-01-01', 1001);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author, is_published, fk_user_id_published_by) VALUES 
+(1001, '_1001_layer_1001', 'Addresses in 1869', '', '', '2017-01-01', 1001, TRUE, 1001);
 -- add reference
 INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1001, 'book1', 1001);
 INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1002, 'article2', 1001);
@@ -307,9 +307,10 @@ SELECT * FROM changeset WHERE id=1001;
 */
 
 
+
 -- add layer 1002
-INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author) VALUES 
-(1002, '_1003_layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', 1003);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author, is_published, fk_user_id_published_by) VALUES 
+(1002, '_1003_layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', 1003, TRUE, 1003);
 -- add reference
 INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1005, 'http://link_to_document', 1002);
 
@@ -480,8 +481,8 @@ SELECT * FROM changeset WHERE id=1003;
 
 
 -- add layer_1004
-INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, removed_at, fk_user_id_author) VALUES 
-(1004, '_1005_layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', '2017-09-25', 1005);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, removed_at, fk_user_id_author, is_published, fk_user_id_published_by) VALUES 
+(1004, '_1005_layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', '2017-09-25', 1005, TRUE, 1003);
 -- add reference
 -- INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1015, '', 1004);
 
@@ -647,8 +648,8 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 -- add layer_1006
-INSERT INTO layer (id, table_name, name, description, created_at, removed_at, fk_user_id_author) VALUES 
-(1006, '_1004_layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', '2017-10-24', 1004);
+INSERT INTO layer (id, table_name, name, description, created_at, removed_at, fk_user_id_author, is_published, fk_user_id_published_by) VALUES 
+(1006, '_1004_layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', '2017-10-24', 1004, TRUE, 1003);
 -- add reference
  INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1025, 'bookA', 1006);
 

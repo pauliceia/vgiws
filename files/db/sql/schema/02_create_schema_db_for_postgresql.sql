@@ -1,5 +1,5 @@
 
--- Ter 24 Abr 2018 11:58:04 -03
+-- Ter 24 Abr 2018 17:54:12 -03
 
 -- -----------------------------------------------------
 -- Table user_
@@ -35,9 +35,15 @@ CREATE TABLE IF NOT EXISTS layer (
   removed_at TIMESTAMP NULL,
   is_published BOOLEAN NULL DEFAULT FALSE,
   fk_user_id_author INT NOT NULL,
+  fk_user_id_published_by INT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_project_user1
     FOREIGN KEY (fk_user_id_author)
+    REFERENCES user_ (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_layer_user_1
+    FOREIGN KEY (fk_user_id_published_by)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -384,7 +390,7 @@ CREATE TABLE IF NOT EXISTS curator (
   fk_user_id INT NOT NULL,
   fk_theme_id INT NOT NULL,
   region TEXT NULL,
-  fk_user_id_creation INT NOT NULL,
+  fk_user_id_creator INT NOT NULL,
   CONSTRAINT fk_curator_user_theme_user_1
     FOREIGN KEY (fk_user_id)
     REFERENCES user_ (id)
@@ -396,7 +402,7 @@ CREATE TABLE IF NOT EXISTS curator (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_curator_user_1
-    FOREIGN KEY (fk_user_id_creation)
+    FOREIGN KEY (fk_user_id_creator)
     REFERENCES user_ (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE

@@ -11,20 +11,19 @@ def get_subquery_layer_table(**kwargs):
     if "layer_id" in kwargs and kwargs["layer_id"] is not None:
         conditions_of_where.append("id = {0}".format(kwargs["layer_id"]))
 
-    elif "table_name" in kwargs and kwargs["table_name"] is not None:
+    if "table_name" in kwargs and kwargs["table_name"] is not None:
         conditions_of_where.append("table_name = '{0}'".format(kwargs["table_name"]))
 
-    elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("fk_user_id = {0}".format(kwargs["user_id"]))
+    if "user_id_author" in kwargs and kwargs["user_id_author"] is not None:
+        conditions_of_where.append("fk_user_id_author = {0}".format(kwargs["user_id_author"]))
 
-    else:
-        # default get all features, without where clause
-        pass
+    if "is_published" in kwargs and kwargs["is_published"] is not None:
+        conditions_of_where.append("is_published = {0}".format(kwargs["is_published"]))
 
     # default get all features, without where clause
     where_clause = ""
 
-    # if there is some condition, put in where_clause
+    # if there is some conditions, put in where_clause
     if conditions_of_where:
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 

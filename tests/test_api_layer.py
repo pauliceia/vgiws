@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase
+from unittest import TestCase, skip
 from util.tester import UtilTester
 
 
@@ -20,32 +20,43 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'type': 'Layer',
-                    'properties': {'source': ["book1", "article2"], 'removed_at': None, 'name': 'Addresses in 1869',
-                                   'fk_theme_id': 1041, 'table_name': 'layer_1001',
-                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
-                                   'id': 1001, 'description': ''}
+                    'properties': {
+                        'fk_user_id_published_by': 1001, 'source_author_name': '', 'table_name': '_1001_layer_1001',
+                        'created_at': '2017-01-01 00:00:00', 'reference': [{'description': 'book1', 'id': 1001},
+                                                                           {'description': 'article2', 'id': 1002}],
+                        'removed_at': None, 'fk_user_id_author': 1001, 'description': '', 'is_published': True,
+                        'id': 1001, 'name': 'Addresses in 1869'
+                    },
+                    'type': 'Layer'
                 },
                 {
-                    'type': 'Layer',
-                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
-                                   'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
-                                   'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
-                                   'fk_user_id': 1003, 'id': 1002, 'description': ''}
+                    'properties': {
+                        'fk_user_id_published_by': 1003, 'source_author_name': '', 'table_name': '_1003_layer_1002',
+                        'created_at': '2017-03-05 00:00:00', 'reference': [{'description': 'http://link_to_document',
+                                                                            'id': 1005}],
+                        'removed_at': None, 'fk_user_id_author': 1003, 'description': '', 'is_published': True,
+                        'id': 1002, 'name': 'Robberies between 1880 to 1900'
+                    },
+                    'type': 'Layer'
                 },
                 {
-                    'type': 'Layer',
-                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
-                                   'name': 'Streets in 1930', 'fk_theme_id': 1040,
-                                   'table_name': 'layer_1003', 'created_at': '2017-04-10 00:00:00',
-                                   'fk_user_id': 1005, 'id': 1003, 'description': ''}
+                    'properties': {
+                        'fk_user_id_published_by': None, 'source_author_name': '', 'table_name': '_1005_layer_1003',
+                        'created_at': '2017-04-10 00:00:00', 'reference': [{'description': 'http://link_to_document',
+                                                                            'id': 1010}],
+                        'removed_at': None, 'fk_user_id_author': 1005, 'description': '',
+                        'is_published': False, 'id': 1003, 'name': 'Streets in 1930'
+                    },
+                    'type': 'Layer'
                 },
                 {
-                    'type': 'Layer',
-                    'properties': {'source': [], 'removed_at': None, 'name': 'Hospitals between 1800 to 1950',
-                                   'fk_theme_id': 1023, 'table_name': 'layer_1005',
-                                   'created_at': '2017-08-04 00:00:00', 'fk_user_id': 1007,
-                                   'id': 1005, 'description': 'some hospitals'}
+                    'properties': {
+                        'fk_user_id_published_by': None, 'source_author_name': None, 'table_name': '_1007_layer_1005',
+                        'created_at': '2017-08-04 00:00:00', 'reference': None, 'removed_at': None,
+                        'fk_user_id_author': 1007, 'description': 'some hospitals', 'is_published': False, 'id': 1005,
+                        'name': 'Hospitals between 1800 to 1950'
+                    },
+                    'type': 'Layer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -57,11 +68,14 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'type': 'Layer',
-                    'properties': {'source': ["book1", "article2"], 'removed_at': None, 'name': 'Addresses in 1869',
-                                   'fk_theme_id': 1041, 'table_name': 'layer_1001',
-                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001,
-                                   'id': 1001, 'description': ''}
+                    'properties': {
+                        'fk_user_id_published_by': 1001, 'source_author_name': '', 'table_name': '_1001_layer_1001',
+                        'created_at': '2017-01-01 00:00:00', 'reference': [{'description': 'book1', 'id': 1001},
+                                                                           {'description': 'article2', 'id': 1002}],
+                        'removed_at': None, 'fk_user_id_author': 1001, 'description': '', 'is_published': True,
+                        'id': 1001, 'name': 'Addresses in 1869'
+                    },
+                    'type': 'Layer'
                 },
             ],
             'type': 'FeatureCollection'
@@ -69,21 +83,96 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, layer_id="1001")
 
-    def test_get_api_layer_return_layer_by_user_id(self):
+    def test_get_api_layer_return_layer_by_user_id_author(self):
         expected = {
             'features': [
                 {
-                    'type': 'Layer',
-                    'properties': {'source': ['http://link_to_document'], 'removed_at': None,
-                                   'name': 'Robberies between 1880 to 1900', 'fk_theme_id': 1010,
-                                   'table_name': 'layer_1002', 'created_at': '2017-03-05 00:00:00',
-                                   'fk_user_id': 1003, 'id': 1002, 'description': ''}
+                    'properties': {
+                        'fk_user_id_published_by': 1003, 'source_author_name': '', 'table_name': '_1003_layer_1002',
+                        'created_at': '2017-03-05 00:00:00', 'reference': [{'description': 'http://link_to_document',
+                                                                            'id': 1005}],
+                        'removed_at': None, 'fk_user_id_author': 1003, 'description': '', 'is_published': True,
+                        'id': 1002, 'name': 'Robberies between 1880 to 1900'
+                    },
+                    'type': 'Layer'
                 },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_layer(expected, user_id="1003")
+        self.tester.api_layer(expected, user_id_author="1003")
+
+    def test_get_api_layer_return_layer_by_is_published(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {
+                        'id': 1001, 'table_name': '_1001_layer_1001', 'source_author_name': '', 'reference': [{'id': 1001, 'description': 'book1'},
+                                                                                                        {'id': 1002, 'description': 'article2'}],
+                        'description': '', 'fk_user_id_author': 1001, 'name': 'Addresses in 1869', 'removed_at': None,
+                        'created_at': '2017-01-01 00:00:00', 'is_published': True, 'fk_user_id_published_by': 1001,
+                    },
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {
+                        'id': 1002, 'table_name': '_1003_layer_1002', 'source_author_name': '', 'reference': [{'id': 1005, 'description': 'http://link_to_document'}],
+                        'description': '', 'fk_user_id_author': 1003, 'name': 'Robberies between 1880 to 1900',
+                        'created_at': '2017-03-05 00:00:00', 'is_published': True, 'fk_user_id_published_by': 1003,
+                        'removed_at': None
+                    },
+                    'type': 'Layer'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_layer(expected, is_published="TRUE")
+
+        expected = {
+            'features': [
+                {
+                    'type': 'Layer',
+                    'properties': {
+                        'removed_at': None, 'fk_user_id_published_by': None, 'reference': [{'description': 'http://link_to_document', 'id': 1010}],
+                        'description': '', 'id': 1003, 'source_author_name': '', 'fk_user_id_author': 1005,
+                        'is_published': False, 'created_at': '2017-04-10 00:00:00', 'table_name': '_1005_layer_1003',
+                        'name': 'Streets in 1930'
+                    }
+                },
+                {
+                    'type': 'Layer',
+                    'properties': {
+                        'removed_at': None, 'fk_user_id_published_by': None, 'reference': None, 'description': 'some hospitals',
+                        'id': 1005, 'source_author_name': None, 'fk_user_id_author': 1007, 'is_published': False,
+                        'created_at': '2017-08-04 00:00:00', 'table_name': '_1007_layer_1005',
+                        'name': 'Hospitals between 1800 to 1950'
+                    }
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_layer(expected, is_published="FALSE")
+
+    def test_get_api_layer_return_all_by_table_name(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {
+                        'fk_user_id_published_by': None, 'source_author_name': '', 'table_name': '_1005_layer_1003',
+                        'created_at': '2017-04-10 00:00:00', 'reference': [{'description': 'http://link_to_document',
+                                                                            'id': 1010}],
+                        'removed_at': None, 'fk_user_id_author': 1005, 'description': '',
+                        'is_published': False, 'id': 1003, 'name': 'Streets in 1930'
+                    },
+                    'type': 'Layer'
+                },
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_layer(expected, table_name="_1005_layer_1003")
 
     # layer - create and delete
 

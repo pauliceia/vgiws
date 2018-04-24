@@ -4,7 +4,7 @@
 
 from unittest import TestCase, skip
 from util.tester import UtilTester
-"""
+
 
 class TestAPIAuthLogin(TestCase):
 
@@ -53,6 +53,6 @@ class TestAPIAuthLoginErrors(TestCase):
         self.tester.api_user_error_404_not_found(user_id="999")
         self.tester.api_user_error_404_not_found(user_id="998")
 
-"""
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

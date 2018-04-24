@@ -524,12 +524,13 @@ class PGSQLConnection:
     # layer
     ################################################################################
 
-    def get_layers(self, layer_id=None, user_id=None):
+    def get_layers(self, layer_id=None, user_id_author=None, table_name=None, is_published=None):
         # the id have to be a int
-        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id_author):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_layer_table(layer_id=layer_id, user_id=user_id)
+        subquery = get_subquery_layer_table(layer_id=layer_id, user_id_author=user_id_author,
+                                            table_name=table_name, is_published=is_published)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -542,16 +543,30 @@ class PGSQLConnection:
                         'table_name',   table_name,
                         'name',         name,
                         'description',  description,
-                        'source',       source,
+                        'source_author_name',       source_author_name,
                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_user_id',   fk_user_id,
-                        'fk_theme_id',  fk_theme_id
+                        'is_published', is_published,
+                        'fk_user_id_author',        fk_user_id_author,
+                        'fk_user_id_published_by',  fk_user_id_published_by,
+                        'reference',       reference__.jsontags
                     )
                 ))
             ) AS row_to_json
             FROM 
             {0}
+            CROSS JOIN LATERAL (                
+                -- (3) get the references of some resource on JSON format   
+                SELECT json_agg(json_build_object('id', id, 'description', description)) AS jsontags 
+                FROM 
+                (
+                    -- (2) get the references of some resource
+                    SELECT id, description
+                    FROM reference_ 
+                    WHERE fk_layer_id = layer.id
+                    ORDER BY id
+                ) subquery      
+            ) AS reference__
         """.format(subquery)
 
         # do the query in database
@@ -575,14 +590,14 @@ class PGSQLConnection:
         # POST PROCESSING
 
         # iterate in features to change the original table name (_<user_id>_<table_name>) by just table_name
-        for feature in results_of_query["features"]:
-            table_name = feature["properties"]["table_name"]
-
-            # get just the table name, without the user id
-            second_underscore = table_name.find("_", 2)
-            table_name_without_user_id = table_name[second_underscore+1:]
-
-            feature["properties"]["table_name"] = table_name_without_user_id
+        # for feature in results_of_query["features"]:
+        #     table_name = feature["properties"]["table_name"]
+        #
+        #     # get just the table name, without the user id
+        #     second_underscore = table_name.find("_", 2)
+        #     table_name_without_user_id = table_name[second_underscore+1:]
+        #
+        #     feature["properties"]["table_name"] = table_name_without_user_id
 
         return results_of_query
 
@@ -593,14 +608,12 @@ class PGSQLConnection:
         table_name = properties["table_name"]
         name = properties["name"]
         description = properties["description"]
-        source = properties["source"]
         # fk_user_id = properties["fk_user_id"]
-        fk_theme_id = properties["fk_theme_id"]
 
         query_text = """
-            INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_theme_id, created_at) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
-        """.format(table_name, name, description, source, user_id, fk_theme_id)
+            INSERT INTO layer (table_name, name, description, fk_user_id_author, created_at) 
+            VALUES ('{0}', '{1}', '{2}', {3}, LOCALTIMESTAMP) RETURNING id;
+        """.format(table_name, name, description, user_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1254,13 +1267,12 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'User',
                     'properties', json_build_object(
-                        'id',           id,
-                        'username', username,
-                        'email', email,
-                        'is_email_valid', is_email_valid,           
-                        'created_at',    to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'terms_agreed', terms_agreed
+                        'id',             id,
+                        'username',       username,
+                        'email',          email,
+                        'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_email_valid', is_email_valid,
+                        'terms_agreed',   terms_agreed
                     )
                 ))
             ) AS row_to_json
