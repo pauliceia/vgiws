@@ -91,6 +91,9 @@ def remove_bad_lines_and_put_default_values(text):
         if "table_name text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
+        if "is_published boolean" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
         # GROUP
         '''
         if "can_receive_notification boolean" in line_lower:
@@ -118,7 +121,7 @@ def add_serial_number_in_ID(text):
         line_lower = line.lower()
 
         # put SERIAL just in ID field, NOT in FKs
-        if "id int" in line_lower and "fk" not in line_lower:
+        if " id int" in line_lower and "fk" not in line_lower:
             line_splited = line.replace("NOT NULL", "").split(" ")
             line_splited[3] = "SERIAL"                
             lines[i] = " ".join(line_splited)

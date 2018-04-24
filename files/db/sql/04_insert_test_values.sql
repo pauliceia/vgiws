@@ -45,16 +45,16 @@ VALUES (1005, 'gabriel', 'gabriel@admin.com', '5dbe7d079067809bb06f7c80de78ecb9d
 'Gabriel', '2017-09-20', FALSE, FALSE);
 
 -- password - fernanda
-INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
-VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda', '2017-01-19', '2017-04-23', TRUE, FALSE);
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
+VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda', '2017-01-19', TRUE, FALSE);
 
 -- password - ana
-INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
-VALUES (1007, 'ana', 'ana@gmail.com', 'ana', '2017-01-18', '2017-08-02', FALSE, TRUE);
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
+VALUES (1007, 'ana', 'ana@gmail.com', 'ana', '2017-01-18', FALSE, TRUE);
 
 -- password - bea
-INSERT INTO user_ (id, username, email, password, created_at, removed_at, is_email_valid, terms_agreed) 
-VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', '2017-10-03', FALSE, FALSE);
+INSERT INTO user_ (id, username, email, password, created_at, is_email_valid, terms_agreed) 
+VALUES (1008, 'bea', 'bea@gmail.com', 'bea', '2017-01-30', FALSE, FALSE);
 
 
 -- -----------------------------------------------------
@@ -89,30 +89,37 @@ INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1008
 -- clean table
 DELETE FROM theme;
 
-INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1001, 'generic', NULL, 1001);
-    INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1002, 'event', 1001, 1001);
+INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1001, 'generic', NULL, 1001);
+    INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1002, 'event', 1001, 1001);
         -- event's children (1002)
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1003, 'crime', 1002, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1003, 'crime', 1002, 1001);
             -- crime's children (1003)
-            INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1004, 'assalt', 1003, 1001);
-            INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1005, 'robbery', 1003, 1001);
+            INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1004, 'assalt', 1003, 1001);
+            INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1005, 'robbery', 1003, 1001);
 
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1010, 'disease', 1002, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1010, 'disease', 1002, 1001);
 
-    INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1020, 'object', 1001, 1001);
+    INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1020, 'object', 1001, 1001);
         -- object's children (1020)
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1021, 'building', 1020, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1021, 'building', 1020, 1001);
             -- building's children (1021)
-            INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1022, 'school', 1021, 1001);
-            INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1023, 'hospital', 1021, 1001);
+            INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1022, 'school', 1021, 1001);
+            INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1023, 'hospital', 1021, 1001);
 
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1030, 'cultural place', 1020, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1030, 'cultural place', 1020, 1001);
             -- cultural place's children (1030)
-            INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1031, 'cinema', 1030, 1001);
+            INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1031, 'cinema', 1030, 1001);
 
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1040, 'street', 1020, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1040, 'street', 1020, 1001);
 
-        INSERT INTO theme (id, name, fk_parent_id, fk_user_id) VALUES (1041, 'address', 1020, 1001);
+        INSERT INTO theme (id, name, fk_parent_id, fk_user_id_creator) VALUES (1041, 'address', 1020, 1001);
+
+
+-- -----------------------------------------------------
+-- Table layer_theme
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM layer_theme;
             
             
 /*
@@ -187,6 +194,12 @@ INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2
 */
 
 
+-- -----------------------------------------------------
+-- Table reference
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM reference_;
+
 
 -- -----------------------------------------------------
 -- Table changeset
@@ -212,8 +225,14 @@ DELETE FROM layer;
 -- - table_name: <user_id>_<name>, example: 1001_layer_1001
 
 -- add layer 1001
-INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1001, '_1001_layer_1001', 'Addresses in 1869', '', '["book1", "article2"]', '2017-01-01', 1001, 1041);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author) VALUES 
+(1001, '_1001_layer_1001', 'Addresses in 1869', '', '', '2017-01-01', 1001);
+-- add reference
+INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1001, 'book1', 1001);
+INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1002, 'article2', 1001);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1001, 1041);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS __feature__._1001_layer_1001 CASCADE ;
@@ -289,8 +308,13 @@ SELECT * FROM changeset WHERE id=1001;
 
 
 -- add layer 1002
-INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1002, '_1003_layer_1002', 'Robberies between 1880 to 1900', '', '["http://link_to_document"]', '2017-03-05', 1003, 1010);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author) VALUES 
+(1002, '_1003_layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', 1003);
+-- add reference
+INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1005, 'http://link_to_document', 1002);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1002, 1010);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS __feature__.layer_1002 CASCADE ;
@@ -368,8 +392,13 @@ SELECT * FROM changeset WHERE id=1002;
 
 
 -- add layer_1003
-INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1003, '_1005_layer_1003', 'Streets in 1930', '', '["http://link_to_document"]', '2017-04-10', 1005, 1040);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, fk_user_id_author) VALUES 
+(1003, '_1005_layer_1003', 'Streets in 1930', '', '', '2017-04-10', 1005);
+-- add reference
+INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1010, 'http://link_to_document', 1003);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1003, 1040);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS __feature__.layer_1003 CASCADE ;
@@ -451,8 +480,13 @@ SELECT * FROM changeset WHERE id=1003;
 
 
 -- add layer_1004
-INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
-(1004, '_1005_layer_1004', 'Streets in 1920', 'streets', '[]', '2017-06-15', '2017-09-25', 1005, 1040);
+INSERT INTO layer (id, table_name, name, description, source_author_name, created_at, removed_at, fk_user_id_author) VALUES 
+(1004, '_1005_layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', '2017-09-25', 1005);
+-- add reference
+-- INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1015, '', 1004);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1004, 1040);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS __feature__.layer_1004 CASCADE ;
@@ -534,8 +568,13 @@ SELECT * FROM changeset WHERE id=1004;
 
 
 -- add layer_1005
-INSERT INTO layer (id, table_name, name, description, source, created_at, fk_user_id, fk_theme_id) VALUES 
-(1005, '_1007_layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '[]', '2017-08-04', 1007, 1023);
+INSERT INTO layer (id, table_name, name, description, created_at, fk_user_id_author) VALUES 
+(1005, '_1007_layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '2017-08-04', 1007);
+-- add reference
+--INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1020, 'bookA', 1005);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1005, 1023);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS __feature__.layer_1005 CASCADE ;
@@ -608,8 +647,13 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 -- add layer_1006
-INSERT INTO layer (id, table_name, name, description, source, created_at, removed_at, fk_user_id, fk_theme_id) VALUES 
-(1006, '_1004_layer_1006', 'Cinemas between 1900 to 1950', '', '["bookA"]', '2017-09-04', '2017-10-24', 1004, 1031);
+INSERT INTO layer (id, table_name, name, description, created_at, removed_at, fk_user_id_author) VALUES 
+(1006, '_1004_layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', '2017-10-24', 1004);
+-- add reference
+ INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1025, 'bookA', 1006);
+
+-- add the themes in layer
+INSERT INTO layer_theme (fk_layer_id, fk_theme_id) VALUES (1006, 1031);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS __feature__.layer_1006 CASCADE ;
