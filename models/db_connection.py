@@ -817,76 +817,76 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
-        # the id have to be a int
-        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
-                                                user_id=user_id, open=open, closed=closed)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Changeset',
-                    'properties', json_build_object(
-                        'id',           id,                        
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_layer_id',    fk_layer_id,
-                        'fk_user_id', fk_user_id
-                    ),
-                    'tags',       tags
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
-
-    def add_changeset_in_db(self, layer_id, user_id, tags):
-        """
-        Add a changeset in DB
-        :param layer_id: id of the layer associated with the changeset
-        :param user_id: id of the user (owner) of the changeset
-        :return: the id of the changeset created inside a JSON, example: {"id": -1}
-        """
-
-        tags = dumps(tags)  # convert python dict to json to save in db
-
-        query_text = """
-            INSERT INTO changeset (created_at, fk_layer_id, fk_user_id, tags) 
-            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
-        """.format(layer_id, user_id, tags)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+    # def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
+    #                                             user_id=user_id, open=open, closed=closed)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Changeset',
+    #                 'properties', json_build_object(
+    #                     'id',           id,
+    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'fk_layer_id',    fk_layer_id,
+    #                     'fk_user_id', fk_user_id
+    #                 ),
+    #                 'tags',       tags
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_changeset_in_db(self, layer_id, user_id, tags):
+    #     """
+    #     Add a changeset in DB
+    #     :param layer_id: id of the layer associated with the changeset
+    #     :param user_id: id of the user (owner) of the changeset
+    #     :return: the id of the changeset created inside a JSON, example: {"id": -1}
+    #     """
+    #
+    #     tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     query_text = """
+    #         INSERT INTO changeset (created_at, fk_layer_id, fk_user_id, tags)
+    #         VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
+    #     """.format(layer_id, user_id, tags)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
 
     # def add_changeset_tag_in_db(self, k, v, feature_id):
     #     query_text = """
@@ -902,52 +902,52 @@ class PGSQLConnection:
     #
     #     # return id_changeset_tag
 
-    def create_changeset(self, feature_json, user_id):
-
-        validate_feature_json(feature_json)
-
-        # get the fields to add in DB
-        layer_id = feature_json["properties"]["fk_layer_id"]
-
-        # add the chengeset in db and get the id of it
-        changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
-
-        return changeset_id_in_json
-
-    def close_changeset(self, feature_id=None):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        self.commit()
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
-
-    def delete_changeset_in_db(self, feature_id):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE changeset SET visible = FALSE
-            WHERE id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+    # def create_changeset(self, feature_json, user_id):
+    #
+    #     validate_feature_json(feature_json)
+    #
+    #     # get the fields to add in DB
+    #     layer_id = feature_json["properties"]["fk_layer_id"]
+    #
+    #     # add the chengeset in db and get the id of it
+    #     changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
+    #
+    #     return changeset_id_in_json
+    #
+    # def close_changeset(self, feature_id=None):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     self.commit()
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    # def delete_changeset_in_db(self, feature_id):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE changeset SET visible = FALSE
+    #         WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # notification
@@ -1091,125 +1091,125 @@ class PGSQLConnection:
 
     # get elements
 
-    def get_elements(self, element, **arguments):
-        if not are_arguments_valid_to_get_elements(**arguments):
-            raise HTTPError(400, "Invalid parameter.")
-
-        return self.get_elements_geojson(element, **arguments)
-
-    def get_elements_geojson(self, element, element_id=None, user_id=None, layer_id=None,
-                             changeset_id=None):
-
-        subquery_current_element_table = get_subquery_current_element_table(element,
-                                                                            element_id=element_id,
-                                                                            user_id=user_id,
-                                                                            layer_id=layer_id,
-                                                                            changeset_id=changeset_id)
-
-        query_text = """
-            SELECT jsonb_build_object(
-                'type',       'FeatureCollection',
-                'crs',  json_build_object(
-                    'type',      'name', 
-                    'properties', json_build_object(
-                        'name', 'EPSG:4326'
-                    )
-                ),
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Feature',
-                    'geometry',   ST_AsGeoJSON(geom)::jsonb,
-                    'properties', json_build_object(
-                        'id',               id,
-                        'visible',          visible,
-                        'version',          version,
-                        'fk_changeset_id',  fk_changeset_id
-                    ),
-                    'tags',       tags
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery_current_element_table)
-
-        # query_text = """
-        #             SELECT jsonb_build_object(
-        #                 'type',       'FeatureCollection',
-        #                 'crs',  json_build_object(
-        #                     'type',      'name',
-        #                     'properties', json_build_object(
-        #                         'name', 'EPSG:4326'
-        #                     )
-        #                 ),
-        #                 'features',   jsonb_agg(jsonb_build_object(
-        #                     'type',       'Feature',
-        #                     'geometry',   ST_AsGeoJSON(geom)::jsonb,
-        #                     'properties', json_build_object(
-        #                         'id',               id,
-        #                         'visible',          visible,
-        #                         'version',          version,
-        #                         'fk_changeset_id',  fk_changeset_id
-        #                     ),
-        #                     'tags',       tags.jsontags
-        #                 ))
-        #             ) AS row_to_json
-        #             FROM
-        #             {1}
-        #             CROSS JOIN LATERAL (
-        #                 -- (3) get the tags of some element on JSON format
-        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
-        #                 FROM
-        #                 (
-        #                     -- (2) get the tags of some element
-        #                     SELECT k, v
-        #                     FROM current_{0}_tag
-        #                     WHERE fk_current_{0}_id = element.id
-        #                     ORDER BY k, v ASC
-        #                 ) subquery
-        #             ) AS tags
-        #         """.format(element, subquery_current_element_table)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
+    # def get_elements(self, element, **arguments):
+    #     if not are_arguments_valid_to_get_elements(**arguments):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     return self.get_elements_geojson(element, **arguments)
+    #
+    # def get_elements_geojson(self, element, element_id=None, user_id=None, layer_id=None,
+    #                          changeset_id=None):
+    #
+    #     subquery_current_element_table = get_subquery_current_element_table(element,
+    #                                                                         element_id=element_id,
+    #                                                                         user_id=user_id,
+    #                                                                         layer_id=layer_id,
+    #                                                                         changeset_id=changeset_id)
+    #
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type',       'FeatureCollection',
+    #             'crs',  json_build_object(
+    #                 'type',      'name',
+    #                 'properties', json_build_object(
+    #                     'name', 'EPSG:4326'
+    #                 )
+    #             ),
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Feature',
+    #                 'geometry',   ST_AsGeoJSON(geom)::jsonb,
+    #                 'properties', json_build_object(
+    #                     'id',               id,
+    #                     'visible',          visible,
+    #                     'version',          version,
+    #                     'fk_changeset_id',  fk_changeset_id
+    #                 ),
+    #                 'tags',       tags
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery_current_element_table)
+    #
+    #     # query_text = """
+    #     #             SELECT jsonb_build_object(
+    #     #                 'type',       'FeatureCollection',
+    #     #                 'crs',  json_build_object(
+    #     #                     'type',      'name',
+    #     #                     'properties', json_build_object(
+    #     #                         'name', 'EPSG:4326'
+    #     #                     )
+    #     #                 ),
+    #     #                 'features',   jsonb_agg(jsonb_build_object(
+    #     #                     'type',       'Feature',
+    #     #                     'geometry',   ST_AsGeoJSON(geom)::jsonb,
+    #     #                     'properties', json_build_object(
+    #     #                         'id',               id,
+    #     #                         'visible',          visible,
+    #     #                         'version',          version,
+    #     #                         'fk_changeset_id',  fk_changeset_id
+    #     #                     ),
+    #     #                     'tags',       tags.jsontags
+    #     #                 ))
+    #     #             ) AS row_to_json
+    #     #             FROM
+    #     #             {1}
+    #     #             CROSS JOIN LATERAL (
+    #     #                 -- (3) get the tags of some element on JSON format
+    #     #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+    #     #                 FROM
+    #     #                 (
+    #     #                     -- (2) get the tags of some element
+    #     #                     SELECT k, v
+    #     #                     FROM current_{0}_tag
+    #     #                     WHERE fk_current_{0}_id = element.id
+    #     #                     ORDER BY k, v ASC
+    #     #                 ) subquery
+    #     #             ) AS tags
+    #     #         """.format(element, subquery_current_element_table)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
 
     # add elements
 
-    def add_element_in_db(self, element, geometry, changeset_id, tags):
-
-        # encode the dict in JSON
-        geometry = json_encode(geometry)
-
-        tags = dumps(tags)  # convert python dict to json to save in db
-
-        query_text = """
-            INSERT INTO current_{0} (geom, fk_changeset_id, tags) 
-            VALUES (ST_GeomFromGeoJSON('{1}'), {2}, '{3}')
-            RETURNING id;
-        """.format(element, geometry, changeset_id, tags)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result["id"]
+    # def add_element_in_db(self, element, geometry, changeset_id, tags):
+    #
+    #     # encode the dict in JSON
+    #     geometry = json_encode(geometry)
+    #
+    #     tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     query_text = """
+    #         INSERT INTO current_{0} (geom, fk_changeset_id, tags)
+    #         VALUES (ST_GeomFromGeoJSON('{1}'), {2}, '{3}')
+    #         RETURNING id;
+    #     """.format(element, geometry, changeset_id, tags)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result["id"]
 
     # def add_element_tag_in_db(self, k, v, element, element_id):
     #     query_text = """
@@ -1220,43 +1220,43 @@ class PGSQLConnection:
     #     # do the query in database
     #     self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_element(self, element, feature):
-        # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
-        # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
-
-        validate_feature_json(feature)
-
-        # get the tags
-        tags = feature["tags"]
-
-        # remove the "tags" key from feature (it is not necessary)
-        del feature["tags"]
-
-        # get the id of changeset
-        changeset_id = feature["properties"]["fk_changeset_id"]
-
-        # add the element in db and get the id of it
-        element_id = self.add_element_in_db(element, feature["geometry"], changeset_id, tags)
-
-        return element_id
+    # def create_element(self, element, feature):
+    #     # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
+    #     # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
+    #
+    #     validate_feature_json(feature)
+    #
+    #     # get the tags
+    #     tags = feature["tags"]
+    #
+    #     # remove the "tags" key from feature (it is not necessary)
+    #     del feature["tags"]
+    #
+    #     # get the id of changeset
+    #     changeset_id = feature["properties"]["fk_changeset_id"]
+    #
+    #     # add the element in db and get the id of it
+    #     element_id = self.add_element_in_db(element, feature["geometry"], changeset_id, tags)
+    #
+    #     return element_id
 
     # delete elements
 
-    def delete_element_in_db(self, element, element_id):
-        if is_a_invalid_id(element_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE current_{0} SET visible = FALSE WHERE id={1};
-            """.format(element, element_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+    # def delete_element_in_db(self, element, element_id):
+    #     if is_a_invalid_id(element_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE current_{0} SET visible = FALSE WHERE id={1};
+    #         """.format(element, element_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # user

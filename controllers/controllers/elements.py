@@ -6,76 +6,76 @@
 """
 
 
-from ..base import BaseHandlerElement, auth_non_browser_based
+from ..base import auth_non_browser_based  #. BaseHandlerElement
 
 
-class APIElementPoint(BaseHandlerElement):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/point/?(?P<param>[A-Za-z0-9-]+)?/",
-            r"/api/point/?(?P<param>[A-Za-z0-9-]+)?"]
-
-    def get(self, param=None):
-        # param on this case is the id of element
-        # self.get_method_api_element("node")
-        self.get_method_api_feature("point")
-
-    @auth_non_browser_based
-    def put(self, param=None):
-        # param on this case is "create" or "update"
-        # self.put_method_api_element(param, "node")
-        self.put_method_api_feature(param, "point")
-
-    @auth_non_browser_based
-    def delete(self, param=None):
-        # param on this case is the id of element
-        self.delete_method_api_feature("point", param)
-
-
-class APIElementLine(BaseHandlerElement):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/line/?(?P<param>[A-Za-z0-9-]+)?/",
-            r"/api/line/?(?P<param>[A-Za-z0-9-]+)?"]
-
-    def get(self, param=None):
-        # param on this case is the id of element
-        # self.get_method_api_element("way")
-        self.get_method_api_feature("line")
-
-    @auth_non_browser_based
-    def put(self, param=None):
-        # param on this case is "create" or "update"
-        # self.put_method_api_element(param, "way")
-        self.put_method_api_feature(param, "line")
-
-    @auth_non_browser_based
-    def delete(self, param=None):
-        # param on this case is the id of element
-        self.delete_method_api_feature("line", param)
-
-
-class APIElementPolygon(BaseHandlerElement):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/polygon/?(?P<param>[A-Za-z0-9-]+)?/",
-            r"/api/polygon/?(?P<param>[A-Za-z0-9-]+)?"]
-
-    def get(self, param=None):
-        # param on this case is the id of element
-        # self.get_method_api_element("area")
-        self.get_method_api_feature("polygon")
-
-    @auth_non_browser_based
-    def put(self, param=None):
-        # param on this case is "create" or "update"
-        # self.put_method_api_element(param, "area")
-        self.put_method_api_feature(param, "polygon")
-
-    @auth_non_browser_based
-    def delete(self, param=None):
-        # param on this case is the id of element
-        self.delete_method_api_feature("polygon", param)
+# class APIElementPoint(BaseHandlerElement):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/point/?(?P<param>[A-Za-z0-9-]+)?/",
+#             r"/api/point/?(?P<param>[A-Za-z0-9-]+)?"]
+#
+#     def get(self, param=None):
+#         # param on this case is the id of element
+#         # self.get_method_api_element("node")
+#         self.get_method_api_feature("point")
+#
+#     @auth_non_browser_based
+#     def put(self, param=None):
+#         # param on this case is "create" or "update"
+#         # self.put_method_api_element(param, "node")
+#         self.put_method_api_feature(param, "point")
+#
+#     @auth_non_browser_based
+#     def delete(self, param=None):
+#         # param on this case is the id of element
+#         self.delete_method_api_feature("point", param)
+#
+#
+# class APIElementLine(BaseHandlerElement):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/line/?(?P<param>[A-Za-z0-9-]+)?/",
+#             r"/api/line/?(?P<param>[A-Za-z0-9-]+)?"]
+#
+#     def get(self, param=None):
+#         # param on this case is the id of element
+#         # self.get_method_api_element("way")
+#         self.get_method_api_feature("line")
+#
+#     @auth_non_browser_based
+#     def put(self, param=None):
+#         # param on this case is "create" or "update"
+#         # self.put_method_api_element(param, "way")
+#         self.put_method_api_feature(param, "line")
+#
+#     @auth_non_browser_based
+#     def delete(self, param=None):
+#         # param on this case is the id of element
+#         self.delete_method_api_feature("line", param)
+#
+#
+# class APIElementPolygon(BaseHandlerElement):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/polygon/?(?P<param>[A-Za-z0-9-]+)?/",
+#             r"/api/polygon/?(?P<param>[A-Za-z0-9-]+)?"]
+#
+#     def get(self, param=None):
+#         # param on this case is the id of element
+#         # self.get_method_api_element("area")
+#         self.get_method_api_feature("polygon")
+#
+#     @auth_non_browser_based
+#     def put(self, param=None):
+#         # param on this case is "create" or "update"
+#         # self.put_method_api_element(param, "area")
+#         self.put_method_api_feature(param, "polygon")
+#
+#     @auth_non_browser_based
+#     def delete(self, param=None):
+#         # param on this case is the id of element
+#         self.delete_method_api_feature("polygon", param)
 
 
 """
