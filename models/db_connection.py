@@ -642,7 +642,7 @@ class PGSQLConnection:
             raise HTTPError(400, "The parameter reference needs to be a list.")
 
         # the table name follow the standard: _<user_id>_<table_name>
-        properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
+        # properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
 
         try:
             # add the layer in db and get the id of it

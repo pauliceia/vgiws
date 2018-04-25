@@ -19,12 +19,14 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
     {
         'features': [
             {
-                'type': 'Layer',
-                'tags': {'created_by': 'escolástica', 'name': 'Robberies on 1930',
-                         'description': '', 'start_date': '1930/01/01',
-                         'end_date': '1930/12/31', 'theme': 'robbery'},
-                'properties': {'removed_at': None, 'fk_user_id': 1002,
-                               'id': 1001, 'created_at': '2017-10-20 00:00:00'}
+                'properties': {
+                    'fk_user_id_published_by': 1003, 'source_author_name': '', 'table_name': '_1003_layer_1002',
+                    'created_at': '2017-03-05 00:00:00', 'reference': [{'description': 'http://link_to_document',
+                                                                        'id': 1005}],
+                    'removed_at': None, 'fk_user_id_author': 1003, 'description': '', 'is_published': True,
+                    'id': 1002, 'name': 'Robberies between 1880 to 1900'
+                },
+                'type': 'Layer'
             }
         ],
         'type': 'FeatureCollection'
@@ -46,12 +48,16 @@ This method create a new layer described in a JSON.
 - Send: a JSON describing the resource. Example:
     ```javascript
     {
-        'tags': {'created_by': 'agostinho', 'name': 'layer of theathers',
-                 'description': 'theathers on 1930', 'start_date': '1930/01/01',
-                 'end_date': '1930/12/31', 'theme': 'theather'},
-        'properties': {'id': -1},
-        'type': 'Layer'
+        'type': 'Layer',
+        'properties': {'name': 'Addresses in 1930', 'table_name': '_1_new_layer',
+                       'reference': [], 'description': '', 'fk_theme_id': 1041,
+                       'id': -1},
+        'feature_table': {
+            'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+            'geometry': {"type": "MultiPoint"}
+        }
     }
+
     ```
 - Response: a JSON that contains the id of the resource created. Example:
     ```javascript
@@ -80,32 +86,7 @@ This method delete one layer by id = #id.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
-- Notes:
-
-
-
-## Feature Table
-
-### PUT /api/feature_table/create
-
-This method create a new feature table described in a JSON.
-- Parameters:
-- Examples:
-     - Create a resource: ```PUT http://localhost:8888/api/feature_table/create```
-- Send: a JSON describing the resource. Example:
-    ```javascript
-    {
-        'type': 'FeatureTable',
-        'table_name': 'new_layer',
-        'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-        'geometry': {"type": "MultiPoint"}
-    }
-    ```
-- Response:
-- Error codes:
-    - 400 (Bad Request): Feature table already exist.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:

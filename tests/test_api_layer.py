@@ -265,6 +265,63 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_create_error_403_forbidden(feature)
 
+    def test_put_api_layer_create_error_403_forbidden_user_forbidden_to_delete(self):
+        ########################################
+        # create a layer with user admin
+        ########################################
+
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        user_session = self.tester.get_session_user()
+        user_id = user_session["user"]["properties"]["id"]
+
+        # create the standard to save the table_name ( _<user_id>_<table_name> )
+        table_name = "_" + str(user_id) + "_new_layer"
+
+        # create a layer
+        resource = {
+            'type': 'Layer',
+            'properties': {'name': 'Addresses in 1930', 'table_name': table_name, 'reference': [],
+                           'description': '', 'fk_theme_id': 1041},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        resource = self.tester.api_layer_create(resource)
+
+        # logout with admin
+        self.tester.auth_logout()
+
+        ########################################
+        # try to delete a layer with user rodrigo
+        ########################################
+
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["id"]
+
+        # TRY TO REMOVE THE LAYER
+        self.tester.api_layer_delete_error_403_forbidden(resource_id)
+
+        # logout with user rodrigo
+        self.tester.auth_logout()
+
+        ########################################
+        # really delete the layer with user admin
+        ########################################
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # delete the layer
+        self.tester.api_layer_delete(resource_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # layer errors - delete
 
     def test_delete_api_layer_error_400_bad_request(self):

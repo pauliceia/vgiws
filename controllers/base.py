@@ -394,7 +394,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except DataError as error:
             # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a feature. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator.")
 
 
 # SUBCLASSES
@@ -490,11 +490,29 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         raise NotImplementedError
 
     def _delete_feature(self, *args, **kwargs):
-        current_user_id = self.get_current_user_id()
-
-        #TODO: can user delete the layer?
+        self.delete_validation(*args)
 
         self.PGSQLConn.delete_layer_in_db(*args)
+
+    def delete_validation(self, resource_id):
+        """
+        Verify if the user has permition to delete a layer
+        :param resource_id: layer id
+        :return:
+        """
+        current_user_id = self.get_current_user_id()
+
+        layer = self.PGSQLConn.get_layers(layer_id=resource_id)
+        fk_user_id_author = layer["features"][0]["properties"]["fk_user_id_author"]
+
+        if current_user_id != fk_user_id_author:
+            raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
+
+
+
+
+
+
 
 
 # class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
