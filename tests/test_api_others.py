@@ -14,8 +14,8 @@ class TestAPICapabilities(TestCase):
 
     def test_api_capabilities(self):
         expected = {
-            "version": "0.0.2",
-            "status": {"postgresql": "online", "neo4j": "offline"}
+            "version": "0.0.4",
+            "status": {"postgresql": "online"}
         }
 
         self.tester.api_capabilities(expected)

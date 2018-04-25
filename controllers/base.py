@@ -15,7 +15,7 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
-from settings import HOSTS_ALLOWED
+# from settings import HOSTS_ALLOWED
 
 
 def catch_generic_exception(method):
@@ -96,7 +96,7 @@ class BaseHandler(RequestHandler):
     def initialize(self):
         # get the database instances
         self.PGSQLConn = self.application.PGSQLConn
-        self.Neo4JConn = self.application.Neo4JConn
+        # self.Neo4JConn = self.application.Neo4JConn
 
         self.DEBUG_MODE = self.application.DEBUG_MODE
 
@@ -424,58 +424,58 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
             self.logout()
 
 
-class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
-
-    def _get_feature(self, *args, **kwargs):
-        return self.PGSQLConn.get_user_group(**kwargs)
-
-    def _create_feature(self, feature_json, current_user_id):
-        return self.PGSQLConn.create_user_group(feature_json, current_user_id)
-
-    def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _request_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _accept_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _delete_feature(self, *args, **kwargs):
-        # receive user_id and group_id as argument
-        arguments = self.get_aguments()
-
-        self.PGSQLConn.delete_user_group(**arguments)
-
-
-class BaseHandlerGroup(BaseHandlerTemplateMethod):
-
-    def _get_feature(self, *args, **kwargs):
-        return self.PGSQLConn.get_group(**kwargs)
-
-    def _create_feature(self, feature_json, current_user_id):
-        return self.PGSQLConn.create_group(feature_json, current_user_id)
-
-    def _update_feature(self, feature_json):
-        return self.PGSQLConn.update_group(feature_json)
-
-    def _delete_feature(self, *args, **kwargs):
-        self.PGSQLConn.delete_group_in_db(*args)
+# class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         return self.PGSQLConn.get_user_group(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id):
+#         return self.PGSQLConn.create_user_group(feature_json, current_user_id)
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _request_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _accept_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         # receive user_id and group_id as argument
+#         arguments = self.get_aguments()
+#
+#         self.PGSQLConn.delete_user_group(**arguments)
 
 
-class BaseHandlerProject(BaseHandlerTemplateMethod):
+# class BaseHandlerGroup(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         return self.PGSQLConn.get_group(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id):
+#         return self.PGSQLConn.create_group(feature_json, current_user_id)
+#
+#     def _update_feature(self, feature_json):
+#         return self.PGSQLConn.update_group(feature_json)
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         self.PGSQLConn.delete_group_in_db(*args)
 
-    def _get_feature(self, *args, **kwargs):
-        return self.PGSQLConn.get_projects(**kwargs)
 
-    def _create_feature(self, feature_json, current_user_id):
-        return self.PGSQLConn.create_project(feature_json, current_user_id)
-
-    def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _delete_feature(self, *args, **kwargs):
-        self.PGSQLConn.delete_project_in_db(*args)
+# class BaseHandlerProject(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         return self.PGSQLConn.get_projects(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id):
+#         return self.PGSQLConn.create_project(feature_json, current_user_id)
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         self.PGSQLConn.delete_project_in_db(*args)
 
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod):
@@ -497,37 +497,37 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         self.PGSQLConn.delete_layer_in_db(*args)
 
 
-class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
-
-    def _get_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @catch_generic_exception
-    def _create_feature(self):
-        # get the JSON sent, to add in DB
-        feature_json = self.get_the_json_validated()
-        current_user_id = self.get_current_user_id()
-
-        try:
-            self.PGSQLConn.create_feature_table(feature_json, current_user_id)
-
-            # do commit after create a feature
-            self.PGSQLConn.commit()
-        except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
-        except ProgrammingError as error:
-            if error.pgcode == "42P07":
-                self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-                raise HTTPError(400, "Feature table already exist.")
-            else:
-                raise error
-
-    def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _delete_feature(self, *args, **kwargs):
-        raise NotImplementedError
+# class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     @catch_generic_exception
+#     def _create_feature(self):
+#         # get the JSON sent, to add in DB
+#         feature_json = self.get_the_json_validated()
+#         current_user_id = self.get_current_user_id()
+#
+#         try:
+#             self.PGSQLConn.create_feature_table(feature_json, current_user_id)
+#
+#             # do commit after create a feature
+#             self.PGSQLConn.commit()
+#         except DataError as error:
+#             # print("Error: ", error)
+#             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
+#         except ProgrammingError as error:
+#             if error.pgcode == "42P07":
+#                 self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+#                 raise HTTPError(400, "Feature table already exist.")
+#             else:
+#                 raise error
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         raise NotImplementedError
 
 
 class BaseHandlerChangeset(BaseHandlerTemplateMethod):
@@ -552,19 +552,19 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         self.PGSQLConn.delete_changeset_in_db(*args)
 
 
-class BaseHandlerNotification(BaseHandlerTemplateMethod):
-
-    def _get_feature(self, *args, **kwargs):
-        return self.PGSQLConn.get_notification(**kwargs)
-
-    def _create_feature(self, feature_json, current_user_id):
-        return self.PGSQLConn.create_notification(feature_json, current_user_id)
-
-    def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _delete_feature(self, *args, **kwargs):
-        self.PGSQLConn.delete_notification_in_db(*args)
+# class BaseHandlerNotification(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         return self.PGSQLConn.get_notification(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id):
+#         return self.PGSQLConn.create_notification(feature_json, current_user_id)
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         self.PGSQLConn.delete_notification_in_db(*args)
 
 
 class BaseHandlerElement(BaseHandlerTemplateMethod):

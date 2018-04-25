@@ -18,13 +18,12 @@ class APICapabilities(BaseHandler):
 
     def get(self):
         pgsql_status = self.PGSQLConn.get_connection_status(readable=True)
-        neo4j_status = self.Neo4JConn.get_connection_status(readable=True)
+        # neo4j_status = self.Neo4JConn.get_connection_status(readable=True)
 
         capabilities = {
             "version": VERSION,
             "status": {
-                "postgresql": pgsql_status,
-                "neo4j": neo4j_status
+                "postgresql": pgsql_status
             }
         }
 

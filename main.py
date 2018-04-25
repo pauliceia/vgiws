@@ -90,7 +90,7 @@ class HttpServerApplication(Application):
 
         # create a instance of the databases passing arguments
         self.PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
-        self.Neo4JConn = Neo4JConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
+        # self.Neo4JConn = Neo4JConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
 
         # Pass the handlers and the settings created to the constructor of the super class (father class)
         Application.__init__(self, __handlers__, **__setting__s)

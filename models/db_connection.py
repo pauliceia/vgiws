@@ -1367,91 +1367,91 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any feature.")
 
 
-@Singleton
-class Neo4JConnection(BaseDBConnection):
-
-    def __init__(self, args={}):
-        super().__init__()  # call the __init__ from super class
-
-        self.__ARGS__ = args
-
-        if self.__ARGS__["DEBUG_MODE"]:
-            self.__DO_CONNECTION__(__DEBUG_NEO4J_CONNECTION_SETTINGS__)
-        else:
-            self.__DO_CONNECTION__(__NEO4J_CONNECTION_SETTINGS__)
-
-    def __DO_CONNECTION__(self, __connection_settings__):
-        """
-        Do the DB connection with the '__pgsql_connection_settings__'
-        :param __connection_settings__: the connection settings of Neo4J.
-        It can be for the normal DB or test DB
-        :return:
-        """
-
-        # create a session to do the requests
-        self.session = Session()
-
-        # username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
-        # string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
-
-        string_in_base64 = get_username_and_password_as_string_in_base64(__connection_settings__["USERNAME"],
-                                                                         __connection_settings__["PASSWORD"])
-
-        self.headers = {'Content-type': 'application/json',
-                        'Accept': 'application/json; charset=UTF-8',
-                        'Authorization': 'Basic ' + string_in_base64}
-
-        self.URL = "http://" + __connection_settings__["HOSTNAME"] + ":" + str(__connection_settings__["PORT"])
-
-        if self.__ARGS__["DEBUG_MODE"]:
-            print("\nConnecting in Neo4J with:"
-                  "\n- hostname: ", __connection_settings__["HOSTNAME"],
-                  "\n- port: ", __connection_settings__["PORT"],
-                  "\n- database: ", __connection_settings__["DATABASE"],
-                  "\n- URL: ", self.URL, "\n")
-
-        neo4j_status = self.is_connecting_with_db()
-
-        self.set_connection_status(status=neo4j_status)
-
-    def is_connecting_with_db(self):
-        """
-        Try to do a connection with Neo4J. If it works, so return True, else return False;
-        :return: one boolean value, depending of the connection status.
-        """
-        try:
-            self.session.get(self.URL + '/db/data/', headers=self.headers)
-
-            # response = self.session.get(self.URL + '/db/data/', headers=self.headers)
-            # result = loads(response.text)
-            # print("\n>>> result: ", result, "\n")
-        except exceptions.ConnectionError:
-            return False
-
-        return True
-
-    @if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status
-    def match(self, query, params={}):
-
-        query_dict = {
-            "query": query,
-            "params": params
-        }
-
-        response = self.session.post(self.URL + '/db/data/cypher',
-                                     data=dumps(query_dict), headers=self.headers)
-
-        result = loads(response.text)
-
-        return result
-
-    def get_theme_tree(self):
-
-        result = self.match("""
-                    MATCH path = (generic:Theme {key: "generic"})-[:can_be*]-(:Theme)
-                    WITH collect(path) as paths
-                    CALL apoc.convert.toTree(paths) yield value
-                    RETURN value;
-                """)
-
-        return result
+# @Singleton
+# class Neo4JConnection(BaseDBConnection):
+#
+#     def __init__(self, args={}):
+#         super().__init__()  # call the __init__ from super class
+#
+#         self.__ARGS__ = args
+#
+#         if self.__ARGS__["DEBUG_MODE"]:
+#             self.__DO_CONNECTION__(__DEBUG_NEO4J_CONNECTION_SETTINGS__)
+#         else:
+#             self.__DO_CONNECTION__(__NEO4J_CONNECTION_SETTINGS__)
+#
+#     def __DO_CONNECTION__(self, __connection_settings__):
+#         """
+#         Do the DB connection with the '__pgsql_connection_settings__'
+#         :param __connection_settings__: the connection settings of Neo4J.
+#         It can be for the normal DB or test DB
+#         :return:
+#         """
+#
+#         # create a session to do the requests
+#         self.session = Session()
+#
+#         # username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
+#         # string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+#
+#         string_in_base64 = get_username_and_password_as_string_in_base64(__connection_settings__["USERNAME"],
+#                                                                          __connection_settings__["PASSWORD"])
+#
+#         self.headers = {'Content-type': 'application/json',
+#                         'Accept': 'application/json; charset=UTF-8',
+#                         'Authorization': 'Basic ' + string_in_base64}
+#
+#         self.URL = "http://" + __connection_settings__["HOSTNAME"] + ":" + str(__connection_settings__["PORT"])
+#
+#         if self.__ARGS__["DEBUG_MODE"]:
+#             print("\nConnecting in Neo4J with:"
+#                   "\n- hostname: ", __connection_settings__["HOSTNAME"],
+#                   "\n- port: ", __connection_settings__["PORT"],
+#                   "\n- database: ", __connection_settings__["DATABASE"],
+#                   "\n- URL: ", self.URL, "\n")
+#
+#         neo4j_status = self.is_connecting_with_db()
+#
+#         self.set_connection_status(status=neo4j_status)
+#
+#     def is_connecting_with_db(self):
+#         """
+#         Try to do a connection with Neo4J. If it works, so return True, else return False;
+#         :return: one boolean value, depending of the connection status.
+#         """
+#         try:
+#             self.session.get(self.URL + '/db/data/', headers=self.headers)
+#
+#             # response = self.session.get(self.URL + '/db/data/', headers=self.headers)
+#             # result = loads(response.text)
+#             # print("\n>>> result: ", result, "\n")
+#         except exceptions.ConnectionError:
+#             return False
+#
+#         return True
+#
+#     @if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status
+#     def match(self, query, params={}):
+#
+#         query_dict = {
+#             "query": query,
+#             "params": params
+#         }
+#
+#         response = self.session.post(self.URL + '/db/data/cypher',
+#                                      data=dumps(query_dict), headers=self.headers)
+#
+#         result = loads(response.text)
+#
+#         return result
+#
+#     def get_theme_tree(self):
+#
+#         result = self.match("""
+#                     MATCH path = (generic:Theme {key: "generic"})-[:can_be*]-(:Theme)
+#                     WITH collect(path) as paths
+#                     CALL apoc.convert.toTree(paths) yield value
+#                     RETURN value;
+#                 """)
+#
+#         return result
