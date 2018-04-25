@@ -236,11 +236,21 @@ class TestAPILayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login_fake()
 
+        user_session = self.tester.get_session_user()
+        user_id = user_session["user"]["properties"]["id"]
+
+        # create the standard to save the table_name ( _<user_id>_<table_name> )
+        table_name = "_" + str(user_id) + "_new_layer"
+
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
-                           'description': '', 'fk_theme_id': 1041}
+            'properties': {'name': 'Addresses in 1869', 'table_name': table_name, 'source': '',
+                           'description': '', 'fk_theme_id': 1041},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 

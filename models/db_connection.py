@@ -634,7 +634,8 @@ class PGSQLConnection:
 
         properties = resource_json["properties"]
 
-        print("properties: ", properties)
+        if "reference" not in properties:
+            raise HTTPError(400, "It is necessary a reference parameter.")
 
         # just can add source that is a list (list of sources/references)
         if not isinstance(properties["reference"], list):
@@ -672,8 +673,6 @@ class PGSQLConnection:
         query_text = """
             DELETE FROM layer WHERE id={0};
         """.format(resource_id)
-
-        # TODO: new delete the table created
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -766,10 +765,6 @@ class PGSQLConnection:
     #     return result
 
     def create_feature_table(self, table_name, feature_table):
-
-        # get the table of the feature table
-        # table_name = resource_json["table_name"]
-        # table_name = format_the_table_name_to_standard(resource_json["table_name"], user_id)
 
         # get the geometry of the feature table
         geometry = feature_table["geometry"]["type"]
