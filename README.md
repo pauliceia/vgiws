@@ -1,6 +1,6 @@
-# webservice
+# vgiws
 
-Web Service for Explicit VGI for the Pauliceia's project.
+VGI Web Service for historical data.
 
 
 ## Documentation:
