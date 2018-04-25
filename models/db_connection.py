@@ -205,320 +205,323 @@ class PGSQLConnection:
     # user group
     ################################################################################
 
-    def get_user_group(self, group_id=None, user_id=None):
-        # the id have to be a int
-        if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_user_group_table(group_id=group_id, user_id=user_id)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'UserGroup',
-                    'properties', json_build_object(
-                        'fk_group_id',              fk_group_id,
-                        'fk_user_id',               fk_user_id,
-                        'added_at',                 to_char(added_at, 'YYYY-MM-DD HH24:MI:SS'),                    
-                        'group_permission',         group_permission,
-                        'group_status',             group_status,
-                        'can_receive_notification', can_receive_notification,
-                        'fk_user_id_added_by',      fk_user_id_added_by                        
-                    )
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
-
-    def add_user_group_in_db(self, properties):
-        p = properties
-
-        # change can_receive_notification boolean to string to can add in DB
-        p['can_receive_notification'] = "TRUE" if p['can_receive_notification'] else "FALSE"
-
-        query_text = """
-            INSERT INTO user_group (fk_group_id, fk_user_id, added_at, 
-                   can_receive_notification, fk_user_id_added_by) 
-            VALUES ({0}, {1}, LOCALTIMESTAMP, 
-                   {2}, {3})
-        """.format(p['fk_group_id'], p['fk_user_id'],
-                   p['can_receive_notification'], p['fk_user_id_added_by'])
-
-        try:
-            # do the query in database
-            self.__PGSQL_CURSOR__.execute(query_text)
-        except IntegrityError as error:
-            # how the error is of PostgreSQL, so it is necessary do a rollback
-            # to be in a safe state
-            self.rollback()
-
-            # 23505 - unique_violation
-            if error.pgcode == "23505":
-                raise HTTPError(400, "The user_id is already added in group_id")
-
-            raise HTTPError(500, "Undefined Integrity Error. Please, contact the administrator.")
-
-        # return nothing, because is not generated a new ID when put a user in a group
-
-        # get the result of query
-        # result = self.__PGSQL_CURSOR__.fetchone()
-        #
-        # return result
-
-    def create_user_group(self, feature_json, user_id):
-
-        properties = feature_json["properties"]
-
-        # add the user in a group
-        self.add_user_group_in_db(properties)
-
-    def delete_user_group(self, group_id=None, user_id=None):
-        if (is_a_invalid_id(group_id) or is_a_invalid_id(user_id)) or \
-                (group_id is None or user_id is None):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            DELETE FROM user_group 
-            WHERE fk_user_id = {0} AND fk_group_id = {1};
-        """.format(user_id, group_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+    # def get_user_group(self, group_id=None, user_id=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_user_group_table(group_id=group_id, user_id=user_id)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'UserGroup',
+    #                 'properties', json_build_object(
+    #                     'fk_group_id',              fk_group_id,
+    #                     'fk_user_id',               fk_user_id,
+    #                     'added_at',                 to_char(added_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'group_permission',         group_permission,
+    #                     'group_status',             group_status,
+    #                     'can_receive_notification', can_receive_notification,
+    #                     'fk_user_id_added_by',      fk_user_id_added_by
+    #                 )
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_user_group_in_db(self, properties):
+    #     p = properties
+    #
+    #     # change can_receive_notification boolean to string to can add in DB
+    #     p['can_receive_notification'] = "TRUE" if p['can_receive_notification'] else "FALSE"
+    #
+    #     query_text = """
+    #         INSERT INTO user_group (fk_group_id, fk_user_id, added_at,
+    #                can_receive_notification, fk_user_id_added_by)
+    #         VALUES ({0}, {1}, LOCALTIMESTAMP,
+    #                {2}, {3})
+    #     """.format(p['fk_group_id'], p['fk_user_id'],
+    #                p['can_receive_notification'], p['fk_user_id_added_by'])
+    #
+    #     try:
+    #         # do the query in database
+    #         self.__PGSQL_CURSOR__.execute(query_text)
+    #     except IntegrityError as error:
+    #         # how the error is of PostgreSQL, so it is necessary do a rollback
+    #         # to be in a safe state
+    #         self.rollback()
+    #
+    #         # 23505 - unique_violation
+    #         if error.pgcode == "23505":
+    #             raise HTTPError(400, "The user_id is already added in group_id")
+    #
+    #         raise HTTPError(500, "Undefined Integrity Error. Please, contact the administrator.")
+    #
+    #     # return nothing, because is not generated a new ID when put a user in a group
+    #
+    #     # get the result of query
+    #     # result = self.__PGSQL_CURSOR__.fetchone()
+    #     #
+    #     # return result
+    #
+    # def create_user_group(self, feature_json, user_id):
+    #
+    #     properties = feature_json["properties"]
+    #
+    #     # add the user in a group
+    #     self.add_user_group_in_db(properties)
+    #
+    # def delete_user_group(self, group_id=None, user_id=None):
+    #     if (is_a_invalid_id(group_id) or is_a_invalid_id(user_id)) or \
+    #             (group_id is None or user_id is None):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         DELETE FROM user_group
+    #         WHERE fk_user_id = {0} AND fk_group_id = {1};
+    #     """.format(user_id, group_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # group
     ################################################################################
 
-    def get_group(self, group_id=None, user_id=None, group_status=None):
-        # the id have to be a int
-        if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_group_table(group_id=group_id, user_id=user_id,
-                                            group_status=group_status)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Group',
-                    'properties', json_build_object(
-                        'id',           id,                        
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'visible',      visible,
-                        'fk_user_id',   fk_user_id
-                    ),
-                    'tags',       tags
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
-
-    def add_group_in_db(self, user_id, tags):
-        tags = dumps(tags)  # convert python dict to json to save in db
-
-        query_text = """
-            INSERT INTO group_ (created_at, fk_user_id, tags)
-            VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
-        """.format(user_id, tags)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def create_group(self, feature_json, user_id):
-
-        validate_feature_json(feature_json)
-
-        # add the group in db and get the id of it
-        id_in_json = self.add_group_in_db(user_id, feature_json["tags"])
-
-        return id_in_json
-
-    def update_group(self, feature_json):
-
-        feature_id = feature_json["properties"]["id"]
-        tags = dumps(feature_json["tags"])  # convert python dict "tags" to json to save in db
-
-        query_text = """
-            UPDATE group_ SET tags = '{0}' WHERE id = {1};
-        """.format(tags, feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
-
-    def delete_group_in_db(self, feature_id):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE group_ SET visible = FALSE, removed_at = LOCALTIMESTAMP
-            WHERE id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+    # def get_group(self, group_id=None, user_id=None, group_status=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_group_table(group_id=group_id, user_id=user_id,
+    #                                         group_status=group_status)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Group',
+    #                 'properties', json_build_object(
+    #                     'id',           id,
+    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'visible',      visible,
+    #                     'fk_user_id',   fk_user_id
+    #                 ),
+    #                 'tags',       tags
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_group_in_db(self, user_id, tags):
+    #     tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     query_text = """
+    #         INSERT INTO group_ (created_at, fk_user_id, tags)
+    #         VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
+    #     """.format(user_id, tags)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+    #
+    # def create_group(self, feature_json, user_id):
+    #
+    #     validate_feature_json(feature_json)
+    #
+    #     # add the group in db and get the id of it
+    #     id_in_json = self.add_group_in_db(user_id, feature_json["tags"])
+    #
+    #     return id_in_json
+    #
+    # def update_group(self, feature_json):
+    #
+    #     feature_id = feature_json["properties"]["id"]
+    #     tags = dumps(feature_json["tags"])  # convert python dict "tags" to json to save in db
+    #
+    #     query_text = """
+    #         UPDATE group_ SET tags = '{0}' WHERE id = {1};
+    #     """.format(tags, feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    # def delete_group_in_db(self, feature_id):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE group_ SET visible = FALSE, removed_at = LOCALTIMESTAMP
+    #         WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # project
     ################################################################################
 
-    def get_projects(self, project_id=None, group_id=None, user_id=None):
-        # the id have to be a int
-        if is_a_invalid_id(project_id) or is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
+    # def get_projects(self, project_id=None, group_id=None, user_id=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(project_id) or is_a_invalid_id(group_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_project_table(project_id=project_id, group_id=group_id, user_id=user_id)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Project',
+    #                 'properties', json_build_object(
+    #                     'id',           id,
+    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'fk_group_id', fk_group_id,
+    #                     'fk_user_id', fk_user_id
+    #                 ),
+    #                 'tags',       tags
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_project_in_db(self, group_id, user_id, tags):
+    #
+    #     tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     query_text = """
+    #         INSERT INTO project (created_at, fk_group_id, fk_user_id, tags)
+    #         VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
+    #     """.format(group_id, user_id, tags)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+    #
+    # def create_project(self, feature_json, user_id):
+    #
+    #     validate_feature_json(feature_json)
+    #
+    #     group_id = feature_json["properties"]["fk_group_id"]
+    #
+    #     # add the project in db and get the id of it
+    #     id_in_json = self.add_project_in_db(group_id, user_id, feature_json["tags"])
+    #
+    #     return id_in_json
+    #
+    # def delete_project_in_db(self, feature_id):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
+    #         WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
-        subquery = get_subquery_project_table(project_id=project_id, group_id=group_id, user_id=user_id)
 
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Project',
-                    'properties', json_build_object(
-                        'id',           id,                        
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'fk_group_id', fk_group_id,
-                        'fk_user_id', fk_user_id
-                    ),
-                    'tags',       tags
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
-
-    def add_project_in_db(self, group_id, user_id, tags):
-
-        tags = dumps(tags)  # convert python dict to json to save in db
-
-        query_text = """
-            INSERT INTO project (created_at, fk_group_id, fk_user_id, tags)
-            VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
-        """.format(group_id, user_id, tags)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def create_project(self, feature_json, user_id):
-
-        validate_feature_json(feature_json)
-
-        group_id = feature_json["properties"]["fk_group_id"]
-
-        # add the project in db and get the id of it
-        id_in_json = self.add_project_in_db(group_id, user_id, feature_json["tags"])
-
-        return id_in_json
-
-    def delete_project_in_db(self, feature_id):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE project SET visible = FALSE, removed_at = LOCALTIMESTAMP
-            WHERE id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # layer
@@ -631,9 +634,11 @@ class PGSQLConnection:
 
         properties = resource_json["properties"]
 
+        print("properties: ", properties)
+
         # just can add source that is a list (list of sources/references)
-        if not isinstance(properties["source"], list):
-            raise HTTPError(400, "The parameter source needs to be a list.")
+        if not isinstance(properties["reference"], list):
+            raise HTTPError(400, "The parameter reference needs to be a list.")
 
         # the table name follow the standard: _<user_id>_<table_name>
         properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
@@ -649,15 +654,20 @@ class PGSQLConnection:
                 # if is other error, so raise it up
                 raise error
 
+        self.create_feature_table(properties["table_name"], resource_json["feature_table"])
+
         return id_in_json
 
     def delete_layer_in_db(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        # query_text = """
-        #     UPDATE layer SET removed_at = LOCALTIMESTAMP WHERE id={0};
-        # """.format(feature_id)
+        # get the layer information before to remove the layer
+        layer = self.get_layers(layer_id=resource_id)
+
+        table_name = layer["features"][0]["properties"]["table_name"]
+
+        # delete the layer
 
         query_text = """
             DELETE FROM layer WHERE id={0};
@@ -672,6 +682,10 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
+
+        # delete the feature table
+
+        self.delete_feature_table(table_name)
 
     ################################################################################
     # feature table
@@ -751,19 +765,19 @@ class PGSQLConnection:
     #
     #     return result
 
-    def create_feature_table(self, resource_json, user_id):
+    def create_feature_table(self, table_name, feature_table):
 
         # get the table of the feature table
         # table_name = resource_json["table_name"]
-        table_name = format_the_table_name_to_standard(resource_json["table_name"], user_id)
+        # table_name = format_the_table_name_to_standard(resource_json["table_name"], user_id)
 
         # get the geometry of the feature table
-        geometry = resource_json["geometry"]["type"]
+        geometry = feature_table["geometry"]["type"]
 
         # get the attributes of the feature table
         properties = ""
-        for property in resource_json["properties"]:
-            properties += property + " " + resource_json["properties"][property] + ", \n"
+        for property in feature_table["properties"]:
+            properties += property + " " + feature_table["properties"][property] + ", \n"
 
         # create the feature table in __feature__ schema and create the version feature table in __version__ schema
         for schema in ["__feature__", "__version__"]:
@@ -786,9 +800,9 @@ class PGSQLConnection:
 
             self.__PGSQL_CURSOR__.execute(query_text)
 
-    def delete_feature_table(self, table_name, user_id):
+    def delete_feature_table(self, table_name):
 
-        table_name = format_the_table_name_to_standard(table_name, user_id)
+        # table_name = format_the_table_name_to_standard(table_name, user_id)
 
         # create the feature table in __feature__ schema and create the version feature table in __version__ schema
         for schema in ["__feature__", "__version__"]:
@@ -944,102 +958,102 @@ class PGSQLConnection:
     # notification
     ################################################################################
 
-    def get_notification(self, notification_id=None, user_id=None, is_read=None):
-        # the id have to be a int
-        if is_a_invalid_id(notification_id) or is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_notification_table(notification_id=notification_id, user_id=user_id,
-                                                   is_read=is_read)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Notification',
-                    'properties', json_build_object(
-                        'id',           id,                        
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_read',      is_read,
-                        'visible',      visible,
-                        'fk_user_id',   fk_user_id
-                    ),
-                    'tags',       tags
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
-
-        # query_text = """
-        #             SELECT jsonb_build_object(
-        #                 'type', 'FeatureCollection',
-        #                 'features',   jsonb_agg(jsonb_build_object(
-        #                     'type',       'Notification',
-        #                     'properties', json_build_object(
-        #                         'id',           id,
-        #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-        #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-        #                         'is_read',      is_read,
-        #                         'visible',      visible,
-        #                         'fk_user_id',   fk_user_id
-        #                     ),
-        #                     'tags',       tags.jsontags
-        #                 ))
-        #             ) AS row_to_json
-        #             FROM
-        #             {0}
-        #             CROSS JOIN LATERAL (
-        #                 -- (3) get the tags of some feature on JSON format
-        #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
-        #                 FROM
-        #                 (
-        #                     -- (2) get the tags of some feature
-        #                     SELECT k, v
-        #                     FROM notification_tag
-        #                     WHERE fk_notification_id = notification.id
-        #                     ORDER BY k, v ASC
-        #                 ) subquery
-        #             ) AS tags
-        #         """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
-
-        return results_of_query
-
-    def add_notification_in_db(self, user_id, tags):
-        tags = dumps(tags)  # convert python dict to json to save in db
-
-        query_text = """
-            INSERT INTO notification (created_at, fk_user_id, tags)
-            VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
-        """.format(user_id, tags)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+    # def get_notification(self, notification_id=None, user_id=None, is_read=None):
+    #     # the id have to be a int
+    #     if is_a_invalid_id(notification_id) or is_a_invalid_id(user_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_notification_table(notification_id=notification_id, user_id=user_id,
+    #                                                is_read=is_read)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'Notification',
+    #                 'properties', json_build_object(
+    #                     'id',           id,
+    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'is_read',      is_read,
+    #                     'visible',      visible,
+    #                     'fk_user_id',   fk_user_id
+    #                 ),
+    #                 'tags',       tags
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # query_text = """
+    #     #             SELECT jsonb_build_object(
+    #     #                 'type', 'FeatureCollection',
+    #     #                 'features',   jsonb_agg(jsonb_build_object(
+    #     #                     'type',       'Notification',
+    #     #                     'properties', json_build_object(
+    #     #                         'id',           id,
+    #     #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #     #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #     #                         'is_read',      is_read,
+    #     #                         'visible',      visible,
+    #     #                         'fk_user_id',   fk_user_id
+    #     #                     ),
+    #     #                     'tags',       tags.jsontags
+    #     #                 ))
+    #     #             ) AS row_to_json
+    #     #             FROM
+    #     #             {0}
+    #     #             CROSS JOIN LATERAL (
+    #     #                 -- (3) get the tags of some feature on JSON format
+    #     #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
+    #     #                 FROM
+    #     #                 (
+    #     #                     -- (2) get the tags of some feature
+    #     #                     SELECT k, v
+    #     #                     FROM notification_tag
+    #     #                     WHERE fk_notification_id = notification.id
+    #     #                     ORDER BY k, v ASC
+    #     #                 ) subquery
+    #     #             ) AS tags
+    #     #         """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_notification_in_db(self, user_id, tags):
+    #     tags = dumps(tags)  # convert python dict to json to save in db
+    #
+    #     query_text = """
+    #         INSERT INTO notification (created_at, fk_user_id, tags)
+    #         VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
+    #     """.format(user_id, tags)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
 
     # def add_notification_tag_in_db(self, k, v, feature_id):
     #     query_text = """
@@ -1050,31 +1064,31 @@ class PGSQLConnection:
     #     # do the query in database
     #     self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_notification(self, feature_json, user_id):
-
-        validate_feature_json(feature_json)
-
-        # add the layer in db and get the id of it
-        id_in_json = self.add_notification_in_db(user_id, feature_json["tags"])
-
-        return id_in_json
-
-    def delete_notification_in_db(self, feature_id):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            UPDATE notification SET visible = FALSE, removed_at = LOCALTIMESTAMP
-            WHERE id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+    # def create_notification(self, feature_json, user_id):
+    #
+    #     validate_feature_json(feature_json)
+    #
+    #     # add the layer in db and get the id of it
+    #     id_in_json = self.add_notification_in_db(user_id, feature_json["tags"])
+    #
+    #     return id_in_json
+    #
+    # def delete_notification_in_db(self, feature_id):
+    #     if is_a_invalid_id(feature_id):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     query_text = """
+    #         UPDATE notification SET visible = FALSE, removed_at = LOCALTIMESTAMP
+    #         WHERE id={0};
+    #     """.format(feature_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # ELEMENT

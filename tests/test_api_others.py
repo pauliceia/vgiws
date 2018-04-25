@@ -4,7 +4,7 @@
 
 from unittest import TestCase, skip
 from util.tester import UtilTester
-"""
+
 
 class TestAPICapabilities(TestCase):
 
@@ -15,7 +15,7 @@ class TestAPICapabilities(TestCase):
     def test_api_capabilities(self):
         expected = {
             "version": "0.0.2",
-            "status": {"postgresql": "online", "neo4j": "online"}
+            "status": {"postgresql": "online", "neo4j": "offline"}
         }
 
         self.tester.api_capabilities(expected)
@@ -31,8 +31,8 @@ class TestAPISessionUser(TestCase):
         expected_at_least = {
             'user': {
                 'properties': {'username': 'test', 'terms_agreed': False, 'is_email_valid': False,
-                               'removed_at': None, 'email': 'test@fake.login'},
-                'tags': {'type_login': 'fakelogin'},
+                               'email': 'test@fake.login'},
+                # 'tags': {'type_login': 'fakelogin'},
                 'type': 'User'
             }
         }
@@ -48,6 +48,6 @@ class TestAPISessionUser(TestCase):
     def test_api_session_user_without_login(self):
         self.tester.api_session_user_error_404_not_found()
 
-"""
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

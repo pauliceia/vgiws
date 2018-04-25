@@ -155,7 +155,7 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, is_published="FALSE")
 
-    def test_get_api_layer_return_all_by_table_name(self):
+    def test_get_api_layer_return_layer_by_table_name(self):
         expected = {
             'features': [
                 {
@@ -180,25 +180,23 @@ class TestAPILayer(TestCase):
         # DO LOGIN
         self.tester.auth_login_fake()
 
+        user_session = self.tester.get_session_user()
+        user_id = user_session["user"]["properties"]["id"]
+
+        # create the standard to save the table_name ( _<user_id>_<table_name> )
+        table_name = "_" + str(user_id) + "_new_layer"
+
         # create a layer
         resource = {
-            # 'tags': {'created_by': 'test_api', 'description': 'description of the layer', 'name': 'layer of data'},
-            # 'properties': {'id': -1, 'fk_project_id': 1001},
-            # 'type': 'Layer',
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': [],
-                           'description': '', 'fk_theme_id': 1041}
+            'properties': {'name': 'Addresses in 1930', 'table_name': table_name, 'reference': [],
+                           'description': '', 'fk_theme_id': 1041},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
         }
         resource = self.tester.api_layer_create(resource)
-
-        # create the feature table for the layer
-        feature_table = {
-            'type': 'FeatureTable',
-            'table_name': 'new_layer',
-            'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-            'geometry': {"type": "MultiPoint"}
-        }
-        self.tester.api_feature_table_create(feature_table)
 
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["id"]
