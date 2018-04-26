@@ -1283,11 +1283,25 @@ class PGSQLConnection:
                         'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_email_valid', is_email_valid,
                         'terms_agreed',   terms_agreed
-                    )
+                    ),
+                    'auth',          auth.jsontags
                 ))
             ) AS row_to_json
             FROM 
-            {0}            
+            {0}
+            CROSS JOIN LATERAL (                
+                -- (3) get the auths of some resource on JSON format   
+                SELECT json_agg(json_build_object('id', id, 'is_admin', is_admin, 'is_manager', is_manager, 
+                                                  'is_curator', is_curator)) AS jsontags 
+                FROM 
+                (
+                    -- (2) get the auths of some resource
+                    SELECT id, is_admin, is_manager, is_curator
+                    FROM auth 
+                    WHERE fk_user_id = user_.id
+                    ORDER BY id
+                ) subquery      
+            ) AS auth
         """.format(subquery)
 
         # do the query in database
