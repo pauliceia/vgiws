@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""
+
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
@@ -11,9 +11,9 @@ from random import choice
 
 
 def generate_random_string(size=6, chars=ascii_uppercase + digits):
-"""
-#Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
-"""
+    """
+    #Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+    """
     return ''.join(choice(chars) for _ in range(size))
 
 
@@ -30,63 +30,74 @@ class TestAPIUser(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'removed_at': None, 'username': 'admin', 'terms_agreed': True,
-                                   'is_email_valid': True, 'email': 'admin@admin.com', 'id': 1001,
-                                   'created_at': '2017-01-01 00:00:00'},
-                    'tags': {'institution': 'INPE', 'name': 'Administrator'},
-                    'type': 'User'
+                    'type': 'User',
+                    'properties': {'is_email_valid': True, 'email': 'admin@admin.com', 'username': 'admin',
+                                   'name': 'Administrator', 'terms_agreed': True, 'created_at': '2017-01-01 00:00:00',
+                                   'id': 1001}
                 },
                 {
-                    'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
-                                   'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
-                                   'created_at': '2017-03-03 00:00:00'},
-                    'tags': {'institution': 'INPE', 'name': 'Rodrigo'},
-                    'type': 'User'
+                    'type': 'User',
+                    'properties': {'is_email_valid': True, 'email': 'rodrigo@admin.com', 'username': 'rodrigo',
+                                   'name': 'Rodrigo', 'terms_agreed': True, 'created_at': '2017-03-03 00:00:00',
+                                   'id': 1002}
                 },
                 {
-                    'properties': {'removed_at': None, 'username': 'miguel', 'terms_agreed': True,
-                                   'is_email_valid': False, 'email': 'miguel@admin.com', 'id': 1003,
-                                   'created_at': '2017-05-08 00:00:00'},
-                    'tags': {'name': 'Miguel'},
-                    'type': 'User'
+                    'type': 'User',
+                    'properties': {'is_email_valid': False, 'email': 'miguel@admin.com', 'username': 'miguel',
+                                   'name': 'Miguel', 'terms_agreed': True, 'created_at': '2017-05-08 00:00:00',
+                                   'id': 1003}
                 },
                 {
-                    'properties': {'removed_at': None, 'username': 'rafael', 'terms_agreed': False,
-                                   'is_email_valid': True, 'email': 'rafael@admin.com', 'id': 1004,
-                                   'created_at': '2017-06-09 00:00:00'},
-                    'tags': {'name': 'Rafael'},
-                    'type': 'User'
+                    'type': 'User',
+                    'properties': {'is_email_valid': True, 'email': 'rafael@admin.com', 'username': 'rafael',
+                                   'name': 'Rafael', 'terms_agreed': False, 'created_at': '2017-06-09 00:00:00',
+                                   'id': 1004}
                 },
                 {
-                    'properties': {'removed_at': None, 'username': 'gabriel', 'terms_agreed': False,
-                                   'is_email_valid': False, 'email': 'gabriel@admin.com', 'id': 1005,
-                                   'created_at': '2017-09-20 00:00:00'},
-                    'tags': {'name': 'Gabriel'},
-                    'type': 'User'
+                    'type': 'User',
+                    'properties': {'is_email_valid': False, 'email': 'gabriel@admin.com', 'username': 'gabriel',
+                                   'name': 'Gabriel', 'terms_agreed': False, 'created_at': '2017-09-20 00:00:00',
+                                   'id': 1005}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'is_email_valid': True, 'email': 'fernanda@gmail.com', 'username': 'fernanda',
+                                   'name': None, 'terms_agreed': False, 'created_at': '2017-01-19 00:00:00',
+                                   'id': 1006}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'is_email_valid': False, 'email': 'ana@gmail.com', 'username': 'ana', 'name': None,
+                                   'terms_agreed': True, 'created_at': '2017-01-18 00:00:00', 'id': 1007}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'is_email_valid': False, 'email': 'bea@gmail.com', 'username': 'bea', 'name': None,
+                                   'terms_agreed': False, 'created_at': '2017-01-30 00:00:00', 'id': 1008}
                 }
             ]
         }
 
         self.tester.api_user(expected_at_least=expected_at_least)
 
+
     def test_get_api_user_return_user_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'removed_at': None, 'username': 'rodrigo', 'terms_agreed': True,
-                                   'is_email_valid': True, 'email': 'rodrigo@admin.com', 'id': 1002,
-                                   'created_at': '2017-03-03 00:00:00'},
-                    'tags': {'name': 'Rodrigo', 'institution': 'INPE'},
-                    'type': 'User'
-                }
+                    'type': 'User',
+                    'properties': {'is_email_valid': True, 'email': 'rodrigo@admin.com', 'username': 'rodrigo',
+                                   'name': 'Rodrigo', 'terms_agreed': True, 'created_at': '2017-03-03 00:00:00',
+                                   'id': 1002}
+                },
             ]
         }
 
         self.tester.api_user(expected, user_id="1002")
 
     # user - create and delete
-
+"""
     def test_get_api_user_create_and_delete(self):
         # create a fake email to avoid the error when exist the same email in DB
         email = generate_random_string() + "@roger.com"

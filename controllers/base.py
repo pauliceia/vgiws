@@ -428,17 +428,17 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
-    def _delete_feature(self, *args, **kwargs):
-        # TODO: one user just can delete itself or if the user is a admin
-        user_id = args[0]
-
-        self.PGSQLConn.delete_user(user_id)
-
-        current_user_id = self.get_current_user_id()
-
-        # If the user delete itself (the owner of account), so logout it
-        if current_user_id == int(user_id):
-            self.logout()
+    # def _delete_feature(self, *args, **kwargs):
+    #     # TODO: one user just can delete itself or if the user is a admin
+    #     user_id = args[0]
+    #
+    #     self.PGSQLConn.delete_user(user_id)
+    #
+    #     current_user_id = self.get_current_user_id()
+    #
+    #     # If the user delete itself (the owner of account), so logout it
+    #     if current_user_id == int(user_id):
+    #         self.logout()
 
 
 # class BaseHandlerUserGroup(BaseHandlerTemplateMethod):

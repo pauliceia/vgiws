@@ -1277,8 +1277,9 @@ class PGSQLConnection:
                     'type',       'User',
                     'properties', json_build_object(
                         'id',             id,
-                        'username',       username,
                         'email',          email,
+                        'username',       username,
+                        'name',           name,
                         'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_email_valid', is_email_valid,
                         'terms_agreed',   terms_agreed
