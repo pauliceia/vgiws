@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS user_ CASCADE ;
 
 CREATE TABLE IF NOT EXISTS user_ (
   id SERIAL ,
-  email TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   username TEXT NOT NULL,
   name TEXT NULL,

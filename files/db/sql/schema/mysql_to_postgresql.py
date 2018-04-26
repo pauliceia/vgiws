@@ -80,7 +80,7 @@ def remove_bad_lines_and_put_default_values(text):
         if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
-        if "email varchar(45)" in line_lower:
+        if "email text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
         # USER AUTH
