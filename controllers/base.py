@@ -428,6 +428,29 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
+    def _delete_feature(self, *args, **kwargs):
+        self.delete_validation()
+
+        user_id = args[0]
+
+        self.PGSQLConn.delete_user(user_id)
+
+    def delete_validation(self):
+        """
+        Verify if a user is administrator to delete a user.
+        Just administrators can delete users.
+        :return:
+        """
+
+        current_user = self.get_current_user()
+
+        # print("current_user: ", current_user)
+
+        is_admin = current_user["user"]["auth"][0]["is_admin"]
+
+        if not is_admin:
+            raise HTTPError(403, "The user cannot delete other user.")
+
     # def _delete_feature(self, *args, **kwargs):
     #     # TODO: one user just can delete itself or if the user is a admin
     #     user_id = args[0]

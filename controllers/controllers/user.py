@@ -24,6 +24,6 @@ class APIUser(BaseHandlerUser):
     def put(self, param=None):
         self.put_method_api_feature(param)
 
-    # @auth_non_browser_based
-    # def delete(self, param=None):
-    #     self.delete_method_api_feature(param)
+    @auth_non_browser_based
+    def delete(self, param=None):
+        self.delete_method_api_feature(param)

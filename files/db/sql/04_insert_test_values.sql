@@ -84,7 +84,6 @@ INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1008
 
 
 
-
 -- -----------------------------------------------------
 -- Table theme
 -- -----------------------------------------------------

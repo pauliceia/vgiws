@@ -1346,19 +1346,30 @@ class PGSQLConnection:
             # 23505 - unique_violation
             if error.pgcode == "23505":
                 raise HTTPError(400, "This email already exist in DB.")
-
-            raise HTTPError(500, "Undefined Integrity Error. Please, contact the administrator.")
+            else:
+                raise error
 
         # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
 
         return result
 
+    def create_auth_user_in_db(self, user_id):
+        query_text = """
+            INSERT INTO auth (is_admin, is_manager, is_curator, fk_user_id) 
+            VALUES (FALSE, FALSE, FALSE, {0});
+        """.format(user_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
     def create_user(self, feature_json):
 
         validate_feature_json(feature_json)
 
         id_in_json = self.add_user_in_db(feature_json["properties"], feature_json["tags"])
+
+        self.create_auth_user_in_db(id_in_json["id"])
 
         return id_in_json
 
@@ -1369,8 +1380,7 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            UPDATE user_ SET visible = FALSE, removed_at = LOCALTIMESTAMP
-            WHERE id={0};
+            DELETE FROM user_ WHERE id={0};
         """.format(feature_id)
 
         # do the query in database

@@ -100,7 +100,7 @@ class TestAPIUser(TestCase):
         self.tester.api_user(expected, user_id="1002")
 
     # user - create and delete
-"""
+
     def test_get_api_user_create_and_delete(self):
         # create a fake email to avoid the error when exist the same email in DB
         email = generate_random_string() + "@roger.com"
@@ -124,12 +124,20 @@ class TestAPIUser(TestCase):
         # get the id of feature to REMOVE it
         feature_id = feature["properties"]["id"]
 
+        # logout
+        self.tester.auth_logout()
+
+        ##################################################
+        # log in with a admin user (who can delete an user)
+        ##################################################
+        self.tester.auth_login("admin@admin.com", "admin")
+
         # remove the user created
         self.tester.api_user_delete(feature_id)
 
-        # when the user delete itself, it is automatically logout, because of that, raise a 404
-        self.tester.auth_logout_404_not_found()
-"""
+        # logout
+        self.tester.auth_logout()
+
 
 class TestAPIUserErrors(TestCase):
 
@@ -167,15 +175,56 @@ class TestAPIUserErrors(TestCase):
     #
     #     # DO LOGOUT AFTER THE TESTS
     #     self.tester.auth_logout()
-    #
-    # def test_delete_api_user_error_403_forbidden(self):
-    #     self.tester.api_user_delete_error_403_forbidden("abc")
-    #     self.tester.api_user_delete_error_403_forbidden(0)
-    #     self.tester.api_user_delete_error_403_forbidden(-1)
-    #     self.tester.api_user_delete_error_403_forbidden("-1")
-    #     self.tester.api_user_delete_error_403_forbidden("0")
-    #     self.tester.api_user_delete_error_403_forbidden("1001")
-    #
+
+    def test_delete_api_user_error_403_forbidden(self):
+        self.tester.api_user_delete_error_403_forbidden("abc")
+        self.tester.api_user_delete_error_403_forbidden(0)
+        self.tester.api_user_delete_error_403_forbidden(-1)
+        self.tester.api_user_delete_error_403_forbidden("-1")
+        self.tester.api_user_delete_error_403_forbidden("0")
+        self.tester.api_user_delete_error_403_forbidden("1001")
+
+    def test_delete_api_user_error_403_forbidden_user_cannot_delete_other_user(self):
+        # create a fake email to avoid the error when exist the same email in DB
+        email = generate_random_string() + "@roger.com"
+
+        # create a feature
+        feature = {
+            'type': 'User',
+            'tags': {},
+            'properties': {'id': -1, 'email': email,
+                           'password': 'roger', 'username': 'roger'}
+        }
+
+        feature = self.tester.api_user_create(feature)
+
+        email = feature["properties"]["email"]
+        password = feature["properties"]["password"]
+
+        # login with the user created
+        self.tester.auth_login(email, password)
+
+        # get the id of feature to REMOVE it
+        feature_id = feature["properties"]["id"]
+
+        # try to remove the user created, but get a 403, because just admin can delete users
+        self.tester.api_user_delete_error_403_forbidden(feature_id)
+
+        # logout
+        self.tester.auth_logout()
+
+        ##################################################
+        # log in with a admin user (who can delete an user)
+        ##################################################
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # remove the user created
+        self.tester.api_user_delete(feature_id)
+
+        # logout
+        self.tester.auth_logout()
+
+
     # def test_delete_api_user_error_404_not_found(self):
     #     # create a tester passing the unittest self
     #     self.tester = UtilTester(self)

@@ -71,6 +71,7 @@ This method delete one user by id = #id.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): The user cannot delete other user.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
 - Notes:
