@@ -5,14 +5,18 @@ A layer is a group of elements. All elements have to be associated with a layer.
 
 ### GET /api/layer/?\<params>
 
-This method gets layers from DB. If you doesn't put any parameter, so will return all.
+This method gets layers from DB. If you doesn't put any parameter, so it will return all.
 - Parameters:
-    - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...).
-    - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - user_id_author (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - is_published (optional): it is a boolean that indicates if a layer is published or not (e.g. 'TRUE' or 'FALSE');
+    - table_name (optional): the name of the table that is a text (e.g. '_1005_layer_1003').
 - Examples:
      - Get all layers: http://localhost:8888/api/layer/
      - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
-     - Get layers by user id: http://localhost:8888/api/layer/?user_id=1001
+     - Get layers by user id: http://localhost:8888/api/layer/?user_id_author=1001
+     - Get layers by is_published: http://localhost:8888/api/layer/?is_published=TRUE
+     - Get one layer by table_name: http://localhost:8888/api/layer/?table_name=_1005_layer_1003
 - Send:
 - Response: a JSON that contains the resources selected. Example:
     ```javascript
@@ -41,7 +45,7 @@ This method gets layers from DB. If you doesn't put any parameter, so will retur
 
 ### PUT /api/layer/create
 
-This method create a new layer described in a JSON.
+This method createS a new layer described in a JSON.
 - Parameters:
 - Examples:
      - Create a resource: ```PUT http://localhost:8888/api/layer/create```

@@ -176,7 +176,7 @@ class TestAPILayer(TestCase):
 
     # layer - create and delete
 
-    def test_get_api_layer_create_and_delete(self):
+    def test_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
 
@@ -257,6 +257,45 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
+        # DO LOGIN
+        self.tester.auth_login_fake()
+
+        user_session = self.tester.get_session_user()
+        user_id = user_session["user"]["properties"]["id"]
+
+        # create the standard to save the table_name ( _<user_id>_<table_name> )
+        table_name = "_" + str(user_id) + "_new_layer"
+
+        # create a layer
+        resource = {
+            'type': 'Layer',
+            'properties': {'name': 'Addresses in 1930', 'table_name': table_name, 'reference': [],
+                           'description': '', 'fk_theme_id': 1041},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        resource = self.tester.api_layer_create(resource)
+
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["id"]
+
+        ##################################################
+        # try to insert the layer again, raising the 400
+        ##################################################
+        resource = self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(resource_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_put_api_layer_create_error_403_forbidden(self):
         feature = {
             'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
@@ -265,7 +304,33 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_create_error_403_forbidden(feature)
 
-    def test_put_api_layer_create_error_403_forbidden_user_forbidden_to_delete(self):
+    # layer errors - delete
+
+    def test_delete_api_layer_error_400_bad_request(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login_fake()
+
+        self.tester.api_layer_delete_error_400_bad_request("abc")
+        self.tester.api_layer_delete_error_400_bad_request(0)
+        self.tester.api_layer_delete_error_400_bad_request(-1)
+        self.tester.api_layer_delete_error_400_bad_request("-1")
+        self.tester.api_layer_delete_error_400_bad_request("0")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_layer_error_403_forbidden_user_without_login(self):
+        self.tester.api_layer_delete_error_403_forbidden("abc")
+        self.tester.api_layer_delete_error_403_forbidden(0)
+        self.tester.api_layer_delete_error_403_forbidden(-1)
+        self.tester.api_layer_delete_error_403_forbidden("-1")
+        self.tester.api_layer_delete_error_403_forbidden("0")
+        self.tester.api_layer_delete_error_403_forbidden("1001")
+
+    def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################
         # create a layer with user admin
         ########################################
@@ -321,32 +386,6 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-    # layer errors - delete
-
-    def test_delete_api_layer_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-        # DO LOGIN
-        self.tester.auth_login_fake()
-
-        self.tester.api_layer_delete_error_400_bad_request("abc")
-        self.tester.api_layer_delete_error_400_bad_request(0)
-        self.tester.api_layer_delete_error_400_bad_request(-1)
-        self.tester.api_layer_delete_error_400_bad_request("-1")
-        self.tester.api_layer_delete_error_400_bad_request("0")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_delete_api_layer_error_403_forbidden(self):
-        self.tester.api_layer_delete_error_403_forbidden("abc")
-        self.tester.api_layer_delete_error_403_forbidden(0)
-        self.tester.api_layer_delete_error_403_forbidden(-1)
-        self.tester.api_layer_delete_error_403_forbidden("-1")
-        self.tester.api_layer_delete_error_403_forbidden("0")
-        self.tester.api_layer_delete_error_403_forbidden("1001")
 
     def test_delete_api_layer_error_404_not_found(self):
         # create a tester passing the unittest self
