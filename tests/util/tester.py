@@ -49,10 +49,6 @@ class UtilTester:
 
         email_and_password_in_base64 = get_username_and_password_as_string_in_base64(email, password)
 
-        # self.headers = {'Content-type': 'application/json',
-        #                 'Accept': 'application/json; charset=UTF-8',
-        #                 'Authorization': 'Basic ' + username_and_password_in_base64}
-
         headers = deepcopy(self.headers)
 
         headers["Authorization"] = "Basic " + email_and_password_in_base64

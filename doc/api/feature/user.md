@@ -16,11 +16,11 @@ This method gets users from DB. If you doesn't put any parameter, so will return
         'type': 'FeatureCollection',
         'features': [
             {
+                'properties': {'username': 'rodrigo', 'name': 'Rodrigo', 'id': 1002,
+                               'created_at': '2017-03-03 00:00:00', 'email': 'rodrigo@admin.com',
+                               'terms_agreed': True, 'is_email_valid': True},
                 'type': 'User',
-                'tags': {'institution': 'INPE'},
-                'properties': {'id': 1002, 'is_email_valid': None, 'created_at': None, 'terms_agreed': None,
-                               'description': None, 'email': 'rodrigo@admin.com', 'name': 'Rodrigo',
-                               'terms_seen': None, 'removed_at': None, 'username': 'rodrigo'}
+                'auth': {'is_curator': True, 'id': 1002, 'is_manager': True, 'is_admin': True}
             }
         ]
     }
@@ -42,7 +42,6 @@ This method create a new user described in a JSON.
     ```javascript
     {
         'type': 'User',
-        'tags': {},
         'properties': {'id': -1, 'email': 'roger@roger.com',
                        'password': 'roger', 'username': ''}
     }
@@ -71,7 +70,7 @@ This method delete one user by id = #id.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 403 (Forbidden): The user cannot delete other user.
+    - 403 (Forbidden): Just administrator can delete other user.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
 - Notes:

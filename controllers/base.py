@@ -413,7 +413,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         raise NotImplementedError
 
 
-
 # SUBCLASSES
 
 
@@ -447,19 +446,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         is_admin = current_user["user"]["auth"]["is_admin"]
 
         if not is_admin:
-            raise HTTPError(403, "The user cannot delete other user.")
-
-    # def _delete_feature(self, *args, **kwargs):
-    #     # TODO: one user just can delete itself or if the user is a admin
-    #     user_id = args[0]
-    #
-    #     self.PGSQLConn.delete_user(user_id)
-    #
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     # If the user delete itself (the owner of account), so logout it
-    #     if current_user_id == int(user_id):
-    #         self.logout()
+            raise HTTPError(403, "Just administrator can delete other user.")
 
 
 # class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
