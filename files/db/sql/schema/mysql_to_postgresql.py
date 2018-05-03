@@ -10,7 +10,7 @@ __OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 def replace_phrases(text):
     text = text.replace("mydb", "pauliceia")
-    text = text.replace("`", "'")
+    text = text.replace("`", "")
     text = text.replace("TINYINT(1)", "BOOLEAN")
     text = text.replace("ENGINE = InnoDB", "")
     text = text.replace("ON DELETE NO ACTION", "ON DELETE CASCADE")
@@ -28,7 +28,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';""", ""
     text = text.replace("-- MySQL Workbench Forward Engineering", "")
             
     text = text.replace(")\n;", "\n);")  # put the ) and ; together, and in other line
-    text = text.replace("'", "")
+    #text = text.replace("'", "")
     text = text.replace("USE pauliceia ;", "")
     text = text.replace(" DEFAULT CHARACTER SET utf8", "")
 
@@ -55,6 +55,14 @@ def remove_bad_lines_and_put_default_values(text):
         
         line_lower = line.lower()
 
+        if "comment" in line_lower:
+            comment_occurrence = lines[i].find("COMMENT")
+            first_occurrence = lines[i].find("'", 0)
+            second_occurrence = lines[i].find("'", first_occurrence+1)
+            comment = lines[i][comment_occurrence:second_occurrence+1]
+            # remove the comment
+            lines[i] = lines[i].replace(comment, "")        
+
         # if there is a index line, so remove it in the original list
         if "index" in line_lower or ("brst" in line_lower and "2017" in line_lower):
             del lines[i]
@@ -80,32 +88,18 @@ def remove_bad_lines_and_put_default_values(text):
         if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
-        if "email text" in line_lower:
+        if ("email text" in line_lower) or ("username text" in line_lower):
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
-        # USER AUTH
-        if ("is_admin boolean" in line_lower) or ("is_moderator boolean" in line_lower):            
+        if ("is_the_admin boolean" in line_lower) or ("can_add_layer boolean" in line_lower) or ("receive_notification_by_email boolean" in line_lower):            
             lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         # LAYER
-        if "table_name text" in line_lower:
+        if "f_table_name text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
         if "is_published boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
-
-        # GROUP
-        '''
-        if "can_receive_notification boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
-
-        if "group_permission varchar(10)" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT 'member',")
-
-        if "group_status varchar(10)" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT 'pending',")
-        '''
-            
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")           
 
     text = "\n".join(lines)
 
@@ -117,14 +111,46 @@ def add_serial_number_in_ID(text):
 
     for i in range(0, len(lines_copy)):
         line = lines_copy[i]
+        line_before = lines_copy[i-1]
 
         line_lower = line.lower()
+        line_before_lower = line_before.lower()
 
         # put SERIAL just in ID field, NOT in FKs
-        if " id int" in line_lower and "fk" not in line_lower:
+        #if " id int" in line_lower and "fk" not in line_lower:
+        if "id int" in line_lower and "create table" in line_before_lower:            
             line_splited = line.replace("NOT NULL", "").split(" ")
             line_splited[3] = "SERIAL"                
             lines[i] = " ".join(line_splited)
+
+    text = "\n".join(lines)
+
+    return text
+
+def remove_example_table(text):
+    lines = text.split("\n")
+    lines_copy = list(lines)  # create a copy to iterate inside it
+
+    remove_line = False
+
+    for i in range(0, len(lines_copy)):
+        line = lines_copy[i]
+
+        line_lower = line.lower()
+
+        # start to remove when find the "<", that means a example table, as <feature_table>
+        if "<" in line_lower:
+            remove_line = True
+
+        # stop to remove the line when find );
+        if ");" in line_lower and remove_line:
+            # remove the line with ");"
+            lines[i] = lines[i].replace(lines[i], "")  # erase the line            
+            remove_line = False
+
+        # remove the lines of the <feature_table>
+        if remove_line:
+            lines[i] = lines[i].replace(lines[i], "")  # erase the line
 
     text = "\n".join(lines)
 
@@ -146,6 +172,8 @@ DROP SCHEMA IF EXISTS pauliceia CASCADE ;
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS pauliceia ;""", "")
 
+    text = text.replace("\n\n\n\n", "\n")
+    text = text.replace("\n\n\n\n", "\n")
     text = text.replace("\n\n\n\n", "\n")
 
     text = text.replace(" user ", " user_ ")
@@ -173,6 +201,9 @@ def main():
 
         # add SERIAL number in ID
         text = add_serial_number_in_ID(text)
+
+        # remove the <feature_table> and version_<feature_table>
+        text = remove_example_table(text)
 
         text = last_modifications(text)
 
