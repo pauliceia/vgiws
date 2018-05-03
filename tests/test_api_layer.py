@@ -26,7 +26,7 @@ class TestAPILayer(TestCase):
                                    'reference': [{'reference_id': 1001, 'bibtex': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
                                                  {'reference_id': 1002, 'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00'},
+                                   'created_at': '2017-01-01 00:00:00', 'theme': [{'theme_id': 1041}]},
                     'type': 'Layer'
                 },
                 {
@@ -34,7 +34,7 @@ class TestAPILayer(TestCase):
                                    'name': 'Robberies between 1880 to 1900',
                                    'reference': [{'reference_id': 1005, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                                   'created_at': '2017-03-05 00:00:00'},
+                                   'created_at': '2017-03-05 00:00:00', 'theme': [{'theme_id': 1010}]},
                     'type': 'Layer'
                 },
                 {
@@ -42,21 +42,21 @@ class TestAPILayer(TestCase):
                                    'name': 'Streets in 1930',
                                    'reference': [{'reference_id': 1010, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00'},
+                                   'created_at': '2017-04-10 00:00:00', 'theme': [{'theme_id': 1040}]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
                                    'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
                                    'f_table_name': 'layer_1004', 'source_description': '',
-                                   'created_at': '2017-06-15 00:00:00'},
+                                   'created_at': '2017-06-15 00:00:00', 'theme': [{'theme_id': 1040}]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
                                    'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
                                    'f_table_name': 'layer_1005', 'source_description': None,
-                                   'created_at': '2017-08-04 00:00:00'},
+                                   'created_at': '2017-08-04 00:00:00', 'theme': [{'theme_id': 1023}]},
                     'type': 'Layer'
                 },
                 {
@@ -64,7 +64,7 @@ class TestAPILayer(TestCase):
                                    'name': 'Cinemas between 1900 to 1950',
                                    'reference': [{'reference_id': 1025, 'bibtex': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
-                                   'created_at': '2017-09-04 00:00:00'},
+                                   'created_at': '2017-09-04 00:00:00', 'theme': [{'theme_id': 1031}]},
                     'type': 'Layer'
                 }
             ]
@@ -83,9 +83,9 @@ class TestAPILayer(TestCase):
                                                  {'reference_id': 1002,
                                                   'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00'},
+                                   'created_at': '2017-01-01 00:00:00', 'theme': [{'theme_id': 1041}]},
                     'type': 'Layer'
-                }
+                },
             ],
             'type': 'FeatureCollection'
         }
@@ -123,7 +123,7 @@ class TestAPILayer(TestCase):
                                                  {'reference_id': 1002,
                                                   'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00'},
+                                   'created_at': '2017-01-01 00:00:00', 'theme': [{'theme_id': 1041}]},
                     'type': 'Layer'
                 },
                 {
@@ -132,14 +132,14 @@ class TestAPILayer(TestCase):
                                    'reference': [{'reference_id': 1005,
                                                   'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                                   'created_at': '2017-03-05 00:00:00'},
+                                   'created_at': '2017-03-05 00:00:00', 'theme': [{'theme_id': 1010}]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
                                    'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
                                    'f_table_name': 'layer_1004', 'source_description': '',
-                                   'created_at': '2017-06-15 00:00:00'},
+                                   'created_at': '2017-06-15 00:00:00', 'theme': [{'theme_id': 1040}]},
                     'type': 'Layer'
                 },
                 {
@@ -148,7 +148,7 @@ class TestAPILayer(TestCase):
                                    'reference': [{'reference_id': 1025,
                                                   'bibtex': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
-                                   'created_at': '2017-09-04 00:00:00'},
+                                   'created_at': '2017-09-04 00:00:00', 'theme': [{'theme_id': 1031}]},
                     'type': 'Layer'
                 }
             ]
@@ -165,14 +165,14 @@ class TestAPILayer(TestCase):
                                    'reference': [{'reference_id': 1010,
                                                   'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00'},
+                                   'created_at': '2017-04-10 00:00:00', 'theme': [{'theme_id': 1040}]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
                                    'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
                                    'f_table_name': 'layer_1005', 'source_description': None,
-                                   'created_at': '2017-08-04 00:00:00'},
+                                   'created_at': '2017-08-04 00:00:00', 'theme': [{'theme_id': 1023}]},
                     'type': 'Layer'
                 },
             ]
@@ -189,7 +189,7 @@ class TestAPILayer(TestCase):
                                    'reference': [{'reference_id': 1010,
                                                   'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00'},
+                                   'created_at': '2017-04-10 00:00:00', 'theme': [{'theme_id': 1040}]},
                     'type': 'Layer'
                 },
             ],
@@ -201,7 +201,6 @@ class TestAPILayer(TestCase):
     # layer - create and delete
 
     """
-
     def test_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
@@ -209,13 +208,10 @@ class TestAPILayer(TestCase):
         user_session = self.tester.get_session_user()
         user_id = user_session["user"]["properties"]["id"]
 
-        # create the standard to save the table_name ( _<user_id>_<table_name> )
-        table_name = "_" + str(user_id) + "_new_layer"
-
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1930', 'table_name': table_name, 'reference': [],
+            'properties': {'name': 'Addresses in 1930', 'table_name': 'new_layer', 'reference': [],
                            'description': '', 'fk_theme_id': 1041},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
@@ -235,9 +231,7 @@ class TestAPILayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
-    """
-
+        """
 
 """
 

@@ -550,7 +550,8 @@ class PGSQLConnection:
                         'created_at',           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_published',         is_published,
                         'user_id_published_by', user_id_published_by,
-                        'reference',            reference__.jsontags
+                        'reference',            reference__.jsontags,
+                        'theme',                theme.jsontags
                     )
                 ))
             ) AS row_to_json
@@ -568,6 +569,18 @@ class PGSQLConnection:
                     ORDER BY reference_id
                 ) subquery      
             ) AS reference__
+            CROSS JOIN LATERAL (                
+                -- (3) get the themes of some resource on JSON format   
+                SELECT json_agg(json_build_object('theme_id', theme_id)) AS jsontags 
+                FROM 
+                (
+                    -- (2) get the themes of some resource
+                    SELECT theme_id
+                    FROM layer_theme 
+                    WHERE layer_id = layer.layer_id
+                    ORDER BY theme_id
+                ) subquery      
+            ) AS theme
         """.format(subquery)
 
         # do the query in database
@@ -655,6 +668,8 @@ class PGSQLConnection:
 
         self.create_feature_table(properties["table_name"], resource_json["feature_table"])
 
+        self.add_user_in_layer(user_id=user_id, layer_id=id_in_json["id"], is_the_creator=True)
+
         return id_in_json
 
     def delete_layer_in_db(self, resource_id):
@@ -663,7 +678,6 @@ class PGSQLConnection:
 
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=resource_id)
-
         table_name = layer["features"][0]["properties"]["table_name"]
 
         # delete the layer
@@ -683,6 +697,16 @@ class PGSQLConnection:
         # delete the feature table
 
         self.delete_feature_table(table_name)
+
+    def add_user_in_layer(self, user_id, layer_id, is_the_creator=False):
+
+        query_text = """
+            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
+            VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+        """.format(layer_id, user_id, is_the_creator)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
     ################################################################################
     # feature table
