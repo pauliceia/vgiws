@@ -5,17 +5,18 @@
 def get_subquery_layer_table(**kwargs):
     # DEFAULT WHERE
     # by default, get all results that are visible (that exist)
-    conditions_of_where = ["removed_at is NULL"]  # visible=True
+    # conditions_of_where = ["removed_at is NULL"]  # visible=True
+    conditions_of_where = []  # visible=True
 
     # conditions of WHERE CLAUSE
     if "layer_id" in kwargs and kwargs["layer_id"] is not None:
-        conditions_of_where.append("id = {0}".format(kwargs["layer_id"]))
+        conditions_of_where.append("layer_id = {0}".format(kwargs["layer_id"]))
 
-    if "table_name" in kwargs and kwargs["table_name"] is not None:
-        conditions_of_where.append("table_name = '{0}'".format(kwargs["table_name"]))
+    if "f_table_name" in kwargs and kwargs["f_table_name"] is not None:
+        conditions_of_where.append("f_table_name = '{0}'".format(kwargs["f_table_name"]))
 
-    if "user_id_author" in kwargs and kwargs["user_id_author"] is not None:
-        conditions_of_where.append("fk_user_id_author = {0}".format(kwargs["user_id_author"]))
+    # if "user_id_author" in kwargs and kwargs["user_id_author"] is not None:
+    #     conditions_of_where.append("fk_user_id_author = {0}".format(kwargs["user_id_author"]))
 
     if "is_published" in kwargs and kwargs["is_published"] is not None:
         conditions_of_where.append("is_published = {0}".format(kwargs["is_published"]))
@@ -30,7 +31,7 @@ def get_subquery_layer_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT * FROM layer {0} ORDER BY id
+            SELECT * FROM layer {0} ORDER BY layer_id
         ) AS layer
     """.format(where_clause)
 

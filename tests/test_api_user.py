@@ -16,6 +16,7 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
     """
     return ''.join(choice(chars) for _ in range(size))
 
+"""
 
 class TestAPIUser(TestCase):
 
@@ -231,6 +232,7 @@ class TestAPIUserErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

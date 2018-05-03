@@ -69,7 +69,7 @@ def remove_special_characters(text):
 
     text = text.replace("\n\n\n", "").replace("\n\n", "")
     # text = text.replace("\n", " ")
-    text = text.replace("  ", "")
+    # text = text.replace("  ", " ")
 
     return text
 

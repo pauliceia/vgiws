@@ -200,9 +200,26 @@ DELETE FROM layer;
 -- add layer 1001
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
 (1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01', TRUE, 1001);
+
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) VALUES (1001, 'book1', 1001);
-INSERT INTO reference (reference_id, bibtex, layer_id) VALUES (1002, 'article2', 1001);
+INSERT INTO reference (reference_id, bibtex, layer_id) 
+VALUES (1001, 
+'@Misc{jorge2017book1,
+author = {Jorge},
+title = {Book1},
+howpublished = {\url{http://www.link.org/}},
+note = {Accessed on 01/01/2017},
+year={2017}
+}', 1001);
+INSERT INTO reference (reference_id, bibtex, layer_id) 
+VALUES (1002, 
+'@Misc{ana2017article2,
+author = {Ana},
+title = {Article2},
+howpublished = {\url{http://www.myhost.org/}},
+note = {Accessed on 05/02/2017},
+year={2017}
+}', 1001);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1001, 1041);
@@ -285,7 +302,15 @@ SELECT * FROM changeset WHERE id=1001;
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
 (1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', TRUE, 1003);
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) VALUES (1005, 'http://link_to_document', 1002);
+INSERT INTO reference (reference_id, bibtex, layer_id) 
+VALUES (1005, 
+'@Misc{marco2017articleB,
+author = {Marco},
+title = {ArticleB},
+howpublished = {\url{http://www.link_to_document.org/}},
+note = {Accessed on 02/02/2017},
+year={2017}
+}', 1002);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1002, 1010);
@@ -369,7 +394,15 @@ SELECT * FROM changeset WHERE id=1002;
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at) VALUES 
 (1003, 'layer_1003', 'Streets in 1930', '', '', '2017-04-10');
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) VALUES (1010, 'http://link_to_document', 1003);
+INSERT INTO reference (reference_id, bibtex, layer_id) 
+VALUES (1010, 
+'@Misc{marco2017articleB,
+author = {Marco},
+title = {ArticleB},
+howpublished = {\url{http://www.link_to_document.org/}},
+note = {Accessed on 02/02/2017},
+year={2017}
+}', 1003);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1003, 1040);
@@ -624,7 +657,14 @@ SELECT * FROM changeset WHERE id=1005;
 INSERT INTO layer (layer_id, f_table_name, name, description, created_at, is_published, user_id_published_by) VALUES 
 (1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', TRUE, 1003);
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) VALUES (1025, 'bookA', 1006);
+INSERT INTO reference (reference_id, bibtex, layer_id) 
+VALUES (1025, '@Misc{frisina2017bookZ,
+author = {Frisina},
+title = {BookZ},
+howpublished = {\url{http://www.school.com/}},
+note = {Accessed on 03/04/2017},
+year={2017}
+}', 1006);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1006, 1031);

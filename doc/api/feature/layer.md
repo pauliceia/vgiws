@@ -8,30 +8,26 @@ A layer is a group of elements. All elements have to be associated with a layer.
 This method gets layers from DB. If you doesn't put any parameter, so it will return all.
 - Parameters:
     - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
-    - user_id_author (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
     - is_published (optional): it is a boolean that indicates if a layer is published or not (e.g. 'TRUE' or 'FALSE');
-    - table_name (optional): the name of the table that is a text (e.g. '_1005_layer_1003').
+    - f_table_name (optional): the name of the table that is a text (e.g. '_1005_layer_1003').
 - Examples:
      - Get all layers: http://localhost:8888/api/layer/
      - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
-     - Get layers by user id: http://localhost:8888/api/layer/?user_id_author=1001
      - Get layers by is_published: http://localhost:8888/api/layer/?is_published=TRUE
-     - Get one layer by table_name: http://localhost:8888/api/layer/?table_name=_1005_layer_1003
+     - Get one layer by f_table_name: http://localhost:8888/api/layer/?f_table_name=layer_1003
 - Send:
 - Response: a JSON that contains the resources selected. Example:
     ```javascript
     {
         'features': [
             {
-                'properties': {
-                    'fk_user_id_published_by': 1003, 'source_author_name': '', 'table_name': '_1003_layer_1002',
-                    'created_at': '2017-03-05 00:00:00', 'reference': [{'description': 'http://link_to_document',
-                                                                        'id': 1005}],
-                    'removed_at': None, 'fk_user_id_author': 1003, 'description': '', 'is_published': True,
-                    'id': 1002, 'name': 'Robberies between 1880 to 1900'
-                },
+                'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
+                               'name': 'Robberies between 1880 to 1900',
+                               'reference': [{'reference_id': 1005, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                               'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
+                               'created_at': '2017-03-05 00:00:00'},
                 'type': 'Layer'
-            }
+            },
         ],
         'type': 'FeatureCollection'
     }

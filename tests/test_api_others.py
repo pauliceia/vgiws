@@ -5,7 +5,7 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
-
+"""
 class TestAPICapabilities(TestCase):
 
     def setUp(self):
@@ -47,7 +47,7 @@ class TestAPISessionUser(TestCase):
 
     def test_api_session_user_without_login(self):
         self.tester.api_session_user_error_404_not_found()
-
+"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

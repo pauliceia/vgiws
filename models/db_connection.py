@@ -527,13 +527,13 @@ class PGSQLConnection:
     # layer
     ################################################################################
 
-    def get_layers(self, layer_id=None, user_id_author=None, table_name=None, is_published=None):
+    def get_layers(self, layer_id=None, f_table_name=None, is_published=None):
         # the id have to be a int
-        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id_author):
+        if is_a_invalid_id(layer_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_layer_table(layer_id=layer_id, user_id_author=user_id_author,
-                                            table_name=table_name, is_published=is_published)
+        subquery = get_subquery_layer_table(layer_id=layer_id, f_table_name=f_table_name,
+                                            is_published=is_published)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -542,17 +542,15 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Layer',
                     'properties', json_build_object(
-                        'id',           id,
-                        'table_name',   table_name,
-                        'name',         name,
-                        'description',  description,
-                        'source_author_name',       source_author_name,
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_published', is_published,
-                        'fk_user_id_author',        fk_user_id_author,
-                        'fk_user_id_published_by',  fk_user_id_published_by,
-                        'reference',       reference__.jsontags
+                        'layer_id',             layer_id,
+                        'f_table_name',         f_table_name,
+                        'name',                 name,
+                        'description',          description,
+                        'source_description',   source_description,
+                        'created_at',           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_published',         is_published,
+                        'user_id_published_by', user_id_published_by,
+                        'reference',            reference__.jsontags
                     )
                 ))
             ) AS row_to_json
@@ -560,14 +558,14 @@ class PGSQLConnection:
             {0}
             CROSS JOIN LATERAL (                
                 -- (3) get the references of some resource on JSON format   
-                SELECT json_agg(json_build_object('id', id, 'description', description)) AS jsontags 
+                SELECT json_agg(json_build_object('reference_id', reference_id, 'bibtex', bibtex)) AS jsontags 
                 FROM 
                 (
                     -- (2) get the references of some resource
-                    SELECT id, description
-                    FROM reference_ 
-                    WHERE fk_layer_id = layer.id
-                    ORDER BY id
+                    SELECT reference_id, bibtex
+                    FROM reference 
+                    WHERE layer_id = layer.layer_id
+                    ORDER BY reference_id
                 ) subquery      
             ) AS reference__
         """.format(subquery)
@@ -1276,7 +1274,7 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'User',
                     'properties', json_build_object(
-                        'id',             id,
+                        'user_id',        user_id,
                         'email',          email,
                         'username',       username,
                         'name',           name,
@@ -1284,24 +1282,10 @@ class PGSQLConnection:
                         'is_email_valid', is_email_valid,
                         'terms_agreed',   terms_agreed
                     ),
-                    'auth',          auth.jsontags
                 ))
             ) AS row_to_json
             FROM 
             {0}
-            CROSS JOIN LATERAL (                
-                -- (3) get the auths of some resource on JSON format   
-                SELECT json_build_object('id', id, 'is_admin', is_admin, 'is_manager', is_manager, 
-                                         'is_curator', is_curator) AS jsontags 
-                FROM 
-                (
-                    -- (2) get the auths of some resource
-                    SELECT id, is_admin, is_manager, is_curator
-                    FROM auth 
-                    WHERE fk_user_id = user_.id
-                    ORDER BY id
-                ) subquery      
-            ) AS auth
         """.format(subquery)
 
         # do the query in database
