@@ -1305,7 +1305,7 @@ class PGSQLConnection:
                         'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_email_valid', is_email_valid,
                         'terms_agreed',   terms_agreed
-                    ),
+                    )
                 ))
             ) AS row_to_json
             FROM 

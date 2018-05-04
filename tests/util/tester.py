@@ -55,6 +55,8 @@ class UtilTester:
 
         response = self.session.get(self.URL + '/auth/login/', headers=headers)
 
+        # print("response: ", response.headers)
+
         self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_login_fake(self):

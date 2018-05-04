@@ -78,6 +78,13 @@ class FakeAuthLoginHandler(BaseHandler):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode({}))
 
+"""
+JWT
+https://tableless.com.br/entendendo-tokens-jwt/
+https://github.com/jpadilla/pyjwt
+http://blog.apcelent.com/json-web-token-tutorial-with-example-in-python.html
+https://steelkiwi.com/blog/jwt-authorization-python-part-1-practise/
+"""
 
 class AuthLoginHandler(BaseHandler):
 

@@ -5,7 +5,7 @@
 from unittest import TestCase, skip
 from util.tester import UtilTester
 
-"""
+
 
 class TestAPIAuthLogin(TestCase):
 
@@ -33,7 +33,7 @@ class TestAPIAuthLogin(TestCase):
         self.tester.auth_login("gabriel@admin.com", "gabriel")
         self.tester.auth_logout()
 
-
+"""
 @skip(">>>")
 class TestAPIAuthLoginErrors(TestCase):
 
