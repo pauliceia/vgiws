@@ -108,6 +108,11 @@ class AuthLoginHandler(BaseHandler):
         self.auth_login(email, password)
 
         # Default: self.set_header('Content-Type', 'application/json')
+
+
+        self.set_header('Authorizationtoken', 'auth123')
+
+
         self.write(json_encode({}))
 
 

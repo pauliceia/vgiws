@@ -55,7 +55,11 @@ class UtilTester:
 
         response = self.session.get(self.URL + '/auth/login/', headers=headers)
 
-        # print("response: ", response.headers)
+        # print("\n")
+        # print("headers: ", response.headers)
+        # print("headers: ", response.headers)
+        # print("text: ", response.text)
+        # print("\n")
 
         self.ut_self.assertEqual(response.status_code, 200)
 
