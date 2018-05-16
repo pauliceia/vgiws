@@ -443,9 +443,9 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
         current_user = self.get_current_user()
 
-        is_admin = current_user["user"]["auth"]["is_admin"]
+        is_the_admin = current_user["user"]["properties"]["is_the_admin"]
 
-        if not is_admin:
+        if not is_the_admin:
             raise HTTPError(403, "Just administrator can delete other user.")
 
 

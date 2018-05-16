@@ -1304,7 +1304,11 @@ class PGSQLConnection:
                         'name',           name,
                         'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_email_valid', is_email_valid,
-                        'terms_agreed',   terms_agreed
+                        'terms_agreed',   terms_agreed,                        
+                        'login_date',     login_date,
+                        'is_the_admin',   is_the_admin,
+                        'can_add_layer',  can_add_layer,
+                        'receive_notification_by_email',   receive_notification_by_email 
                     )
                 ))
             ) AS row_to_json
@@ -1332,10 +1336,8 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_user_in_db(self, properties, tags):
+    def add_user_in_db(self, properties):
         p = properties
-
-        # tags = dumps(tags)  # convert python dict to json to save in db
 
         query_text = """
             INSERT INTO pauliceia_user (email, username, password, created_at) 
@@ -1375,7 +1377,7 @@ class PGSQLConnection:
 
         validate_feature_json(feature_json)
 
-        id_in_json = self.add_user_in_db(feature_json["properties"], feature_json["tags"])
+        id_in_json = self.add_user_in_db(feature_json["properties"])
 
         # self.create_auth_user_in_db(id_in_json["id"])
 
@@ -1388,7 +1390,7 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            DELETE FROM user_ WHERE id={0};
+            DELETE FROM pauliceia_user WHERE user_id={0};
         """.format(feature_id)
 
         # do the query in database
