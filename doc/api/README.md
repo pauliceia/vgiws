@@ -9,5 +9,5 @@
 <!-- - [Changeset](feature/changeset.md) -->
 <!-- - [Element](feature/element.md) -->
 <!-- - [Dynamic Attribute](feature/dynamic_attribute.md) -->
-<!-- - [User](feature/user.md) -->
+ - [User](feature/user.md)
 <!-- - [Notification](feature/notification.md) -->

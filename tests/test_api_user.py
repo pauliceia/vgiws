@@ -151,7 +151,6 @@ class TestAPIUser(TestCase):
         self.tester.auth_logout()
 
 
-
 class TestAPIUserErrors(TestCase):
 
     def setUp(self):

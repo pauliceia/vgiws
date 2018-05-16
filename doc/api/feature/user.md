@@ -7,27 +7,28 @@ This method gets users from DB. If you doesn't put any parameter, so will return
 - Parameters:
     - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Get all users: http://localhost:8888/api/user/
-     - Get one user by id: http://localhost:8888/api/user/?user_id=1002
+    - Get all users: http://localhost:8888/api/user/
+    - Get one user by id: http://localhost:8888/api/user/?user_id=1002
 - Send:
-- Response: a JSON that contain the features selected. Example:
+- Response: a JSON that contains the selected resources. Example:
     ```javascript
     {
         'type': 'FeatureCollection',
         'features': [
             {
-                'properties': {'username': 'rodrigo', 'name': 'Rodrigo', 'id': 1002,
-                               'created_at': '2017-03-03 00:00:00', 'email': 'rodrigo@admin.com',
-                               'terms_agreed': True, 'is_email_valid': True},
                 'type': 'User',
-                'auth': {'is_curator': True, 'id': 1002, 'is_manager': True, 'is_admin': True}
-            }
+                'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
+                               'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
+                               'name': 'Gabriel', 'is_the_admin': False, 'can_add_layer': True,
+                               'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
+                               'is_email_valid': False}
+            },
         ]
     }
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any feature.
+    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a user. Please, contact the administrator.
 - Notes:
 
@@ -37,40 +38,42 @@ This method gets users from DB. If you doesn't put any parameter, so will return
 This method create a new user described in a JSON.
 - Parameters:
 - Examples:
-     - Create a feature: ```PUT http://localhost:8888/api/user/create```
-- Send: a JSON describing the feature. Example:
+     - Create a resource: ```PUT http://localhost:8888/api/user/create```
+- Send: a JSON describing the resource. Example:
     ```javascript
     {
         'type': 'User',
-        'properties': {'id': -1, 'email': 'roger@roger.com',
-                       'password': 'roger', 'username': ''}
+        'properties': {'user_id': -1, 'email': 'roger@roger.com',
+        'password': '283cy4n924y22y3', 'username': ''}
     }
     ```
-- Response: a JSON that contain the id of the feature created. Example:
+- Response: a JSON that contains the id of the created resource. Example:
     ```javascript
-    {'id': 7}
+    {'user_id': 7}
     ```
 - Error codes:
-    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
-- Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
+    - The password needs to be encrypted with a hash called sha512 (HEX)
+    - The key "user_id", when send a JSON, is indifferent. It is just there to know where the key "user_id" have to be.
 
 
 <!-- - PUT /api/user/update -->
 
 
-### DELETE /api/user/delete/#id
+### DELETE /api/user/#id
 
 This method delete one user by id = #id.
 - Parameters:
-    - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a feature by id: ```DELETE http://localhost:8888/api/user/7```
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/user/7```
 - Send:
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 403 (Forbidden): Just administrator can delete other user.
-    - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
