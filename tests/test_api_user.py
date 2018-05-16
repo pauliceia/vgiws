@@ -26,79 +26,92 @@ class TestAPIUser(TestCase):
 
     # user - get
 
-    # def test_get_api_user_return_all_users(self):
-    #     expected_at_least = {
-    #         'features': [
-    #             {
-    #                 'properties': {'username': 'admin', 'name': 'Administrator', 'id': 1001,
-    #                                'created_at': '2017-01-01 00:00:00', 'email': 'admin@admin.com', 'terms_agreed': True,
-    #                                'is_email_valid': True},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1001, 'is_manager': True, 'is_admin': True}
-    #             },
-    #             {
-    #                 'properties': {'username': 'rodrigo', 'name': 'Rodrigo', 'id': 1002,
-    #                                'created_at': '2017-03-03 00:00:00', 'email': 'rodrigo@admin.com', 'terms_agreed': True,
-    #                                'is_email_valid': True},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1002, 'is_manager': True, 'is_admin': True}
-    #             },
-    #             {
-    #                 'properties': {'username': 'miguel', 'name': 'Miguel', 'id': 1003, 'created_at': '2017-05-08 00:00:00',
-    #                                'email': 'miguel@admin.com', 'terms_agreed': True, 'is_email_valid': False},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1003, 'is_manager': True, 'is_admin': False}
-    #             },
-    #             {
-    #                 'properties': {'username': 'rafael', 'name': 'Rafael', 'id': 1004, 'created_at': '2017-06-09 00:00:00',
-    #                                'email': 'rafael@admin.com', 'terms_agreed': False, 'is_email_valid': True},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1004, 'is_manager': False, 'is_admin': False}
-    #             },
-    #             {
-    #                 'properties': {'username': 'gabriel', 'name': 'Gabriel', 'id': 1005, 'created_at': '2017-09-20 00:00:00',
-    #                                'email': 'gabriel@admin.com', 'terms_agreed': False, 'is_email_valid': False},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1005, 'is_manager': False, 'is_admin': False}
-    #             },
-    #             {
-    #                 'properties': {'username': 'fernanda', 'name': None, 'id': 1006, 'created_at': '2017-01-19 00:00:00',
-    #                                'email': 'fernanda@gmail.com', 'terms_agreed': False, 'is_email_valid': True},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1006, 'is_manager': False, 'is_admin': False}
-    #             },
-    #             {
-    #                 'properties': {'username': 'ana', 'name': None, 'id': 1007, 'created_at': '2017-01-18 00:00:00',
-    #                                'email': 'ana@gmail.com', 'terms_agreed': True, 'is_email_valid': False},
-    #                 'type': 'User', 'auth': {'is_curator': False, 'id': 1007, 'is_manager': False, 'is_admin': False}
-    #             },
-    #             {
-    #                 'properties': {'username': 'bea', 'name': None, 'id': 1008, 'created_at': '2017-01-30 00:00:00',
-    #                                'email': 'bea@gmail.com', 'terms_agreed': False, 'is_email_valid': False},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': False, 'id': 1008, 'is_manager': False, 'is_admin': False}
-    #             }
-    #         ],
-    #         'type': 'FeatureCollection',
-    #     }
-    #
-    #     self.tester.api_user(expected_at_least=expected_at_least)
+    def test_get_api_user_return_all_users(self):
+        expected_at_least = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                                   'username': 'admin', 'user_id': 1001, 'email': 'admin@admin.com',
+                                   'name': 'Administrator', 'is_the_admin': True, 'can_add_layer': True,
+                                   'created_at': '2017-01-01 00:00:00', 'login_date': '2017-01-01T00:00:00',
+                                   'is_email_valid': True}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                                   'username': 'rodrigo', 'user_id': 1002, 'email': 'rodrigo@admin.com',
+                                   'name': 'Rodrigo', 'is_the_admin': True, 'can_add_layer': True,
+                                   'created_at': '2017-03-03 00:00:00', 'login_date': '2017-03-03T00:00:00',
+                                   'is_email_valid': True}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                                   'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
+                                   'name': 'Miguel', 'is_the_admin': True, 'can_add_layer': True,
+                                   'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
+                                   'is_email_valid': False}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
+                                   'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
+                                   'name': 'Rafael', 'is_the_admin': False, 'can_add_layer': True,
+                                   'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
+                                   'is_email_valid': True}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
+                                   'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
+                                   'name': 'Gabriel', 'is_the_admin': False, 'can_add_layer': True,
+                                   'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
+                                   'is_email_valid': False}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
+                                   'username': 'fernanda', 'user_id': 1006, 'email': 'fernanda@gmail.com',
+                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'created_at': '2017-01-19 00:00:00', 'login_date': '2017-01-19T00:00:00',
+                                   'is_email_valid': True}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                                   'username': 'ana', 'user_id': 1007, 'email': 'ana@gmail.com',
+                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'created_at': '2017-01-18 00:00:00', 'login_date': '2017-01-18T00:00:00',
+                                   'is_email_valid': False}
+                },
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': False,
+                                   'username': 'bea', 'user_id': 1008, 'email': 'bea@gmail.com',
+                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'created_at': '2017-01-30 00:00:00', 'login_date': '2017-01-30T00:00:00',
+                                   'is_email_valid': False}
+                }
+            ]
+        }
 
-    # def test_get_api_user_return_user_by_user_id(self):
-    #     expected = {
-    #         'type': 'FeatureCollection',
-    #         'features': [
-    #             {
-    #                 'properties': {'username': 'rodrigo', 'name': 'Rodrigo', 'id': 1002,
-    #                                'created_at': '2017-03-03 00:00:00', 'email': 'rodrigo@admin.com',
-    #                                'terms_agreed': True, 'is_email_valid': True},
-    #                 'type': 'User',
-    #                 'auth': {'is_curator': True, 'id': 1002, 'is_manager': True, 'is_admin': True}
-    #             }
-    #         ]
-    #     }
-    #
-    #     self.tester.api_user(expected, user_id="1002")
+        self.tester.api_user(expected_at_least=expected_at_least)
+
+    def test_get_api_user_return_user_by_user_id(self):
+        expected = {
+            'features': [
+                {'properties': {'name': 'Rodrigo', 'login_date': '2017-03-03T00:00:00', 'terms_agreed': True,
+                                'receive_notification_by_email': False, 'user_id': 1002, 'username': 'rodrigo',
+                                'is_email_valid': True, 'is_the_admin': True, 'email': 'rodrigo@admin.com',
+                                'can_add_layer': True, 'created_at': '2017-03-03 00:00:00'},
+                 'type': 'User'}
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_user(expected, user_id="1002")
 
     # user - create and delete
 
