@@ -151,7 +151,7 @@ class TestAPIUser(TestCase):
         self.tester.auth_logout()
 
 
-"""
+
 class TestAPIUserErrors(TestCase):
 
     def setUp(self):
@@ -201,9 +201,7 @@ class TestAPIUserErrors(TestCase):
         # create a feature
         feature = {
             'type': 'User',
-            'tags': {},
-            'properties': {'id': -1, 'email': email,
-                           'password': 'roger', 'username': 'roger'}
+            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger'}
         }
 
         feature = self.tester.api_user_create(feature)
@@ -215,7 +213,7 @@ class TestAPIUserErrors(TestCase):
         self.tester.auth_login(email, password)
 
         # get the id of feature to REMOVE it
-        feature_id = feature["properties"]["id"]
+        feature_id = feature["properties"]["user_id"]
 
         # try to remove the user created, but get a 403, because just admin can delete users
         self.tester.api_user_delete_error_403_forbidden(feature_id)
@@ -244,7 +242,6 @@ class TestAPIUserErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
