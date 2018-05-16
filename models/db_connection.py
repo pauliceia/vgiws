@@ -1338,9 +1338,9 @@ class PGSQLConnection:
         # tags = dumps(tags)  # convert python dict to json to save in db
 
         query_text = """
-            INSERT INTO user_ (email, username, password, created_at) 
+            INSERT INTO pauliceia_user (email, username, password, created_at) 
             VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP)
-            RETURNING id;
+            RETURNING user_id;
         """.format(p["email"], p["username"], p["password"])
 
         try:
@@ -1377,7 +1377,7 @@ class PGSQLConnection:
 
         id_in_json = self.add_user_in_db(feature_json["properties"], feature_json["tags"])
 
-        self.create_auth_user_in_db(id_in_json["id"])
+        # self.create_auth_user_in_db(id_in_json["id"])
 
         return id_in_json
 

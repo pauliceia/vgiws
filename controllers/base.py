@@ -114,7 +114,7 @@ class BaseHandler(RequestHandler):
         # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
 
         # how solve the CORS problem: https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
-        self.set_header("Access-Control-Allow-Origin", "http://localhost:8080")
+        self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
         self.set_header('Access-Control-Allow-Methods', ' POST, GET, PUT, DELETE, OPTIONS')
         self.set_header("Access-Control-Allow-Credentials", "true")
@@ -187,7 +187,7 @@ class BaseHandler(RequestHandler):
                 raise HTTPError(500, str(error))
             # ... because I expected a 404 to create a new user
             id_in_json = self.PGSQLConn.create_user(user_json)
-            user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["id"]))
+            user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
         # get the only one user in list returned
         user_in_db = user_in_db["features"][0]
