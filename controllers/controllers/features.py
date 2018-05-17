@@ -134,6 +134,11 @@ class APIImport(BaseHandlerLayer):
         # print("arguments: ", arguments["file_name"])
 
         if param == "shp":
+            # remove the extension of the file name (e.g. points)
+            FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
+
+            # layers = self.PGSQLConn.get_layers(f_table_name=FILE_NAME_WITHOUT_EXTENSION)
+            # print("\nlayers: ", layers, "\n")
             # TODO: verificar se a já nao existe f_table_name no DB
 
             # if do not exist the temp folder, create it
@@ -146,8 +151,6 @@ class APIImport(BaseHandlerLayer):
 
             # file name of the zip (e.g. /tmp/vgiws/points.zip)
             ZIP_FILE_NAME = TEMP_FOLDER + arguments["file_name"]
-            # remove the extension of the file name (e.g. points)
-            FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
             # folder where will extract the zip (e.g. /tmp/vgiws/points)
             EXTRACTED_ZIP_FOLDER_NAME = TEMP_FOLDER + FILE_NAME_WITHOUT_EXTENSION
             # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
@@ -181,15 +184,12 @@ class APIImport(BaseHandlerLayer):
             try:
                 command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + POSTGRESQL_CONNECTION + ' ' + SHP_FILE_NAME + ' -skipfailures'
 
-                print("command_to_import_shp_into_postgis: ", command_to_import_shp_into_postgis)
-                print("EXTRACTED_ZIP_FOLDER_NAME: ", EXTRACTED_ZIP_FOLDER_NAME)
-
                 # EXTRACTED_ZIP_FOLDER_NAME = folder where will extract the zip (e.g. /tmp/vgiws/points)
                 check_call(command_to_import_shp_into_postgis, cwd=EXTRACTED_ZIP_FOLDER_NAME, shell=True)
 
             except CalledProcessError as error:
-                print("error: ", error)
-                print("\ncode: ", error.returncode)
+                # print("error: ", error)
+                # print("\ncode: ", error.returncode)
                 raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
         else:
