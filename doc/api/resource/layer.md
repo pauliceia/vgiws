@@ -39,12 +39,14 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
 - Notes:
 
 
-### PUT /api/layer/create
+### PUT /api/layer/create/?\<params>
 
-This method createS a new layer described in a JSON.
+This method creates a new layer described in a JSON.
 - Parameters:
+    - is_to_create_feature_table (optional): it is a boolean that indicates if a feature table will be created together the layer or not (e.g. 'TRUE' or 'FALSE'; default is 'TRUE');
 - Examples:
-     - Create a resource: ```PUT http://localhost:8888/api/layer/create```
+    - Create a layer with feature table: ```PUT http://localhost:8888/api/layer/create```
+    - Create a layer without feature table: ```PUT http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
 - Send: a JSON describing the resource. Example:
     ```javascript
     {
@@ -61,14 +63,16 @@ This method createS a new layer described in a JSON.
     ```
 - Response: a JSON that contains the id of the resource created. Example:
     ```javascript
-    {'id': 7}
+    {'layer_id': 7}
     ```
 - Error codes:
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter source needs to be a list.
     - 403 (Forbidden): It is necessary a user logged in to access this URL.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
-- Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
+- Notes:
+    - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).
+    - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
 <!-- - PUT /api/layer/update -->
@@ -76,7 +80,7 @@ This method createS a new layer described in a JSON.
 
 ### DELETE /api/layer/delete/#id
 
-This method delete one layer by id = #id.
+This method deletes one layer by id = #id.
 - Parameters:
     - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:

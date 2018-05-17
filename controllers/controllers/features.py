@@ -171,7 +171,7 @@ class APIImport(BaseHandlerLayer):
                 if exist_shapefile_inside_zip(zip_reference):
                     zip_reference.extractall(EXTRACTED_ZIP_FOLDER_NAME)
                 else:
-                    raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP")
+                    raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
 
 
             # import the SHP into PostGIS
@@ -194,7 +194,7 @@ class APIImport(BaseHandlerLayer):
                 raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
         else:
-            raise HTTPError(404, "Invalid parameter: " + str(param))
+            raise HTTPError(404, "Not found a route with the parameter: " + str(param))
 
     # @auth_non_browser_based
     # def delete(self, param=None):
