@@ -28,6 +28,7 @@
 from abc import ABCMeta
 from requests import exceptions, Session
 from json import loads, dumps
+from copy import deepcopy
 
 from tornado.web import HTTPError
 from tornado.escape import json_encode
@@ -102,8 +103,10 @@ class PGSQLConnection:
 
         if self.__ARGS__["DEBUG_MODE"]:
             self.__DO_CONNECTION__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
+            self.__DB_CONNECTION__ = __DEBUG_PGSQL_CONNECTION_SETTINGS__
         else:
             self.__DO_CONNECTION__(__PGSQL_CONNECTION_SETTINGS__)
+            self.__DB_CONNECTION__ = __PGSQL_CONNECTION_SETTINGS__
 
         # cursor_factory=RealDictCursor means that the "row" of the table will be
         # represented by a dictionary in python
@@ -147,6 +150,9 @@ class PGSQLConnection:
 
     def set_connection_status(self, status=True):
         self.__DB_STATUS__ = status
+
+    def get_db_connection(self):
+        return deepcopy(self.__DB_CONNECTION__)
 
     # "overwriting" some DB methods
 
@@ -1339,11 +1345,14 @@ class PGSQLConnection:
     def add_user_in_db(self, properties):
         p = properties
 
-        query_text = """
-            INSERT INTO pauliceia_user (email, username, password, created_at) 
-            VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP)
-            RETURNING user_id;
-        """.format(p["email"], p["username"], p["password"])
+        try:
+            query_text = """
+                INSERT INTO pauliceia_user (email, username, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
+                VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP, {3}, {4}, {5})
+                RETURNING user_id;
+            """.format(p["email"], p["username"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
+        except KeyError as error:
+            raise HTTPError(400, "Some user attribute is missing. Look the documentation!")
 
         try:
             # do the query in database
@@ -1355,7 +1364,7 @@ class PGSQLConnection:
 
             # 23505 - unique_violation
             if error.pgcode == "23505":
-                raise HTTPError(400, "This email already exist in DB.")
+                raise HTTPError(400, "This username or email already exist in DB.")
             else:
                 raise error
 
@@ -1364,14 +1373,14 @@ class PGSQLConnection:
 
         return result
 
-    def create_auth_user_in_db(self, user_id):
-        query_text = """
-            INSERT INTO auth (is_admin, is_manager, is_curator, fk_user_id) 
-            VALUES (FALSE, FALSE, FALSE, {0});
-        """.format(user_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+    # def create_auth_user_in_db(self, user_id):
+    #     query_text = """
+    #         INSERT INTO auth (is_admin, is_manager, is_curator, fk_user_id)
+    #         VALUES (FALSE, FALSE, FALSE, {0});
+    #     """.format(user_id)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_user(self, feature_json):
 

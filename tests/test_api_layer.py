@@ -426,31 +426,31 @@ class TestAPILayerErrors(TestCase):
 
 """
 
-class TestAPIImport(TestCase):
-
-    def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-        self.file_name = "files/"
-
-    # import - create
-
-    def test_import_shp(self):
-        # DO LOGIN
-        self.tester.auth_login_fake()
-
-        with open(self.file_name + "points.zip", mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp(binary_file_content, f_table_name="points", file_name="points.zip")
-
-        # TODO: search the layer
-
-        # TODO: remove the layer
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+# class TestAPIImport(TestCase):
+#
+#     def setUp(self):
+#         # create a tester passing the unittest self
+#         self.tester = UtilTester(self)
+#
+#         self.file_name = "files/"
+#
+#     # import - create
+#
+#     def test_import_shp(self):
+#         # DO LOGIN
+#         self.tester.auth_login_fake()
+#
+#         with open(self.file_name + "points.zip", mode='rb') as file:  # rb = read binary
+#             binary_file_content = file.read()
+#
+#             self.tester.api_import_shp(binary_file_content, f_table_name="points", file_name="points.zip")
+#
+#         # TODO: search the layer
+#
+#         # TODO: remove the layer
+#
+#         # DO LOGOUT AFTER THE TESTS
+#         self.tester.auth_logout()
 
 
 # It is not necessary to pyt the main() of unittest here,

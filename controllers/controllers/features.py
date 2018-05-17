@@ -7,6 +7,7 @@
 
 import os
 import zipfile
+from subprocess import check_call, CalledProcessError
 
 from ..base import BaseHandlerLayer, auth_non_browser_based  #, BaseHandlerChangeset
 from tornado.web import HTTPError
@@ -133,6 +134,8 @@ class APIImport(BaseHandlerLayer):
         # print("arguments: ", arguments["file_name"])
 
         if param == "shp":
+            # TODO: verificar se a já nao existe f_table_name no DB
+
             # if do not exist the temp folder, create it
             if not os.path.exists(TEMP_FOLDER):
                 os.makedirs(TEMP_FOLDER)
@@ -148,7 +151,7 @@ class APIImport(BaseHandlerLayer):
             # folder where will extract the zip (e.g. /tmp/vgiws/points)
             EXTRACTED_ZIP_FOLDER_NAME = TEMP_FOLDER + FILE_NAME_WITHOUT_EXTENSION
             # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
-            SHP_FILE_NAME = EXTRACTED_ZIP_FOLDER_NAME + FILE_NAME_WITHOUT_EXTENSION + ".shp"
+            SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
             # get the file
             binary_file = self.request.body
@@ -166,6 +169,28 @@ class APIImport(BaseHandlerLayer):
                     zip_reference.extractall(EXTRACTED_ZIP_FOLDER_NAME)
                 else:
                     raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP")
+
+
+            # import the SHP into PostGIS
+
+            __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
+
+            POSTGRESQL_CONNECTION = '"host=' + __DB_CONNECTION__["HOSTNAME"] + ' dbname=' + __DB_CONNECTION__["DATABASE"] + \
+                 ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
+
+            try:
+                command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + POSTGRESQL_CONNECTION + ' ' + SHP_FILE_NAME + ' -skipfailures'
+
+                print("command_to_import_shp_into_postgis: ", command_to_import_shp_into_postgis)
+                print("EXTRACTED_ZIP_FOLDER_NAME: ", EXTRACTED_ZIP_FOLDER_NAME)
+
+                # EXTRACTED_ZIP_FOLDER_NAME = folder where will extract the zip (e.g. /tmp/vgiws/points)
+                check_call(command_to_import_shp_into_postgis, cwd=EXTRACTED_ZIP_FOLDER_NAME, shell=True)
+
+            except CalledProcessError as error:
+                print("error: ", error)
+                print("\ncode: ", error.returncode)
+                raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
         else:
             raise HTTPError(404, "Invalid parameter: " + str(param))

@@ -44,7 +44,7 @@ This method create a new user described in a JSON.
     {
         'type': 'User',
         'properties': {'user_id': -1, 'email': 'roger@roger.com',
-        'password': '283cy4n924y22y3', 'username': ''}
+        'password': '283cy4n924y22y3', 'username': 'roger'}
     }
     ```
 - Response: a JSON that contains the id of the created resource. Example:
@@ -52,6 +52,8 @@ This method create a new user described in a JSON.
     {'user_id': 7}
     ```
 - Error codes:
+    - 400 (Bad Request): Some user attribute is missing. Look the documentation!
+    - 400 (Bad Request): This username or email already exist in DB.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The password needs to be encrypted with a hash called sha512 (HEX)
