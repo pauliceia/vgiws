@@ -458,8 +458,10 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    def api_layer_create(self, feature_json):
-        response = self.session.put(self.URL + '/api/layer/create/',
+    def api_layer_create(self, feature_json, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.put(self.URL + '/api/layer/create/{0}'.format(arguments),
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)

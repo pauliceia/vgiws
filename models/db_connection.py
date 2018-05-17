@@ -644,7 +644,7 @@ class PGSQLConnection:
 
         return result
 
-    def create_layer(self, resource_json, user_id, create_f_table=True):
+    def create_layer(self, resource_json, user_id, is_to_create_feature_table=True):
 
         # pre-processing
 
@@ -673,10 +673,10 @@ class PGSQLConnection:
                 # if is other error, so raise it up
                 raise error
 
-        if create_f_table:
+        if is_to_create_feature_table:
             self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
-        else:
-            print("\n\n It is not creating a feature table \n\n")
+        # else:
+        #     print("\n\n It is not creating a feature table \n\n")
 
         self.add_user_in_layer(user_id=user_id, layer_id=id_in_json["layer_id"], is_the_creator=True)
 

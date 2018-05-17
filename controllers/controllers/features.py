@@ -182,7 +182,8 @@ class APIImport(BaseHandlerLayer):
                  ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
 
             try:
-                command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + POSTGRESQL_CONNECTION + ' ' + SHP_FILE_NAME + ' -skipfailures'
+                command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + POSTGRESQL_CONNECTION + ' ' + SHP_FILE_NAME + \
+                                                     ' -nln ' + arguments["f_table_name"] + ' -skipfailures'
 
                 # EXTRACTED_ZIP_FOLDER_NAME = folder where will extract the zip (e.g. /tmp/vgiws/points)
                 check_call(command_to_import_shp_into_postgis, cwd=EXTRACTED_ZIP_FOLDER_NAME, shell=True)

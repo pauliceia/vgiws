@@ -250,6 +250,15 @@ class BaseHandler(RequestHandler):
         """
         arguments = {k: self.get_argument(k) for k in self.request.arguments}
 
+        for key in arguments:
+            argument = arguments[key].lower()
+
+            # transform in boolean the string received
+            if argument == 'true':
+                arguments[key] = True
+            if argument == 'false':
+                arguments[key] = False
+
         # "q" is the query argument, that have the fields of query
         # if "q" in arguments:
         #     arguments["q"] = self.get_q_param_as_dict_from_str(arguments["q"])
@@ -514,6 +523,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
+        print("**kwargs: ", kwargs)
         return self.PGSQLConn.create_layer(feature_json, current_user_id, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
