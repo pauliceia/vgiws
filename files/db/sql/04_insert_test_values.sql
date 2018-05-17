@@ -1,4 +1,10 @@
-﻿-- -----------------------------------------------------
+﻿
+DROP TABLE IF EXISTS new_layer CASCADE ;
+DROP TABLE IF EXISTS version_new_layer CASCADE ;
+DROP TABLE IF EXISTS points CASCADE ;
+
+
+-- -----------------------------------------------------
 -- Schemas __feature__ and __version__
 -- -----------------------------------------------------
 -- create schemas to save the features tables and the versioning
@@ -737,6 +743,8 @@ SELECT * FROM feature_layer_1005;
 SELECT * FROM version_layer_1005;
 SELECT * FROM changeset WHERE id=1005;
 */
+
+
 
 
 

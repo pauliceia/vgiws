@@ -625,15 +625,16 @@ class PGSQLConnection:
         # tags = dumps(tags)  # convert python dict to json to save in db
 
         # get the fields to add in DB
-        table_name = properties["table_name"]
+        f_table_name = properties["f_table_name"]
         name = properties["name"]
         description = properties["description"]
+        source_description = properties["source_description"]
         # fk_user_id = properties["fk_user_id"]
 
         query_text = """
-            INSERT INTO layer (table_name, name, description, fk_user_id_author, created_at) 
-            VALUES ('{0}', '{1}', '{2}', {3}, LOCALTIMESTAMP) RETURNING id;
-        """.format(table_name, name, description, user_id)
+            INSERT INTO layer (f_table_name, name, description, source_description, created_at, user_id_published_by) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, NULL) RETURNING layer_id;
+        """.format(f_table_name, name, description, source_description)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -643,7 +644,7 @@ class PGSQLConnection:
 
         return result
 
-    def create_layer(self, resource_json, user_id):
+    def create_layer(self, resource_json, user_id, create_f_table=True):
 
         # pre-processing
 
@@ -672,9 +673,12 @@ class PGSQLConnection:
                 # if is other error, so raise it up
                 raise error
 
-        self.create_feature_table(properties["table_name"], resource_json["feature_table"])
+        if create_f_table:
+            self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
+        else:
+            print("\n\n It is not creating a feature table \n\n")
 
-        self.add_user_in_layer(user_id=user_id, layer_id=id_in_json["id"], is_the_creator=True)
+        self.add_user_in_layer(user_id=user_id, layer_id=id_in_json["layer_id"], is_the_creator=True)
 
         return id_in_json
 
@@ -684,12 +688,12 @@ class PGSQLConnection:
 
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=resource_id)
-        table_name = layer["features"][0]["properties"]["table_name"]
+        f_table_name = layer["features"][0]["properties"]["f_table_name"]
 
         # delete the layer
 
         query_text = """
-            DELETE FROM layer WHERE id={0};
+            DELETE FROM layer WHERE layer_id={0};
         """.format(resource_id)
 
         # do the query in database
@@ -702,7 +706,7 @@ class PGSQLConnection:
 
         # delete the feature table
 
-        self.delete_feature_table(table_name)
+        self.delete_feature_table(f_table_name)
 
     def add_user_in_layer(self, user_id, layer_id, is_the_creator=False):
 
@@ -792,7 +796,7 @@ class PGSQLConnection:
     #
     #     return result
 
-    def create_feature_table(self, table_name, feature_table):
+    def create_feature_table(self, f_table_name, feature_table):
 
         # get the geometry of the feature table
         geometry = feature_table["geometry"]["type"]
@@ -803,42 +807,79 @@ class PGSQLConnection:
             properties += property + " " + feature_table["properties"][property] + ", \n"
 
         # create the feature table in __feature__ schema and create the version feature table in __version__ schema
-        for schema in ["__feature__", "__version__"]:
-            # build the query to create a new feature table
-            query_text = """        
-                CREATE TABLE {0}.{1} (
-                  id SERIAL,              
-                  geom GEOMETRY({2}, 4326) NOT NULL,              
-                  {3}              
-                  version INT NOT NULL DEFAULT 1,
-                  fk_changeset_id INT NOT NULL,
-                  PRIMARY KEY (id),
-                  CONSTRAINT constraint_fk_changeset_id
-                    FOREIGN KEY (fk_changeset_id)
-                    REFERENCES changeset (id)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE
-                );        
-            """.format(schema, table_name, geometry, properties)
 
-            self.__PGSQL_CURSOR__.execute(query_text)
+        # for schema in ["__feature__", "__version__"]:
 
-    def delete_feature_table(self, table_name):
+        # build the query to create a new feature table
+        query_text = """        
+            CREATE TABLE {0} (
+              id SERIAL,              
+              geom GEOMETRY({1}, 4326) NOT NULL,              
+              {2}              
+              version INT NOT NULL DEFAULT 1,
+              changeset_id INT NOT NULL,
+              PRIMARY KEY (id),
+              CONSTRAINT constraint_changeset_id
+                FOREIGN KEY (changeset_id)
+                REFERENCES changeset (changeset_id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+            );        
+        """.format(f_table_name, geometry, properties)
+
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # version
+
+        # build the query to create a new feature table
+        query_text = """        
+            CREATE TABLE version_{0} (
+              id SERIAL,              
+              geom GEOMETRY({1}, 4326) NOT NULL,              
+              {2}              
+              version INT NOT NULL DEFAULT 1,
+              changeset_id INT NOT NULL,
+              PRIMARY KEY (id),
+              CONSTRAINT constraint_changeset_id
+                FOREIGN KEY (changeset_id)
+                REFERENCES changeset (changeset_id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+            );        
+        """.format(f_table_name, geometry, properties)
+
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def delete_feature_table(self, f_table_name):
 
         # table_name = format_the_table_name_to_standard(table_name, user_id)
 
         # create the feature table in __feature__ schema and create the version feature table in __version__ schema
-        for schema in ["__feature__", "__version__"]:
-            # build the query to create a new feature table
-            query_text = """        
-                DROP TABLE IF EXISTS {0}.{1} CASCADE ;
-            """.format(schema, table_name)
+        # for schema in ["__feature__", "__version__"]:
 
-            try:
-                self.__PGSQL_CURSOR__.execute(query_text)
-            except ProgrammingError as error:
-                self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-                raise HTTPError(400, str(error))
+        # build the query to create a new feature table
+        query_text = """        
+            DROP TABLE IF EXISTS {0} CASCADE ;
+        """.format(f_table_name)
+
+        try:
+            self.__PGSQL_CURSOR__.execute(query_text)
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(400, str(error))
+
+        # version
+
+        # build the query to create a new feature table
+        query_text = """        
+                DROP TABLE IF EXISTS version_{0} CASCADE ;
+            """.format(f_table_name)
+
+        try:
+            self.__PGSQL_CURSOR__.execute(query_text)
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(400, str(error))
 
 
     ################################################################################

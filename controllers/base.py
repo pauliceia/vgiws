@@ -236,7 +236,7 @@ class BaseHandler(RequestHandler):
 
         if user_cookie:
             user = json_decode(user_cookie)
-            return user["user"]["properties"]["id"]
+            return user["user"]["properties"]["user_id"]
         else:
             return None
 
@@ -343,9 +343,10 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         # get the JSON sent, to add in DB
         feature_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
+        arguments = self.get_aguments()
 
         try:
-            json_with_id = self._create_feature(feature_json, current_user_id)
+            json_with_id = self._create_feature(feature_json, current_user_id, **arguments)
 
             # do commit after create a feature
             self.PGSQLConn.commit()
@@ -356,7 +357,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
-    def _create_feature(self, feature_json, current_user_id):
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
         raise NotImplementedError
 
     # update
@@ -421,7 +422,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
 
-    def _create_feature(self, feature_json, current_user_id):
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_user(feature_json)
 
     def _update_feature(self, *args, **kwargs):
@@ -512,8 +513,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id):
-        return self.PGSQLConn.create_layer(feature_json, current_user_id)
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_layer(feature_json, current_user_id, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
@@ -521,7 +522,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_feature(self, *args, **kwargs):
-        self.delete_validation(*args)
+        # self.delete_validation(*args)
 
         self.PGSQLConn.delete_layer_in_db(*args)
 

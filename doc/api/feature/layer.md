@@ -49,9 +49,9 @@ This method createS a new layer described in a JSON.
     ```javascript
     {
         'type': 'Layer',
-        'properties': {'name': 'Addresses in 1930', 'table_name': '_1_new_layer',
-                       'reference': [], 'description': '', 'fk_theme_id': 1041,
-                       'id': -1},
+        'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+                       'description': '', 'source_description': '',
+                       'reference': [], 'theme': [{'theme_id': 1041}]},
         'feature_table': {
             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
             'geometry': {"type": "MultiPoint"}

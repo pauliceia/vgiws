@@ -200,19 +200,18 @@ class TestAPILayer(TestCase):
 
     # layer - create and delete
 
-    """
     def test_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
 
-        user_session = self.tester.get_session_user()
-        user_id = user_session["user"]["properties"]["id"]
+        # user_session = self.tester.get_session_user()
 
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1930', 'table_name': 'new_layer', 'reference': [],
-                           'description': '', 'fk_theme_id': 1041},
+            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'theme': [{'theme_id': 1041}]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -221,7 +220,7 @@ class TestAPILayer(TestCase):
         resource = self.tester.api_layer_create(resource)
 
         # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["id"]
+        resource_id = resource["properties"]["layer_id"]
 
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(resource_id)
@@ -231,7 +230,6 @@ class TestAPILayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-        """
 
 """
 

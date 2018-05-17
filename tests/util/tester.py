@@ -466,11 +466,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
+        self.ut_self.assertIn("layer_id", resulted)
+        self.ut_self.assertNotEqual(resulted["layer_id"], -1)
 
         # put the id received in the original JSON of changeset
-        feature_json["properties"]["id"] = resulted["id"]
+        feature_json["properties"]["layer_id"] = resulted["layer_id"]
 
         return feature_json
 
