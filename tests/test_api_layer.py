@@ -202,7 +202,7 @@ class TestAPILayer(TestCase):
 
     def test_api_layer_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # user_session = self.tester.get_session_user()
 
@@ -255,7 +255,7 @@ class TestAPILayerErrors(TestCase):
 
     def test_put_api_layer_create_error_400_bad_request(self):
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # create a layer
         resource = {
@@ -274,7 +274,7 @@ class TestAPILayerErrors(TestCase):
 
     def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # create a layer
         resource = {
@@ -321,7 +321,7 @@ class TestAPILayerErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         self.tester.api_layer_delete_error_400_bad_request("abc")
         self.tester.api_layer_delete_error_400_bad_request(0)
@@ -400,7 +400,7 @@ class TestAPILayerErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         self.tester.api_layer_delete_error_404_not_found("5000")
         self.tester.api_layer_delete_error_404_not_found("5001")
@@ -421,7 +421,7 @@ class TestAPIImport(TestCase):
 
     def test_import_shp(self):
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         f_table_name = "points"
 

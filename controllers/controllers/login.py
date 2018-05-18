@@ -15,8 +15,6 @@ from tornado.gen import coroutine
 from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
 
 
-# authentication
-
 # class AuthLogoutHandler(BaseHandler):
 #
 #     urls = [r"/auth/logout/", r"/auth/logout"]
@@ -25,27 +23,27 @@ from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
 #         self.logout()
 
 
-class FakeAuthLoginHandler(BaseHandler):
-    """
-    A fake login to tests
-    """
-
-    urls = [r"/api/auth/login/fake/", r"/api/auth/login/fake"]
-
-    @just_run_on_debug_mode
-    def get(self):
-        user_json = {
-            'type': 'User',
-            'properties': {'id': -1, 'email': 'test@fake.login', 'username': 'test', 'password': '', 'name': "Fake login",
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': True}
-        }
-
-        encoded_jwt_token = self.login(user_json)
-
-        self.set_header('Authorization', encoded_jwt_token)
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode({}))
+# class FakeAuthLoginHandler(BaseHandler):
+#     """
+#     A fake login to tests
+#     """
+#
+#     urls = [r"/api/auth/login/fake/", r"/api/auth/login/fake"]
+#
+#     @just_run_on_debug_mode
+#     def get(self):
+#         user_json = {
+#             'type': 'User',
+#             'properties': {'id': -1, 'email': 'test@fake.login', 'username': 'test', 'password': '', 'name': "Fake login",
+#                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': True}
+#         }
+#
+#         encoded_jwt_token = self.login(user_json)
+#
+#         self.set_header('Authorization', encoded_jwt_token)
+#
+#         # Default: self.set_header('Content-Type', 'application/json')
+#         self.write(json_encode({}))
 
 
 class AuthLoginHandler(BaseHandler):
