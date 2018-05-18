@@ -55,23 +55,26 @@ class UtilTester:
 
         response = self.session.get(self.URL + '/auth/login/', headers=headers)
 
-        # print("\n")
-        # print("headers: ", response.headers)
-        # print("headers: ", response.headers)
-        # print("text: ", response.text)
-        # print("\n")
+        # Save the JWT token of the server in Authorization header
+        self.headers["Authorization"] = response.headers["Authorization"]
 
         self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_login_fake(self):
         response = self.session.get(self.URL + '/auth/login/fake/')
 
+        # Save the JWT token of the server in Authorization header
+        self.headers["Authorization"] = response.headers["Authorization"]
+
         self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_logout(self):
-        response = self.session.get(self.URL + '/auth/logout')
+        # response = self.session.get(self.URL + '/auth/logout')
+        #
+        # self.ut_self.assertEqual(response.status_code, 200)
 
-        self.ut_self.assertEqual(response.status_code, 200)
+        # remove the JWT Token of the Authorization
+        del self.headers["Authorization"]
 
     # logout error
 
@@ -120,7 +123,8 @@ class UtilTester:
         return feature_json
 
     def api_user_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -143,17 +147,20 @@ class UtilTester:
     # user errors - delete
 
     def api_user_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_user_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_user_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -479,7 +486,8 @@ class UtilTester:
         return feature_json
 
     def api_layer_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -516,17 +524,20 @@ class UtilTester:
     # layer errors - delete
 
     def api_layer_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_layer_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -630,12 +641,14 @@ class UtilTester:
         return feature_json
 
     def api_changeset_close(self, feature_id):
-        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
     def api_changeset_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -667,34 +680,40 @@ class UtilTester:
     # changeset errors - close
 
     def api_changeset_close_error_400_bad_request(self, feature_id):
-        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_changeset_close_error_403_forbidden(self, feature_id):
-        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_changeset_close_error_404_not_found(self, feature_id):
-        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id))
+        response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # changeset errors - delete
 
     def api_changeset_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_changeset_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_changeset_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
@@ -728,7 +747,8 @@ class UtilTester:
         return feature_json
 
     def api_notification_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -759,17 +779,20 @@ class UtilTester:
     # notification errors - delete
 
     def api_notification_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_notification_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_notification_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id))
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 

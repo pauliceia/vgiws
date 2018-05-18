@@ -44,20 +44,55 @@ def catch_generic_exception(method):
     return wrapper
 
 
+# def auth_non_browser_based(method):
+#     """
+#     Authentication to non browser based service
+#     :param method: the method decorated
+#     :return: the method wrapped
+#     """
+#     def wrapper(self, *args, **kwargs):
+#
+#         # if user is not logged in, so return a 403 Forbidden
+#         if not self.current_user:
+#             raise HTTPError(403, "It is necessary a user logged in to access this URL.")
+#
+#         # if the user is logged in, so execute the method
+#         return method(self, *args, **kwargs)
+#
+#     return wrapper
+
 def auth_non_browser_based(method):
     """
     Authentication to non browser based service
     :param method: the method decorated
     :return: the method wrapped
     """
+
     def wrapper(self, *args, **kwargs):
 
+        if "Authorization" in self.request.headers:
+            try:
+                # decoded_jwt_token = get_decoded_jwt_token(self)
+                self.get_decoded_jwt_token()
+            except Exception as error:
+                print("\nerror: ", error, "\n")
+                raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator.")
+
+            # print("decoded_jwt_token: ", decoded_jwt_token, "\n\n")
+
+            return method(self, *args, **kwargs)
+        else:
+            raise HTTPError(403, "It is necessary an Authorization header valid.")
+
+
+
+
         # if user is not logged in, so return a 403 Forbidden
-        if not self.current_user:
-            raise HTTPError(403, "It is necessary a user logged in to access this URL.")
+        # if not self.current_user:
+        #     raise HTTPError(403, "It is necessary a user logged in to access this URL.")
 
         # if the user is logged in, so execute the method
-        return method(self, *args, **kwargs)
+        # return method(self, *args, **kwargs)
 
     return wrapper
 
@@ -81,12 +116,12 @@ def just_run_on_debug_mode(method):
 
 
 def generate_encoded_jwt_token_by_user(user):
-    user_id = user["properties"]["user_id"]
-    email = user["properties"]["email"]
+    # user_id = user["properties"]["user_id"]
+    # email = user["properties"]["email"]
+    #
+    # jwt_json = {"user_id": user_id, "email": email}
 
-    jwt_json = {"user_id": user_id, "email": email}
-
-    encoded_jwt_token = jwt.encode(jwt_json, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
+    encoded_jwt_token = jwt.encode(user["properties"], __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
 
     return encoded_jwt_token
 
@@ -176,7 +211,8 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
-
+    def get_decoded_jwt_token(self):
+        return jwt.decode(self.request.headers["Authorization"], __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
 
     @catch_generic_exception
     def auth_login(self, email, password):
@@ -189,10 +225,10 @@ class BaseHandler(RequestHandler):
 
         # TODO: antigo / retirar depois
         # get the only one user in list returned
-        user_in_db = user_in_db["features"][0]
-        #
+        # user_in_db = user_in_db["features"][0]
+
         # # insert the user in cookie
-        self.set_current_user(user=user_in_db, new_user=True)
+        # self.set_current_user(user=user_in_db, new_user=True)
 
 
 
@@ -226,10 +262,10 @@ class BaseHandler(RequestHandler):
 
         # TODO: antigo / retirar depois
         # get the only one user in list returned
-        user_in_db = user_in_db["features"][0]
+        # user_in_db = user_in_db["features"][0]
 
         # insert the user in cookie
-        self.set_current_user(user=user_in_db, new_user=True)
+        # self.set_current_user(user=user_in_db, new_user=True)
 
 
 
@@ -238,15 +274,15 @@ class BaseHandler(RequestHandler):
 
         return encoded_jwt_token
 
-    def logout(self):
-        # if there is no user logged, so raise a exception
-        if not self.get_current_user():
-            raise HTTPError(404, "Not found any user to logout.")
-
-        # if there is a user logged, so remove it from cookie
-        self.clear_cookie("user")
-
-        # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
+    # def logout(self):
+    #     # if there is no user logged, so raise a exception
+    #     if not self.get_current_user():
+    #         raise HTTPError(404, "Not found any user to logout.")
+    #
+    #     # if there is a user logged, so remove it from cookie
+    #     self.clear_cookie("user")
+    #
+    #     # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
 
     # COOKIES
 
@@ -266,21 +302,26 @@ class BaseHandler(RequestHandler):
         encode = json_encode(user_cookie)
         self.set_secure_cookie("user", encode)
 
-    def get_current_user(self):
-        user_cookie = self.get_secure_cookie("user")
+    # def get_current_user(self):
+    #     user_cookie = self.get_secure_cookie("user")
+    #
+    #     if user_cookie:
+    #         return json_decode(user_cookie)
+    #     else:
+    #         return None
 
-        if user_cookie:
-            return json_decode(user_cookie)
-        else:
+    def get_current_user(self):
+        try:
+            decoded_jwt_token = self.get_decoded_jwt_token()
+            return decoded_jwt_token
+        except KeyError as error:
             return None
 
     def get_current_user_id(self):
-        user_cookie = self.get_secure_cookie("user")
-
-        if user_cookie:
-            user = json_decode(user_cookie)
-            return user["user"]["properties"]["user_id"]
-        else:
+        try:
+            decoded_jwt_token = self.get_decoded_jwt_token()
+            return decoded_jwt_token["user_id"]
+        except KeyError as error:
             return None
 
     # URLS
@@ -496,7 +537,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
         current_user = self.get_current_user()
 
-        is_the_admin = current_user["user"]["properties"]["is_the_admin"]
+        is_the_admin = current_user["is_the_admin"]
 
         if not is_the_admin:
             raise HTTPError(403, "Just administrator can delete other user.")

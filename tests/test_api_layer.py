@@ -257,16 +257,10 @@ class TestAPILayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login_fake()
 
-        user_session = self.tester.get_session_user()
-        user_id = user_session["user"]["properties"]["user_id"]
-
-        # create the standard to save the table_name ( _<user_id>_<table_name> )
-        table_name = "_" + str(user_id) + "_new_layer"
-
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': table_name, 'source': '',
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
                            'description': '', 'fk_theme_id': 1041},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
@@ -282,13 +276,10 @@ class TestAPILayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login_fake()
 
-        # user_session = self.tester.get_session_user()
-        # user_id = user_session["user"]["properties"]["user_id"]
-
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [], 'theme': [{'theme_id': 1041}]},
             'feature_table': {

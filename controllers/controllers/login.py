@@ -17,12 +17,12 @@ from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
 
 # authentication
 
-class AuthLogoutHandler(BaseHandler):
-
-    urls = [r"/auth/logout/", r"/auth/logout"]
-
-    def get(self):
-        self.logout()
+# class AuthLogoutHandler(BaseHandler):
+#
+#     urls = [r"/auth/logout/", r"/auth/logout"]
+#
+#     def get(self):
+#         self.logout()
 
 
 # TODO: CREATE A OAUTH2

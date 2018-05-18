@@ -31,19 +31,19 @@ class APICapabilities(BaseHandler):
         self.write(json_encode(capabilities))
 
 
-class APISessionUser(BaseHandler):
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/session/user/", r"/api/session/user"]
-
-    def get(self):
-        current_user = self.get_current_user()
-
-        # if there is no user logged in, so raise a exception
-        if not current_user:
-            raise HTTPError(404, "Not found any user.")
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(current_user))
+# class APISessionUser(BaseHandler):
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/session/user/", r"/api/session/user"]
+#
+#     def get(self):
+#         current_user = self.get_current_user()
+#
+#         # if there is no user logged in, so raise a exception
+#         if not current_user:
+#             raise HTTPError(404, "Not found any user.")
+#
+#         # Default: self.set_header('Content-Type', 'application/json')
+#         self.write(json_encode(current_user))
 
 
 # class HelperExecute(BaseHandler):
