@@ -25,45 +25,12 @@ from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
 #         self.logout()
 
 
-# TODO: CREATE A OAUTH2
-
-# class AuthLoginHandler(BaseHandler):
-#     # Login
-#     # http://www.tornadoweb.org/en/stable/guide/security.html
-#     # http://guillaumevincent.com/2013/02/12/Basic-authentication-on-Tornado-with-a-decorator.html
-#     # https://github.com/tornadoweb/tornado/tree/stable/demos/blog
-#
-#     urls = [r"/auth/login/", r"/auth/login"]
-#
-#     def get(self):
-#         errormessage = self.get_argument("error", "")
-#
-#         self.render("example/auth/login.html", errormessage=errormessage)
-#
-#     def post(self):
-#         email = self.get_argument("email", "")
-#         password = self.get_argument("password", "")
-#
-#         result = self.do_login(email, password)
-#
-#         if result:
-#             self.set_current_user(email=email, type_login="normal", new_user=True)
-#             # user_cookie = self.get_current_user()
-#
-#             self.set_and_send_status(status=200, reason="Logged in system")
-#             return
-#             # super(BaseHandler, self).redirect(self.__AFTER_LOGGED_REDIRECT_TO__)
-#         else:
-#             self.set_and_send_status(status=404, reason="Login is invalid. Correct them and try again.")
-#             return
-
-
 class FakeAuthLoginHandler(BaseHandler):
     """
     A fake login to tests
     """
 
-    urls = [r"/auth/login/fake/", r"/auth/login/fake"]
+    urls = [r"/api/auth/login/fake/", r"/api/auth/login/fake"]
 
     @just_run_on_debug_mode
     def get(self):
@@ -80,17 +47,10 @@ class FakeAuthLoginHandler(BaseHandler):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode({}))
 
-"""
-JWT
-https://tableless.com.br/entendendo-tokens-jwt/
-https://github.com/jpadilla/pyjwt
-http://blog.apcelent.com/json-web-token-tutorial-with-example-in-python.html
-https://steelkiwi.com/blog/jwt-authorization-python-part-1-practise/
-"""
 
 class AuthLoginHandler(BaseHandler):
 
-    urls = [r"/auth/login/", r"/auth/login"]
+    urls = [r"/api/auth/login/", r"/api/auth/login"]
 
     def get(self):
 
@@ -104,12 +64,9 @@ class AuthLoginHandler(BaseHandler):
             return False
 
         auth_decoded = (b64decode(auth_header[6:])).decode()
-
         email, password = auth_decoded.split(':', 2)
 
         encoded_jwt_token = self.auth_login(email, password)
-
-        # Default: self.set_header('Content-Type', 'application/json')
 
         self.set_header('Authorization', encoded_jwt_token)
 
@@ -122,7 +79,7 @@ class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
         http://www.tornadoweb.org/en/stable/auth.html
     """
 
-    urls = [r"/auth/google/", r"/auth/google"]
+    urls = [r"/api/auth/google/", r"/api/auth/google"]
 
     redirect_uri = "http://localhost:8888/auth/google/"
 
@@ -185,7 +142,7 @@ class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
         https://developers.facebook.com/docs/facebook-login/permission
     """
 
-    urls = [r"/auth/facebook/", r"/auth/facebook"]
+    urls = [r"/api/auth/facebook/", r"/api/auth/facebook"]
 
     redirect_uri = "http://localhost:8888/auth/facebook/"
 
@@ -229,48 +186,3 @@ class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
                     client_id=self.settings["facebook_api_key"],
                     extra_params={"scope": "user_posts,email"}
             )
-
-
-# login and logout with success
-
-# class AuthLoginSuccessHandler(BaseHandler):
-#
-#     # nl = need login
-#     urls = [r"/auth/login/success/", r"/auth/login/success"]
-#
-#     def get(self):
-#         self.render("example/auth/login_success.html")
-
-
-# class AuthLogoutSuccessHandler(BaseHandler):
-#
-#     # nl = need login
-#     urls = [r"/auth/logout/success/", r"/auth/logout/success"]
-#
-#     def get(self):
-#         self.render("example/auth/logout.html")
-
-
-# other handlers
-
-# class MainHandlerNeedLogin(BaseHandler):
-#
-#     # nl = need login
-#     urls = [r"/main/nl/", r"/main/nl"]
-#
-#     @authenticated
-#     def get(self):
-#         username = xhtml_escape(self.current_user)
-#         self.render("example/main/mainneedlogin.html", username=username)
-
-
-# class MainHandlerDontNeedLogin(BaseHandler):
-#
-#     # dnl = don't need login
-#     urls = [r"/main/dnl/", r"/main/dnl"]
-#
-#     def get(self):
-#         username = xhtml_escape(self.current_user)
-#         self.render("example/main/maindontneedlogin.html", username=username)
-
-

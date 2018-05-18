@@ -16,10 +16,10 @@ from base64 import b64encode
 from hashlib import sha512
 
 
-def get_username_and_password_as_string_in_base64(username, password):
-    username_and_password = username + ":" + password
+def get_email_and_password_as_string_in_base64(email, password):
+    email_and_password = email + ":" + password
 
-    string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
+    string_in_base64 = (b64encode(email_and_password.encode('utf-8'))).decode('utf-8')
 
     return string_in_base64
 
@@ -47,13 +47,13 @@ class UtilTester:
 
         password = get_string_in_hash_sha512(password)
 
-        email_and_password_in_base64 = get_username_and_password_as_string_in_base64(email, password)
+        email_and_password_in_base64 = get_email_and_password_as_string_in_base64(email, password)
 
         headers = deepcopy(self.headers)
 
         headers["Authorization"] = "Basic " + email_and_password_in_base64
 
-        response = self.session.get(self.URL + '/auth/login/', headers=headers)
+        response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
 
         # Save the JWT token of the server in Authorization header
         self.headers["Authorization"] = response.headers["Authorization"]
@@ -61,7 +61,7 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_login_fake(self):
-        response = self.session.get(self.URL + '/auth/login/fake/')
+        response = self.session.get(self.URL + '/api/auth/login/fake/')
 
         # Save the JWT token of the server in Authorization header
         self.headers["Authorization"] = response.headers["Authorization"]
