@@ -122,7 +122,7 @@ class TestAPIUser(TestCase):
         # create a feature
         feature = {
             'type': 'User',
-            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger',
+            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
         }
 
@@ -201,7 +201,7 @@ class TestAPIUserErrors(TestCase):
         # create a feature
         feature = {
             'type': 'User',
-            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger',
+            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
         }
 

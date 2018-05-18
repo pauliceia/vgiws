@@ -69,7 +69,7 @@ class FakeAuthLoginHandler(BaseHandler):
     def get(self):
         user_json = {
             'type': 'User',
-            'properties': {'id': -1, 'email': 'test@fake.login', 'username': 'test', 'password': '',
+            'properties': {'id': -1, 'email': 'test@fake.login', 'username': 'test', 'password': '', 'name': "Fake login",
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': True}
         }
 
