@@ -6,6 +6,7 @@
 """
 from json import loads
 from abc import abstractmethod, ABCMeta
+import jwt
 
 from psycopg2 import Error, ProgrammingError
 from requests import exceptions
@@ -15,6 +16,7 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
+from settings.accounts import __JWT_SECRET__, __JWT_ALGORITHM__
 # from settings import HOSTS_ALLOWED
 
 
@@ -76,6 +78,17 @@ def just_run_on_debug_mode(method):
         return method(self, *args, **kwargs)
 
     return wrapper
+
+
+def generate_encoded_jwt_token_by_user(user):
+    user_id = user["properties"]["user_id"]
+    email = user["properties"]["email"]
+
+    jwt_json = {"user_id": user_id, "email": email}
+
+    encoded_jwt_token = jwt.encode(jwt_json, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
+
+    return encoded_jwt_token
 
 
 # BASE CLASS
@@ -163,16 +176,30 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
+
+
     @catch_generic_exception
     def auth_login(self, email, password):
 
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
+        encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
+
+
+
+        # TODO: antigo / retirar depois
         # get the only one user in list returned
         user_in_db = user_in_db["features"][0]
-
-        # insert the user in cookie
+        #
+        # # insert the user in cookie
         self.set_current_user(user=user_in_db, new_user=True)
+
+
+
+
+
+        return encoded_jwt_token
+
 
     @catch_generic_exception
     def login(self, user_json):
@@ -189,11 +216,27 @@ class BaseHandler(RequestHandler):
             id_in_json = self.PGSQLConn.create_user(user_json)
             user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
+        encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
+
+
+
+
+
+
+
+        # TODO: antigo / retirar depois
         # get the only one user in list returned
         user_in_db = user_in_db["features"][0]
 
         # insert the user in cookie
         self.set_current_user(user=user_in_db, new_user=True)
+
+
+
+
+
+
+        return encoded_jwt_token
 
     def logout(self):
         # if there is no user logged, so raise a exception

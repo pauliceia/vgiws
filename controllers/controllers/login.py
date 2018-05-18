@@ -73,7 +73,9 @@ class FakeAuthLoginHandler(BaseHandler):
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': True}
         }
 
-        self.login(user_json)
+        encoded_jwt_token = self.login(user_json)
+
+        self.set_header('Authorization', encoded_jwt_token)
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode({}))
@@ -105,13 +107,11 @@ class AuthLoginHandler(BaseHandler):
 
         email, password = auth_decoded.split(':', 2)
 
-        self.auth_login(email, password)
+        encoded_jwt_token = self.auth_login(email, password)
 
         # Default: self.set_header('Content-Type', 'application/json')
 
-
-        self.set_header('Authorizationtoken', 'auth123')
-
+        self.set_header('Authorization', encoded_jwt_token)
 
         self.write(json_encode({}))
 
