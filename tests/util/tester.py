@@ -456,22 +456,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
+        # no windows ele retorna com \r, então retira o \r das referências
         for resource in resulted['features']:
             if resource['properties']['reference'] is not None:
                 for reference in resource['properties']['reference']:
                     reference['bibtex'] = reference['bibtex'].replace("\r", "")
-
-                    # print("reference: ", reference['bibtex'], "\n\n")
-
-
-
-        # {'features': [{'properties': {'reference': [{'reference_id': 1010,
-        #                                              'bibtex': '@Misc{marco2017articleB,\r\nauthor = {Marco},\r\ntitle = {ArticleB},\r\nhowpublished = {\\url{http://www.link_to_document.org/}},\r\nnote = {Accessed on 02/02/2017},\r\nyear={2017}\r\n}'}],
-        #                               'is_published': False, 'f_table_name': 'layer_1003',
-        #                               'created_at': '2017-04-10 00:00:00', 'layer_id': 1003, 'description': '',
-        #                               'source_description': '', 'theme': [{'theme_id': 1040}],
-        #                               'user_id_published_by': None, 'name': 'Streets in 1930'}, 'type': 'Layer'}],
-        #  'type': 'FeatureCollection'}
 
         self.ut_self.assertEqual(expected, resulted)
 
