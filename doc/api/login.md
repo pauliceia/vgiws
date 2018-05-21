@@ -1,51 +1,59 @@
 ## Login
 
+This section describes the functions to do a login.
 
-### GET /auth/google/
 
-This method do social login using a Google account.
+### GET /api/auth/login/
+
+This method do a basic login with a user.
 - Parameters:
 - Examples:
-     - Do a social login: http://localhost:8888/auth/google/
-- Send:
-- Response: a page to do a social login.
-- Error codes:
-- Notes:
-
-
-### GET /auth/facebook/
-
-This method do social login using a Facebook account.
-- Parameters:
-- Examples:
-     - Do a social login: http://localhost:8888/auth/facebook/
-- Send:
-- Response: a page to do a social login.
-- Error codes:
-- Notes:
-
-
-### GET /auth/login/
-
-This method do basic login with a user.
-- Parameters:
-- Examples:
-     - Do a basic login: http://localhost:8888/auth/login/
-- Send:
-- Response:
+     - Do a basic login: GET http://localhost:8888/auth/login/
+- Send (in Header):
+    - First encrypt the password with a hash algorithm called SHA512.
+    - Concatenate the email and password in one string separated by ":" (e.g. "email:encrypted_password")
+    - Encode the string above using the base64 encode. It will return, for example, the string "38749sjq983uj23849j"
+    - Concatenate the string "Basic " with the encoded string. It will return, for example, something like this: "Basic 38749sjq983uj23849j"
+    - Put this string in the Authorization header.
+- Response (in Header):
+    - The Authorization header has a valid Token to access the platform.
 - Error codes:
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
 
 
-### GET /auth/logout/
+### GET /api/auth/google/
 
-This method logout a user.
+This method do a social login using a Google account.
 - Parameters:
 - Examples:
-     - Do logout: http://localhost:8888/auth/logout/
+     - Do a social login: GET http://localhost:8888/auth/google/
 - Send:
-- Response:
+- Response: a page to do a social login.
 - Error codes:
-    - 404 (Not Found): Not found any user to logout.
 - Notes:
+
+
+### GET /api/auth/facebook/
+
+This method do a social login using a Facebook account.
+- Parameters:
+- Examples:
+     - Do a social login: GET http://localhost:8888/auth/facebook/
+- Send:
+- Response: a page to do a social login.
+- Error codes:
+- Notes:
+
+
+<!-- ### GET /api/auth/logout/ -->
+
+<!-- This method logout a user. -->
+<!-- - Parameters: -->
+<!-- - Examples: -->
+     <!-- - Do logout: http://localhost:8888/auth/logout/ -->
+<!-- - Send: -->
+<!-- - Response: -->
+<!-- - Error codes: -->
+    <!-- - 404 (Not Found): Not found any user to logout. -->
+<!-- - Notes: -->

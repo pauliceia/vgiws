@@ -1388,10 +1388,10 @@ class PGSQLConnection:
 
         try:
             query_text = """
-                INSERT INTO pauliceia_user (email, username, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
-                VALUES ('{0}', '{1}', '{2}', LOCALTIMESTAMP, {3}, {4}, {5})
+                INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
+                VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
                 RETURNING user_id;
-            """.format(p["email"], p["username"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
+            """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
         except KeyError as error:
             raise HTTPError(400, "Some user attribute is missing. Look the documentation!")
 
