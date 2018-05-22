@@ -51,9 +51,9 @@ This method do a social login using a Facebook account.
 <!-- This method logout a user. -->
 <!-- - Parameters: -->
 <!-- - Examples: -->
-     <!-- - Do logout: http://localhost:8888/auth/logout/ -->
+<!-- - Do logout: http://localhost:8888/auth/logout/ -->
 <!-- - Send: -->
 <!-- - Response: -->
 <!-- - Error codes: -->
-    <!-- - 404 (Not Found): Not found any user to logout. -->
+<!-- - 404 (Not Found): Not found any user to logout. -->
 <!-- - Notes: -->
