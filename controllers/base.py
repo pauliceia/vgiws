@@ -165,6 +165,7 @@ class BaseHandler(RequestHandler):
         self.set_header("Access-Control-Allow-Origin", "*")
         self.set_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
         self.set_header('Access-Control-Allow-Methods', ' POST, GET, PUT, DELETE, OPTIONS')
+        self.set_header('Access-Control-Expose-Headers', 'Authorization')
         self.set_header("Access-Control-Allow-Credentials", "true")
 
         # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, x-requested-with")
