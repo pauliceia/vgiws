@@ -159,7 +159,7 @@ class BaseHandler(RequestHandler):
 
         # self.set_header("Access-Control-Allow-Origin", hosts_allowed)
         # self.set_header("Access-Control-Allow-Origin", "*")
-        # self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        # self.set_ header("Access-Control-Allow-Headers", "x-requested-with")
 
         # how solve the CORS problem: https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
         self.set_header("Access-Control-Allow-Origin", "*")

@@ -4,17 +4,6 @@ DROP TABLE IF EXISTS version_new_layer CASCADE ;
 DROP TABLE IF EXISTS points CASCADE ;
 
 
--- -----------------------------------------------------
--- Schemas __feature__ and __version__
--- -----------------------------------------------------
--- create schemas to save the features tables and the versioning
-DROP SCHEMA IF EXISTS __feature__ CASCADE ;
-CREATE SCHEMA IF NOT EXISTS __feature__; 
-
-DROP SCHEMA IF EXISTS __version__ CASCADE ;
-CREATE SCHEMA IF NOT EXISTS __version__; 
-
-
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -231,8 +220,8 @@ year={2017}
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1001, 1041);
 
 -- create a feature table to save the data
-DROP TABLE IF EXISTS __feature__.layer_1001 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1001 (
+DROP TABLE IF EXISTS layer_1001 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1001 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
@@ -248,8 +237,8 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1001 (
     ON UPDATE CASCADE
 );
 
-DROP TABLE IF EXISTS __version__.layer_1001 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1001 (
+DROP TABLE IF EXISTS version_layer_1001 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1001 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
@@ -273,12 +262,12 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1001, '2017-01-05', 1001, 1001);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
 (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 'R. São José', '1869', '1869', 1001);
-INSERT INTO __feature__.layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
 (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 'R. Marechal Deodoro', '1869', '1869', 1001);
 -- add data as GeoJSON
-INSERT INTO __feature__.layer_1001 (id, geom, changeset_id) 
+INSERT INTO layer_1001 (id, geom, changeset_id) 
 VALUES (1003, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -297,7 +286,7 @@ INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1011
 
 -- verify if the layer has features and verify if the changeset was created
 /*
-SELECT * FROM __feature__.layer_1001;
+SELECT * FROM layer_1001;
 SELECT * FROM version_layer_1001;
 SELECT * FROM changeset WHERE id=1001;
 */
@@ -322,9 +311,9 @@ year={2017}
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1002, 1010);
 
 -- create a feature table to save the data
---DROP TABLE IF EXISTS __feature__.layer_1002 CASCADE ;
-DROP TABLE IF EXISTS __feature__.layer_1002 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1002 (
+--DROP TABLE IF EXISTS layer_1002 CASCADE ;
+DROP TABLE IF EXISTS layer_1002 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1002 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
@@ -340,9 +329,9 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1002 (
     ON UPDATE CASCADE
 );
 
---DROP TABLE IF EXISTS __version__.layer_1002 CASCADE ;
-DROP TABLE IF EXISTS __version__.layer_1002 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1002 (
+--DROP TABLE IF EXISTS version_layer_1002 CASCADE ;
+DROP TABLE IF EXISTS version_layer_1002 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1002 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
@@ -366,14 +355,14 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1002, '2017-03-05', 1002, 1003);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
 (1006, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 'R. 11 de Junho, 9 = D. José de Barros', '1886', '', 1002);
-INSERT INTO __feature__.layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
 (1007, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 'R. 15 de Novembro, 17A', '1890', '', 1002);
-INSERT INTO __feature__.layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
 (1008, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 'R. Barra Funda, 74', '1897', '', 1002);
 -- add data as GeoJSON
-INSERT INTO __feature__.layer_1002 (id, geom, changeset_id) 
+INSERT INTO layer_1002 (id, geom, changeset_id) 
 VALUES (1009, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -414,9 +403,9 @@ year={2017}
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1003, 1040);
 
 -- create a feature table to save the data
---DROP TABLE IF EXISTS __feature__.layer_1003 CASCADE ;
-DROP TABLE IF EXISTS __feature__.layer_1003 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1003 (
+--DROP TABLE IF EXISTS layer_1003 CASCADE ;
+DROP TABLE IF EXISTS layer_1003 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1003 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
@@ -432,9 +421,9 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1003 (
     ON UPDATE CASCADE
 );
 
---DROP TABLE IF EXISTS __version__.layer_1003 CASCADE ;
-DROP TABLE IF EXISTS __version__.layer_1003 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1003 (
+--DROP TABLE IF EXISTS version_layer_1003 CASCADE ;
+DROP TABLE IF EXISTS version_layer_1003 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1003 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
@@ -459,14 +448,14 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1003, '2017-04-12', 1003, 1005);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 
 'rua boa vista', '1930', '1930', 1003);
-INSERT INTO __feature__.layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326),
  'rua tres de dezembro', '1930', '1930', 1003);
 -- add data as GeoJSON
-INSERT INTO __feature__.layer_1003 (id, geom, changeset_id) 
+INSERT INTO layer_1003 (id, geom, changeset_id) 
 VALUES (1003, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -502,9 +491,9 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1004, 1040);
 
 -- create a feature table to save the data
---DROP TABLE IF EXISTS __feature__.layer_1004 CASCADE ;
-DROP TABLE IF EXISTS __feature__.layer_1004 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1004 (
+--DROP TABLE IF EXISTS layer_1004 CASCADE ;
+DROP TABLE IF EXISTS layer_1004 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1004 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
@@ -520,9 +509,9 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1004 (
     ON UPDATE CASCADE
 );
 
---DROP TABLE IF EXISTS __version__.layer_1004 CASCADE ;
-DROP TABLE IF EXISTS __version__.layer_1004 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1004 (
+--DROP TABLE IF EXISTS version_layer_1004 CASCADE ;
+DROP TABLE IF EXISTS version_layer_1004 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1004 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
@@ -547,17 +536,17 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1004, '2017-06-28', 1004, 1005);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1001, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 
 'rua joao briccola', '1920', '1920', 1004);
-INSERT INTO __feature__.layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1002, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 
 'ladeira porto geral', '1920', '1920', 1004);
-INSERT INTO __feature__.layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1003, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 
 'travessa porto geral', '1920', '1920', 1004);
 -- add data as GeoJSON
-INSERT INTO __feature__.layer_1004 (id, geom, changeset_id) 
+INSERT INTO layer_1004 (id, geom, changeset_id) 
 VALUES (1004, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -590,9 +579,9 @@ INSERT INTO layer (layer_id, f_table_name, name, description, created_at) VALUES
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1005, 1023);
 
 -- create a feature table to save the data
---DROP TABLE IF EXISTS __feature__.layer_1005 CASCADE ;
-DROP TABLE IF EXISTS __feature__.layer_1005 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1005 (
+--DROP TABLE IF EXISTS layer_1005 CASCADE ;
+DROP TABLE IF EXISTS layer_1005 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1005 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
@@ -608,9 +597,9 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1005 (
     ON UPDATE CASCADE
 );
 
---DROP TABLE IF EXISTS __version__.layer_1005 CASCADE ;
-DROP TABLE IF EXISTS __version__.layer_1005 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1005 (
+--DROP TABLE IF EXISTS version_layer_1005 CASCADE ;
+DROP TABLE IF EXISTS version_layer_1005 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1005 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
@@ -633,9 +622,9 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1005, '2017-08-05', 1005, 1007);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1005 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 'Sant''Anna''s Hospital', '1870', '1940', 1005);
-INSERT INTO __feature__.layer_1005 (id, geom, name, start_date, end_date, changeset_id) 
+INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) 
 VALUES (1002, 
 	ST_GeomFromGeoJSON(
 		'{
@@ -676,9 +665,9 @@ year={2017}
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1006, 1031);
 
 -- create a feature table to save the data
---DROP TABLE IF EXISTS __feature__.layer_1006 CASCADE ;
-DROP TABLE IF EXISTS __feature__.layer_1006 CASCADE ;
-CREATE TABLE IF NOT EXISTS __feature__.layer_1006 (
+--DROP TABLE IF EXISTS layer_1006 CASCADE ;
+DROP TABLE IF EXISTS layer_1006 CASCADE ;
+CREATE TABLE IF NOT EXISTS layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
@@ -694,9 +683,9 @@ CREATE TABLE IF NOT EXISTS __feature__.layer_1006 (
     ON UPDATE CASCADE
 );
 
---DROP TABLE IF EXISTS __version__.layer_1006 CASCADE ;
-DROP TABLE IF EXISTS __version__.layer_1006 CASCADE ;
-CREATE TABLE IF NOT EXISTS __version__.layer_1006 (
+--DROP TABLE IF EXISTS version_layer_1006 CASCADE ;
+DROP TABLE IF EXISTS version_layer_1006 CASCADE ;
+CREATE TABLE IF NOT EXISTS version_layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
@@ -720,10 +709,10 @@ INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1006, 1008, '2017
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1006, '2017-09-04', 1006, 1007);
 
 -- insert the data into the layer
-INSERT INTO __feature__.layer_1006 (id, geom, name, start_date, end_date, changeset_id) VALUES 
+INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) VALUES 
 (1001, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 'Cinema Roger', '1910', '1930', 1006);
 -- add area as GeoJSON 
-INSERT INTO __feature__.layer_1006 (id, geom, name, start_date, end_date, changeset_id) 
+INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) 
 VALUES (1002, 
 	ST_GeomFromGeoJSON(
 		'{
