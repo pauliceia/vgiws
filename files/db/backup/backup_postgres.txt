@@ -1,0 +1,4 @@
+sudo su - postgres
+
+pg_restore -U postgres -d pauliceia_edit -1 pauliceia_edit\(18-05-18\).backup
+
