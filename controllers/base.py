@@ -635,6 +635,22 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
             raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
 
 
+class BaseFeatureTable(BaseHandlerTemplateMethod):
+
+    def _get_feature(self, *args, **kwargs):
+        # print("\n\n*args: ", args)
+        # print("**kwargs: ", kwargs, "\n\n")
+        return self.PGSQLConn.get_feature_table(**kwargs)
+
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
+        raise NotImplementedError
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _delete_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
 
 
 

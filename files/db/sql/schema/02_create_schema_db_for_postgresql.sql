@@ -1,5 +1,16 @@
 
--- Qua 02 Mai 2018 16:11:26 -03
+-- delete all tables in public schema, with exception of the spatial_ref_sys
+-- SOURCE: https://stackoverflow.com/questions/3327312/drop-all-tables-in-postgresql
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public' and tablename != 'spatial_ref_sys') LOOP
+        EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+    END LOOP;
+END $$;
+
+
+-- Qua 23 Mai 2018 19:55:40 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -74,6 +85,7 @@ CREATE TABLE IF NOT EXISTS changeset (
 
 -- -----------------------------------------------------
 
+
 -- -----------------------------------------------------
 -- Table user_layer
 -- -----------------------------------------------------
@@ -99,6 +111,7 @@ CREATE TABLE IF NOT EXISTS user_layer (
 
 
 -- -----------------------------------------------------
+
 -- -----------------------------------------------------
 -- Table theme
 -- -----------------------------------------------------
@@ -135,7 +148,7 @@ CREATE TABLE IF NOT EXISTS notification (
   description TEXT NOT NULL ,
   icon TEXT NULL,
   created_at TIMESTAMP NOT NULL,
-  user_id INT NULL ,
+  user_id_creator INT NULL ,
   layer_id INT NULL ,
   theme_id INT NULL ,
   notification_id_parent INT NULL,
@@ -151,7 +164,7 @@ CREATE TABLE IF NOT EXISTS notification (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_user_1
-    FOREIGN KEY (user_id)
+    FOREIGN KEY (user_id_creator)
     REFERENCES pauliceia_user (user_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
@@ -232,11 +245,11 @@ CREATE TABLE IF NOT EXISTS theme_followers (
 
 
 -- -----------------------------------------------------
--- Table reference_
+-- Table reference
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS reference_ CASCADE ;
+DROP TABLE IF EXISTS reference CASCADE ;
 
-CREATE TABLE IF NOT EXISTS reference_ (
+CREATE TABLE IF NOT EXISTS reference (
   reference_id SERIAL ,
   bibtex TEXT NULL ,
   PRIMARY KEY (reference_id)
@@ -303,25 +316,50 @@ CREATE TABLE IF NOT EXISTS reference_layer (
     ON UPDATE CASCADE,
   CONSTRAINT fk_reference_layer_reference1
     FOREIGN KEY (reference_id)
-    REFERENCES reference_ (reference_id)
+    REFERENCES reference (reference_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 
 -- -----------------------------------------------------
--- Table reference
+-- Table file
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS reference CASCADE ;
+DROP TABLE IF EXISTS file CASCADE ;
 
-CREATE TABLE IF NOT EXISTS reference (
-  reference_id SERIAL ,
-  bibtex TEXT NULL,
-  layer_id INT NOT NULL,
-  PRIMARY KEY (reference_id),
-  CONSTRAINT fk_reference_layer1
-    FOREIGN KEY (layer_id)
-    REFERENCES layer (layer_id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+CREATE TABLE IF NOT EXISTS file (
+  file_id SERIAL ,
+  f_table_name TEXT NOT NULL UNIQUE,
+  feature_id INT NOT NULL,
+  name TEXT NULL,
+  extension TEXT NULL,
+  PRIMARY KEY (file_id, f_table_name, feature_id)
+);
+
+
+-- -----------------------------------------------------
+-- Table time_columns
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS time_columns CASCADE ;
+
+CREATE TABLE IF NOT EXISTS time_columns (
+  f_table_name TEXT NOT NULL UNIQUE,
+  start_date_column_name TEXT NULL,
+  end_date_column_name TEXT NULL,
+  start_date TEXT NULL,
+  end_date TEXT NULL,
+  PRIMARY KEY (f_table_name)
+);
+
+
+-- -----------------------------------------------------
+-- Table media_columns
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS media_columns CASCADE ;
+
+CREATE TABLE IF NOT EXISTS media_columns (
+  f_table_name TEXT NOT NULL UNIQUE,
+  media_column_name TEXT NOT NULL,
+  media_type TEXT NULL,
+  PRIMARY KEY (f_table_name, media_column_name)
 );

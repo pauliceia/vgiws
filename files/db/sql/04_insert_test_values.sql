@@ -737,7 +737,30 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 
+
+/*
+-- (3) get the tags of some element on JSON format
+SELECT json_agg(column_name) AS columns
+FROM
+(
+    SELECT column_name FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name   = 'layer_1006'
+) subquery
+
+
+SELECT column_name FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name   = 'layer_1006';
+
+*/
+
+
+
+
 -- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
+
+
+
 
 
 /*

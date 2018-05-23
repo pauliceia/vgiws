@@ -8,6 +8,28 @@ __READ_SQL_FILE__ = "original_schema_msql.sql"
 __OUTPUT_SQL_FILE__ = "02_create_schema_db_for_postgresql.sql"
 
 
+
+code_to_add_in_top_of_file = ["""
+-- delete all tables in public schema, with exception of the spatial_ref_sys
+-- SOURCE: https://stackoverflow.com/questions/3327312/drop-all-tables-in-postgresql
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public' and tablename != 'spatial_ref_sys') LOOP
+        EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+    END LOOP;
+END $$;
+
+"""]
+
+
+def put_extra_code(text):
+    for code in code_to_add_in_top_of_file:        
+        text = code + text    
+
+    return text
+
+
 def replace_phrases(text):
     text = text.replace("mydb", "pauliceia")
     text = text.replace("`", "")
@@ -195,6 +217,8 @@ def main():
         
 
         text = replace_phrases(text)
+
+        text = put_extra_code(text)
         
         # remove bad lines     
         text = remove_bad_lines_and_put_default_values(text)

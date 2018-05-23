@@ -7,6 +7,7 @@
 
 import os
 import zipfile
+from builtins import print
 from subprocess import check_call, CalledProcessError
 
 from ..base import BaseHandlerLayer, auth_non_browser_based  #, BaseHandlerChangeset
@@ -128,7 +129,11 @@ class APIImport(BaseHandlerLayer):
 
     @auth_non_browser_based
     def post(self, param=None):
+        print("\n 1 \n")
+
         arguments = self.get_aguments()
+
+        print("\n 2 \n")
 
         # print("arguments: ", arguments["f_table_name"])
         # print("arguments: ", arguments["file_name"])
@@ -149,6 +154,8 @@ class APIImport(BaseHandlerLayer):
             if not arguments["file_name"].endswith(".zip"):
                 raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]))
 
+            print("\n 3 \n")
+
             # file name of the zip (e.g. /tmp/vgiws/points.zip)
             ZIP_FILE_NAME = TEMP_FOLDER + arguments["file_name"]
             # folder where will extract the zip (e.g. /tmp/vgiws/points)
@@ -156,13 +163,19 @@ class APIImport(BaseHandlerLayer):
             # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
             SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
+            print("\n 4 \n")
+
             # get the file
             binary_file = self.request.body
+
+            print("\n\nbinary_file: ", binary_file, "\n\n")
 
             # save the zip with the shp inside the temp folder
             output_file = open(ZIP_FILE_NAME, 'wb')  # wb - write binary
             output_file.write(binary_file)
             output_file.close()
+
+            print("\n\nwrote file\n\n")
 
             # extract the zip in a folder
             with zipfile.ZipFile(ZIP_FILE_NAME, "r") as zip_reference:

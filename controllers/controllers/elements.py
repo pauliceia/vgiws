@@ -6,7 +6,28 @@
 """
 
 
-from ..base import auth_non_browser_based  #. BaseHandlerElement
+from ..base import auth_non_browser_based, BaseFeatureTable
+
+
+class APIFeatureTable(BaseFeatureTable):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/feature_table/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/feature_table/?(?P<param>[A-Za-z0-9-]+)?"]
+
+    def get(self, param=None):
+        self.get_method_api_feature()
+
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     # param on this case is "create" or "update"
+    #     # self.put_method_api_element(param, "node")
+    #     self.put_method_api_feature(param, "point")
+    #
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     # param on this case is the id of element
+    #     self.delete_method_api_feature("point", param)
 
 
 # class APIElementPoint(BaseHandlerElement):

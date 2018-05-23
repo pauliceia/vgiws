@@ -1155,6 +1155,75 @@ class PGSQLConnection:
     #         raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
+    # FEATURE TABLE
+    ################################################################################
+
+    def get_feature_table(self, f_table_name=None):
+
+        # search the columns of the feature table
+        query_text = """
+            SELECT json_agg(column_name) AS columns
+            FROM
+            (
+                SELECT column_name FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = '{0}'
+            ) subquery
+        """.format(f_table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        print("results_of_query: ", results_of_query)
+
+
+
+
+
+
+        # subquery_current_element_table = get_subquery_current_element_table(f_table_name=f_table_name)
+        #
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type',       'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'Feature',
+        #             'geometry',   ST_AsGeoJSON(geom)::jsonb,
+        #             'properties', json_build_object(
+        #                 'id',               id,
+        #                 'visible',          visible,
+        #                 'version',          version,
+        #                 'fk_changeset_id',  fk_changeset_id
+        #             ),
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        # """.format(subquery_current_element_table)
+        #
+        # # do the query in database
+        # self.__PGSQL_CURSOR__.execute(query_text)
+        #
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        #
+        # ######################################################################
+        # # POST-PROCESSING
+        # ######################################################################
+        #
+        # # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        # if "row_to_json" in results_of_query:
+        #     results_of_query = results_of_query["row_to_json"]
+        #
+        # # if there is not feature
+        # if results_of_query["features"] is None:
+        #     raise HTTPError(404, "Not found any feature.")
+        #
+        # return results_of_query
+
+    ################################################################################
     # ELEMENT
     ################################################################################
 
