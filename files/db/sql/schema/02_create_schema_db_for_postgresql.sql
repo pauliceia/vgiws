@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qua 23 Mai 2018 19:55:40 -03
+-- Dom 27 Mai 2018 15:53:39 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -301,11 +301,11 @@ CREATE TABLE IF NOT EXISTS layer_theme (
 
 
 -- -----------------------------------------------------
--- Table reference_layer
+-- Table layer_reference
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS reference_layer CASCADE ;
+DROP TABLE IF EXISTS layer_reference CASCADE ;
 
-CREATE TABLE IF NOT EXISTS reference_layer (
+CREATE TABLE IF NOT EXISTS layer_reference (
   layer_id SERIAL ,
   reference_id INT NOT NULL,
   PRIMARY KEY (layer_id, reference_id),

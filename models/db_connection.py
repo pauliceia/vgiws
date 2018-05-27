@@ -556,7 +556,7 @@ class PGSQLConnection:
                         'created_at',           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_published',         is_published,
                         'user_id_published_by', user_id_published_by,
-                        'reference',            reference__.jsontags,
+                        'reference',            reference_.jsontags,
                         'theme',                theme.jsontags
                     )
                 ))
@@ -564,17 +564,20 @@ class PGSQLConnection:
             FROM 
             {0}
             CROSS JOIN LATERAL (                
-                -- (3) get the references of some resource on JSON format   
+                -- (3) get the references of some resource on JSON format
                 SELECT json_agg(json_build_object('reference_id', reference_id, 'bibtex', bibtex)) AS jsontags 
                 FROM 
                 (
                     -- (2) get the references of some resource
-                    SELECT reference_id, bibtex
-                    FROM reference 
-                    WHERE layer_id = layer.layer_id
-                    ORDER BY reference_id
-                ) subquery      
-            ) AS reference__
+                    SELECT r.reference_id, r.bibtex
+                    FROM reference r, 
+                    (
+                        SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = layer.layer_id
+                    ) lr
+                    WHERE r.reference_id = lr.reference_id
+                    ORDER BY r.reference_id
+                ) subquery
+            ) AS reference_
             CROSS JOIN LATERAL (                
                 -- (3) get the themes of some resource on JSON format   
                 SELECT json_agg(json_build_object('theme_id', theme_id)) AS jsontags 

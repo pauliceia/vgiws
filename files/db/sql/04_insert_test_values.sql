@@ -1,7 +1,7 @@
 ﻿
-DROP TABLE IF EXISTS new_layer CASCADE ;
-DROP TABLE IF EXISTS version_new_layer CASCADE ;
-DROP TABLE IF EXISTS points CASCADE ;
+--DROP TABLE IF EXISTS new_layer CASCADE ;
+--DROP TABLE IF EXISTS version_new_layer CASCADE ;
+--DROP TABLE IF EXISTS points CASCADE ;
 
 
 
@@ -186,6 +186,13 @@ DELETE FROM user_layer;
 
 
 -- -----------------------------------------------------
+-- Table user_layer
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM layer_reference;
+
+
+-- -----------------------------------------------------
 -- Table layer
 -- -----------------------------------------------------
 -- clean table
@@ -197,24 +204,25 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 (1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01', TRUE, 1001);
 
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) 
-VALUES (1001, 
+INSERT INTO reference (reference_id, bibtex) VALUES (1001, 
 '@Misc{jorge2017book1,
 author = {Jorge},
 title = {Book1},
 howpublished = {\url{http://www.link.org/}},
 note = {Accessed on 01/01/2017},
 year={2017}
-}', 1001);
-INSERT INTO reference (reference_id, bibtex, layer_id) 
-VALUES (1002, 
+}');
+INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1001);
+
+INSERT INTO reference (reference_id, bibtex) VALUES (1002, 
 '@Misc{ana2017article2,
 author = {Ana},
 title = {Article2},
 howpublished = {\url{http://www.myhost.org/}},
 note = {Accessed on 05/02/2017},
 year={2017}
-}', 1001);
+}');
+INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1002);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1001, 1041);
@@ -296,16 +304,17 @@ SELECT * FROM changeset WHERE id=1001;
 -- add layer 1002
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
 (1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', TRUE, 1003);
+
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) 
-VALUES (1005, 
+INSERT INTO reference (reference_id, bibtex) VALUES (1005, 
 '@Misc{marco2017articleB,
 author = {Marco},
 title = {ArticleB},
 howpublished = {\url{http://www.link_to_document.org/}},
 note = {Accessed on 02/02/2017},
 year={2017}
-}', 1002);
+}');
+INSERT INTO layer_reference (layer_id, reference_id) VALUES (1002, 1005);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1002, 1010);
@@ -388,16 +397,17 @@ SELECT * FROM changeset WHERE id=1002;
 -- add layer_1003
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at) VALUES 
 (1003, 'layer_1003', 'Streets in 1930', '', '', '2017-04-10');
+
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) 
-VALUES (1010, 
+INSERT INTO reference (reference_id, bibtex) VALUES (1010, 
 '@Misc{marco2017articleB,
 author = {Marco},
 title = {ArticleB},
 howpublished = {\url{http://www.link_to_document.org/}},
 note = {Accessed on 02/02/2017},
 year={2017}
-}', 1003);
+}');
+INSERT INTO layer_reference (layer_id, reference_id) VALUES (1003, 1010);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1003, 1040);
@@ -484,6 +494,7 @@ SELECT * FROM changeset WHERE id=1003;
 -- add layer_1004
 INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
 (1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', TRUE, 1003);
+
 -- add reference
 -- INSERT INTO reference (id, description, fk_layer_id) VALUES (1015, '', 1004);
 
@@ -572,6 +583,7 @@ SELECT * FROM changeset WHERE id=1004;
 -- add layer_1005
 INSERT INTO layer (layer_id, f_table_name, name, description, created_at) VALUES 
 (1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '2017-08-04');
+
 -- add reference
 --INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1020, 'bookA', 1005);
 
@@ -651,15 +663,17 @@ SELECT * FROM changeset WHERE id=1005;
 -- add layer_1006
 INSERT INTO layer (layer_id, f_table_name, name, description, created_at, is_published, user_id_published_by) VALUES 
 (1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', TRUE, 1003);
+
 -- add reference
-INSERT INTO reference (reference_id, bibtex, layer_id) 
-VALUES (1025, '@Misc{frisina2017bookZ,
+INSERT INTO reference (reference_id, bibtex) VALUES (1025,
+'@Misc{frisina2017bookZ,
 author = {Frisina},
 title = {BookZ},
 howpublished = {\url{http://www.school.com/}},
 note = {Accessed on 03/04/2017},
 year={2017}
-}', 1006);
+}');
+INSERT INTO layer_reference (layer_id, reference_id) VALUES (1006, 1025);
 
 -- add the themes in layer
 INSERT INTO layer_theme (layer_id, theme_id) VALUES (1006, 1031);
@@ -753,6 +767,21 @@ WHERE table_schema = 'public'
   AND table_name   = 'layer_1006';
 
 */
+
+
+
+SELECT json_agg(json_build_object('reference_id', reference_id, 'bibtex', bibtex)) AS jsontags 
+FROM 
+(
+    -- (2) get the references of some resource
+    SELECT r.reference_id, r.bibtex
+    FROM reference r, 
+    (
+        SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = 1001
+    ) lr
+    WHERE r.reference_id = lr.reference_id
+    ORDER BY r.reference_id
+) subquery 
 
 
 
