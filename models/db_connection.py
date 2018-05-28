@@ -580,7 +580,7 @@ class PGSQLConnection:
             ) AS reference_
             CROSS JOIN LATERAL (                
                 -- (3) get the keywords of some resource on JSON format   
-                SELECT json_agg(json_build_object('keyword_id', keyword_id)) AS jsontags 
+                SELECT json_agg(keyword_id) AS jsontags 
                 FROM 
                 (
                     -- (2) get the keywords of some resource

@@ -225,6 +225,7 @@ year={2017}
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1002);
 
 -- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1001, 1001);
 INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1001, 1041);
 
 -- create a feature table to save the data
@@ -410,6 +411,7 @@ year={2017}
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1003, 1010);
 
 -- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1003, 1001);
 INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1003, 1040);
 
 -- create a feature table to save the data
@@ -742,10 +744,12 @@ UPDATE changeset SET description='creating cinemas', closed_at='2017-09-04' WHER
 
 -- verify if the layer has features and verify if the changeset was created
 /*
-SELECT * FROM feature_layer_1005;
-SELECT * FROM version_layer_1005;
-SELECT * FROM changeset WHERE id=1005;
+SELECT * FROM feature_layer_1006;
+SELECT * FROM version_layer_1006;
+SELECT * FROM changeset WHERE id=1006;
 */
+
+
 
 
 
