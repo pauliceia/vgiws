@@ -554,6 +554,22 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
+        # layer errors - get
+
+    def api_user_layer_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_layer/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_layer_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_layer/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # IMPORT
 
     def api_import_shp(self, binary_file, **arguments):

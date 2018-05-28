@@ -94,3 +94,41 @@ This method deletes one layer by id = #id.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
+
+
+## User_Layer
+
+Users who is part of a layer.
+
+
+### GET /api/user_layer/?\<params>
+
+This method gets users in layers from DB. If you doesn't put any parameter, so it will return all.
+- Parameters:
+    - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - user_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - is_the_creator (optional): it is a boolean that indicates if a user is or not the creator of the layer (e.g. 'TRUE' or 'FALSE').
+- Examples:
+     - Get all users in layers: http://localhost:8888/api/user_layer/
+     - Get users that belongs to a layer by id: http://localhost:8888/api/user_layer/?layer_id=1001
+     - Get layers of a user by id: http://localhost:8888/api/user_layer/?user_id=1001
+     - Get layers of a user who he/she is the creator by id: http://localhost:8888/api/user_layer/?user_id=1001&is_the_creator=TRUE
+- Send:
+- Response: a JSON that contains the selected resources. Example:
+    ```javascript
+    {
+        'features': [
+            {
+                'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                               'created_at': '2017-04-10 00:00:00'},
+                'type': 'Layer'
+            },
+        ],
+        'type': 'FeatureCollection'
+    }
+    ```
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
+- Notes:

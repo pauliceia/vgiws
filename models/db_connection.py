@@ -565,8 +565,10 @@ class PGSQLConnection:
     ################################################################################
 
     def get_user_layers(self, layer_id=None, user_id=None, is_the_creator=None):
-        # the id have to be a int
-        if is_a_invalid_id(layer_id):
+        # the id has to be an int
+        # if is_the_creator is not None and is not instance of boolean, so is invalid
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id) or \
+                (is_the_creator is not None and not isinstance(is_the_creator, bool)):
             raise HTTPError(400, "Invalid parameter.")
 
         subquery = get_subquery_user_layer_table(layer_id=layer_id, user_id=user_id,
