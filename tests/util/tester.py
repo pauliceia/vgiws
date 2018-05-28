@@ -541,6 +541,19 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # USER LAYER
+
+    def api_user_layer(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/user_layer/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
     # IMPORT
 
     def api_import_shp(self, binary_file, **arguments):

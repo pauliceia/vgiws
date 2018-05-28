@@ -37,6 +37,9 @@ DEBUG_MODE = False
 # A list of hosts that have permission to access the application
 # HOSTS_ALLOWED = ["http://localhost:8888", "http://localhost:8080"]
 
+# temporary folder where will be save the import files temporarily
+__TEMP_FOLDER__ = "/tmp/vgiws/"
+
 # redirect uri google (production and debug)
 __REDIRECT_URI_GOOGLE__ = "http://localhost:8888/api/auth/google"
 __REDIRECT_URI_GOOGLE_DEBUG__ = "http://localhost:8888/api/auth/google"

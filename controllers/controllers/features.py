@@ -7,76 +7,26 @@
 
 import os
 import zipfile
-from builtins import print
 from subprocess import check_call, CalledProcessError
-
-from ..base import BaseHandlerLayer, auth_non_browser_based  #, BaseHandlerChangeset
 from tornado.web import HTTPError
 
-
-# USER IN GROUP
-
-# class APIUserGroup(BaseHandlerUserGroup):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/user_group/?(?P<param>[A-Za-z0-9-]+)?/",
-#             r"/api/user_group/?(?P<param>[A-Za-z0-9-]+)?"]
-#
-#     def get(self, param=None):
-#         self.get_method_api_feature()
-#
-#     @auth_non_browser_based
-#     def put(self, param=None):
-#         self.put_method_api_feature(param)
-#
-#     @auth_non_browser_based
-#     def delete(self, param=None):
-#         self.delete_method_api_feature(param)
+from ..base import BaseHandlerLayer, BaseHandlerUserLayer, auth_non_browser_based  #, BaseHandlerChangeset
+from settings.settings import __TEMP_FOLDER__
 
 
-# GROUP
 
-# class APIGroup(BaseHandlerGroup):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/group/?(?P<param>[A-Za-z0-9-]+)?/",
-#             r"/api/group/?(?P<param>[A-Za-z0-9-]+)?"]
-#
-#     def get(self, param=None):
-#         self.get_method_api_feature()
-#
-#     @auth_non_browser_based
-#     def put(self, param=None):
-#         self.put_method_api_feature(param)
-#
-#     @auth_non_browser_based
-#     def delete(self, param=None):
-#         self.delete_method_api_feature(param)
+def exist_shapefile_inside_zip(zip_reference):
+    list_file_names_of_zip = zip_reference.namelist()
 
+    for file_name_in_zip in list_file_names_of_zip:
+        # if exist a SHP file inside the zip, return true
+        if file_name_in_zip.endswith(".shp"):
+            return True
 
-# PROJECT
-
-# class APIProject(BaseHandlerProject):
-#
-#     # A list of URLs that can be use for the HTTP methods
-#     urls = [r"/api/project/?(?P<param>[A-Za-z0-9-]+)?/",
-#             r"/api/project/?(?P<param>[A-Za-z0-9-]+)?"]
-#
-#     def get(self, param=None):
-#         self.get_method_api_feature()
-#
-#     @auth_non_browser_based
-#     def put(self, param=None):
-#         self.put_method_api_feature(param)
-#
-#     @auth_non_browser_based
-#     def delete(self, param=None):
-#         self.delete_method_api_feature(param)
-
+    return False
 
 
 # LAYER
-
 
 class APILayer(BaseHandlerLayer):
 
@@ -101,19 +51,23 @@ class APILayer(BaseHandlerLayer):
     #     super().options()
 
 
-TEMP_FOLDER = "/tmp/vgiws/"
+class APIUserLayer(BaseHandlerUserLayer):
 
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/user_layer/?(?P<param>[A-Za-z0-9-]+)?/",
+            r"/api/user_layer/?(?P<param>[A-Za-z0-9-]+)?"]
 
+    def get(self, param=None):
+        self.get_method_api_feature()
 
-def exist_shapefile_inside_zip(zip_reference):
-    list_file_names_of_zip = zip_reference.namelist()
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     # self.put_method_api_layer(param)
+    #     self.put_method_api_feature(param)
 
-    for file_name_in_zip in list_file_names_of_zip:
-        # if exist a SHP file inside the zip, return true
-        if file_name_in_zip.endswith(".shp"):
-            return True
-
-    return False
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     self.delete_method_api_feature(param)
 
 
 class APIImport(BaseHandlerLayer):
@@ -143,17 +97,17 @@ class APIImport(BaseHandlerLayer):
             # TODO: verificar se a já nao existe f_table_name no DB
 
             # if do not exist the temp folder, create it
-            if not os.path.exists(TEMP_FOLDER):
-                os.makedirs(TEMP_FOLDER)
+            if not os.path.exists(__TEMP_FOLDER__):
+                os.makedirs(__TEMP_FOLDER__)
 
             # the file needs to be in a zip file
             if not arguments["file_name"].endswith(".zip"):
                 raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]))
 
             # file name of the zip (e.g. /tmp/vgiws/points.zip)
-            ZIP_FILE_NAME = TEMP_FOLDER + arguments["file_name"]
+            ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
             # folder where will extract the zip (e.g. /tmp/vgiws/points)
-            EXTRACTED_ZIP_FOLDER_NAME = TEMP_FOLDER + FILE_NAME_WITHOUT_EXTENSION
+            EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
             # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
             SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
