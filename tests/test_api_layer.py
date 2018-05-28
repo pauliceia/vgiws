@@ -418,8 +418,8 @@ class TestAPIUserLayer(TestCase):
     # layer - get
 
     def test_get_api_user_layer_return_all_user_in_layers(self):
-        expected = {'features':
-            [
+        expected = {
+            'features': [
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
                                    'created_at': '2017-01-02 00:00:00'},
@@ -491,6 +491,117 @@ class TestAPIUserLayer(TestCase):
 
         self.tester.api_user_layer(expected)
 
+    def test_get_api_user_layer_return_user_layer_by_layer_id(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
+                                   'created_at': '2017-01-02 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
+                                   'created_at': '2017-01-03 00:00:00'},
+                    'type': 'Layer'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_user_layer(expected, layer_id="1001")
+
+    def test_get_api_user_layer_return_user_layer_by_user_id(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                                   'created_at': '2017-04-10 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
+                                   'created_at': '2017-06-15 00:00:00'},
+                    'type': 'Layer'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_user_layer(expected, user_id="1005")
+
+    def test_get_api_user_layer_return_all_user_in_layers(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
+                                   'created_at': '2017-01-02 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
+                                   'created_at': '2017-01-03 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1002,
+                                   'created_at': '2017-03-05 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1002,
+                                   'created_at': '2017-03-05 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                                   'created_at': '2017-04-10 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1006, 'layer_id': 1003,
+                                   'created_at': '2017-04-11 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1003,
+                                   'created_at': '2017-04-11 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
+                                   'created_at': '2017-06-15 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1004,
+                                   'created_at': '2017-06-20 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1004,
+                                   'created_at': '2017-06-27 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1005,
+                                   'created_at': '2017-08-04 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1006,
+                                   'created_at': '2017-09-04 00:00:00'},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1006,
+                                   'created_at': '2017-09-10 00:00:00'},
+                    'type': 'Layer'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_user_layer(expected)
 
 class TestAPIImport(TestCase):
 
