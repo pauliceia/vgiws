@@ -30,9 +30,11 @@ Connect on database created before and active the PostGIS extension:
 ```sql
 \c pauliceia
 CREATE EXTENSION postgis;
+CREATE EXTENSION unaccent;
 
 \c pauliceia_test
 CREATE EXTENSION postgis;
+CREATE EXTENSION unaccent;
 ```
 
 To exit, use:

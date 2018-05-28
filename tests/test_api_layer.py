@@ -6,7 +6,7 @@ from unittest import TestCase, skip
 from util.tester import UtilTester
 
 
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
+# http{0}s://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 class TestAPILayer(TestCase):
 
@@ -91,25 +91,6 @@ class TestAPILayer(TestCase):
         }
 
         self.tester.api_layer(expected, layer_id="1001")
-
-    # def test_get_api_layer_return_layer_by_user_id_author(self):
-    #     expected = {
-    #         'features': [
-    #             {
-    #                 'properties': {
-    #                     'fk_user_id_published_by': 1003, 'source_author_name': '', 'table_name': '_1003_layer_1002',
-    #                     'created_at': '2017-03-05 00:00:00', 'reference': [{'description': 'http://link_to_document',
-    #                                                                         'id': 1005}],
-    #                     'removed_at': None, 'fk_user_id_author': 1003, 'description': '', 'is_published': True,
-    #                     'id': 1002, 'name': 'Robberies between 1880 to 1900'
-    #                 },
-    #                 'type': 'Layer'
-    #             },
-    #         ],
-    #         'type': 'FeatureCollection'
-    #     }
-    #
-    #     self.tester.api_layer(expected, user_id_author="1003")
 
     def test_get_api_layer_return_layer_by_is_published(self):
         expected = {

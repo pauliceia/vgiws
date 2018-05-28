@@ -1087,12 +1087,13 @@ class PGSQLConnection:
     # user
     ################################################################################
 
-    def get_users(self, user_id=None, email=None, password=None):
+    def get_users(self, user_id=None, email=None, password=None, name=None):
         # the id have to be a int
         if is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_user_table(user_id=user_id, email=email, password=password)
+        subquery = get_subquery_user_table(user_id=user_id, email=email, password=password,
+                                           name=name)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """

@@ -19,6 +19,10 @@ def get_subquery_user_table(**kwargs):
         if "password" in kwargs and kwargs["password"] is not None:
             conditions_of_where.append("password = '{0}'".format(kwargs["password"]))
 
+    # case insensitive query
+    if "name" in kwargs and kwargs["name"] is not None:
+        conditions_of_where.append("unaccent(LOWER(name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["name"]))
+
     # default get all features, without where clause
     where_clause = ""
 

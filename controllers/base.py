@@ -628,20 +628,6 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         # ... else, raise an exception.
         raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
 
-    # def delete_validation(self, resource_id):
-    #     """
-    #     Verify if the user has permition to delete a layer
-    #     :param resource_id: layer id
-    #     :return:
-    #     """
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     layer = self.PGSQLConn.get_layers(layer_id=resource_id)
-    #     fk_user_id_author = layer["features"][0]["properties"]["fk_user_id_author"]
-    #
-    #     if current_user_id != fk_user_id_author:
-    #         raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
-
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 

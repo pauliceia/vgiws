@@ -56,7 +56,8 @@ VALUES (1008, 'bea', 'bea@gmail.com', 'bea',
 '2017-01-30', FALSE, FALSE, '2017-01-30', FALSE, FALSE, FALSE);
 
 
--- SELECT * FROM user_;
+-- SELECT name FROM pauliceia_user;
+-- SELECT name FROM pauliceia_user WHERE unaccent(LOWER(name)) LIKE '%' || unaccent(LOWER('êL')) || '%';
 
 
 /*
