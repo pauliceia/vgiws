@@ -605,7 +605,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_feature(self, *args, **kwargs):
-        # self.delete_validation(*args)
+        self.delete_validation(*args)
 
         self.PGSQLConn.delete_layer_in_db(*args)
 
@@ -617,11 +617,30 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         """
         current_user_id = self.get_current_user_id()
 
-        layer = self.PGSQLConn.get_layers(layer_id=resource_id)
-        fk_user_id_author = layer["features"][0]["properties"]["fk_user_id_author"]
+        resources = self.PGSQLConn.get_user_layers(layer_id=resource_id)
 
-        if current_user_id != fk_user_id_author:
-            raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
+        for resource in resources["features"]:
+            if resource["properties"]['is_the_creator'] and \
+                    resource["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
+
+    # def delete_validation(self, resource_id):
+    #     """
+    #     Verify if the user has permition to delete a layer
+    #     :param resource_id: layer id
+    #     :return:
+    #     """
+    #     current_user_id = self.get_current_user_id()
+    #
+    #     layer = self.PGSQLConn.get_layers(layer_id=resource_id)
+    #     fk_user_id_author = layer["features"][0]["properties"]["fk_user_id_author"]
+    #
+    #     if current_user_id != fk_user_id_author:
+    #         raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
 
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
