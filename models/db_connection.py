@@ -557,7 +557,7 @@ class PGSQLConnection:
                         'is_published',         is_published,
                         'user_id_published_by', user_id_published_by,
                         'reference',            reference_.jsontags,
-                        'theme',                theme.jsontags
+                        'keyword',                keyword.jsontags
                     )
                 ))
             ) AS row_to_json
@@ -579,17 +579,17 @@ class PGSQLConnection:
                 ) subquery
             ) AS reference_
             CROSS JOIN LATERAL (                
-                -- (3) get the themes of some resource on JSON format   
-                SELECT json_agg(json_build_object('theme_id', theme_id)) AS jsontags 
+                -- (3) get the keywords of some resource on JSON format   
+                SELECT json_agg(json_build_object('keyword_id', keyword_id)) AS jsontags 
                 FROM 
                 (
-                    -- (2) get the themes of some resource
-                    SELECT theme_id
-                    FROM layer_theme 
+                    -- (2) get the keywords of some resource
+                    SELECT keyword_id
+                    FROM layer_keyword 
                     WHERE layer_id = layer.layer_id
-                    ORDER BY theme_id
+                    ORDER BY keyword_id
                 ) subquery      
-            ) AS theme
+            ) AS keyword
         """.format(subquery)
 
         # do the query in database
@@ -747,7 +747,7 @@ class PGSQLConnection:
     #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
     #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
     #                     'fk_user_id',   fk_user_id,
-    #                     'fk_theme_id',  fk_theme_id
+    #                     'fk_keyword_id',  fk_keyword_id
     #                 )
     #             ))
     #         ) AS row_to_json
@@ -784,12 +784,12 @@ class PGSQLConnection:
     #     description = properties["description"]
     #     source = properties["source"]
     #     # fk_user_id = properties["fk_user_id"]
-    #     fk_theme_id = properties["fk_theme_id"]
+    #     fk_keyword_id = properties["fk_keyword_id"]
     #
     #     query_text = """
-    #         INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_theme_id, created_at)
+    #         INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_keyword_id, created_at)
     #         VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
-    #     """.format(table_name, name, description, source, user_id, fk_theme_id)
+    #     """.format(table_name, name, description, source, user_id, fk_keyword_id)
     #
     #     # do the query in database
     #     self.__PGSQL_CURSOR__.execute(query_text)
@@ -1602,10 +1602,10 @@ class PGSQLConnection:
 #
 #         return result
 #
-#     def get_theme_tree(self):
+#     def get_keyword_tree(self):
 #
 #         result = self.match("""
-#                     MATCH path = (generic:Theme {key: "generic"})-[:can_be*]-(:Theme)
+#                     MATCH path = (generic:keyword {key: "generic"})-[:can_be*]-(:keyword)
 #                     WITH collect(path) as paths
 #                     CALL apoc.convert.toTree(paths) yield value
 #                     RETURN value;

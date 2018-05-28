@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Dom 27 Mai 2018 15:53:39 -03
+-- Seg 28 Mai 2018 14:06:17 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -113,20 +113,20 @@ CREATE TABLE IF NOT EXISTS user_layer (
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Table theme
+-- Table keyword
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS theme CASCADE ;
+DROP TABLE IF EXISTS keyword CASCADE ;
 
-CREATE TABLE IF NOT EXISTS theme (
-  theme_id SERIAL ,
+CREATE TABLE IF NOT EXISTS keyword (
+  keyword_id SERIAL ,
   name TEXT NULL,
   created_at TIMESTAMP NULL,
   parent_id INT NULL,
   user_id_creator INT NOT NULL,
-  PRIMARY KEY (theme_id),
+  PRIMARY KEY (keyword_id),
   CONSTRAINT fk_theme_theme1
     FOREIGN KEY (parent_id)
-    REFERENCES theme (theme_id)
+    REFERENCES keyword (keyword_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_theme_user1
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS notification (
   created_at TIMESTAMP NOT NULL,
   user_id_creator INT NULL ,
   layer_id INT NULL ,
-  theme_id INT NULL ,
+  keyword_id INT NULL ,
   notification_id_parent INT NULL,
   PRIMARY KEY (notification_id),
   CONSTRAINT fk_notification_layer1
@@ -159,8 +159,8 @@ CREATE TABLE IF NOT EXISTS notification (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_theme1
-    FOREIGN KEY (theme_id)
-    REFERENCES theme (theme_id)
+    FOREIGN KEY (keyword_id)
+    REFERENCES keyword (keyword_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_user_1
@@ -222,23 +222,23 @@ CREATE TABLE IF NOT EXISTS layer_followers (
 
 
 -- -----------------------------------------------------
--- Table theme_followers
+-- Table keyword_followers
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS theme_followers CASCADE ;
+DROP TABLE IF EXISTS keyword_followers CASCADE ;
 
-CREATE TABLE IF NOT EXISTS theme_followers (
+CREATE TABLE IF NOT EXISTS keyword_followers (
   user_id SERIAL ,
-  theme_id INT NOT NULL,
+  keyword_id INT NOT NULL,
   created_at TIMESTAMP NULL,
-  PRIMARY KEY (theme_id, user_id),
+  PRIMARY KEY (keyword_id, user_id),
   CONSTRAINT fk_user_follows_theme_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_user_follows_theme_theme1
-    FOREIGN KEY (theme_id)
-    REFERENCES theme (theme_id)
+    FOREIGN KEY (keyword_id)
+    REFERENCES keyword (keyword_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
@@ -263,7 +263,7 @@ DROP TABLE IF EXISTS curator CASCADE ;
 
 CREATE TABLE IF NOT EXISTS curator (
   user_id SERIAL  ,
-  theme_id INT NOT NULL,
+  keyword_id INT NOT NULL,
   region TEXT NULL,
   created_at TIMESTAMP NULL,
   CONSTRAINT fk_curator_user_theme_user_1
@@ -272,29 +272,29 @@ CREATE TABLE IF NOT EXISTS curator (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_curator_user_theme_theme1
-    FOREIGN KEY (theme_id)
-    REFERENCES theme (theme_id)
+    FOREIGN KEY (keyword_id)
+    REFERENCES keyword (keyword_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 
 -- -----------------------------------------------------
--- Table layer_theme
+-- Table layer_keyword
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS layer_theme CASCADE ;
+DROP TABLE IF EXISTS layer_keyword CASCADE ;
 
-CREATE TABLE IF NOT EXISTS layer_theme (
+CREATE TABLE IF NOT EXISTS layer_keyword (
   layer_id SERIAL ,
-  theme_id INT NOT NULL,
+  keyword_id INT NOT NULL,
   CONSTRAINT fk_layer_theme_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_theme_theme1
-    FOREIGN KEY (theme_id)
-    REFERENCES theme (theme_id)
+    FOREIGN KEY (keyword_id)
+    REFERENCES keyword (keyword_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

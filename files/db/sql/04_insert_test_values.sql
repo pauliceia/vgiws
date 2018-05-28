@@ -89,35 +89,35 @@ INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1008
 
 
 -- -----------------------------------------------------
--- Table theme
+-- Table keyword
 -- -----------------------------------------------------
 -- clean table
-DELETE FROM theme;
+DELETE FROM keyword;
 
-INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1001, 'generic', NULL, 1001, '2017-01-01');
-    INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1002, 'event', 1001, 1001, '2017-01-01');
+INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1001, 'generic', NULL, 1001, '2017-01-01');
+    INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1002, 'event', 1001, 1001, '2017-01-01');
         -- event's children (1002)
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1003, 'crime', 1002, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1003, 'crime', 1002, 1001, '2017-01-01');
             -- crime's children (1003)
-            INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1004, 'assalt', 1003, 1001, '2017-01-01');
-            INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1005, 'robbery', 1003, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1004, 'assalt', 1003, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1005, 'robbery', 1003, 1001, '2017-01-01');
 
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1010, 'disease', 1002, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1010, 'disease', 1002, 1001, '2017-01-01');
 
-    INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1020, 'object', 1001, 1001, '2017-01-01');
+    INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1020, 'object', 1001, 1001, '2017-01-01');
         -- object's children (1020)
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1021, 'building', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1021, 'building', 1020, 1001, '2017-01-01');
             -- building's children (1021)
-            INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1022, 'school', 1021, 1001, '2017-01-01');
-            INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1023, 'hospital', 1021, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1022, 'school', 1021, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1023, 'hospital', 1021, 1001, '2017-01-01');
 
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1030, 'cultural place', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1030, 'cultural place', 1020, 1001, '2017-01-01');
             -- cultural place's children (1030)
-            INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1031, 'cinema', 1030, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1031, 'cinema', 1030, 1001, '2017-01-01');
 
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1040, 'street', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1040, 'street', 1020, 1001, '2017-01-01');
 
-        INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUES (1041, 'address', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1041, 'address', 1020, 1001, '2017-01-01');
 
 
 
@@ -127,20 +127,20 @@ INSERT INTO theme (theme_id, name, parent_id, user_id_creator, created_at) VALUE
 -- clean table
 DELETE FROM curator;
 
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1001, 1001, '', '2018-01-01');
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1002, 1002, '', '2018-01-10');
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1003, 1020, '', '2018-01-15');
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1004, 1003, '', '2018-02-20');
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1005, 1010, '', '2018-02-22');
-INSERT INTO curator (user_id, theme_id, region, created_at) VALUES (1006, 1021, '', '2018-03-24');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, '', '2018-01-01');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, '', '2018-01-10');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, '', '2018-01-15');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, '', '2018-02-20');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, '', '2018-02-22');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021, '', '2018-03-24');
 
 
 
 -- -----------------------------------------------------
--- Table layer_theme
+-- Table layer_keyword
 -- -----------------------------------------------------
 -- clean table
-DELETE FROM layer_theme;
+DELETE FROM layer_keyword;
             
             
 
@@ -224,8 +224,8 @@ year={2017}
 }');
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1002);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1001, 1041);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1001, 1041);
 
 -- create a feature table to save the data
 DROP TABLE IF EXISTS layer_1001 CASCADE ;
@@ -316,8 +316,8 @@ year={2017}
 }');
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1002, 1005);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1002, 1010);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1002, 1010);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS layer_1002 CASCADE ;
@@ -409,8 +409,8 @@ year={2017}
 }');
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1003, 1010);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1003, 1040);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1003, 1040);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS layer_1003 CASCADE ;
@@ -498,8 +498,8 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 -- add reference
 -- INSERT INTO reference (id, description, fk_layer_id) VALUES (1015, '', 1004);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1004, 1040);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1004, 1040);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS layer_1004 CASCADE ;
@@ -587,8 +587,8 @@ INSERT INTO layer (layer_id, f_table_name, name, description, created_at) VALUES
 -- add reference
 --INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1020, 'bookA', 1005);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1005, 1023);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1005, 1023);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS layer_1005 CASCADE ;
@@ -675,8 +675,8 @@ year={2017}
 }');
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1006, 1025);
 
--- add the themes in layer
-INSERT INTO layer_theme (layer_id, theme_id) VALUES (1006, 1031);
+-- add the keywords in layer
+INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1006, 1031);
 
 -- create a feature table to save the data
 --DROP TABLE IF EXISTS layer_1006 CASCADE ;
