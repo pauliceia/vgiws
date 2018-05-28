@@ -12,7 +12,7 @@ from ..base import *
 from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
 from tornado.gen import coroutine
 
-from settings.accounts import __FACEBOOK_SETTINGS__, __GOOGLE_SETTINGS__
+from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__
 
 
 # class AuthLogoutHandler(BaseHandler):
@@ -65,7 +65,6 @@ class AuthLoginHandler(BaseHandler):
         email, password = auth_decoded.split(':', 2)
 
         encoded_jwt_token = self.auth_login(email, password)
-
         self.set_header('Authorization', encoded_jwt_token)
 
         self.write(json_encode({}))
@@ -79,43 +78,40 @@ class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
 
     urls = [r"/api/auth/google/", r"/api/auth/google"]
 
-    redirect_uri = "http://localhost:8888/auth/google/"
-
     @coroutine
     def get(self):
+        redirect_uri = self.__REDIRECT_URI_GOOGLE__
 
         self.application.settings['google_oauth'] = __GOOGLE_SETTINGS__['google_oauth']
 
         if self.get_argument('code', False):
             access = yield self.get_authenticated_user(
-                            redirect_uri=self.redirect_uri,
+                            redirect_uri=redirect_uri,
                             code=self.get_argument('code'))
             user = yield self.oauth2_request(
                             "https://www.googleapis.com/oauth2/v1/userinfo",
                             access_token=access["access_token"])
 
+            # print("\nuser: ", user, "\n")
             # for key in user:
             #     print(key, ": ", user[key])
-            # print(user)
-
-            # self.set_current_user(email=user["email"], type_login="google", new_user=True)
 
             # to social login, create a blank password
             user_json = {
                 'type': 'User',
-                'tags': [{'k': 'type_login', 'v': 'google'}],
-                'properties': {'id': -1, 'email': user["email"], 'username': '', 'password': ''}
+                'properties': {'user_id': -1, 'email': user["email"], 'password': '',
+                               'username': user["email"], 'name': user["name"],
+                               'terms_agreed': True, 'can_add_layer': True,
+                               'receive_notification_by_email': False}
             }
 
-            self.login(user_json)
+            encoded_jwt_token = self.login(user_json)
+            self.set_header('Authorization', encoded_jwt_token)
 
-            # user_cookie = self.get_current_user()
-            #
-            # self.set_and_send_status(status=200, reason="Logged in system")
-            super(BaseHandler, self).redirect(self.__AFTER_LOGGED_IN_REDIRECT_TO__)
+            super(BaseHandler, self).redirect(self.__AFTER_LOGIN_REDIRECT_TO__)
         else:
             yield self.authorize_redirect(
-                redirect_uri=self.redirect_uri,
+                redirect_uri=redirect_uri,
                 client_id=self.settings['google_oauth']['key'],
                 scope=['profile', 'email'],
                 response_type='code',
@@ -142,45 +138,40 @@ class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
 
     urls = [r"/api/auth/facebook/", r"/api/auth/facebook"]
 
-    redirect_uri = "http://localhost:8888/auth/facebook/"
-
     @coroutine
     def get(self):
+        redirect_uri = self.__REDIRECT_URI_FACEBOOK__
 
         self.application.settings['facebook_api_key'] = __FACEBOOK_SETTINGS__['facebook_api_key']
         self.application.settings['facebook_secret'] = __FACEBOOK_SETTINGS__['facebook_secret']
 
         if self.get_argument("code", False):
             user = yield self.get_authenticated_user(
-                    redirect_uri=self.redirect_uri,
+                    redirect_uri=redirect_uri,
                     client_id=self.settings["facebook_api_key"],
                     client_secret=self.settings["facebook_secret"],
                     code=self.get_argument("code"),
                     extra_fields=['email']
             )
 
+            # print("\nuser: ", user, "\n")
             # for key in user:
             #     print(key, ": ", user[key])
-            # print(user)
 
-            # self.set_current_user(email=user["email"], type_login="facebook", new_user=True)
-
-            # to social login, create a blank password
             user_json = {
                 'type': 'User',
-                'tags': [{'k': 'type_login', 'v': 'facebook'}],
-                'properties': {'id': -1, 'email': user["email"], 'username': '', 'password': ''}
+                'properties': {'user_id': -1, 'email': user["email"], 'password': '',
+                               'username': user["email"], 'name': user['name'],
+                               'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
             }
 
-            self.login(user_json)
+            encoded_jwt_token = self.login(user_json)
+            self.set_header('Authorization', encoded_jwt_token)
 
-            # user_cookie = self.get_current_user()
-            #
-            # self.set_and_send_status(status=200, reason="Logged in system")
-            super(BaseHandler, self).redirect(self.__AFTER_LOGGED_IN_REDIRECT_TO__)
+            super(BaseHandler, self).redirect(self.__AFTER_LOGIN_REDIRECT_TO__)
         else:
             yield self.authorize_redirect(
-                    redirect_uri=self.redirect_uri,
+                    redirect_uri=redirect_uri,
                     client_id=self.settings["facebook_api_key"],
-                    extra_params={"scope": "user_posts,email"}
+                    extra_params={"scope": "email"}
             )

@@ -752,62 +752,8 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 
-/*
--- (3) get the tags of some element on JSON format
-SELECT json_agg(column_name) AS columns
-FROM
-(
-    SELECT column_name FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name   = 'layer_1006'
-) subquery
 
 
-SELECT column_name FROM information_schema.columns
-WHERE table_schema = 'public'
-  AND table_name   = 'layer_1006';
-
-*/
-
-
-
-SELECT json_agg(json_build_object('reference_id', reference_id, 'bibtex', bibtex)) AS jsontags 
-FROM 
-(
-    -- (2) get the references of some resource
-    SELECT r.reference_id, r.bibtex
-    FROM reference r, 
-    (
-        SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = 1001
-    ) lr
-    WHERE r.reference_id = lr.reference_id
-    ORDER BY r.reference_id
-) subquery 
-
-
-
-
--- UPDATE layer SET visible = FALSE, removed_at=LOCALTIMESTAMP WHERE id=1001;
-
-
-
-
-
-/*
-SELECT * FROM layer;
-
-SELECT * FROM layer WHERE removed_at is NULL;
-
-SELECT * FROM layer WHERE removed_at is NULL ORDER BY id;
-
-DELETE FROM layer WHERE id = 2;
-*/
-
-
-
-
-
-
--- TODO: create a new layer with a JSON field and open in the QGIS, to see the JSON field
 
 
 

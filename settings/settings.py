@@ -23,7 +23,7 @@ TITLE_APP = "VGI Web Service for Historical Data"
 IP_APP = "0.0.0.0"
 PORT_APP = int(environ.get("PORT", 8888))
 
-URL_APP = "https://" + IP_APP + ":" + str(PORT_APP)
+URL_APP = "http://" + IP_APP + ":" + str(PORT_APP)
 
 # Page of login
 # LOGIN_URL = "/auth/login/"
@@ -36,3 +36,15 @@ DEBUG_MODE = False
 
 # A list of hosts that have permission to access the application
 # HOSTS_ALLOWED = ["http://localhost:8888", "http://localhost:8080"]
+
+# redirect uri google (production and debug)
+__REDIRECT_URI_GOOGLE__ = "http://localhost:8888/api/auth/google"
+__REDIRECT_URI_GOOGLE_DEBUG__ = "http://localhost:8888/api/auth/google"
+
+# redirect uri facebook (production and debug)
+__REDIRECT_URI_FACEBOOK__ = "http://localhost:8888/api/auth/facebook"
+__REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"
+
+# after login with social login, redirect to... (production and debug)
+__AFTER_LOGIN_REDIRECT_TO__ = "http://localhost:8888"
+__AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8888"

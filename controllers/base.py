@@ -16,8 +16,11 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
 from modules.user import get_new_user_struct_cookie
-from settings.accounts import __JWT_SECRET__, __JWT_ALGORITHM__
-# from settings import HOSTS_ALLOWED
+from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__, \
+                                __JWT_SECRET__, __JWT_ALGORITHM__
+from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
+                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
 
 
 def catch_generic_exception(method):
@@ -84,16 +87,6 @@ def auth_non_browser_based(method):
         else:
             raise HTTPError(403, "It is necessary an Authorization header valid.")
 
-
-
-
-        # if user is not logged in, so return a 403 Forbidden
-        # if not self.current_user:
-        #     raise HTTPError(403, "It is necessary a user logged in to access this URL.")
-
-        # if the user is logged in, so execute the method
-        # return method(self, *args, **kwargs)
-
     return wrapper
 
 
@@ -137,9 +130,6 @@ class BaseHandler(RequestHandler):
     # Static list to be added the all valid urls to one handler
     urls = []
 
-    __AFTER_LOGGED_IN_REDIRECT_TO__ = ",/"
-    __AFTER_LOGGED_OUT_REDIRECT_TO__ = "/auth/logout/success/"
-
     # __init__ for Tornado subclasses
     def initialize(self):
         # get the database instances
@@ -148,18 +138,20 @@ class BaseHandler(RequestHandler):
 
         self.DEBUG_MODE = self.application.DEBUG_MODE
 
+        if self.DEBUG_MODE:
+            self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE_DEBUG__
+            self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK_DEBUG__
+            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+        else:
+            self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE__
+            self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK__
+            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO__
+
     # headers
 
     def set_default_headers(self):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.set_header('Content-Type', 'application/json')
-
-        # concat the hosts allowed in a string separated by comma
-        # hosts_allowed = ",".join(HOSTS_ALLOWED)
-
-        # self.set_header("Access-Control-Allow-Origin", hosts_allowed)
-        # self.set_header("Access-Control-Allow-Origin", "*")
-        # self.set_ header("Access-Control-Allow-Headers", "x-requested-with")
 
         # how solve the CORS problem: https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
         self.set_header("Access-Control-Allow-Origin", "*")
@@ -167,9 +159,6 @@ class BaseHandler(RequestHandler):
         self.set_header('Access-Control-Allow-Methods', ' POST, GET, PUT, DELETE, OPTIONS')
         self.set_header('Access-Control-Expose-Headers', 'Authorization')
         self.set_header("Access-Control-Allow-Credentials", "true")
-
-        # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, x-requested-with")
-        # self.set_header("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token")
 
     def options(self, *args, **kwargs):
         """
