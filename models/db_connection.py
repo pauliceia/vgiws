@@ -1161,70 +1161,26 @@ class PGSQLConnection:
     # FEATURE TABLE
     ################################################################################
 
-    def get_feature_table(self, f_table_name=None):
+    # def get_feature_table(self, f_table_name=None):
+    #
+    #     # search the columns of the feature table
+    #     query_text = """
+    #         SELECT json_agg(column_name) AS columns
+    #         FROM
+    #         (
+    #             SELECT column_name FROM information_schema.columns
+    #             WHERE table_schema = 'public' AND table_name = '{0}'
+    #         ) subquery
+    #     """.format(f_table_name)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     print("results_of_query: ", results_of_query)
 
-        # search the columns of the feature table
-        query_text = """
-            SELECT json_agg(column_name) AS columns
-            FROM
-            (
-                SELECT column_name FROM information_schema.columns
-                WHERE table_schema = 'public' AND table_name = '{0}'
-            ) subquery
-        """.format(f_table_name)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        print("results_of_query: ", results_of_query)
-
-
-
-
-
-
-        # subquery_current_element_table = get_subquery_current_element_table(f_table_name=f_table_name)
-        #
-        # query_text = """
-        #     SELECT jsonb_build_object(
-        #         'type',       'FeatureCollection',
-        #         'features',   jsonb_agg(jsonb_build_object(
-        #             'type',       'Feature',
-        #             'geometry',   ST_AsGeoJSON(geom)::jsonb,
-        #             'properties', json_build_object(
-        #                 'id',               id,
-        #                 'visible',          visible,
-        #                 'version',          version,
-        #                 'fk_changeset_id',  fk_changeset_id
-        #             ),
-        #         ))
-        #     ) AS row_to_json
-        #     FROM
-        #     {0}
-        # """.format(subquery_current_element_table)
-        #
-        # # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-        #
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-        #
-        # ######################################################################
-        # # POST-PROCESSING
-        # ######################################################################
-        #
-        # # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        # if "row_to_json" in results_of_query:
-        #     results_of_query = results_of_query["row_to_json"]
-        #
-        # # if there is not feature
-        # if results_of_query["features"] is None:
-        #     raise HTTPError(404, "Not found any feature.")
-        #
-        # return results_of_query
 
     ################################################################################
     # ELEMENT
@@ -1522,93 +1478,3 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any feature.")
-
-
-# @Singleton
-# class Neo4JConnection(BaseDBConnection):
-#
-#     def __init__(self, args={}):
-#         super().__init__()  # call the __init__ from super class
-#
-#         self.__ARGS__ = args
-#
-#         if self.__ARGS__["DEBUG_MODE"]:
-#             self.__DO_CONNECTION__(__DEBUG_NEO4J_CONNECTION_SETTINGS__)
-#         else:
-#             self.__DO_CONNECTION__(__NEO4J_CONNECTION_SETTINGS__)
-#
-#     def __DO_CONNECTION__(self, __connection_settings__):
-#         """
-#         Do the DB connection with the '__pgsql_connection_settings__'
-#         :param __connection_settings__: the connection settings of Neo4J.
-#         It can be for the normal DB or test DB
-#         :return:
-#         """
-#
-#         # create a session to do the requests
-#         self.session = Session()
-#
-#         # username_and_password = __connection_settings__["USERNAME"] + ":" + __connection_settings__["PASSWORD"]
-#         # string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
-#
-#         string_in_base64 = get_username_and_password_as_string_in_base64(__connection_settings__["USERNAME"],
-#                                                                          __connection_settings__["PASSWORD"])
-#
-#         self.headers = {'Content-type': 'application/json',
-#                         'Accept': 'application/json; charset=UTF-8',
-#                         'Authorization': 'Basic ' + string_in_base64}
-#
-#         self.URL = "http://" + __connection_settings__["HOSTNAME"] + ":" + str(__connection_settings__["PORT"])
-#
-#         if self.__ARGS__["DEBUG_MODE"]:
-#             print("\nConnecting in Neo4J with:"
-#                   "\n- hostname: ", __connection_settings__["HOSTNAME"],
-#                   "\n- port: ", __connection_settings__["PORT"],
-#                   "\n- database: ", __connection_settings__["DATABASE"],
-#                   "\n- URL: ", self.URL, "\n")
-#
-#         neo4j_status = self.is_connecting_with_db()
-#
-#         self.set_connection_status(status=neo4j_status)
-#
-#     def is_connecting_with_db(self):
-#         """
-#         Try to do a connection with Neo4J. If it works, so return True, else return False;
-#         :return: one boolean value, depending of the connection status.
-#         """
-#         try:
-#             self.session.get(self.URL + '/db/data/', headers=self.headers)
-#
-#             # response = self.session.get(self.URL + '/db/data/', headers=self.headers)
-#             # result = loads(response.text)
-#             # print("\n>>> result: ", result, "\n")
-#         except exceptions.ConnectionError:
-#             return False
-#
-#         return True
-#
-#     @if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status
-#     def match(self, query, params={}):
-#
-#         query_dict = {
-#             "query": query,
-#             "params": params
-#         }
-#
-#         response = self.session.post(self.URL + '/db/data/cypher',
-#                                      data=dumps(query_dict), headers=self.headers)
-#
-#         result = loads(response.text)
-#
-#         return result
-#
-#     def get_keyword_tree(self):
-#
-#         result = self.match("""
-#                     MATCH path = (generic:keyword {key: "generic"})-[:can_be*]-(:keyword)
-#                     WITH collect(path) as paths
-#                     CALL apoc.convert.toTree(paths) yield value
-#                     RETURN value;
-#                 """)
-#
-#         return result

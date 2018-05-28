@@ -121,7 +121,11 @@ def remove_bad_lines_and_put_default_values(text):
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
         if "is_published boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")           
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
+        # USER_LAYER
+        if "is_the_creator boolean" in line_lower:
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")  
 
     text = "\n".join(lines)
 

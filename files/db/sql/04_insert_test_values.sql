@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1001 (
 
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1001, 1001, '2017-01-02', TRUE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1001, 1002, '2017-01-03', FALSE);
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1001, 1002, '2017-01-03');
 
 -- create a changeset
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1001, '2017-01-05', 1001, 1001);
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1002 (
 
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1002, 1003, '2017-03-05', TRUE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1002, 1004, '2017-03-05', FALSE);
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1002, 1004, '2017-03-05');
 
 -- create a changeset
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1002, '2017-03-05', 1002, 1003);
@@ -453,8 +453,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1005, '2017-04-10', TRUE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1006, '2017-04-11', FALSE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1007, '2017-04-11', FALSE);
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1006, '2017-04-11');
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1007, '2017-04-11');
 
 -- create a changeset
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1003, '2017-04-12', 1003, 1005);
@@ -542,8 +542,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1005, '2017-06-15', TRUE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1007, '2017-06-20', FALSE);
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1008, '2017-06-27', FALSE);
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1007, '2017-06-20');
+INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1008, '2017-06-27');
 
 -- create a changeset
 INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1004, '2017-06-28', 1004, 1005);
@@ -718,7 +718,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
 );
 
 -- add users in layers
-INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1006, 1007, '2017-09-04');
+INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1006, 1007, '2017-09-04', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1006, 1008, '2017-09-10');
 
 -- create a changeset
@@ -753,7 +753,7 @@ SELECT * FROM changeset WHERE id=1006;
 
 
 
-
+SELECT * FROM user_layer;
 
 
 

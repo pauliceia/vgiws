@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS user_layer (
   user_id SERIAL ,
   layer_id INT NOT NULL,
   created_at TIMESTAMP NULL,
-  is_the_creator BOOLEAN NULL ,
+  is_the_creator BOOLEAN NULL  DEFAULT FALSE,
   PRIMARY KEY (user_id, layer_id),
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (user_id)
