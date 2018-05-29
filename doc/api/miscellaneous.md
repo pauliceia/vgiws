@@ -1,40 +1,43 @@
 ## Miscellaneous
 
 
-### GET /api/capabilities/
+### GET /api/user_by_token/
 
-This method return the capabilities of the server.
+This method return the current logged user.
 - Parameters:
 - Examples:
-     - Get the capabilities: http://localhost:8888/api/capabilities/
-- Send:
-- Response: a JSON that contain the capabilities of the server. Example:
+     - Get the current logged user: http://localhost:8888/api/user_by_token/
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response: a JSON that contains the resource. Example:
     ```javascript
     {
-        "version": "0.0.2",
-        "status": {"postgresql": "online", "neo4j": "online"}
+        'properties': {
+            'username': 'rodrigo', 'is_the_admin': True, 'user_id': 1002,
+            'email': 'rodrigo@admin.com', 'terms_agreed': True, 'name': 'Rodrigo',
+            'is_email_valid': True, 'receive_notification_by_email': False
+        },
+        'type': 'User'
     }
     ```
 - Error codes:
+    - 400 (Bad Request): Invalid Token.
 - Notes:
 
 
-### GET /api/session/user/
+<!-- ### GET /api/capabilities/ -->
 
-This method return the current user logged.
-- Parameters:
-- Examples:
-     - Get the current user logged: http://localhost:8888/api/session/user/
-- Send:
-- Response: a JSON that contain the current user logged. Example:
-    ```javascript
-    {
-        'login': {
-            'user': {'username': None, 'email': 'test@fake.login', 'id': 1},
-            'type_login': 'fakelogin'
-        }
-    }
-    ```
-- Error codes:
-    - 404 (Not Found): Not found any user.
-- Notes:
+<!-- This method return the capabilities of the server. -->
+<!-- - Parameters: -->
+<!-- - Examples: -->
+ <!-- - Get the capabilities: http://localhost:8888/api/capabilities/ -->
+<!-- - Send: -->
+<!-- - Response: a JSON that contain the capabilities of the server. Example: -->
+<!-- ```javascript -->
+<!-- { -->
+<!-- "version": "0.0.2", -->
+<!-- "status": {"postgresql": "online", "neo4j": "online"} -->
+<!-- } -->
+<!-- ``` -->
+<!-- - Error codes: -->
+<!-- - Notes: -->

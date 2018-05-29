@@ -53,9 +53,6 @@ class TestAPISessionUser(TestCase):
 
         self.tester.api_user_by_token_with_invalid_authorization(invalid_authorization)
 
-    # def test_api_session_user_without_login(self):
-    #     self.tester.api_session_user_error_404_not_found()
-
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
