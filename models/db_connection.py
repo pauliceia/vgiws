@@ -607,6 +607,8 @@ class PGSQLConnection:
         return results_of_query
 
     def create_user_layer(self, resource_json):
+        print("\n\n resource_json: ", resource_json)
+
         p = resource_json["properties"]
 
         query_text = """
@@ -617,6 +619,21 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+    def delete_user_layer(self, user_id=None, layer_id=None):
+        if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
+        """.format(user_id, layer_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # CHANGESET
