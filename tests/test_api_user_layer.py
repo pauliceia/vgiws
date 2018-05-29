@@ -181,32 +181,56 @@ class TestAPIUserLayer(TestCase):
 
     # layer - create and delete
 
-    # def test_api_user_layer_create_and_delete(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     # create a layer
-    #     resource = {
-    #         'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
-    #                        'created_at': '2017-04-10 00:00:00'},
-    #         'type': 'UserLayer'
-    #     },
-    #     resource = self.tester.api_user_layer_create(resource)
-    #
-    #     # get the id of layer to REMOVE it
-    #     user_id = resource["properties"]["user_id"]
-    #     layer_id = resource["properties"]["layer_id"]
-    #
-    #     # print("\n\nresource[]: ", resource["properties"], "\n\n")
-    #
-    #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
-    #
-    #     # it is not possible to find the layer that just deleted
-    #     self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_api_user_layer_create_and_delete(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # create a layer
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        layer = self.tester.api_layer_create(layer)
+
+        # get the id of layer to use in test and after the testes, remove it
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # main test
+        ##################################################
+
+        # add a user in a layer
+        user_layer = {
+            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
+            'type': 'UserLayer'
+        }
+        self.tester.api_user_layer_create(user_layer)
+
+        # get the id of layer to REMOVE it
+        user_id = user_layer["properties"]["user_id"]
+
+        # remove the user in layer
+        self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
+
+        ##################################################
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 class TestAPIUserLayerErrors(TestCase):

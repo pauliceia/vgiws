@@ -488,7 +488,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         arguments = self.get_aguments()
 
         try:
-            self._delete_feature(*args, *arguments)
+            self._delete_feature(*args, **arguments)
 
             # do commit after delete the feature
             self.PGSQLConn.commit()

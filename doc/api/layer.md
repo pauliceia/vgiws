@@ -78,7 +78,7 @@ This method creates a new layer described in a JSON.
 <!-- - PUT /api/layer/update -->
 
 
-### DELETE /api/layer/delete/#id
+### DELETE /api/layer/#id
 
 This method deletes one layer by id = #id.
 - Parameters:
@@ -131,4 +131,48 @@ This method gets users in layers from DB. If you doesn't put any parameter, so i
     - 400 (Bad Request): Invalid parameter.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
+- Notes:
+
+
+### PUT /api/user_layer/create
+
+This method adds a user in a layer described in JSON.
+- Parameters:
+- Examples:
+    - Add a user in a layer: ```PUT http://localhost:8888/api/user_layer/create```
+- Send: a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1003},
+        'type': 'UserLayer'
+    }
+    ```
+- Response:
+- Error codes:
+    - 400 (Bad Request): Table name already exists.
+    - 400 (Bad Request): The parameter source needs to be a list.
+    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
+
+
+<!-- - PUT /api/layer/update -->
+
+
+### DELETE /api/user_layer/?\<params>
+
+This method remove a user from a layer.
+- Parameters:
+    - layer_id (mandatory): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - user_id (mandatory): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
+- Examples:
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/user_layer/?layer_id=1001&user_id=1004```
+- Send:
+- Response:
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

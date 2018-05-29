@@ -607,8 +607,6 @@ class PGSQLConnection:
         return results_of_query
 
     def create_user_layer(self, resource_json):
-        print("\n\n resource_json: ", resource_json)
-
         p = resource_json["properties"]
 
         query_text = """

@@ -15,9 +15,9 @@ ROOT_PATH = os_path.dirname(__file__)
 if __name__ == '__main__':
     print("Running the tests \n")
 
-    # Get all the files on current folder that have ,py in the final
+    # Get all the files on current folder that has .py in the final
     tests = TestLoader().discover(ROOT_PATH, "*.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_layer.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_user_layer.py")
     # PS: the numbers in test files means the order to execute
 
     # Run the tests - verbosity=2 increases the level of detail of output
