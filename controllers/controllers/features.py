@@ -60,14 +60,13 @@ class APIUserLayer(BaseHandlerUserLayer):
     def get(self, param=None):
         self.get_method_api_feature()
 
-    # @auth_non_browser_based
-    # def put(self, param=None):
-    #     # self.put_method_api_layer(param)
-    #     self.put_method_api_feature(param)
+    @auth_non_browser_based
+    def put(self, param=None):
+        self.put_method_api_feature(param)
 
-    # @auth_non_browser_based
-    # def delete(self, param=None):
-    #     self.delete_method_api_feature(param)
+    @auth_non_browser_based
+    def delete(self, param=None):
+        self.delete_method_api_feature(param)
 
 
 class APIImport(BaseHandlerLayer):

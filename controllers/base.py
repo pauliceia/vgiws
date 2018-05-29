@@ -639,7 +639,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
-        raise NotImplementedError
+        return self.PGSQLConn.create_user_layer(feature_json, current_user_id, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError

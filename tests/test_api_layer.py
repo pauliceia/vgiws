@@ -515,6 +515,20 @@ class TestAPIUserLayer(TestCase):
 
         self.tester.api_user_layer(expected, user_id="1005")
 
+    def test_get_api_user_layer_return_user_layer_by_user_id_and_layer_id(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                                   'created_at': '2017-04-10 00:00:00'},
+                    'type': 'UserLayer'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_user_layer(expected, user_id="1005", layer_id="1003")
+
     def test_get_api_user_layer_return_all_user_layer_by_user_id_and_is_the_creator(self):
         expected = {
             'features': [
@@ -549,34 +563,33 @@ class TestAPIUserLayer(TestCase):
 
     # layer - create and delete
 
-    # def test_api_layer_create_and_delete(self):
+    # def test_api_user_layer_create_and_delete(self):
     #     # DO LOGIN
     #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
     #
     #     # create a layer
     #     resource = {
-    #         'type': 'Layer',
-    #         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-    #                        'description': '', 'source_description': '',
-    #                        'reference': [], 'keyword': [{'keyword_id': 1041}]},
-    #         'feature_table': {
-    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-    #             'geometry': {"type": "MultiPoint"}
-    #         }
-    #     }
-    #     resource = self.tester.api_layer_create(resource)
+    #         'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+    #                        'created_at': '2017-04-10 00:00:00'},
+    #         'type': 'UserLayer'
+    #     },
+    #     resource = self.tester.api_user_layer_create(resource)
     #
     #     # get the id of layer to REMOVE it
-    #     resource_id = resource["properties"]["layer_id"]
+    #     user_id = resource["properties"]["user_id"]
+    #     layer_id = resource["properties"]["layer_id"]
+    #
+    #     # print("\n\nresource[]: ", resource["properties"], "\n\n")
     #
     #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_layer_delete(resource_id)
+    #     self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
     #
     #     # it is not possible to find the layer that just deleted
-    #     self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+    #     self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
     #
     #     # DO LOGOUT AFTER THE TESTS
     #     self.tester.auth_logout()
+
 
 class TestAPIUserLayerErrors(TestCase):
 

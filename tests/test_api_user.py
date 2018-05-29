@@ -17,7 +17,6 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
     return ''.join(choice(chars) for _ in range(size))
 
 
-
 class TestAPIUser(TestCase):
 
     def setUp(self):

@@ -357,7 +357,11 @@ class PGSQLConnection:
         # else:
         #     print("\n\n It is not creating a feature table \n\n")
 
-        self.add_user_in_layer(user_id=user_id, layer_id=id_in_json["layer_id"], is_the_creator=True)
+        user_layer_json = {
+            'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': id_in_json["layer_id"]},
+            'type': 'UserLayer'
+        }
+        self.create_user_layer(user_layer_json)
 
         return id_in_json
 
@@ -386,16 +390,6 @@ class PGSQLConnection:
         # delete the feature table
 
         self.delete_feature_table(f_table_name)
-
-    def add_user_in_layer(self, user_id, layer_id, is_the_creator=False):
-
-        query_text = """
-            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
-            VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
-        """.format(layer_id, user_id, is_the_creator)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
 
     ################################################################################
     # feature table
@@ -611,6 +605,17 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any feature.")
 
         return results_of_query
+
+    def create_user_layer(self, resource_json):
+        p = resource_json["properties"]
+
+        query_text = """
+            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
+            VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+        """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
 
     ################################################################################
