@@ -579,7 +579,7 @@ class PGSQLConnection:
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Layer',
+                    'type',       'UserLayer',
                     'properties', json_build_object(
                         'layer_id',        layer_id,
                         'user_id',         user_id,

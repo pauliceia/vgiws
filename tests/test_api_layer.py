@@ -404,72 +404,72 @@ class TestAPIUserLayer(TestCase):
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
                                    'created_at': '2017-01-02 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
                                    'created_at': '2017-01-03 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
                                    'created_at': '2017-03-05 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1002,
                                    'created_at': '2017-03-05 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
                                    'created_at': '2017-04-11 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
                                    'created_at': '2017-04-10 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1006, 'layer_id': 1003,
                                    'created_at': '2017-04-11 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1003,
                                    'created_at': '2017-04-11 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
                                    'created_at': '2017-06-15 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1004,
                                    'created_at': '2017-06-20 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1004,
                                    'created_at': '2017-06-27 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1005,
                                    'created_at': '2017-08-04 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1006,
                                    'created_at': '2017-09-04 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1006,
                                    'created_at': '2017-09-10 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -483,12 +483,12 @@ class TestAPIUserLayer(TestCase):
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
                                    'created_at': '2017-01-02 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
                                    'created_at': '2017-01-03 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -502,12 +502,12 @@ class TestAPIUserLayer(TestCase):
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
                                    'created_at': '2017-04-10 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
                                    'created_at': '2017-06-15 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -521,12 +521,12 @@ class TestAPIUserLayer(TestCase):
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
                                    'created_at': '2017-01-02 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 },
                 {
                     'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
                                    'created_at': '2017-03-05 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -539,7 +539,7 @@ class TestAPIUserLayer(TestCase):
                 {
                     'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
                                    'created_at': '2017-04-11 00:00:00'},
-                    'type': 'Layer'
+                    'type': 'UserLayer'
                 }
             ],
             'type': 'FeatureCollection'
@@ -547,6 +547,36 @@ class TestAPIUserLayer(TestCase):
 
         self.tester.api_user_layer(expected, user_id="1001", is_the_creator="FALSE")
 
+    # layer - create and delete
+
+    # def test_api_layer_create_and_delete(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # create a layer
+    #     resource = {
+    #         'type': 'Layer',
+    #         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+    #                        'description': '', 'source_description': '',
+    #                        'reference': [], 'keyword': [{'keyword_id': 1041}]},
+    #         'feature_table': {
+    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+    #             'geometry': {"type": "MultiPoint"}
+    #         }
+    #     }
+    #     resource = self.tester.api_layer_create(resource)
+    #
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["layer_id"]
+    #
+    #     # REMOVE THE layer AFTER THE TESTS
+    #     self.tester.api_layer_delete(resource_id)
+    #
+    #     # it is not possible to find the layer that just deleted
+    #     self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
 class TestAPIUserLayerErrors(TestCase):
 
