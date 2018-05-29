@@ -19,35 +19,43 @@ class TestAPICapabilities(TestCase):
         }
 
         self.tester.api_capabilities(expected)
+"""
 
 
 class TestAPISessionUser(TestCase):
+
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    def test_api_session_user_with_login(self):
-        # do not put the "id" and "created_at" attributes, because they are created dynamically
+    def test_api_user_by_token_with_login(self):
+        # DO LOGIN BEFORE THE TEST
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # do not put the "login_date" and "created_at" attributes, because they are created dynamically
         expected_at_least = {
-            'user': {
-                'properties': {'username': 'test', 'terms_agreed': False, 'is_email_valid': False,
-                               'email': 'test@fake.login'},
-                # 'tags': {'type_login': 'fakelogin'},
-                'type': 'User'
-            }
+            'properties': {
+                'username': 'rodrigo', 'is_the_admin': True, 'user_id': 1002,
+                'email': 'rodrigo@admin.com', 'terms_agreed': True, 'name': 'Rodrigo',
+                'is_email_valid': True, 'receive_notification_by_email': False
+            },
+            'type': 'User'
         }
 
-        # DO LOGIN BEFORE THE TEST
-        self.tester.auth_login_fake()
-
-        self.tester.api_session_user(expected_at_least)
+        self.tester.api_user_by_token(expected_at_least)
 
         # DO LOGOUT AFTER THE TEST
         self.tester.auth_logout()
 
-    def test_api_session_user_without_login(self):
-        self.tester.api_session_user_error_404_not_found()
-"""
+    def test_api_user_by_token_without_login(self):
+        # do not put the "login_date" and "created_at" attributes, because they are created dynamically
+        invalid_authorization = "29uj29uç0suk2"
+
+        self.tester.api_user_by_token_with_invalid_authorization(invalid_authorization)
+
+    # def test_api_session_user_without_login(self):
+    #     self.tester.api_session_user_error_404_not_found()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

@@ -7,6 +7,7 @@
 from json import loads
 from abc import abstractmethod, ABCMeta
 import jwt
+from jwt import DecodeError
 
 from psycopg2 import Error, ProgrammingError
 from requests import exceptions
@@ -109,14 +110,7 @@ def just_run_on_debug_mode(method):
 
 
 def generate_encoded_jwt_token_by_user(user):
-    # user_id = user["properties"]["user_id"]
-    # email = user["properties"]["email"]
-    #
-    # jwt_json = {"user_id": user_id, "email": email}
-
-    encoded_jwt_token = jwt.encode(user["properties"], __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
-
-    return encoded_jwt_token
+    return jwt.encode(user, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
 
 
 # BASE CLASS
@@ -202,7 +196,12 @@ class BaseHandler(RequestHandler):
     # LOGIN AND LOGOUT
 
     def get_decoded_jwt_token(self):
-        return jwt.decode(self.request.headers["Authorization"], __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
+        token = self.request.headers["Authorization"]
+        try:
+            decoded_jwt_token = jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
+            return decoded_jwt_token
+        except DecodeError as error:
+            raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
 
     @catch_generic_exception
     def auth_login(self, email, password):
@@ -301,18 +300,16 @@ class BaseHandler(RequestHandler):
     #         return None
 
     def get_current_user(self):
-        try:
-            decoded_jwt_token = self.get_decoded_jwt_token()
-            return decoded_jwt_token
-        except KeyError as error:
-            return None
+        decoded_jwt_token = self.get_decoded_jwt_token()
+        return decoded_jwt_token
 
     def get_current_user_id(self):
         try:
-            decoded_jwt_token = self.get_decoded_jwt_token()
-            return decoded_jwt_token["user_id"]
+            current_user = self.get_current_user()
+            return current_user["properties"]["user_id"]
         except KeyError as error:
             return None
+            # raise HTTPError(500, "Problem when get the current user. Please, contact the administrator.")
 
     # URLS
 
@@ -530,7 +527,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
         current_user = self.get_current_user()
 
-        is_the_admin = current_user["is_the_admin"]
+        is_the_admin = current_user["properties"]["is_the_admin"]
 
         if not is_the_admin:
             raise HTTPError(403, "Just administrator can delete other user.")

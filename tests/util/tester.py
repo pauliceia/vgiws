@@ -1002,29 +1002,30 @@ class UtilTester:
 
         self.ut_self.assertEqual(resulted, expected)
 
-    def api_session_user(self, expected_at_least):
-        response = self.session.get(self.URL + '/api/session/user')
+    def api_user_by_token(self, expected_at_least):
+        response = self.session.get(self.URL + '/api/user_by_token', headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        # comparing the items in a isolated way
+        # comparing the items in an isolated way
 
         # iterate in expected_at_least dict, because it contains the AT LEAST
-        # that have to exist in result.
+        # that has to exist in result.
         # with these way, do not compare the "id" and "created_at" attributes, because
         # these attributes are created in a dynamic way
-        for key in expected_at_least["user"]["properties"]:
-            self.ut_self.assertEqual(resulted["user"]["properties"][key],
-                                     expected_at_least["user"]["properties"][key])
-        # self.ut_self.assertEqual(resulted["user"]["tags"], expected_at_least["user"]["tags"])
-        self.ut_self.assertEqual(resulted["user"]["type"], expected_at_least["user"]["type"])
+        for key in expected_at_least["properties"]:
+            self.ut_self.assertEqual(resulted["properties"][key], expected_at_least["properties"][key])
+        self.ut_self.assertEqual(resulted["type"], expected_at_least["type"])
 
-    def api_session_user_error_404_not_found(self):
-        response = self.session.get(self.URL + '/api/session/user')
+    def api_user_by_token_with_invalid_authorization(self, invalid_authorization):
+        headers = deepcopy(self.headers)
+        headers["Authorization"] = invalid_authorization
 
-        self.ut_self.assertEqual(response.status_code, 404)
+        response = self.session.get(self.URL + '/api/user_by_token', headers=headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
 
     ##################################################
     # METHODS
