@@ -234,7 +234,7 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - create
 
-    def test_put_api_layer_create_error_400_bad_request(self):
+    def test_put_api_layer_create_error_400_bad_request_is_necessary_the_reference_parameter(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
