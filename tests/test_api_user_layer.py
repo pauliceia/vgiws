@@ -231,7 +231,7 @@ class TestAPIUserLayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-self._delete_feature(*args, **arguments)
+
 
 class TestAPIUserLayerErrors(TestCase):
 
