@@ -77,7 +77,7 @@ def auth_non_browser_based(method):
         if "Authorization" in self.request.headers:
             try:
                 token = self.request.headers["Authorization"]
-                self.get_decoded_jwt_token(token)
+                get_decoded_jwt_token(token)
             except HTTPError as error:
                 raise error
             except Exception as error:
@@ -108,8 +108,15 @@ def just_run_on_debug_mode(method):
     return wrapper
 
 
-def generate_encoded_jwt_token_by_user(user):
-    return jwt.encode(user, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
+def generate_encoded_jwt_token(json_dict):
+    return jwt.encode(json_dict, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
+
+
+def get_decoded_jwt_token(token):
+    try:
+        return jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
+    except DecodeError as error:
+        raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
 
 
 # BASE CLASS
@@ -193,19 +200,11 @@ class BaseHandler(RequestHandler):
         return search
 
     # LOGIN AND LOGOUT
-
-    def get_decoded_jwt_token(self, token):
-        try:
-            decoded_jwt_token = jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
-            return decoded_jwt_token
-        except DecodeError as error:
-            raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
-
     @catch_generic_exception
     def auth_login(self, email, password):
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
-        encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
+        encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
         return encoded_jwt_token
 
@@ -222,7 +221,7 @@ class BaseHandler(RequestHandler):
             id_in_json = self.PGSQLConn.create_user(user_json)
             user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
-        encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
+        encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
         return encoded_jwt_token
 
@@ -264,7 +263,7 @@ class BaseHandler(RequestHandler):
 
     def get_current_user(self):
         token = self.request.headers["Authorization"]
-        decoded_jwt_token = self.get_decoded_jwt_token(token)
+        decoded_jwt_token = get_decoded_jwt_token(token)
         return decoded_jwt_token
 
     def get_current_user_id(self):
