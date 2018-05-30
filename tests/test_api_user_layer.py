@@ -322,13 +322,12 @@ class TestAPIUserLayerErrors(TestCase):
     #     # DO LOGOUT AFTER THE TESTS
     #     self.tester.auth_logout()
 
-    # def test_put_api_user_layer_create_error_403_forbidden(self):
-    #     feature = {
-    #         'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
-    #                        'description': '', 'fk_keyword_id': 1041},
-    #         'type': 'Layer'
-    #     }
-    #     self.tester.api_layer_create_error_403_forbidden(feature)
+    def test_put_api_user_layer_create_error_403_forbidden(self):
+        resource = {
+            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1001},
+            'type': 'UserLayer'
+        }
+        self.tester.api_user_layer_create_error_403_forbidden_without_authorization_header(resource)
 
     # layer errors - delete
 

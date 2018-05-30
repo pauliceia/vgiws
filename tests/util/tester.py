@@ -572,7 +572,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # layer errors - get
+    # user layer errors - get
 
     def api_user_layer_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -587,6 +587,14 @@ class UtilTester:
         response = self.session.get(self.URL + '/api/user_layer/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    # user layer errors - create
+
+    def api_user_layer_create_error_403_forbidden_without_authorization_header(self, feature_json):
+        response = self.session.put(self.URL + '/api/user_layer/create/',
+                                    data=dumps(feature_json))
+
+        self.ut_self.assertEqual(response.status_code, 403)
 
     # IMPORT
 
