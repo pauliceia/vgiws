@@ -11,6 +11,17 @@ from ..base import *
 from settings import VERSION
 
 
+class APIUserByToken(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/user_by_token/", r"/api/user_by_token"]
+
+    @auth_non_browser_based
+    def get(self):
+        current_user = self.get_current_user()
+
+        self.write(json_encode(current_user))
+
 # class APICapabilities(BaseHandler):
 #
 #     # A list of URLs that can be use for the HTTP methods
@@ -29,18 +40,6 @@ from settings import VERSION
 #
 #         # Default: self.set_header('Content-Type', 'application/json')
 #         self.write(json_encode(capabilities))
-
-
-class APIUserByToken(BaseHandler):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/user_by_token/", r"/api/user_by_token"]
-
-    @auth_non_browser_based
-    def get(self):
-        current_user = self.get_current_user()
-
-        self.write(json_encode(current_user))
 
 
 # class HelperExecute(BaseHandler):

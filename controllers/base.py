@@ -455,60 +455,6 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
             raise HTTPError(403, "Just administrator can delete other user.")
 
 
-# class BaseHandlerUserGroup(BaseHandlerTemplateMethod):
-#
-#     def _get_feature(self, *args, **kwargs):
-#         return self.PGSQLConn.get_user_group(**kwargs)
-#
-#     def _create_feature(self, feature_json, current_user_id):
-#         return self.PGSQLConn.create_user_group(feature_json, current_user_id)
-#
-#     def _update_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _request_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _accept_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_feature(self, *args, **kwargs):
-#         # receive user_id and group_id as argument
-#         arguments = self.get_aguments()
-#
-#         self.PGSQLConn.delete_user_group(**arguments)
-
-
-# class BaseHandlerGroup(BaseHandlerTemplateMethod):
-#
-#     def _get_feature(self, *args, **kwargs):
-#         return self.PGSQLConn.get_group(**kwargs)
-#
-#     def _create_feature(self, feature_json, current_user_id):
-#         return self.PGSQLConn.create_group(feature_json, current_user_id)
-#
-#     def _update_feature(self, feature_json):
-#         return self.PGSQLConn.update_group(feature_json)
-#
-#     def _delete_feature(self, *args, **kwargs):
-#         self.PGSQLConn.delete_group_in_db(*args)
-
-
-# class BaseHandlerProject(BaseHandlerTemplateMethod):
-#
-#     def _get_feature(self, *args, **kwargs):
-#         return self.PGSQLConn.get_projects(**kwargs)
-#
-#     def _create_feature(self, feature_json, current_user_id):
-#         return self.PGSQLConn.create_project(feature_json, current_user_id)
-#
-#     def _update_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_feature(self, *args, **kwargs):
-#         self.PGSQLConn.delete_project_in_db(*args)
-
-
 class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # GET
@@ -593,27 +539,21 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     #     raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
 
 
-
-class BaseFeatureTable(BaseHandlerTemplateMethod):
-
-    def _get_feature(self, *args, **kwargs):
-        # print("\n\n*args: ", args)
-        # print("**kwargs: ", kwargs, "\n\n")
-        return self.PGSQLConn.get_feature_table(**kwargs)
-
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
-        raise NotImplementedError
-
-    def _update_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def _delete_feature(self, *args, **kwargs):
-        raise NotImplementedError
-
-
-
-
-
+# class BaseFeatureTable(BaseHandlerTemplateMethod):
+#
+#     def _get_feature(self, *args, **kwargs):
+#         # print("\n\n*args: ", args)
+#         # print("**kwargs: ", kwargs, "\n\n")
+#         return self.PGSQLConn.get_feature_table(**kwargs)
+#
+#     def _create_feature(self, feature_json, current_user_id, **kwargs):
+#         raise NotImplementedError
+#
+#     def _update_feature(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _delete_feature(self, *args, **kwargs):
+#         raise NotImplementedError
 
 
 # class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
