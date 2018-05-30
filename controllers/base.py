@@ -76,7 +76,8 @@ def auth_non_browser_based(method):
 
         if "Authorization" in self.request.headers:
             try:
-                self.get_decoded_jwt_token()
+                token = self.request.headers["Authorization"]
+                self.get_decoded_jwt_token(token)
             except HTTPError as error:
                 raise error
             except Exception as error:
@@ -193,8 +194,7 @@ class BaseHandler(RequestHandler):
 
     # LOGIN AND LOGOUT
 
-    def get_decoded_jwt_token(self):
-        token = self.request.headers["Authorization"]
+    def get_decoded_jwt_token(self, token):
         try:
             decoded_jwt_token = jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
             return decoded_jwt_token
@@ -203,32 +203,15 @@ class BaseHandler(RequestHandler):
 
     @catch_generic_exception
     def auth_login(self, email, password):
-
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
         encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
 
-
-
-        # TODO: antigo / retirar depois
-        # get the only one user in list returned
-        # user_in_db = user_in_db["features"][0]
-
-        # # insert the user in cookie
-        # self.set_current_user(user=user_in_db, new_user=True)
-
-
-
-
-
         return encoded_jwt_token
-
 
     @catch_generic_exception
     def login(self, user_json):
         # looking for a user in db, if not exist user, so create a new one
-        # user_in_db = self.PGSQLConn.get_user_in_db(user["email"])
-
         try:
             user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])
         except HTTPError as error:
@@ -240,24 +223,6 @@ class BaseHandler(RequestHandler):
             user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
         encoded_jwt_token = generate_encoded_jwt_token_by_user(user_in_db["features"][0])
-
-
-
-
-
-
-
-        # TODO: antigo / retirar depois
-        # get the only one user in list returned
-        # user_in_db = user_in_db["features"][0]
-
-        # insert the user in cookie
-        # self.set_current_user(user=user_in_db, new_user=True)
-
-
-
-
-
 
         return encoded_jwt_token
 
@@ -298,7 +263,8 @@ class BaseHandler(RequestHandler):
     #         return None
 
     def get_current_user(self):
-        decoded_jwt_token = self.get_decoded_jwt_token()
+        token = self.request.headers["Authorization"]
+        decoded_jwt_token = self.get_decoded_jwt_token(token)
         return decoded_jwt_token
 
     def get_current_user_id(self):
