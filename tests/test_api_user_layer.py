@@ -269,33 +269,14 @@ class TestAPIUserLayerErrors(TestCase):
 
     # layer errors - create
 
-    # def test_put_api_user_layer_create_error_400_bad_request_is_necessary_the_reference_parameter(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     # create a layer
-    #     resource = {
-    #         'type': 'Layer',
-    #         'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
-    #                        'description': '', 'fk_keyword_id': 1041},
-    #         'feature_table': {
-    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-    #             'geometry': {"type": "MultiPoint"}
-    #         }
-    #     }
-    #     self.tester.api_layer_create_error_400_bad_request(resource)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-
     # def test_put_api_user_layer_create_error_400_bad_request_table_already_exist(self):
     #     # DO LOGIN
     #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
     #
     #     # create a layer
-    #     resource = {
+    #     layer = {
     #         'type': 'Layer',
-    #         'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+    #         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
     #                        'description': '', 'source_description': '',
     #                        'reference': [], 'keyword': [{'keyword_id': 1041}]},
     #         'feature_table': {
@@ -303,21 +284,41 @@ class TestAPIUserLayerErrors(TestCase):
     #             'geometry': {"type": "MultiPoint"}
     #         }
     #     }
-    #     resource = self.tester.api_layer_create(resource)
+    #     layer = self.tester.api_layer_create(layer)
+    #
+    #     # get the id of layer to use in test and after the testes, remove it
+    #     layer_id = layer["properties"]["layer_id"]
+    #
+    #     ##################################################
+    #     # main test
+    #     ##################################################
+    #
+    #     # add a user in a layer
+    #     user_layer = {
+    #         'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
+    #         'type': 'UserLayer'
+    #     }
+    #     self.tester.api_user_layer_create(user_layer)
+    #
+    #     # try to add the user in layer again and raise an error
+    #     self.tester.api_user_layer_create_error_400_bad_request(user_layer)
     #
     #     # get the id of layer to REMOVE it
-    #     resource_id = resource["properties"]["layer_id"]
+    #     user_id = user_layer["properties"]["user_id"]
     #
-    #     ##################################################
-    #     # try to insert the layer again, raising the 400
-    #     ##################################################
-    #     resource = self.tester.api_layer_create_error_400_bad_request(resource)
-    #
-    #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_layer_delete(resource_id)
+    #     # remove the user in layer
+    #     self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
     #
     #     # it is not possible to find the layer that just deleted
-    #     self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+    #     self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
+    #
+    #     ##################################################
+    #
+    #     # REMOVE THE layer AFTER THE TESTS
+    #     self.tester.api_layer_delete(layer_id)
+    #
+    #     # it is not possible to find the layer that just deleted
+    #     self.tester.api_layer_error_404_not_found(layer_id=layer_id)
     #
     #     # DO LOGOUT AFTER THE TESTS
     #     self.tester.auth_logout()
