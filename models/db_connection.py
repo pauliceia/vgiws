@@ -606,7 +606,7 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_user_layer(self, resource_json):
+    def add_user_layer_in_db(self, resource_json):
         p = resource_json["properties"]
 
         query_text = """
@@ -616,6 +616,17 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_user_layer(self, resource_json):
+        try:
+            self.add_user_layer_in_db(resource_json)
+        except Error as error:
+            if error.pgcode == "23505":
+                self.rollback()  # do a rollback to comeback in a safe state of DB
+                raise HTTPError(400, "The user already has been added in layer.")
+            else:
+                # if is other error, so raise it up
+                raise error
 
     def delete_user_layer(self, user_id=None, layer_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):

@@ -83,7 +83,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    ##################################################
     # USER
+    ##################################################
 
     def api_user(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -164,295 +166,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # GROUP
-
-    # get
-
-    # def api_group_select(self, **arguments):
-    #     """
-    #     Do a SELECT in DB looking for groups
-    #     :param arguments: a dictionary with arguments to search
-    #     :return: groups found
-    #     """
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     return resulted
-    #
-    # def api_group(self, expected, **arguments):
-    #     """
-    #     DO a COMPARISON between the group(s) expected and the group(s) found by search
-    #     :param expected: a dictionary expected
-    #     :param arguments: a dictionary with arguments to search
-    #     :return:
-    #     """
-    #
-    #     resulted = self.api_group_select(**arguments)
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-    #
-    # def api_group_create(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/group/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertIn("id", resulted)
-    #     self.ut_self.assertNotEqual(resulted["id"], -1)
-    #
-    #     # put the id received in the original JSON of changeset
-    #     feature_json["properties"]["id"] = resulted["id"]
-    #
-    #     return feature_json
-    #
-    # def api_group_update(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/group/update/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # def api_group_delete(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # # group - verify
-    #
-    # def verify_if_one_group_exist_in_db(self, feature_expected):
-    #
-    #     feature_id = feature_expected["properties"]["id"]
-    #     feature_tags = feature_expected["tags"]
-    #     feature_type = feature_expected["type"]
-    #
-    #     # do a GET in db to obtain the newest version
-    #     feature_resulted = self.api_group_select(group_id=feature_id)
-    #     feature_resulted = feature_resulted["features"][0]
-    #
-    #     feature_resulted_id = feature_resulted["properties"]["id"]
-    #     feature_resulted_tags = feature_resulted["tags"]
-    #     feature_resulted_type = feature_resulted["type"]
-    #
-    #     # compare parts of the features, because there are some attributes that just the server works
-    #     # with, for example: visible or created_at, so don't compare them
-    #     self.ut_self.assertEqual(feature_id, feature_resulted_id)
-    #     self.ut_self.assertEqual(feature_tags, feature_resulted_tags)
-    #     self.ut_self.assertEqual(feature_type, feature_resulted_type)
-    #
-    # # group errors - get
-    #
-    # def api_group_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_group_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # group errors - create
-    #
-    # def api_group_create_error_403_forbidden(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/group/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # # group errors - delete
-    #
-    # def api_group_delete_error_400_bad_request(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_group_delete_error_403_forbidden(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_group_delete_error_404_not_found(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/group/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # USER_GROUP
-    #
-    # def api_user_group(self, expected, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-    #
-    # def api_user_group_create(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/user_group/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     # return nothing, because of that, there is no json to compare
-    #
-    #     # resulted = loads(response.text)  # convert string to dict/JSON
-    #     #
-    #     # self.ut_self.assertIn("id", resulted)
-    #     # self.ut_self.assertNotEqual(resulted["id"], -1)
-    #     #
-    #     # # put the id received in the original JSON of changeset
-    #     # feature_json["properties"]["id"] = resulted["id"]
-    #     #
-    #     # return feature_json
-    #
-    # def api_user_group_delete(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # # user_group errors - get
-    #
-    # def api_user_group_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_user_group_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # user_group errors - create
-    #
-    # def api_user_group_create_error_400_bad_request(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/user_group/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_user_group_create_error_403_forbidden(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/user_group/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # # user_group errors - delete
-    #
-    # def api_user_group_delete_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_user_group_delete_error_403_forbidden(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_user_group_delete_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/user_group/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # PROJECT
-    #
-    # def api_project(self, expected, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-    #
-    # def api_project_create(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/project/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertIn("id", resulted)
-    #     self.ut_self.assertNotEqual(resulted["id"], -1)
-    #
-    #     # put the id received in the original JSON of changeset
-    #     feature_json["properties"]["id"] = resulted["id"]
-    #
-    #     return feature_json
-    #
-    # def api_project_delete(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # # project errors - get
-    #
-    # def api_project_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_project_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/project/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # project errors - create
-    #
-    # def api_project_create_error_403_forbidden(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/project/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # # project errors - delete
-    #
-    # def api_project_delete_error_400_bad_request(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_project_delete_error_403_forbidden(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_project_delete_error_404_not_found(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/project/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-
+    ##################################################
     # LAYER
+    ##################################################
 
     def api_layer(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -541,7 +257,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    ##################################################
     # USER LAYER
+    ##################################################
 
     def api_user_layer(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -591,7 +309,7 @@ class UtilTester:
     # user layer errors - create
 
     def api_user_layer_create_error_400_bad_request(self, feature_json):
-        response = self.session.put(self.URL + '/api/layer/create/',
+        response = self.session.put(self.URL + '/api/user_layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
@@ -608,7 +326,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    ##################################################
     # IMPORT
+    ##################################################
 
     def api_import_shp(self, binary_file, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -622,20 +342,22 @@ class UtilTester:
         #
         # print("resulted: ", resulted)
 
+    ##################################################
     # FEATURE TABLE
+    ##################################################
 
-    def api_feature_table(self, expected, **arguments):
-        # get the arguments of the URL
-        arguments = get_url_arguments(**arguments)
-
-        # do a GET call with default format (GeoJSON)
-        response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertEqual(expected, resulted)
+    # def api_feature_table(self, expected, **arguments):
+    #     # get the arguments of the URL
+    #     arguments = get_url_arguments(**arguments)
+    #
+    #     # do a GET call with default format (GeoJSON)
+    #     response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+    #
+    #     resulted = loads(response.text)  # convert string to dict/JSON
+    #
+    #     self.ut_self.assertEqual(expected, resulted)
 
     # def api_layer(self, expected, **arguments):
     #     arguments = get_url_arguments(**arguments)
