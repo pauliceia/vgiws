@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # put all groups of controllers
-from .pages import *
+from .page import *
 from .login import *
-from .features import *
-from .elements import *
-from .themes import *
 from .user import *
-from .others import *
+from .layer import *
+from .theme import *
+from .notification import *
+from .changeset import *
+from .feature import *
+from .element import *
+from .other import *
