@@ -329,61 +329,59 @@ class TestAPIUserLayerErrors(TestCase):
         }
         self.tester.api_user_layer_create_error_403_forbidden_without_authorization_header(resource)
 
-    # def test_put_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     # create a layer
-    #     layer = {
-    #         'type': 'Layer',
-    #         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-    #                        'description': '', 'source_description': '',
-    #                        'reference': [], 'keyword': [{'keyword_id': 1041}]},
-    #         'feature_table': {
-    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-    #             'geometry': {"type": "MultiPoint"}
-    #         }
-    #     }
-    #     layer = self.tester.api_layer_create(layer)
-    #
-    #     # get the id of layer to use in test and after the testes, remove it
-    #     layer_id = layer["properties"]["layer_id"]
-    #
-    #     # logout with rodrigo
-    #     self.tester.auth_logout()
-    #
-    #     # login with other user (admin) and he tries to add a user in the layer of rodrigo
-    #     self.tester.auth_login("admin@admin.com", "admin")
-    #
-    #     ##################################################
-    #     # main test
-    #     ##################################################
-    #
-    #     # add a user in a layer
-    #     user_layer = {
-    #         'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
-    #         'type': 'UserLayer'
-    #     }
-    #     self.tester.api_user_layer_create(user_layer)
-    #
-    #     self.tester.api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(user_layer)
-    #
-    #     ##################################################
-    #
-    #     # logout with admin
-    #     self.tester.auth_logout()
-    #
-    #     # login with rodrigo to delete the layer
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_layer_delete(layer_id)
-    #
-    #     # it is not possible to find the layer that just deleted
-    #     self.tester.api_layer_error_404_not_found(layer_id=layer_id)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_put_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # create a layer
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        layer = self.tester.api_layer_create(layer)
+
+        # get the id of layer to use in test and after the testes, remove it
+        layer_id = layer["properties"]["layer_id"]
+
+        # logout with rodrigo
+        self.tester.auth_logout()
+
+        # login with other user (admin) and he tries to add a user in the layer of rodrigo
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        ##################################################
+        # main test
+        ##################################################
+
+        # add a user in a layer
+        user_layer = {
+            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
+            'type': 'UserLayer'
+        }
+        self.tester.api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(user_layer)
+
+        ##################################################
+
+        # logout with admin
+        self.tester.auth_logout()
+
+        # login with rodrigo to delete the layer
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     # layer errors - delete
 

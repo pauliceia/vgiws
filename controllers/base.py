@@ -424,8 +424,12 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
 class BaseHandlerUser(BaseHandlerTemplateMethod):
 
+    # GET
+
     def _get_feature(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
+
+    # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_user(feature_json)
@@ -433,14 +437,18 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
 
+    # DELETE
+
     def _delete_feature(self, *args, **kwargs):
-        self.delete_validation()
+        self.is_current_user_an_administrator()
 
         user_id = args[0]
 
         self.PGSQLConn.delete_user(user_id)
 
-    def delete_validation(self):
+    # VALIDATION
+
+    def is_current_user_an_administrator(self):
         """
         Verify if a user is administrator to delete a user.
         Just administrators can delete users.
@@ -473,13 +481,15 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_feature(self, *args, **kwargs):
-        self.delete_validation(*args)
+        self.can_current_user_delete_a_layer(*args)
 
         self.PGSQLConn.delete_layer_in_db(*args)
 
-    def delete_validation(self, resource_id):
+    # VALIDATION
+
+    def can_current_user_delete_a_layer(self, resource_id):
         """
-        Verify if the user has permition to delete a layer
+        Verify if the user has permission of deleting a layer
         :param resource_id: layer id
         :return:
         """
@@ -494,7 +504,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
+        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
 
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
@@ -507,6 +517,8 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
+        self.can_current_user_add_user_in_layer(feature_json["properties"]["layer_id"], current_user_id)
+
         return self.PGSQLConn.create_user_layer(feature_json, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
@@ -519,9 +531,30 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
         self.PGSQLConn.delete_user_layer(**kwargs)
 
+    # VALIDATION
+
+    def can_current_user_add_user_in_layer(self, layer_id, current_user_id):
+        """
+        Verify if the user has permission of adding a user in a layer
+        :param layer_id: layer id
+        :param current_user_id: current_user_id
+        :return:
+        """
+
+        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+        for layer in layers["features"]:
+            if layer["properties"]['is_the_creator'] and \
+                    layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+
     # def delete_validation(self, resource_id):
     #     """
-    #     Verify if the user has permition to delete a layer
+    #     Verify if the user has permission to delete a layer
     #     :param resource_id: layer id
     #     :return:
     #     """
@@ -536,7 +569,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     #             return
     #
     #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The owner of the layer is the unique who can delete the layer.")
+    #     raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):

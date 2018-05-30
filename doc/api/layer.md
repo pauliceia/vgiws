@@ -157,9 +157,8 @@ This method adds a user in a layer described in JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    - 400 (Bad Request): Table name already exists.
-    - 400 (Bad Request): The parameter source needs to be a list.
     - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The creator of the layer is the unique who can delete the layer.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 
