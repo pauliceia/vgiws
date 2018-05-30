@@ -7,6 +7,7 @@ This method return the current logged user.
 - Parameters:
 - Examples:
      - Get the current logged user: http://localhost:8888/api/user_by_token/
+- Send (in Body):
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.
 - Response: a JSON that contains the resource. Example:
@@ -22,6 +23,7 @@ This method return the current logged user.
     ```
 - Error codes:
     - 400 (Bad Request): Invalid Token.
+    - 403 (Forbidden): It is necessary an Authorization header valid.
 - Notes:
 
 
@@ -30,7 +32,7 @@ This method return the current logged user.
 <!-- This method return the capabilities of the server. -->
 <!-- - Parameters: -->
 <!-- - Examples: -->
- <!-- - Get the capabilities: http://localhost:8888/api/capabilities/ -->
+<!-- - Get the capabilities: http://localhost:8888/api/capabilities/ -->
 <!-- - Send: -->
 <!-- - Response: a JSON that contain the capabilities of the server. Example: -->
 <!-- ```javascript -->

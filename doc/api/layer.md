@@ -15,7 +15,8 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
      - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
      - Get layers by is_published: http://localhost:8888/api/layer/?is_published=TRUE
      - Get one layer by f_table_name: http://localhost:8888/api/layer/?f_table_name=layer_1003
-- Send:
+- Send (in Body):
+- Send (in Header):
 - Response: a JSON that contains the resources selected. Example:
     ```javascript
     {
@@ -47,7 +48,7 @@ This method creates a new layer described in a JSON.
 - Examples:
     - Create a layer with feature table: ```PUT http://localhost:8888/api/layer/create```
     - Create a layer without feature table: ```PUT http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
-- Send: a JSON describing the resource. Example:
+- Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
         'type': 'Layer',
@@ -59,8 +60,9 @@ This method creates a new layer described in a JSON.
             'geometry': {"type": "MultiPoint"}
         }
     }
-
     ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response: a JSON that contains the id of the resource created. Example:
     ```javascript
     {'layer_id': 7}
@@ -69,7 +71,7 @@ This method creates a new layer described in a JSON.
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter reference needs to be a list.
     - 400 (Bad Request): It is necessary a reference parameter.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).
@@ -86,11 +88,13 @@ This method deletes one layer by id = #id.
     - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
      - Delete a resource by id: ```DELETE http://localhost:8888/api/layer/7```
-- Send:
+- Send (in Body):
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): It is necessary an Authorization header valid.
     - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
@@ -114,7 +118,8 @@ This method gets users in layers from DB. If you doesn't put any parameter, so i
      - Get users that belongs to a layer by id: http://localhost:8888/api/user_layer/?layer_id=1001
      - Get layers of a user by id: http://localhost:8888/api/user_layer/?user_id=1001
      - Get layers of a user who he/she is the creator by id: http://localhost:8888/api/user_layer/?user_id=1001&is_the_creator=TRUE
-- Send:
+- Send (in Body):
+- Send (in Header):
 - Response: a JSON that contains the selected resources. Example:
     ```javascript
     {
@@ -141,18 +146,20 @@ This method adds a user in a layer described in JSON.
 - Parameters:
 - Examples:
     - Add a user in a layer: ```PUT http://localhost:8888/api/user_layer/create```
-- Send: a JSON describing the resource. Example:
+- Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
         'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1003},
         'type': 'UserLayer'
     }
     ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter source needs to be a list.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 
@@ -168,11 +175,13 @@ This method remove a user from a layer.
     - user_id (mandatory): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
 - Examples:
      - Delete a resource by id: ```DELETE http://localhost:8888/api/user_layer/?layer_id=1001&user_id=1004```
-- Send:
+- Send (in Body):
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 403 (Forbidden): It is necessary an Authorization header valid.
     - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
