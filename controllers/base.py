@@ -48,23 +48,6 @@ def catch_generic_exception(method):
     return wrapper
 
 
-# def auth_non_browser_based(method):
-#     """
-#     Authentication to non browser based service
-#     :param method: the method decorated
-#     :return: the method wrapped
-#     """
-#     def wrapper(self, *args, **kwargs):
-#
-#         # if user is not logged in, so return a 403 Forbidden
-#         if not self.current_user:
-#             raise HTTPError(403, "It is necessary a user logged in to access this URL.")
-#
-#         # if the user is logged in, so execute the method
-#         return method(self, *args, **kwargs)
-#
-#     return wrapper
-
 def auth_non_browser_based(method):
     """
     Authentication to non browser based service
@@ -147,7 +130,7 @@ class BaseHandler(RequestHandler):
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK__
             self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO__
 
-    # headers
+    # HEADERS
 
     def set_default_headers(self):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
@@ -235,36 +218,12 @@ class BaseHandler(RequestHandler):
     #
     #     # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
 
-    # COOKIES
-
-    def set_current_user(self, user={}, new_user=True):
-        if new_user:
-            # if new user, so create a new cookie
-            user_cookie = get_new_user_struct_cookie()
-        else:
-            # if already exist, so get the cookie
-            user_cookie = json_decode(self.get_secure_cookie("user"))
-
-        # insert the information
-        user_cookie["user"] = user
-
-        # set the cookie (it needs to be separated)
-        # transform dictionary in JSON and add in cookie
-        encode = json_encode(user_cookie)
-        self.set_secure_cookie("user", encode)
-
-    # def get_current_user(self):
-    #     user_cookie = self.get_secure_cookie("user")
-    #
-    #     if user_cookie:
-    #         return json_decode(user_cookie)
-    #     else:
-    #         return None
+    # CURRENT USER
 
     def get_current_user(self):
         token = self.request.headers["Authorization"]
-        decoded_jwt_token = get_decoded_jwt_token(token)
-        return decoded_jwt_token
+        user = get_decoded_jwt_token(token)
+        return user
 
     def get_current_user_id(self):
         try:
@@ -308,12 +267,12 @@ class BaseHandler(RequestHandler):
 
     # AUXILIAR FUNCTION
 
-    def is_element_type_valid(self, element, element_json):
-        multi_element = element_json["features"][0]["geometry"]["type"]
-
-        return ((element == "point" and multi_element == "MultiPoint") or
-                (element == "line" and multi_element == "MultiLineString") or
-                (element == "polygon" and multi_element == "MultiPolygon"))
+    # def is_element_type_valid(self, element, element_json):
+    #     multi_element = element_json["features"][0]["geometry"]["type"]
+    #
+    #     return ((element == "point" and multi_element == "MultiPoint") or
+    #             (element == "line" and multi_element == "MultiLineString") or
+    #             (element == "polygon" and multi_element == "MultiPolygon"))
 
     def get_q_param_as_dict_from_str(self, str_query):
         str_query = str_query.strip()
