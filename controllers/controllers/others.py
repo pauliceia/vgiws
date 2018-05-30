@@ -11,24 +11,24 @@ from ..base import *
 from settings import VERSION
 
 
-class APICapabilities(BaseHandler):
-
-    # A list of URLs that can be use for the HTTP methods
-    urls = [r"/api/capabilities/", r"/api/capabilities"]
-
-    def get(self):
-        pgsql_status = self.PGSQLConn.get_connection_status(readable=True)
-        # neo4j_status = self.Neo4JConn.get_connection_status(readable=True)
-
-        capabilities = {
-            "version": VERSION,
-            "status": {
-                "postgresql": pgsql_status
-            }
-        }
-
-        # Default: self.set_header('Content-Type', 'application/json')
-        self.write(json_encode(capabilities))
+# class APICapabilities(BaseHandler):
+#
+#     # A list of URLs that can be use for the HTTP methods
+#     urls = [r"/api/capabilities/", r"/api/capabilities"]
+#
+#     def get(self):
+#         pgsql_status = self.PGSQLConn.get_connection_status(readable=True)
+#         # neo4j_status = self.Neo4JConn.get_connection_status(readable=True)
+#
+#         capabilities = {
+#             "version": VERSION,
+#             "status": {
+#                 "postgresql": pgsql_status
+#             }
+#         }
+#
+#         # Default: self.set_header('Content-Type', 'application/json')
+#         self.write(json_encode(capabilities))
 
 
 class APIUserByToken(BaseHandler):
@@ -36,6 +36,7 @@ class APIUserByToken(BaseHandler):
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/user_by_token/", r"/api/user_by_token"]
 
+    @auth_non_browser_based
     def get(self):
         current_user = self.get_current_user()
 

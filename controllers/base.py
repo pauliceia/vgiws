@@ -76,13 +76,11 @@ def auth_non_browser_based(method):
 
         if "Authorization" in self.request.headers:
             try:
-                # decoded_jwt_token = get_decoded_jwt_token(self)
                 self.get_decoded_jwt_token()
+            except HTTPError as error:
+                raise error
             except Exception as error:
-                print("\nerror: ", error, "\n")
                 raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator.")
-
-            # print("decoded_jwt_token: ", decoded_jwt_token, "\n\n")
 
             return method(self, *args, **kwargs)
         else:
