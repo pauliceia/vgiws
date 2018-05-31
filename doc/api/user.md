@@ -45,8 +45,8 @@ This method create a new user described in a JSON.
     ```javascript
     {
         'type': 'User',
-        'properties': {'user_id': -1, 'email': 'roger@roger.com',
-        'password': '283cy4n924y22y3', 'username': 'roger'}
+        'properties': {'user_id': -1, 'email': email, 'password': '29EU290UE', 'username': 'roger', 'name': 'Roger',
+                       'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
     }
     ```
 - Response: a JSON that contains the id of the created resource. Example:
