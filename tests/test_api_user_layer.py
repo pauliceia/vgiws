@@ -469,18 +469,18 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # def test_delete_api_user_layer_error_404_not_found(self):
-    #     # create a tester passing the unittest self
-    #     self.tester = UtilTester(self)
-    #
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     self.tester.api_layer_delete_error_404_not_found("5000")
-    #     self.tester.api_layer_delete_error_404_not_found("5001")
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_delete_api_user_layer_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5000)
+        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5001)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

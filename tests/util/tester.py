@@ -364,6 +364,14 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_user_layer_delete_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/user_layer/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     ##################################################
     # IMPORT
     ##################################################

@@ -388,7 +388,6 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any feature.")
 
         # delete the feature table
-
         self.delete_feature_table(f_table_name)
 
     ################################################################################
