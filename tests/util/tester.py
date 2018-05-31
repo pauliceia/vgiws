@@ -146,6 +146,20 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # user errors - create
+
+    def api_user_error_create_400_bad_request(self, feature_json):
+        # create a copy to send to server (with the password encrypted)
+        feature_json_copy = deepcopy(feature_json)
+
+        # cryptography the password before to send
+        feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
+
+        response = self.session.put(self.URL + '/api/user/create/',
+                                    data=dumps(feature_json_copy), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
     # user errors - delete
 
     def api_user_delete_error_400_bad_request(self, feature_id):

@@ -203,6 +203,18 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_error_404_not_found(user_id="999")
         self.tester.api_user_error_404_not_found(user_id="998")
 
+    # user errors - create
+
+    def test_get_api_user_create_error_400_bad_request_email_already_exist(self):
+        # create a feature
+        feature = {
+            'type': 'User',
+            'properties': {'email': "rodrigo@admin.com", 'password': 'roger', 'username': 'roger', 'name': 'Roger',
+                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_error_create_400_bad_request(feature)
+
     # user errors - delete
 
     def test_delete_api_user_error_400_bad_request(self):
