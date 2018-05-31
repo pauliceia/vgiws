@@ -555,7 +555,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def can_current_user_delete_user_in_layer(self, layer_id):
         """
         Verify if the user has permission of deleting a user from a layer
-        :param resource_id: layer id
+        :param layer_id: layer id
         :return:
         """
         current_user_id = self.get_current_user_id()
@@ -569,7 +569,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+        raise HTTPError(403, "The creator of the layer is the unique who can delete a user from a layer.")
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):

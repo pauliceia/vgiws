@@ -182,7 +182,7 @@ This method remove a user from a layer.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
+    - 403 (Forbidden): The creator of the layer is the unique who can delete a user from a layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
