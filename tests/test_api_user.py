@@ -225,6 +225,16 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_error_create_400_bad_request(feature)
 
+    def test_get_api_user_create_error_400_bad_request_attributes_are_missing(self):
+        # create a feature
+        feature = {
+            'type': 'User',
+            'properties': {'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
+                           'can_add_layer': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_error_create_400_bad_request(feature)
+
     # user errors - delete
 
     def test_delete_api_user_error_400_bad_request(self):
