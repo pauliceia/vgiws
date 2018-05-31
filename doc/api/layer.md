@@ -159,7 +159,7 @@ This method adds a user in a layer described in JSON.
 - Error codes:
     - 400 (Bad Request): The user already has been added in layer.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The creator of the layer is the unique who can delete the layer.
+    - 403 (Forbidden): The creator of the layer is the unique who can add user in layer.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 

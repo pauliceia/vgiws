@@ -527,7 +527,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_feature(self, *args, **kwargs):
-        # self.delete_validation(*args)
+        self.can_current_user_delete_user_in_layer(kwargs["layer_id"])
 
         self.PGSQLConn.delete_user_layer(**kwargs)
 
@@ -550,26 +550,26 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+        raise HTTPError(403, "The creator of the layer is the unique who can add user in layer.")
 
-    # def delete_validation(self, resource_id):
-    #     """
-    #     Verify if the user has permission to delete a layer
-    #     :param resource_id: layer id
-    #     :return:
-    #     """
-    #     current_user_id = self.get_current_user_id()
-    #
-    #     resources = self.PGSQLConn.get_user_layers(layer_id=resource_id)
-    #
-    #     for resource in resources["features"]:
-    #         if resource["properties"]['is_the_creator'] and \
-    #                 resource["properties"]['user_id'] == current_user_id:
-    #             # if the current_user_id is the creator of the layer, so ok...
-    #             return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+    def can_current_user_delete_user_in_layer(self, layer_id):
+        """
+        Verify if the user has permission of deleting a user from a layer
+        :param resource_id: layer id
+        :return:
+        """
+        current_user_id = self.get_current_user_id()
+
+        resources = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+
+        for resource in resources["features"]:
+            if resource["properties"]['is_the_creator'] and \
+                    resource["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
