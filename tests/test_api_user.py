@@ -218,13 +218,13 @@ class TestAPIUserErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_user_error_403_forbidden_user_without_login(self):
-        self.tester.api_user_delete_error_403_forbidden("abc")
-        self.tester.api_user_delete_error_403_forbidden(0)
-        self.tester.api_user_delete_error_403_forbidden(-1)
-        self.tester.api_user_delete_error_403_forbidden("-1")
-        self.tester.api_user_delete_error_403_forbidden("0")
-        self.tester.api_user_delete_error_403_forbidden("1001")
+    def test_delete_api_user_error_401_unauthorized_user_without_login(self):
+        self.tester.api_user_delete_error_401_unauthorized("abc")
+        self.tester.api_user_delete_error_401_unauthorized(0)
+        self.tester.api_user_delete_error_401_unauthorized(-1)
+        self.tester.api_user_delete_error_401_unauthorized("-1")
+        self.tester.api_user_delete_error_401_unauthorized("0")
+        self.tester.api_user_delete_error_401_unauthorized("1001")
 
     def test_delete_api_user_error_403_forbidden_user_cannot_delete_other_user(self):
         # create a fake email to avoid the error when exist the same email in DB

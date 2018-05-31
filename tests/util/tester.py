@@ -154,6 +154,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
+    def api_user_delete_error_401_unauthorized(self, feature_id):
+        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
     def api_user_delete_error_403_forbidden(self, feature_id):
         response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
                                        headers=self.headers)
@@ -231,11 +237,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_layer_create_error_403_forbidden(self, feature_json):
+    def api_layer_create_error_401_unauthorized(self, feature_json):
         response = self.session.put(self.URL + '/api/layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
-        self.ut_self.assertEqual(response.status_code, 403)
+        self.ut_self.assertEqual(response.status_code, 401)
 
     # layer errors - delete
 
@@ -244,6 +250,12 @@ class UtilTester:
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_delete_error_401_unauthorized(self, feature_id):
+        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
 
     def api_layer_delete_error_403_forbidden(self, feature_id):
         response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
@@ -314,11 +326,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_user_layer_create_error_403_forbidden_without_authorization_header(self, feature_json):
+    def api_user_layer_create_error_401_unauthorized_without_authorization_header(self, feature_json):
         response = self.session.put(self.URL + '/api/user_layer/create/',
                                     data=dumps(feature_json))
 
-        self.ut_self.assertEqual(response.status_code, 403)
+        self.ut_self.assertEqual(response.status_code, 401)
 
     def api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self, feature_json):
         response = self.session.put(self.URL + '/api/user_layer/create/',

@@ -287,13 +287,13 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_layer_create_error_403_forbidden(self):
+    def test_put_api_layer_create_error_401_unauthorized(self):
         feature = {
             'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
                            'description': '', 'fk_keyword_id': 1041},
             'type': 'Layer'
         }
-        self.tester.api_layer_create_error_403_forbidden(feature)
+        self.tester.api_layer_create_error_401_unauthorized(feature)
 
     # layer errors - delete
 
@@ -313,13 +313,13 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_layer_error_403_forbidden_user_without_login(self):
-        self.tester.api_layer_delete_error_403_forbidden("abc")
-        self.tester.api_layer_delete_error_403_forbidden(0)
-        self.tester.api_layer_delete_error_403_forbidden(-1)
-        self.tester.api_layer_delete_error_403_forbidden("-1")
-        self.tester.api_layer_delete_error_403_forbidden("0")
-        self.tester.api_layer_delete_error_403_forbidden("1001")
+    def test_delete_api_layer_error_401_unauthorized_user_without_login(self):
+        self.tester.api_layer_delete_error_401_unauthorized("abc")
+        self.tester.api_layer_delete_error_401_unauthorized(0)
+        self.tester.api_layer_delete_error_401_unauthorized(-1)
+        self.tester.api_layer_delete_error_401_unauthorized("-1")
+        self.tester.api_layer_delete_error_401_unauthorized("0")
+        self.tester.api_layer_delete_error_401_unauthorized("1001")
 
     def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################

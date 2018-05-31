@@ -71,7 +71,7 @@ This method creates a new layer described in a JSON.
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter reference needs to be a list.
     - 400 (Bad Request): It is necessary a reference parameter.
-    - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Forbidden): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).

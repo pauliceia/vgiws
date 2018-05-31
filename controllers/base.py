@@ -68,7 +68,7 @@ def auth_non_browser_based(method):
 
             return method(self, *args, **kwargs)
         else:
-            raise HTTPError(403, "It is necessary an Authorization header valid.")
+            raise HTTPError(401, "It is necessary an Authorization header valid.")
 
     return wrapper
 
