@@ -215,6 +215,16 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_error_create_400_bad_request(feature)
 
+    def test_get_api_user_create_error_400_bad_request_username_already_exist(self):
+        # create a feature
+        feature = {
+            'type': 'User',
+            'properties': {'username': 'rodrigo', 'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
+                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_error_create_400_bad_request(feature)
+
     # user errors - delete
 
     def test_delete_api_user_error_400_bad_request(self):
