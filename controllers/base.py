@@ -407,7 +407,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         arguments = self.get_aguments()
 
         try:
-            self._delete_feature(*args, **arguments)
+            self._delete_feature(current_user_id, *args, **arguments)
 
             # do commit after delete the feature
             self.PGSQLConn.commit()
@@ -415,7 +415,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # print("Error: ", error)
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator.")
 
-    def _delete_feature(self, *args, **kwargs):
+    def _delete_feature(self, current_user_id, *args, **kwargs):
         raise NotImplementedError
 
 
@@ -439,7 +439,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     # DELETE
 
-    def _delete_feature(self, *args, **kwargs):
+    def _delete_feature(self, current_user_id, *args, **kwargs):
         self.is_current_user_an_administrator()
 
         user_id = args[0]
@@ -480,26 +480,26 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # DELETE
 
-    def _delete_feature(self, *args, **kwargs):
-        self.can_current_user_delete_a_layer(*args)
+    def _delete_feature(self, current_user_id, *args, **kwargs):
+        layer_id = args[0]
+        self.can_current_user_delete_a_layer(current_user_id, layer_id)
 
         self.PGSQLConn.delete_layer_in_db(*args)
 
     # VALIDATION
 
-    def can_current_user_delete_a_layer(self, resource_id):
+    def can_current_user_delete_a_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of deleting a layer
         :param resource_id: layer id
         :return:
         """
-        current_user_id = self.get_current_user_id()
 
-        resources = self.PGSQLConn.get_user_layers(layer_id=resource_id)
+        layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
-        for resource in resources["features"]:
-            if resource["properties"]['is_the_creator'] and \
-                    resource["properties"]['user_id'] == current_user_id:
+        for layer in layers["features"]:
+            if layer["properties"]['is_the_creator'] and \
+                    layer["properties"]['user_id'] == current_user_id:
                 # if the current_user_id is the creator of the layer, so ok...
                 return
 
@@ -517,7 +517,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
-        self.can_current_user_add_user_in_layer(feature_json["properties"]["layer_id"], current_user_id)
+        self.can_current_user_add_user_in_layer(current_user_id, feature_json["properties"]["layer_id"])
 
         return self.PGSQLConn.create_user_layer(feature_json, **kwargs)
 
@@ -526,14 +526,14 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
     # DELETE
 
-    def _delete_feature(self, *args, **kwargs):
-        self.can_current_user_delete_user_in_layer(kwargs["layer_id"])
+    def _delete_feature(self, current_user_id, *args, **kwargs):
+        self.can_current_user_delete_user_in_layer(current_user_id, kwargs["layer_id"])
 
         self.PGSQLConn.delete_user_layer(**kwargs)
 
     # VALIDATION
 
-    def can_current_user_add_user_in_layer(self, layer_id, current_user_id):
+    def can_current_user_add_user_in_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of adding a user in a layer
         :param layer_id: layer id
@@ -552,13 +552,12 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         # ... else, raise an exception.
         raise HTTPError(403, "The creator of the layer is the unique who can add user in layer.")
 
-    def can_current_user_delete_user_in_layer(self, layer_id):
+    def can_current_user_delete_user_in_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of deleting a user from a layer
         :param layer_id: layer id
         :return:
         """
-        current_user_id = self.get_current_user_id()
 
         resources = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
