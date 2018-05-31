@@ -338,6 +338,24 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    # user layer errors - delete
+
+    def api_user_layer_delete_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/user_layer/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_user_layer_delete_error_403_forbidden(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/user_layer/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
     ##################################################
     # IMPORT
     ##################################################
