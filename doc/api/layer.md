@@ -71,7 +71,7 @@ This method creates a new layer described in a JSON.
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter reference needs to be a list.
     - 400 (Bad Request): It is necessary a reference parameter.
-    - 401 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).
@@ -94,7 +94,7 @@ This method deletes one layer by id = #id.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
@@ -158,7 +158,7 @@ This method adds a user in a layer described in JSON.
 - Response:
 - Error codes:
     - 400 (Bad Request): The user already has been added in layer.
-    - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The creator of the layer is the unique who can delete the layer.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -181,7 +181,7 @@ This method remove a user from a layer.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

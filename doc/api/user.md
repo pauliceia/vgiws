@@ -76,7 +76,7 @@ This method delete one user by id = #id.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): Just administrator can delete other user.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
