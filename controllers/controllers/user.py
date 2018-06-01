@@ -6,7 +6,8 @@
 """
 
 
-from ..base import BaseHandlerUser, auth_non_browser_based
+from ..base import BaseHandlerUser
+from modules.common import auth_non_browser_based
 
 
 # USER

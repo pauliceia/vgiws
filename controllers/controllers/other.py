@@ -5,10 +5,12 @@
     Responsible module to create controllers.
 """
 
+from tornado.escape import json_encode
 
-from ..base import *
+from ..base import BaseHandler
+from modules.common import auth_non_browser_based
 
-from settings import VERSION
+# from settings import VERSION
 
 
 class APIUserByToken(BaseHandler):

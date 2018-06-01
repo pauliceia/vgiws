@@ -5,7 +5,7 @@
     Responsible module to create controllers.
 """
 
-from ..base import auth_non_browser_based #, BaseHandlerThemeTree
+# from modules.common import auth_non_browser_based
 
 
 # THEME

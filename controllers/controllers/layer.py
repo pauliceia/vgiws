@@ -6,7 +6,8 @@
 """
 
 
-from ..base import BaseHandlerLayer, BaseHandlerUserLayer, auth_non_browser_based
+from ..base import BaseHandlerLayer, BaseHandlerUserLayer
+from modules.common import auth_non_browser_based
 
 
 # LAYER

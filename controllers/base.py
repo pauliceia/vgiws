@@ -7,114 +7,24 @@
 
 from json import loads
 from abc import ABCMeta
-import jwt
-from jwt import DecodeError
 from os import makedirs
 from os.path import exists
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile
 
-from psycopg2 import Error, ProgrammingError
 from psycopg2._psycopg import DataError
 
 from tornado.web import RequestHandler, HTTPError
-from tornado.escape import json_encode, json_decode
+from tornado.escape import json_encode
 
-from settings.accounts import __JWT_SECRET__, __JWT_ALGORITHM__
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
                                 __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
 
 from settings.settings import __TEMP_FOLDER__
 
-
-def catch_generic_exception(method):
-
-    def wrapper(self, *args, **kwargs):
-
-        try:
-            # try to execute the method
-            return method(self, *args, **kwargs)
-
-        # all methods can raise a psycopg exception, so catch it
-        except ProgrammingError as error:
-            # print(">>>> ", error)
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. " +
-                                 "\nInformation: " + str(error) + "\npgcode: " + str(error.pgcode))
-
-        except Error as error:
-            # print(">>>> ", dir(error))
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. " +
-                                 "\n Information: " + str(error) + "\npgcode: " + str(error.pgcode))
-
-    return wrapper
-
-
-def auth_non_browser_based(method):
-    """
-    Authentication to non browser based service
-    :param method: the method decorated
-    :return: the method wrapped
-    """
-
-    def wrapper(self, *args, **kwargs):
-
-        if "Authorization" in self.request.headers:
-            try:
-                token = self.request.headers["Authorization"]
-                get_decoded_jwt_token(token)
-            except HTTPError as error:
-                raise error
-            except Exception as error:
-                raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator.")
-
-            return method(self, *args, **kwargs)
-        else:
-            raise HTTPError(401, "It is necessary an Authorization header valid.")
-
-    return wrapper
-
-
-def just_run_on_debug_mode(method):
-    """
-    Just run the method on Debug Mode
-    :param method: the method decorated
-    :return: the method wrapped
-    """
-    def wrapper(self, *args, **kwargs):
-
-        # if is not in debug mode, so return a 404 Not Found
-        if not self.DEBUG_MODE:
-            raise HTTPError(404, "Invalid URL.")
-
-        # if is in debug mode, so execute the method
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
-
-def generate_encoded_jwt_token(json_dict):
-    return jwt.encode(json_dict, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
-
-
-def get_decoded_jwt_token(token):
-    try:
-        return jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
-    except DecodeError as error:
-        raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
-
-
-def exist_shapefile_inside_zip(zip_reference):
-    list_file_names_of_zip = zip_reference.namelist()
-
-    for file_name_in_zip in list_file_names_of_zip:
-        # if exist a SHP file inside the zip, return true
-        if file_name_in_zip.endswith(".shp"):
-            return True
-
-    return False
+from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
+                            catch_generic_exception, auth_non_browser_based, just_run_on_debug_mode
 
 
 # BASE CLASS

@@ -5,7 +5,7 @@
     Responsible module to create controllers.
 """
 
-from ..base import *
+from ..base import BaseHandler
 
 
 class IndexHandler(BaseHandler):

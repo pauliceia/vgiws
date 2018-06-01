@@ -5,7 +5,8 @@
     Responsible module to create controllers.
 """
 
-from ..base import BaseHandlerImportShapeFile, auth_non_browser_based
+from ..base import BaseHandlerImportShapeFile
+from modules.common import auth_non_browser_based
 
 
 class APIImportShapeFile(BaseHandlerImportShapeFile):

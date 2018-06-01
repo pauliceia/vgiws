@@ -4,7 +4,110 @@
 
 from datetime import datetime
 from base64 import b64encode
+from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError
 
+from psycopg2 import Error, ProgrammingError
+from tornado.web import HTTPError
+
+from settings.accounts import __JWT_SECRET__, __JWT_ALGORITHM__
+
+
+# DECORATORS
+
+def catch_generic_exception(method):
+
+    def wrapper(self, *args, **kwargs):
+
+        try:
+            # try to execute the method
+            return method(self, *args, **kwargs)
+
+        # all methods can raise a psycopg exception, so catch it
+        except ProgrammingError as error:
+            # print(">>>> ", error)
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. " +
+                                 "\nInformation: " + str(error) + "\npgcode: " + str(error.pgcode))
+
+        except Error as error:
+            # print(">>>> ", dir(error))
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. " +
+                                 "\n Information: " + str(error) + "\npgcode: " + str(error.pgcode))
+
+    return wrapper
+
+
+def auth_non_browser_based(method):
+    """
+    Authentication to non browser based service
+    :param method: the method decorated
+    :return: the method wrapped
+    """
+
+    def wrapper(self, *args, **kwargs):
+
+        if "Authorization" in self.request.headers:
+            try:
+                token = self.request.headers["Authorization"]
+                get_decoded_jwt_token(token)
+            except HTTPError as error:
+                raise error
+            except Exception as error:
+                raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator.")
+
+            return method(self, *args, **kwargs)
+        else:
+            raise HTTPError(401, "It is necessary an Authorization header valid.")
+
+    return wrapper
+
+
+def just_run_on_debug_mode(method):
+    """
+    Just run the method on Debug Mode
+    :param method: the method decorated
+    :return: the method wrapped
+    """
+    def wrapper(self, *args, **kwargs):
+
+        # if is not in debug mode, so return a 404 Not Found
+        if not self.DEBUG_MODE:
+            raise HTTPError(404, "Invalid URL.")
+
+        # if is in debug mode, so execute the method
+        return method(self, *args, **kwargs)
+
+    return wrapper
+
+
+# JWT
+
+def generate_encoded_jwt_token(json_dict):
+    return jwt_encode(json_dict, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
+
+
+def get_decoded_jwt_token(token):
+    try:
+        return jwt_decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
+    except DecodeError as error:
+        raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
+
+
+# SHAPEFILE
+
+def exist_shapefile_inside_zip(zip_reference):
+    list_file_names_of_zip = zip_reference.namelist()
+
+    for file_name_in_zip in list_file_names_of_zip:
+        # if exist a SHP file inside the zip, return true
+        if file_name_in_zip.endswith(".shp"):
+            return True
+
+    return False
+
+
+# OTHERS
 
 def get_current_datetime(formatted=True):
     now = datetime.now()
@@ -22,61 +125,3 @@ def get_username_and_password_as_string_in_base64(username, password):
 
     return string_in_base64
 
-
-# from copy import deepcopy
-#
-#
-# __CHANGESET_STRUCT_COOKIE__ = {
-#     # information of the user
-#     "changeset": {
-#         "created_at": "",
-#         "closed_at": "",
-#         "changes": {
-#             "create": {
-#                 'type': 'FeatureCollection',
-#                 'features': [
-#                     # list of features/elements to create, example:
-#                     # {
-#                     #     'tags': [{'v': 'R. São José', 'k': 'address'},
-#                     #              {'v': '1869', 'k': 'start_date'},
-#                     #              {'v': '1869', 'k': 'end_date'}],
-#                     #     'type': 'Feature',
-#                     #     'properties': {},
-#                     #     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
-#                     # }
-#                 ]
-#             },
-#             "modify": {
-#                 'type': 'FeatureCollection',
-#                 'features': [
-#                     # list of features/elements to update/modify, example:
-#                     # {
-#                     #     'tags': [{'id': 1001, 'v': 'R. São José', 'k': 'address'},
-#                     #              {'id': 1002, 'v': '1869', 'k': 'start_date'},
-#                     #              {'id': 1003, 'v': '1869', 'k': 'end_date'}],
-#                     #     'type': 'Feature',
-#                     #     'properties': {'id': 1001},
-#                     #     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
-#                     # }
-#                 ]
-#             },
-#             "delete": {
-#                 'type': 'FeatureCollection',
-#                 'features': [
-#                     # list of features/elements to delete/remove, example:
-#                     # {
-#                     #     'tags': [{'id': 1001, 'v': 'R. São José', 'k': 'address'},
-#                     #              {'id': 1002, 'v': '1869', 'k': 'start_date'},
-#                     #              {'id': 1003, 'v': '1869', 'k': 'end_date'}],
-#                     #     'type': 'Feature',
-#                     #     'properties': {'id': 1001},
-#                     #     'geometry': {'type': 'MultiPoint', 'coordinates': [[-23.546421, -46.635722]]}
-#                     # }
-#                 ]
-#             }
-#         }
-#     }
-# }
-#
-# def get_new_changeset_struct_cookie():
-#     return deepcopy(__CHANGESET_STRUCT_COOKIE__)
