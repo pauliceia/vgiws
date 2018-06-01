@@ -241,11 +241,11 @@ class PGSQLConnection:
             {0}
             CROSS JOIN LATERAL (                
                 -- (3) get the references of some resource on JSON format
-                SELECT json_agg(json_build_object('reference_id', reference_id, 'description', description)) AS jsontags 
+                SELECT json_agg(reference_id) AS jsontags 
                 FROM 
                 (
                     -- (2) get the references of some resource
-                    SELECT r.reference_id, r.description
+                    SELECT r.reference_id
                     FROM reference r, 
                     (
                         SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = layer.layer_id

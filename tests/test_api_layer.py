@@ -22,25 +22,21 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900',
-                                   'reference': [{'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Robberies between 1880 to 1900', 'reference': [1005],
                                    'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
                                    'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'
@@ -61,8 +57,7 @@ class TestAPILayer(TestCase):
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950',
-                                   'reference': [{'reference_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
+                                   'name': 'Cinemas between 1900 to 1950', 'reference': [1025],
                                    'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
                                    'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
                     'type': 'Layer'
@@ -77,11 +72,7 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001,
-                                                  'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002,
-                                                  'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
@@ -99,19 +90,14 @@ class TestAPILayer(TestCase):
                 {
                     'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
                                    'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001,
-                                                  'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002,
-                                                  'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
+                                   'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900',
-                                   'reference': [{'reference_id': 1005,
-                                                  'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Robberies between 1880 to 1900', 'reference': [1005],
                                    'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
                                    'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
                     'type': 'Layer'
@@ -125,9 +111,7 @@ class TestAPILayer(TestCase):
                 },
                 {
                     'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950',
-                                   'reference': [{'reference_id': 1025,
-                                                  'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
+                                   'name': 'Cinemas between 1900 to 1950', 'reference': [1025],
                                    'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
                                    'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
                     'type': 'Layer'
@@ -142,9 +126,7 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010,
-                                                  'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'
@@ -166,9 +148,7 @@ class TestAPILayer(TestCase):
             'features': [
                 {
                     'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010,
-                                                  'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
+                                   'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'
