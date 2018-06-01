@@ -517,6 +517,9 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
+        if "layer_id" not in feature_json["properties"]:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: layer_id)")
+
         self.can_current_user_add_user_in_layer(current_user_id, feature_json["properties"]["layer_id"])
 
         return self.PGSQLConn.create_user_layer(feature_json, **kwargs)
