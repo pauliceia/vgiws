@@ -54,7 +54,7 @@ This method create a new user described in a JSON.
     {'user_id': 7}
     ```
 - Error codes:
-    - 400 (Bad Request): Some user attribute is missing. Look the documentation!
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 400 (Bad Request): This username or email already exist in DB.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:

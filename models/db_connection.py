@@ -344,6 +344,8 @@ class PGSQLConnection:
         try:
             # add the layer in db and get the id of it
             id_in_json = self.add_layer_in_db(properties, user_id)
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
         except Error as error:
             if error.pgcode == "23505":
                 self.rollback()  # do a rollback to comeback in a safe state of DB
@@ -619,6 +621,8 @@ class PGSQLConnection:
     def create_user_layer(self, resource_json):
         try:
             self.add_user_layer_in_db(resource_json)
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
         except Error as error:
             if error.pgcode == "23505":
                 self.rollback()  # do a rollback to comeback in a safe state of DB
@@ -1173,18 +1177,28 @@ class PGSQLConnection:
     def add_user_in_db(self, properties):
         p = properties
 
-        try:
-            query_text = """
-                INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
-                VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
-                RETURNING user_id;
-            """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
-        except KeyError as error:
-            raise HTTPError(400, "Some user attribute is missing. Look the documentation!")
+        query_text = """
+            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
+            RETURNING user_id;
+        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_user(self, feature_json):
+
+        validate_feature_json(feature_json)
 
         try:
-            # do the query in database
-            self.__PGSQL_CURSOR__.execute(query_text)
+            id_in_json = self.add_user_in_db(feature_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
         except IntegrityError as error:
             # how the error is of PostgreSQL, so it is necessary do a rollback
             # to be in a safe state
@@ -1195,28 +1209,6 @@ class PGSQLConnection:
                 raise HTTPError(400, "This username or email already exist in DB.")
             else:
                 raise error
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    # def create_auth_user_in_db(self, user_id):
-    #     query_text = """
-    #         INSERT INTO auth (is_admin, is_manager, is_curator, fk_user_id)
-    #         VALUES (FALSE, FALSE, FALSE, {0});
-    #     """.format(user_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-
-    def create_user(self, feature_json):
-
-        validate_feature_json(feature_json)
-
-        id_in_json = self.add_user_in_db(feature_json["properties"])
-
-        # self.create_auth_user_in_db(id_in_json["id"])
 
         return id_in_json
 

@@ -225,7 +225,7 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_error_create_400_bad_request(feature)
 
-    def test_get_api_user_create_error_400_bad_request_attributes_are_missing(self):
+    def test_get_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # create a feature
         feature = {
             'type': 'User',
