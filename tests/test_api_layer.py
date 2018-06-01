@@ -6,7 +6,7 @@ from unittest import TestCase, skip
 from util.tester import UtilTester
 
 
-# http{0}s://realpython.com/blog/python/testing-third-party-apis-with-mocks/
+# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 class TestAPILayer(TestCase):
 
@@ -233,26 +233,7 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_error_404_not_found(layer_id="998")
 
     # layer errors - create
-
-    def test_put_api_layer_create_error_400_bad_request_is_necessary_the_reference_parameter(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # create a layer
-        resource = {
-            'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
-                           'description': '', 'fk_keyword_id': 1041},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
+    
     def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -283,6 +264,59 @@ class TestAPILayerErrors(TestCase):
 
         # it is not possible to find the layer that just deleted
         self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a layer (without reference)
+        resource = {
+            'type': 'Layer',
+            'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
+                           'description': '', 'fk_keyword_id': 1041},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without f_table_name)
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'name': 'Addresses in 1930', 'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without description)
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+                           'source_description': '',
+                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {"type": "MultiPoint"}
+            }
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without feature_table)
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [{'keyword_id': 1041}]}
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -388,7 +422,6 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

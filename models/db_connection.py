@@ -331,8 +331,11 @@ class PGSQLConnection:
 
         properties = resource_json["properties"]
 
-        if "reference" not in properties:
-            raise HTTPError(400, "It is necessary a reference parameter.")
+        if ("reference" not in properties) or ("f_table_name" not in properties):
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (reference or f_table_name)")
+
+        if is_to_create_feature_table and ("feature_table" not in resource_json):
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (feature_table)")
 
         # just can add source that is a list (list of sources/references)
         if not isinstance(properties["reference"], list):

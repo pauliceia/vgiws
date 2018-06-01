@@ -70,7 +70,6 @@ This method creates a new layer described in a JSON.
 - Error codes:
     - 400 (Bad Request): Table name already exists.
     - 400 (Bad Request): The parameter reference needs to be a list.
-    - 400 (Bad Request): It is necessary a reference parameter.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
