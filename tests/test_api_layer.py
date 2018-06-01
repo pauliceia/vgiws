@@ -192,7 +192,7 @@ class TestAPILayer(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [], 'keyword': []},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -243,7 +243,7 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -288,7 +288,7 @@ class TestAPILayerErrors(TestCase):
         resource = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'name': 'Addresses in 1930', 'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -301,7 +301,7 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -314,7 +314,7 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]}
+                           'reference': [], 'keyword': [1041]}
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 
@@ -370,7 +370,7 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
