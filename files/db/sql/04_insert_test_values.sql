@@ -171,6 +171,11 @@ INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2
 -- clean table
 DELETE FROM reference;
 
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1050, 'BookA', 1001);
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1051, 'ArticleB', 1002);
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1052, 'ThesisC', 1003);
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1053, 'DissertationD', 1003);
+
 
 -- -----------------------------------------------------
 -- Table changeset
@@ -205,24 +210,24 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 (1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01', TRUE, 1001);
 
 -- add reference
-INSERT INTO reference (reference_id, bibtex) VALUES (1001, 
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1001, 
 '@Misc{jorge2017book1,
 author = {Jorge},
 title = {Book1},
 howpublished = {\url{http://www.link.org/}},
 note = {Accessed on 01/01/2017},
 year={2017}
-}');
+}', 1001);
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1001);
 
-INSERT INTO reference (reference_id, bibtex) VALUES (1002, 
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1002, 
 '@Misc{ana2017article2,
 author = {Ana},
 title = {Article2},
 howpublished = {\url{http://www.myhost.org/}},
 note = {Accessed on 05/02/2017},
 year={2017}
-}');
+}', 1001);
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1001, 1002);
 
 -- add the keywords in layer
@@ -308,14 +313,14 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 (1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', TRUE, 1003);
 
 -- add reference
-INSERT INTO reference (reference_id, bibtex) VALUES (1005, 
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1005, 
 '@Misc{marco2017articleB,
 author = {Marco},
 title = {ArticleB},
 howpublished = {\url{http://www.link_to_document.org/}},
 note = {Accessed on 02/02/2017},
 year={2017}
-}');
+}', 1001);
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1002, 1005);
 
 -- add the keywords in layer
@@ -401,14 +406,14 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 (1003, 'layer_1003', 'Streets in 1930', '', '', '2017-04-10');
 
 -- add reference
-INSERT INTO reference (reference_id, bibtex) VALUES (1010, 
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1010, 
 '@Misc{marco2017articleB,
 author = {Marco},
 title = {ArticleB},
 howpublished = {\url{http://www.link_to_document.org/}},
 note = {Accessed on 02/02/2017},
 year={2017}
-}');
+}', 1005);
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1003, 1010);
 
 -- add the keywords in layer
@@ -500,7 +505,7 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 (1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', TRUE, 1003);
 
 -- add reference
--- INSERT INTO reference (id, description, fk_layer_id) VALUES (1015, '', 1004);
+-- ...
 
 -- add the keywords in layer
 INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1004, 1040);
@@ -589,7 +594,7 @@ INSERT INTO layer (layer_id, f_table_name, name, description, created_at) VALUES
 (1005, 'layer_1005', 'Hospitals between 1800 to 1950', 'some hospitals', '2017-08-04');
 
 -- add reference
---INSERT INTO reference_ (id, description, fk_layer_id) VALUES (1020, 'bookA', 1005);
+-- ...
 
 -- add the keywords in layer
 INSERT INTO layer_keyword (layer_id, keyword_id) VALUES (1005, 1023);
@@ -669,14 +674,14 @@ INSERT INTO layer (layer_id, f_table_name, name, description, created_at, is_pub
 (1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', TRUE, 1003);
 
 -- add reference
-INSERT INTO reference (reference_id, bibtex) VALUES (1025,
+INSERT INTO reference (reference_id, bibtex, user_id) VALUES (1025,
 '@Misc{frisina2017bookZ,
 author = {Frisina},
 title = {BookZ},
 howpublished = {\url{http://www.school.com/}},
 note = {Accessed on 03/04/2017},
 year={2017}
-}');
+}', 1007);
 INSERT INTO layer_reference (layer_id, reference_id) VALUES (1006, 1025);
 
 -- add the keywords in layer
