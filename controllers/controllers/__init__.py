@@ -6,6 +6,7 @@ from .page import *
 from .login import *
 from .user import *
 from .layer import *
+from .import_file import *
 from .theme import *
 from .notification import *
 from .changeset import *
