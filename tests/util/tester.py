@@ -199,7 +199,7 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        resulted = self.code_windows_to_ubuntu(resulted)
+        # resulted = self.code_windows_to_ubuntu(resulted)
 
         self.ut_self.assertEqual(expected, resulted)
 
@@ -382,6 +382,103 @@ class UtilTester:
         arguments = get_url_arguments(**arguments)
 
         response = self.session.delete(self.URL + '/api/user_layer/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
+    # REFERENCE
+    ##################################################
+
+    def api_reference(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/reference/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        # resulted = self.code_windows_to_ubuntu(resulted)
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_reference_create(self, feature_json, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.put(self.URL + '/api/reference/create/{0}'.format(arguments),
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("layer_id", resulted)
+        self.ut_self.assertNotEqual(resulted["layer_id"], -1)
+
+        # put the id received in the original JSON of changeset
+        feature_json["properties"]["layer_id"] = resulted["layer_id"]
+
+        return feature_json
+
+    def api_reference_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # reference errors - get
+
+    def api_reference_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/reference/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_reference_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/reference/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # reference errors - create
+
+    def api_reference_create_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/reference/create/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_reference_create_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/reference/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    # reference errors - delete
+
+    def api_reference_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_reference_delete_error_401_unauthorized(self, feature_id):
+        response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_reference_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_reference_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)

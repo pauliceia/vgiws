@@ -42,11 +42,6 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp(binary_file_content, f_table_name=f_table_name, file_name="points.zip")
 
         ##################################################
-        # search the layer
-        ##################################################
-        # TODO: search the layer
-
-        ##################################################
         # remove the layer
         ##################################################
         # get the id of layer to REMOVE it

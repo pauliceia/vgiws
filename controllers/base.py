@@ -346,7 +346,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
 # SUBCLASSES
 
-
 class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     # GET
@@ -499,6 +498,49 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The creator of the layer is the unique who can delete a user from a layer.")
 
 
+class BaseHandlerReference(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_layers(**kwargs)
+
+    # PUT
+
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_layer(feature_json, current_user_id, **kwargs)
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # DELETE
+
+    def _delete_feature(self, current_user_id, *args, **kwargs):
+        # layer_id = args[0]
+        # self.can_current_user_delete_a_layer(current_user_id, layer_id)
+
+        self.PGSQLConn.delete_layer_in_db(*args)
+
+    # VALIDATION
+
+    # def can_current_user_delete_a_layer(self, current_user_id, layer_id):
+    #     """
+    #     Verify if the user has permission of deleting a layer
+    #     :param resource_id: layer id
+    #     :return:
+    #     """
+    #
+    #     layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+    #
+    #     for layer in layers["features"]:
+    #         if layer["properties"]['is_the_creator'] and \
+    #                 layer["properties"]['user_id'] == current_user_id:
+    #             # if the current_user_id is the creator of the layer, so ok...
+    #             return
+    #
+    #     # ... else, raise an exception.
+    #     raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+
 # IMPORT
 
 class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
@@ -577,10 +619,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         # remove the extension of the file name (e.g. points)
         FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
 
-        # layers = self.PGSQLConn.get_layers(f_table_name=FILE_NAME_WITHOUT_EXTENSION)
-        # print("\nlayers: ", layers, "\n")
-        # TODO: verificar se a já nao existe f_table_name no DB
-
         # if do not exist the temp folder, create it
         if not exists(__TEMP_FOLDER__):
             makedirs(__TEMP_FOLDER__)
@@ -598,12 +636,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         # get the binary file in body of the request
         binary_file = self.request.body
-
         self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
 #

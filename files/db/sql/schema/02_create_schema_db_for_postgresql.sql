@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Sex 01 Jun 2018 15:44:50 -03
+-- Sex 01 Jun 2018 19:28:57 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -251,7 +251,7 @@ DROP TABLE IF EXISTS reference CASCADE ;
 
 CREATE TABLE IF NOT EXISTS reference (
   reference_id SERIAL ,
-  bibtex TEXT NULL ,
+  description TEXT NULL ,
   user_id INT NOT NULL,
   PRIMARY KEY (reference_id),
   CONSTRAINT fk_reference_pauliceia_user1

@@ -206,7 +206,7 @@ class PGSQLConnection:
         return results_of_query
 
     ################################################################################
-    # layer
+    # LAYER
     ################################################################################
 
     def get_layers(self, layer_id=None, f_table_name=None, is_published=None):
@@ -241,11 +241,11 @@ class PGSQLConnection:
             {0}
             CROSS JOIN LATERAL (                
                 -- (3) get the references of some resource on JSON format
-                SELECT json_agg(json_build_object('reference_id', reference_id, 'bibtex', bibtex)) AS jsontags 
+                SELECT json_agg(json_build_object('reference_id', reference_id, 'description', description)) AS jsontags 
                 FROM 
                 (
                     -- (2) get the references of some resource
-                    SELECT r.reference_id, r.bibtex
+                    SELECT r.reference_id, r.description
                     FROM reference r, 
                     (
                         SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = layer.layer_id
@@ -552,7 +552,7 @@ class PGSQLConnection:
             raise HTTPError(400, str(error))
 
     ################################################################################
-    # user_layer
+    # USER_LAYER
     ################################################################################
 
     def get_user_layers(self, layer_id=None, user_id=None, is_the_creator=None):
@@ -642,6 +642,144 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
+    # REFERENCE
+    ################################################################################
+
+    def get_references(self, reference_id=None, user_id=None, description=None):
+        # the id have to be a int
+        if is_a_invalid_id(reference_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_reference_table(reference_id=reference_id, description=description,
+                                                user_id=user_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Layer',
+                    'properties', json_build_object(
+                        'reference_id',   reference_id,
+                        'description',    description,
+                        'user_id',        user_id,
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
+        return results_of_query
+
+    # def add_reference_in_db(self, properties):
+    #     p = properties
+    #
+    #     query_text = """
+    #         INSERT INTO layer (f_table_name, name, description, source_description, created_at, user_id_published_by)
+    #         VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, NULL) RETURNING layer_id;
+    #     """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     result = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     return result
+    #
+    # def create_reference(self, resource_json, user_id, is_to_create_feature_table=True):
+    #
+    #     # pre-processing
+    #
+    #     validate_feature_json(resource_json)
+    #
+    #     properties = resource_json["properties"]
+    #
+    #     if ("reference" not in properties) or ("f_table_name" not in properties):
+    #         raise HTTPError(400,
+    #                         "Some attribute in JSON is missing. Look the documentation! (Hint: reference or f_table_name)")
+    #
+    #     if is_to_create_feature_table and ("feature_table" not in resource_json):
+    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: feature_table)")
+    #
+    #     # just can add source that is a list (list of sources/references)
+    #     if not isinstance(properties["reference"], list):
+    #         raise HTTPError(400, "The parameter reference needs to be a list.")
+    #
+    #     # the table name follow the standard: _<user_id>_<table_name>
+    #     # properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
+    #
+    #     try:
+    #         # add the layer in db and get the id of it
+    #         id_in_json = self.add_layer_in_db(properties)
+    #     except KeyError as error:
+    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+    #     except Error as error:
+    #         if error.pgcode == "23505":
+    #             self.rollback()  # do a rollback to comeback in a safe state of DB
+    #             raise HTTPError(400, "Table name already exists.")
+    #         else:
+    #             # if is other error, so raise it up
+    #             raise error
+    #
+    #     if is_to_create_feature_table:
+    #         self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
+    #     # else:
+    #     #     print("\n\n It is not creating a feature table \n\n")
+    #
+    #     user_layer_json = {
+    #         'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': id_in_json["layer_id"]},
+    #         'type': 'UserLayer'
+    #     }
+    #     self.create_user_layer(user_layer_json)
+    #
+    #     return id_in_json
+    #
+    # def delete_reference_in_db(self, resource_id):
+    #         if is_a_invalid_id(resource_id):
+    #             raise HTTPError(400, "Invalid parameter.")
+    #
+    #         # get the layer information before to remove the layer
+    #         layer = self.get_layers(layer_id=resource_id)
+    #         f_table_name = layer["features"][0]["properties"]["f_table_name"]
+    #
+    #         # delete the layer
+    #
+    #         query_text = """
+    #             DELETE FROM layer WHERE layer_id={0};
+    #         """.format(resource_id)
+    #
+    #         # do the query in database
+    #         self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #         rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #         if rows_affected == 0:
+    #             raise HTTPError(404, "Not found any feature.")
+    #
+    #         # delete the feature table
+    #         self.delete_feature_table(f_table_name)
 
     ################################################################################
     # CHANGESET
