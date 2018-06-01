@@ -4,24 +4,28 @@
 """
     Responsible module to create base handlers.
 """
+
 from json import loads
-from abc import abstractmethod, ABCMeta
+from abc import ABCMeta
 import jwt
 from jwt import DecodeError
+from os import makedirs
+from os.path import exists
+from subprocess import check_call, CalledProcessError
+from zipfile import ZipFile
 
 from psycopg2 import Error, ProgrammingError
-from requests import exceptions
-
 from psycopg2._psycopg import DataError
+
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode, json_decode
 
-from modules.user import get_new_user_struct_cookie
-from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__, \
-                                __JWT_SECRET__, __JWT_ALGORITHM__
+from settings.accounts import __JWT_SECRET__, __JWT_ALGORITHM__
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
                                 __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+
+from settings.settings import __TEMP_FOLDER__
 
 
 def catch_generic_exception(method):
@@ -100,6 +104,17 @@ def get_decoded_jwt_token(token):
         return jwt.decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
     except DecodeError as error:
         raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
+
+
+def exist_shapefile_inside_zip(zip_reference):
+    list_file_names_of_zip = zip_reference.namelist()
+
+    for file_name_in_zip in list_file_names_of_zip:
+        # if exist a SHP file inside the zip, return true
+        if file_name_in_zip.endswith(".shp"):
+            return True
+
+    return False
 
 
 # BASE CLASS
@@ -573,6 +588,112 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         # ... else, raise an exception.
         raise HTTPError(403, "The creator of the layer is the unique who can delete a user from a layer.")
 
+
+# IMPORT
+
+class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # PUT
+
+    def _create_feature(self, feature_json, current_user_id, **kwargs):
+        raise NotImplementedError
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # DELETE
+
+    def _delete_feature(self, current_user_id, *args, **kwargs):
+        raise NotImplementedError
+
+    # IMPORT
+
+    def save_binary_file_in_folder(self, binary_file, folder_with_file_name):
+        """
+        :param binary_file: a file in binary
+        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :return:
+        """
+        # save the zip with the shp inside the temp folder
+        output_file = open(folder_with_file_name, 'wb')  # wb - write binary
+        output_file.write(binary_file)
+        output_file.close()
+
+    def extract_zip_in_folder(self, folder_with_file_name, folder_to_extract_zip):
+        """
+        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
+        :return:
+        """
+        # extract the zip in a folder
+        with ZipFile(folder_with_file_name, "r") as zip_reference:
+
+            # if exist one shapefile inside the zip, so extract the zip, else raise an exception
+            if exist_shapefile_inside_zip(zip_reference):
+                zip_reference.extractall(folder_to_extract_zip)
+            else:
+                raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
+
+    def import_shp_file_into_postgis(self, f_table_name, shape_file_name, folder_to_extract_zip):
+        """
+        :param f_table_name: name of the feature table that will be created
+        :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
+        :return:
+        """
+
+        __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
+
+        postgresql_connection = '"host=' + __DB_CONNECTION__["HOSTNAME"] + ' dbname=' + __DB_CONNECTION__["DATABASE"] + \
+                                ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__[
+                                    "PASSWORD"] + '"'
+        try:
+            command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
+                                                 ' -nln ' + f_table_name + ' -skipfailures'
+
+            # call a process to execute the command to import the SHP into the PostGIS
+            check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
+
+        except CalledProcessError as error:
+            raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
+
+    def import_shp(self):
+        arguments = self.get_aguments()
+
+        # remove the extension of the file name (e.g. points)
+        FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
+
+        # layers = self.PGSQLConn.get_layers(f_table_name=FILE_NAME_WITHOUT_EXTENSION)
+        # print("\nlayers: ", layers, "\n")
+        # TODO: verificar se a já nao existe f_table_name no DB
+
+        # if do not exist the temp folder, create it
+        if not exists(__TEMP_FOLDER__):
+            makedirs(__TEMP_FOLDER__)
+
+        # the file needs to be in a zip file
+        if not arguments["file_name"].endswith(".zip"):
+            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]))
+
+        # file name of the zip (e.g. /tmp/vgiws/points.zip)
+        ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
+        # folder where will extract the zip (e.g. /tmp/vgiws/points)
+        EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
+        # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
+        SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
+
+        # get the binary file in body of the request
+        binary_file = self.request.body
+
+        self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
+
+        self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+
+        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
 #
