@@ -300,20 +300,13 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_layer_in_db(self, properties, user_id):
-        # tags = dumps(tags)  # convert python dict to json to save in db
-
-        # get the fields to add in DB
-        f_table_name = properties["f_table_name"]
-        name = properties["name"]
-        description = properties["description"]
-        source_description = properties["source_description"]
-        # fk_user_id = properties["fk_user_id"]
+    def add_layer_in_db(self, properties):
+        p = properties
 
         query_text = """
             INSERT INTO layer (f_table_name, name, description, source_description, created_at, user_id_published_by) 
             VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, NULL) RETURNING layer_id;
-        """.format(f_table_name, name, description, source_description)
+        """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -346,7 +339,7 @@ class PGSQLConnection:
 
         try:
             # add the layer in db and get the id of it
-            id_in_json = self.add_layer_in_db(properties, user_id)
+            id_in_json = self.add_layer_in_db(properties)
         except KeyError as error:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
         except Error as error:
