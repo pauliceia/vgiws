@@ -508,8 +508,8 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_reference(feature_json, current_user_id, **kwargs)
+    def _create_feature(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
