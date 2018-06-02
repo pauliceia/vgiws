@@ -54,7 +54,7 @@ This method creates a new reference described in a JSON.
     {'reference_id': 10}
     ```
 - Error codes:
-    <!-- - 400 (Bad Request): Table name already exists. -->
+     - 400 (Bad Request): Attribute already exists.
     <!-- - 400 (Bad Request): The parameter reference needs to be a list. -->
     <!-- - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation! -->
     <!-- - 401 (Unauthorized): It is necessary an Authorization header valid. -->

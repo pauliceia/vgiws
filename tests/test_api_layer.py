@@ -214,7 +214,7 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - create
     
-    def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
+    def test_put_api_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -235,11 +235,11 @@ class TestAPILayerErrors(TestCase):
         resource_id = resource["properties"]["layer_id"]
 
         ##################################################
-        # try to insert the layer again, raising the 400
+        # try to insert the resource again, raising the 400
         ##################################################
-        resource = self.tester.api_layer_create_error_400_bad_request(resource)
+        self.tester.api_layer_create_error_400_bad_request(resource)
 
-        # REMOVE THE layer AFTER THE TESTS
+        # remove the resource after the tests
         self.tester.api_layer_delete(resource_id)
 
         # it is not possible to find the layer that just deleted

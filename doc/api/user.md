@@ -55,7 +55,7 @@ This method create a new user described in a JSON.
     ```
 - Error codes:
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-    - 400 (Bad Request): This username or email already exist in DB.
+    - 400 (Bad Request): Attribute already exists.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The password needs to be encrypted with a hash called sha512 (HEX)

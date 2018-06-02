@@ -345,7 +345,8 @@ class PGSQLConnection:
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
-                raise HTTPError(400, "Table name already exists.")
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -622,7 +623,8 @@ class PGSQLConnection:
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
-                raise HTTPError(400, "The user already has been added in layer.")
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -723,7 +725,8 @@ class PGSQLConnection:
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
-                raise HTTPError(400, "Table name already exists.")
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1302,7 +1305,8 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
 
             if error.pgcode == "23505":  # 23505 - unique_violation
-                raise HTTPError(400, "This username or email already exist in DB.")
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
             else:
                 raise error
 

@@ -153,7 +153,7 @@ class TestAPIReferenceErrors(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # layer errors - get
+    # reference errors - get
 
     def test_get_api_reference_error_400_bad_request(self):
         self.tester.api_reference_error_400_bad_request(reference_id="abc")
@@ -175,41 +175,35 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_error_404_not_found(user_id="999")
         self.tester.api_reference_error_404_not_found(user_id="998")
 
-    # layer errors - create
+    # reference errors - create
     
-    # def test_put_api_reference_create_error_400_bad_request_table_already_exist(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     # create a layer
-    #     resource = {
-    #         'type': 'Layer',
-    #         'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-    #                        'description': '', 'source_description': '',
-    #                        'reference': [], 'keyword': [1041]},
-    #         'feature_table': {
-    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-    #             'geometry': {"type": "MultiPoint"}
-    #         }
-    #     }
-    #     resource = self.tester.api_layer_create(resource)
-    #
-    #     # get the id of layer to REMOVE it
-    #     resource_id = resource["properties"]["layer_id"]
-    #
-    #     ##################################################
-    #     # try to insert the layer again, raising the 400
-    #     ##################################################
-    #     resource = self.tester.api_layer_create_error_400_bad_request(resource)
-    #
-    #     # REMOVE THE layer AFTER THE TESTS
-    #     self.tester.api_layer_delete(resource_id)
-    #
-    #     # it is not possible to find the layer that just deleted
-    #     self.tester.api_layer_error_404_not_found(layer_id=resource_id)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_put_api_reference_create_error_400_bad_request_attribute_already_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # create a layer
+        resource = {
+            'type': 'Reference',
+            'properties': {'description': 'ArticleA'}
+        }
+        resource = self.tester.api_reference_create(resource)
+
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["reference_id"]
+
+        ##################################################
+        # try to insert the reference again, raising the 400
+        ##################################################
+        self.tester.api_reference_create_error_400_bad_request(resource)
+
+        # remove the resource after the tests
+        self.tester.api_reference_delete(resource_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     """
     def test_put_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):

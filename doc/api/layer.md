@@ -68,7 +68,7 @@ This method creates a new layer described in a JSON.
     {'layer_id': 7}
     ```
 - Error codes:
-    - 400 (Bad Request): Table name already exists.
+    - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): The parameter reference needs to be a list.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
@@ -157,7 +157,7 @@ This method adds a user in a layer described in JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    - 400 (Bad Request): The user already has been added in layer.
+    - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The creator of the layer is the unique who can add user in layer.

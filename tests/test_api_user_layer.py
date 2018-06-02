@@ -270,7 +270,7 @@ class TestAPIUserLayerErrors(TestCase):
 
     # layer errors - create
 
-    def test_put_api_user_layer_create_error_400_bad_request_user_already_has_been_added_in_layer(self):
+    def test_put_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -301,7 +301,9 @@ class TestAPIUserLayerErrors(TestCase):
         }
         self.tester.api_user_layer_create(user_layer)
 
+        ##################################################
         # try to add the user in layer again and raise an error
+        ##################################################
         self.tester.api_user_layer_create_error_400_bad_request(user_layer)
 
         # get the id of layer to REMOVE it

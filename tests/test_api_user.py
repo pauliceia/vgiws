@@ -205,25 +205,24 @@ class TestAPIUserErrors(TestCase):
 
     # user errors - create
 
-    def test_get_api_user_create_error_400_bad_request_email_already_exist(self):
-        # create a feature
-        feature = {
+    def test_get_api_user_create_error_400_bad_request_attribute_already_exist(self):
+        # try to create a resource with email that already exist
+        resource = {
             'type': 'User',
             'properties': {'email': "rodrigo@admin.com", 'password': 'roger', 'username': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
         }
 
-        self.tester.api_user_error_create_400_bad_request(feature)
+        self.tester.api_user_error_create_400_bad_request(resource)
 
-    def test_get_api_user_create_error_400_bad_request_username_already_exist(self):
-        # create a feature
-        feature = {
+        # try to create a resource with username that already exist
+        resource = {
             'type': 'User',
             'properties': {'username': 'rodrigo', 'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
         }
 
-        self.tester.api_user_error_create_400_bad_request(feature)
+        self.tester.api_user_error_create_400_bad_request(resource)
 
     def test_get_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # create a feature
