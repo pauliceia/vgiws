@@ -407,9 +407,9 @@ INSERT INTO layer (layer_id, f_table_name, name, description, source_description
 
 -- add reference
 INSERT INTO reference (reference_id, description, user_id) VALUES (1010, 
-'@Misc{marco2017articleB,
+'@Misc{marco2017articleC,
 author = {Marco},
-title = {ArticleB},
+title = {ArticleC},
 howpublished = {\url{http://www.link_to_document.org/}},
 note = {Accessed on 02/02/2017},
 year={2017}

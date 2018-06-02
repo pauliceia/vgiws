@@ -125,7 +125,12 @@ def remove_bad_lines_and_put_default_values(text):
 
         # USER_LAYER
         if "is_the_creator boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")  
+            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+
+        # REFERENCE
+        # just change the 'description' of the 'reference'
+        if "reference" in lines[i-2] and "description text" in line_lower:
+            lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
     text = "\n".join(lines)
 

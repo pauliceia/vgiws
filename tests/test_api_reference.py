@@ -35,7 +35,7 @@ class TestAPIReference(TestCase):
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
@@ -92,8 +92,7 @@ class TestAPIReference(TestCase):
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1005,
-                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
@@ -110,13 +109,12 @@ class TestAPIReference(TestCase):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1005,
-                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
                     'properties': {'user_id': 1005, 'reference_id': 1010,
-                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                                   'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 }
             ]
         }
