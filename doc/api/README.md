@@ -4,6 +4,7 @@
 - [Login](login.md)
 - [Import](import.md)
 - [Layer](layer.md)
+- [Reference](reference.md)
 - [User](user.md)
 <!-- - [Theme](theme.md) -->
 <!-- - [Changeset](changeset.md) -->
