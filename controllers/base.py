@@ -517,30 +517,29 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_feature(self, current_user_id, *args, **kwargs):
-        # layer_id = args[0]
-        # self.can_current_user_delete_a_layer(current_user_id, layer_id)
+        reference_id = args[0]
+        self.can_current_user_delete_a_reference(current_user_id, reference_id)
 
         self.PGSQLConn.delete_reference_in_db(*args)
 
     # VALIDATION
 
-    # def can_current_user_delete_a_layer(self, current_user_id, layer_id):
-    #     """
-    #     Verify if the user has permission of deleting a layer
-    #     :param resource_id: layer id
-    #     :return:
-    #     """
-    #
-    #     layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
-    #
-    #     for layer in layers["features"]:
-    #         if layer["properties"]['is_the_creator'] and \
-    #                 layer["properties"]['user_id'] == current_user_id:
-    #             # if the current_user_id is the creator of the layer, so ok...
-    #             return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+    def can_current_user_delete_a_reference(self, current_user_id, reference_id):
+        """
+        Verify if the user has permission of deleting a reference
+        :param resource_id: layer id
+        :return:
+        """
+
+        references = self.PGSQLConn.get_references(reference_id=reference_id)
+
+        for reference in references["features"]:
+            if reference["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the reference, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The creator of the reference is the unique who can delete the reference.")
 
 # IMPORT
 

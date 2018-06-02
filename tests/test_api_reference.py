@@ -205,60 +205,20 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    """
-    def test_put_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_reference_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a layer (without reference)
-        resource = {
-            'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
-                           'description': '', 'fk_keyword_id': 1041},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
-
-        # try to create a layer (without f_table_name)
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'name': 'Addresses in 1930', 'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
-
         # try to create a layer (without description)
         resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-                           'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'type': 'Reference',
+            'properties': {}
         }
-        self.tester.api_layer_create_error_400_bad_request(resource)
-
-        # try to create a layer (without feature_table)
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]}
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
+        self.tester.api_reference_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
     def test_put_api_reference_create_error_401_unauthorized(self):
         feature = {
             'properties': {'description': 'BookA'},
@@ -266,7 +226,7 @@ class TestAPIReferenceErrors(TestCase):
         }
         self.tester.api_reference_create_error_401_unauthorized(feature)
 
-    # layer errors - delete
+    # reference errors - delete
 
     def test_delete_api_reference_error_400_bad_request(self):
         # create a tester passing the unittest self
@@ -292,44 +252,33 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_delete_error_401_unauthorized("0")
         self.tester.api_reference_delete_error_401_unauthorized("1001")
 
-    """
-    def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
+    def test_delete_api_reference_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################
-        # create a layer with user admin
+        # create a reference with user admin
         ########################################
 
         self.tester.auth_login("admin@admin.com", "admin")
 
-        # user_session = self.tester.get_session_user()
-        # user_id = user_session["user"]["properties"]["user_id"]
-
         # create a layer
         resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'type': 'Reference',
+            'properties': {'description': 'ArticleA'}
         }
-        resource = self.tester.api_layer_create(resource)
+        resource = self.tester.api_reference_create(resource)
 
         # logout with admin
         self.tester.auth_logout()
 
         ########################################
-        # try to delete a layer with user rodrigo
+        # try to delete the reference with user rodrigo
         ########################################
-
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        resource_id = resource["properties"]["reference_id"]
 
         # TRY TO REMOVE THE LAYER
-        self.tester.api_layer_delete_error_403_forbidden(resource_id)
+        self.tester.api_reference_delete_error_403_forbidden(resource_id)
 
         # logout with user rodrigo
         self.tester.auth_logout()
@@ -340,14 +289,14 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.auth_login("admin@admin.com", "admin")
 
         # delete the layer
-        self.tester.api_layer_delete(resource_id)
+        self.tester.api_reference_delete(resource_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
     def test_delete_api_reference_error_404_not_found(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
@@ -360,7 +309,6 @@ class TestAPIReferenceErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

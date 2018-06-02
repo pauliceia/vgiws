@@ -55,10 +55,9 @@ This method creates a new reference described in a JSON.
     ```
 - Error codes:
      - 400 (Bad Request): Attribute already exists.
-    <!-- - 400 (Bad Request): The parameter reference needs to be a list. -->
-    <!-- - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation! -->
-    <!-- - 401 (Unauthorized): It is necessary an Authorization header valid. -->
-    <!-- - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator. -->
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
@@ -78,9 +77,9 @@ This method deletes one reference by id = #id.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    <!-- - 400 (Bad Request): Invalid parameter. -->
-    <!-- - 401 (Unauthorized): It is necessary an Authorization header valid. -->
-    <!-- - 403 (Forbidden): The owner of the layer is the unique who can delete the layer. -->
-    <!-- - 404 (Not Found): Not found any resource. -->
-    <!-- - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator. -->
+     - 400 (Bad Request): Invalid parameter.
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): "The creator of the reference is the unique who can delete the reference.
+     - 404 (Not Found): Not found any resource.
+     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
