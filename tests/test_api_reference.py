@@ -8,180 +8,123 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-"""
+
 class TestAPIReference(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # layer - get
+    # reference - get
 
     def test_get_api_reference_return_all_references(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001, 'bibtex': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002, 'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900',
-                                   'reference': [{'reference_id': 1005, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                                   'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
-                                   'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
-                                   'f_table_name': 'layer_1004', 'source_description': '',
-                                   'created_at': '2017-06-15 00:00:00', 'keyword': [1040]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
-                                   'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
-                                   'f_table_name': 'layer_1005', 'source_description': None,
-                                   'created_at': '2017-08-04 00:00:00', 'keyword': [1023]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1007, 'reference_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950',
-                                   'reference': [{'reference_id': 1025, 'bibtex': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
-                                   'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                },
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1002, 'reference_id': 1051, 'description': 'ArticleB'}
+                },
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1003, 'reference_id': 1052, 'description': 'ThesisC'}
+                },
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1003, 'reference_id': 1053, 'description': 'DissertationD'}
                 }
             ]
         }
 
         self.tester.api_reference(expected)
 
-    def test_get_api_layer_return_layer_by_layer_id(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001,
-                                                  'bibtex': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002,
-                                                  'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
-                    'type': 'Layer'
-                },
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_layer(expected, layer_id="1001")
-
-    def test_get_api_layer_return_layer_by_is_published(self):
+    def test_get_api_layer_return_layer_by_reference_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [{'reference_id': 1001,
-                                                  'bibtex': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'},
-                                                 {'reference_id': 1002,
-                                                  'bibtex': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900',
-                                   'reference': [{'reference_id': 1005,
-                                                  'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                                   'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
-                                   'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
-                                   'f_table_name': 'layer_1004', 'source_description': '',
-                                   'created_at': '2017-06-15 00:00:00', 'keyword': [1040]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950',
-                                   'reference': [{'reference_id': 1025,
-                                                  'bibtex': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
-                                   'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1001,
+                                   'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 }
             ]
         }
 
-        self.tester.api_layer(expected, is_published="TRUE")
+        self.tester.api_reference(expected, reference_id="1001")
 
+    def test_get_api_layer_return_layer_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010,
-                                                  'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1001,
+                                   'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
-                                   'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
-                                   'f_table_name': 'layer_1005', 'source_description': None,
-                                   'created_at': '2017-08-04 00:00:00', 'keyword': [1023]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1002,
+                                   'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1005,
+                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                },
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                }
             ]
         }
 
-        self.tester.api_layer(expected, is_published="FALSE")
+        self.tester.api_reference(expected, user_id="1001")
 
-    def test_get_api_layer_return_layer_by_f_table_name(self):
+    def test_get_api_layer_return_layer_by_description(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930',
-                                   'reference': [{'reference_id': 1010,
-                                                  'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                                   'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
-                    'type': 'Layer'
+                    'type': 'Reference',
+                    'properties': {'user_id': 1001, 'reference_id': 1005,
+                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
-            ],
-            'type': 'FeatureCollection'
+                {
+                    'type': 'Reference',
+                    'properties': {'user_id': 1005, 'reference_id': 1010,
+                                   'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                }
+            ]
         }
 
-        self.tester.api_layer(expected, f_table_name="layer_1003")
+        self.tester.api_reference(expected, description="marco")
 
-    # layer - create and delete
-
+    # reference - create and delete
+    """
     def test_api_layer_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -212,7 +155,7 @@ class TestAPIReference(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 """
 class TestAPILayerErrors(TestCase):

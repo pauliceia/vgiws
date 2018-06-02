@@ -226,11 +226,12 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         arguments = self.get_aguments()
 
         try:
-            # break the arguments dict in each parameter of method
             result = self._get_feature(*args, **arguments)
+        except TypeError as error:
+            raise HTTPError(400, str(error))
         except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when get a resource. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
+                                 "(error: " + str(error) + ").")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
@@ -278,8 +279,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after create a feature
             self.PGSQLConn.commit()
         except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
+                            "(error: " + str(error) + ").")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
@@ -301,8 +302,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after create a feature
             self.PGSQLConn.commit()
         except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when update a feature. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when update a feature. Please, contact the administrator. " +
+                            "(error: " + str(error) + ").")
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
@@ -337,8 +338,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after delete the feature
             self.PGSQLConn.commit()
         except DataError as error:
-            # print("Error: ", error)
-            raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
+                            "(error: " + str(error) + ").")
 
     def _delete_feature(self, current_user_id, *args, **kwargs):
         raise NotImplementedError
@@ -503,12 +504,12 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     # GET
 
     def _get_feature(self, *args, **kwargs):
-        return self.PGSQLConn.get_layers(**kwargs)
+        return self.PGSQLConn.get_references(**kwargs)
 
     # PUT
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_layer(feature_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_reference(feature_json, current_user_id, **kwargs)
 
     def _update_feature(self, *args, **kwargs):
         raise NotImplementedError
@@ -519,7 +520,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         # layer_id = args[0]
         # self.can_current_user_delete_a_layer(current_user_id, layer_id)
 
-        self.PGSQLConn.delete_layer_in_db(*args)
+        self.PGSQLConn.delete_reference_in_db(*args)
 
     # VALIDATION
 

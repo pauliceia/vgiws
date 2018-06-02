@@ -660,11 +660,11 @@ class PGSQLConnection:
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Layer',
+                    'type',       'Reference',
                     'properties', json_build_object(
                         'reference_id',   reference_id,
                         'description',    description,
-                        'user_id',        user_id,
+                        'user_id',        user_id
                     )
                 ))
             ) AS row_to_json
