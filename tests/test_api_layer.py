@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase, skip
+from unittest import TestCase
 from util.tester import UtilTester
 
 
@@ -165,14 +165,12 @@ class TestAPILayer(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # user_session = self.tester.get_session_user()
-
         # create a layer
         resource = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []},
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
@@ -180,7 +178,7 @@ class TestAPILayer(TestCase):
         }
         resource = self.tester.api_layer_create(resource)
 
-        # get the id of layer to REMOVE it
+        # get the id of layer to SEARCH AND REMOVE it
         resource_id = resource["properties"]["layer_id"]
 
         # REMOVE THE layer AFTER THE TESTS

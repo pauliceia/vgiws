@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase, skip
-from util.tester import UtilTester
 """
+from unittest import TestCase
+from util.tester import UtilTester
+
 
 class TestAPINotification(TestCase):
 

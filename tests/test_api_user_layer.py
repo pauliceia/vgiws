@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase, skip
+from unittest import TestCase
 from util.tester import UtilTester
 
 
@@ -191,7 +191,7 @@ class TestAPIUserLayer(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]},
+                           'reference': [1050], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}

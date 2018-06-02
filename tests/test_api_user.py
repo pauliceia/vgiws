@@ -3,7 +3,7 @@
 
 
 
-from unittest import TestCase, skip
+from unittest import TestCase
 from util.tester import UtilTester
 
 from string import ascii_uppercase, digits

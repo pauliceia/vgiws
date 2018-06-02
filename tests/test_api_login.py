@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase, skip
+from unittest import TestCase
 from util.tester import UtilTester
-
 
 
 class TestAPIAuthLogin(TestCase):

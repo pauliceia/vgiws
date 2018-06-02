@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from unittest import TestCase, skip
+from unittest import TestCase
 from util.tester import UtilTester
 
 
@@ -29,7 +29,7 @@ class TestAPIImport(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [{'keyword_id': 1041}]}
+                           'reference': [1050], 'keyword': [1041]}
         }
         resource = self.tester.api_layer_create(resource, is_to_create_feature_table=False)
 

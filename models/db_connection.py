@@ -300,6 +300,26 @@ class PGSQLConnection:
 
         return results_of_query
 
+    def add_list_of_reference_in_layer(self, list_of_references, layer_id):
+        for reference_id in list_of_references:
+            query_text = """
+                INSERT INTO layer_reference (layer_id, reference_id) 
+                VALUES ({0}, {1});
+            """.format(layer_id, reference_id)
+
+            # do the query in database
+            self.__PGSQL_CURSOR__.execute(query_text)
+
+    def add_list_of_keyword_in_layer(self, list_of_keyword, layer_id):
+        for keyword_id in list_of_keyword:
+            query_text = """
+                INSERT INTO layer_keyword (layer_id, keyword_id) 
+                VALUES ({0}, {1});
+            """.format(layer_id, keyword_id)
+
+            # do the query in database
+            self.__PGSQL_CURSOR__.execute(query_text)
+
     def add_layer_in_db(self, properties):
         p = properties
 
@@ -318,25 +338,26 @@ class PGSQLConnection:
 
     def create_layer(self, resource_json, user_id, is_to_create_feature_table=True):
 
+        ##################################################
         # pre-processing
-
+        ##################################################
         validate_feature_json(resource_json)
 
         properties = resource_json["properties"]
 
-        if ("reference" not in properties) or ("f_table_name" not in properties):
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference or f_table_name)")
+        if ("reference" not in properties) or ("keyword" not in properties) or ("f_table_name" not in properties):
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference, keyword or f_table_name)")
 
         if is_to_create_feature_table and ("feature_table" not in resource_json):
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: feature_table)")
 
-        # just can add source that is a list (list of sources/references)
-        if not isinstance(properties["reference"], list):
-            raise HTTPError(400, "The parameter reference needs to be a list.")
+        # just can add reference/keyword that is a list
+        if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
+            raise HTTPError(400, "The parameters reference and keyword need to be a list.")
 
-        # the table name follow the standard: _<user_id>_<table_name>
-        # properties["table_name"] = format_the_table_name_to_standard(properties["table_name"], user_id)
-
+        ##################################################
+        # add the layer in db
+        ##################################################
         try:
             # add the layer in db and get the id of it
             id_in_json = self.add_layer_in_db(properties)
@@ -351,11 +372,25 @@ class PGSQLConnection:
                 # if is other error, so raise it up
                 raise error
 
+        ##################################################
+        # add the list of reference in layer
+        ##################################################
+        self.add_list_of_reference_in_layer(properties["reference"], id_in_json["layer_id"])
+
+        ##################################################
+        # add the list of keyword in layer
+        ##################################################
+        self.add_list_of_keyword_in_layer(properties["keyword"], id_in_json["layer_id"])
+
+        ##################################################
+        # create the feature table (if necessary)
+        ##################################################
         if is_to_create_feature_table:
             self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
-        # else:
-        #     print("\n\n It is not creating a feature table \n\n")
 
+        ##################################################
+        # add the user as creator user
+        ##################################################
         user_layer_json = {
             'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': id_in_json["layer_id"]},
             'type': 'UserLayer'
