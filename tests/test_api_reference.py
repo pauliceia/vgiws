@@ -62,7 +62,7 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected)
 
-    def test_get_api_layer_return_layer_by_reference_id(self):
+    def test_get_api_reference_return_reference_by_reference_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -76,7 +76,7 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, reference_id="1001")
 
-    def test_get_api_layer_return_layer_by_user_id(self):
+    def test_get_api_reference_return_reference_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -104,7 +104,7 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, user_id="1001")
 
-    def test_get_api_layer_return_layer_by_description(self):
+    def test_get_api_reference_return_reference_by_description(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -125,7 +125,7 @@ class TestAPIReference(TestCase):
 
     # reference - create and delete
     """
-    def test_api_layer_create_and_delete(self):
+    def test_api_reference_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -157,8 +157,8 @@ class TestAPIReference(TestCase):
         self.tester.auth_logout()
     """
 
-"""
-class TestAPILayerErrors(TestCase):
+
+class TestAPIReferenceErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -166,17 +166,27 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - get
 
-    def test_get_api_layer_error_400_bad_request(self):
-        self.tester.api_layer_error_400_bad_request(layer_id="abc")
-        self.tester.api_layer_error_400_bad_request(layer_id=0)
-        self.tester.api_layer_error_400_bad_request(layer_id=-1)
-        self.tester.api_layer_error_400_bad_request(layer_id="-1")
-        self.tester.api_layer_error_400_bad_request(layer_id="0")
+    def test_get_api_reference_error_400_bad_request(self):
+        self.tester.api_reference_error_400_bad_request(reference_id="abc")
+        self.tester.api_reference_error_400_bad_request(reference_id=0)
+        self.tester.api_reference_error_400_bad_request(reference_id=-1)
+        self.tester.api_reference_error_400_bad_request(reference_id="-1")
+        self.tester.api_reference_error_400_bad_request(reference_id="0")
 
-    def test_get_api_layer_error_404_not_found(self):
-        self.tester.api_layer_error_404_not_found(layer_id="999")
-        self.tester.api_layer_error_404_not_found(layer_id="998")
+        self.tester.api_reference_error_400_bad_request(user_id="abc")
+        self.tester.api_reference_error_400_bad_request(user_id=0)
+        self.tester.api_reference_error_400_bad_request(user_id=-1)
+        self.tester.api_reference_error_400_bad_request(user_id="-1")
+        self.tester.api_reference_error_400_bad_request(user_id="0")
 
+    def test_get_api_reference_error_404_not_found(self):
+        self.tester.api_reference_error_404_not_found(reference_id="999")
+        self.tester.api_reference_error_404_not_found(reference_id="998")
+
+        self.tester.api_reference_error_404_not_found(user_id="999")
+        self.tester.api_reference_error_404_not_found(user_id="998")
+
+    """
     # layer errors - create
     
     def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
@@ -367,6 +377,6 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
