@@ -177,43 +177,43 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_error_404_not_found(user_id="999")
         self.tester.api_reference_error_404_not_found(user_id="998")
 
-    """
     # layer errors - create
     
-    def test_put_api_layer_create_error_400_bad_request_table_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    # def test_put_api_reference_create_error_400_bad_request_table_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # create a layer
+    #     resource = {
+    #         'type': 'Layer',
+    #         'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+    #                        'description': '', 'source_description': '',
+    #                        'reference': [], 'keyword': [1041]},
+    #         'feature_table': {
+    #             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+    #             'geometry': {"type": "MultiPoint"}
+    #         }
+    #     }
+    #     resource = self.tester.api_layer_create(resource)
+    #
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["layer_id"]
+    #
+    #     ##################################################
+    #     # try to insert the layer again, raising the 400
+    #     ##################################################
+    #     resource = self.tester.api_layer_create_error_400_bad_request(resource)
+    #
+    #     # REMOVE THE layer AFTER THE TESTS
+    #     self.tester.api_layer_delete(resource_id)
+    #
+    #     # it is not possible to find the layer that just deleted
+    #     self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
-        # create a layer
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        resource = self.tester.api_layer_create(resource)
-
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
-
-        ##################################################
-        # try to insert the layer again, raising the 400
-        ##################################################
-        resource = self.tester.api_layer_create_error_400_bad_request(resource)
-
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
+    """
     def test_put_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -266,41 +266,41 @@ class TestAPIReferenceErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-    def test_put_api_layer_create_error_401_unauthorized(self):
+    """
+    def test_put_api_reference_create_error_401_unauthorized(self):
         feature = {
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
-                           'description': '', 'fk_keyword_id': 1041},
-            'type': 'Layer'
+            'properties': {'description': 'BookA'},
+            'type': 'Reference'
         }
-        self.tester.api_layer_create_error_401_unauthorized(feature)
+        self.tester.api_reference_create_error_401_unauthorized(feature)
 
     # layer errors - delete
 
-    def test_delete_api_layer_error_400_bad_request(self):
+    def test_delete_api_reference_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_layer_delete_error_400_bad_request("abc")
-        self.tester.api_layer_delete_error_400_bad_request(0)
-        self.tester.api_layer_delete_error_400_bad_request(-1)
-        self.tester.api_layer_delete_error_400_bad_request("-1")
-        self.tester.api_layer_delete_error_400_bad_request("0")
+        self.tester.api_reference_delete_error_400_bad_request("abc")
+        self.tester.api_reference_delete_error_400_bad_request(0)
+        self.tester.api_reference_delete_error_400_bad_request(-1)
+        self.tester.api_reference_delete_error_400_bad_request("-1")
+        self.tester.api_reference_delete_error_400_bad_request("0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_layer_error_401_unauthorized_user_without_login(self):
-        self.tester.api_layer_delete_error_401_unauthorized("abc")
-        self.tester.api_layer_delete_error_401_unauthorized(0)
-        self.tester.api_layer_delete_error_401_unauthorized(-1)
-        self.tester.api_layer_delete_error_401_unauthorized("-1")
-        self.tester.api_layer_delete_error_401_unauthorized("0")
-        self.tester.api_layer_delete_error_401_unauthorized("1001")
+    def test_delete_api_reference_error_401_unauthorized_user_without_login(self):
+        self.tester.api_reference_delete_error_401_unauthorized("abc")
+        self.tester.api_reference_delete_error_401_unauthorized(0)
+        self.tester.api_reference_delete_error_401_unauthorized(-1)
+        self.tester.api_reference_delete_error_401_unauthorized("-1")
+        self.tester.api_reference_delete_error_401_unauthorized("0")
+        self.tester.api_reference_delete_error_401_unauthorized("1001")
 
+    """
     def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################
         # create a layer with user admin
@@ -355,19 +355,20 @@ class TestAPIReferenceErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-    def test_delete_api_layer_error_404_not_found(self):
+    """
+    def test_delete_api_reference_error_404_not_found(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_layer_delete_error_404_not_found("5000")
-        self.tester.api_layer_delete_error_404_not_found("5001")
+        self.tester.api_reference_delete_error_404_not_found("5000")
+        self.tester.api_reference_delete_error_404_not_found("5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
