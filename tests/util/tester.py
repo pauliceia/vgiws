@@ -403,23 +403,23 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    def api_reference_create(self, feature_json, **arguments):
+    def api_reference_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.put(self.URL + '/api/reference/create/{0}'.format(arguments),
-                                    data=dumps(feature_json), headers=self.headers)
+                                    data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("layer_id", resulted)
-        self.ut_self.assertNotEqual(resulted["layer_id"], -1)
+        self.ut_self.assertIn("reference_id", resulted)
+        self.ut_self.assertNotEqual(resulted["reference_id"], -1)
 
         # put the id received in the original JSON of changeset
-        feature_json["properties"]["layer_id"] = resulted["layer_id"]
+        resource_json["properties"]["reference_id"] = resulted["reference_id"]
 
-        return feature_json
+        return resource_json
 
     def api_reference_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),

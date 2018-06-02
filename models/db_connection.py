@@ -696,9 +696,9 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-            INSERT INTO reference (f_table_name, name, description, source_description, created_at, user_id_published_by)
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, NULL) RETURNING layer_id;
-        """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
+            INSERT INTO reference (description, user_id)
+            VALUES ('{0}', {1}) RETURNING reference_id;
+        """.format(p["description"], p["user_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -712,6 +712,9 @@ class PGSQLConnection:
         # pre-processing
         validate_feature_json(resource_json)
 
+        # put the current user id as the creator of the reference
+        resource_json["properties"]["user_id"] = user_id
+
         try:
             # add the reference in db and get the id of it
             id_in_json = self.add_reference_in_db(resource_json["properties"])
@@ -722,35 +725,26 @@ class PGSQLConnection:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 raise HTTPError(400, "Table name already exists.")
             else:
-                # if is other error, so raise it up
-                raise error
+                raise error  # if is other error, so raise it up
 
         return id_in_json
 
-    # def delete_reference_in_db(self, resource_id):
-    #         if is_a_invalid_id(resource_id):
-    #             raise HTTPError(400, "Invalid parameter.")
-    #
-    #         # get the layer information before to remove the layer
-    #         layer = self.get_layers(layer_id=resource_id)
-    #         f_table_name = layer["features"][0]["properties"]["f_table_name"]
-    #
-    #         # delete the layer
-    #
-    #         query_text = """
-    #             DELETE FROM layer WHERE layer_id={0};
-    #         """.format(resource_id)
-    #
-    #         # do the query in database
-    #         self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #         rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #         if rows_affected == 0:
-    #             raise HTTPError(404, "Not found any feature.")
-    #
-    #         # delete the feature table
-    #         self.delete_feature_table(f_table_name)
+    def delete_reference_in_db(self, resource_id):
+        if is_a_invalid_id(resource_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete the reference
+        query_text = """
+            DELETE FROM reference WHERE reference_id={0};
+        """.format(resource_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
     # CHANGESET

@@ -124,38 +124,29 @@ class TestAPIReference(TestCase):
         self.tester.api_reference(expected, description="marco")
 
     # reference - create and delete
-    """
+
     def test_api_reference_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # user_session = self.tester.get_session_user()
-
-        # create a layer
+        # create a reference
         resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'type': 'Reference',
+            'properties': {'description': 'ArticleA'}
         }
-        resource = self.tester.api_layer_create(resource)
+        resource = self.tester.api_reference_create(resource)
 
         # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        resource_id = resource["properties"]["reference_id"]
 
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
+        # remove the resource
+        self.tester.api_reference_delete(resource_id)
 
-        # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        # it is not possible to find the resource that just deleted
+        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 
 class TestAPIReferenceErrors(TestCase):
