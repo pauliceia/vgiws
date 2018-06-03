@@ -347,7 +347,7 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.api_keyword_create_error_401_unauthorized(resource)
 
     # keyword errors - delete
-    """
+
     def test_delete_api_keyword_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
@@ -381,8 +381,8 @@ class TestAPIKeywordErrors(TestCase):
 
         # create a layer
         resource = {
-            'type': 'keyword',
-            'properties': {'description': 'ArticleA'}
+            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
+            'type': 'Keyword'
         }
         resource = self.tester.api_keyword_create(resource)
 
@@ -429,7 +429,6 @@ class TestAPIKeywordErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
