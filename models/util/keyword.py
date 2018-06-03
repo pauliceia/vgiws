@@ -14,7 +14,10 @@ def get_subquery_keyword_table(**kwargs):
         conditions_of_where.append("unaccent(LOWER(name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["name"]))
 
     if "parent_id" in kwargs and kwargs["parent_id"] is not None:
-        conditions_of_where.append("parent_id = {0}".format(kwargs["parent_id"]))
+        if kwargs["parent_id"] != "NULL":
+            conditions_of_where.append("parent_id = {0}".format(kwargs["parent_id"]))
+        else:  # if parent_id == NULL
+            conditions_of_where.append("parent_id is NULL")
 
     if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
         conditions_of_where.append("user_id_creator = {0}".format(kwargs["user_id_creator"]))
