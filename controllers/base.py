@@ -416,7 +416,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     def can_current_user_delete_a_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of deleting a layer
-        :param resource_id: layer id
+        :param current_user_id: current user id
+        :param layer_id: layer id
         :return:
         """
 
@@ -464,8 +465,8 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def can_current_user_add_user_in_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of adding a user in a layer
+        :param current_user_id: current user id
         :param layer_id: layer id
-        :param current_user_id: current_user_id
         :return:
         """
 
@@ -483,6 +484,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def can_current_user_delete_user_in_layer(self, current_user_id, layer_id):
         """
         Verify if the user has permission of deleting a user from a layer
+        :param current_user_id: current user id
         :param layer_id: layer id
         :return:
         """
@@ -527,7 +529,8 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     def can_current_user_delete_a_reference(self, current_user_id, reference_id):
         """
         Verify if the user has permission of deleting a reference
-        :param resource_id: layer id
+        :param current_user_id: current user id
+        :param reference_id: reference id
         :return:
         """
 
@@ -540,6 +543,51 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
         # ... else, raise an exception.
         raise HTTPError(403, "The creator of the reference is the unique who can delete the reference.")
+
+
+class BaseHandlerKeyword(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_feature(self, *args, **kwargs):
+        return self.PGSQLConn.get_keywords(**kwargs)
+
+    # PUT
+
+    def _create_feature(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_keyword(resource_json, current_user_id, **kwargs)
+
+    def _update_feature(self, *args, **kwargs):
+        raise NotImplementedError
+
+    # DELETE
+
+    def _delete_feature(self, current_user_id, *args, **kwargs):
+        keyword_id = args[0]
+        self.can_current_user_delete_a_keyword(current_user_id, keyword_id)
+
+        self.PGSQLConn.delete_keyword_in_db(*args)
+
+    # VALIDATION
+
+    def can_current_user_delete_a_keyword(self, current_user_id, keyword_id):
+        """
+        Verify if the user has permission of deleting a keyword
+        :param current_user_id: current user id
+        :param keyword_id: keyword id
+        :return:
+        """
+
+        references = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
+
+        for reference in references["features"]:
+            if reference["properties"]['user_id_creator'] == current_user_id:
+                # if the current_user_id is the creator of the reference, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The creator of the keyword is the unique who can delete the keyword.")
+
 
 # IMPORT
 

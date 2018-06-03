@@ -785,6 +785,112 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any feature.")
 
     ################################################################################
+    # KEYWORD
+    ################################################################################
+
+    def get_keywords(self, keyword_id=None, name=None, parent_id=None, user_id_creator=None):
+
+        # the id have to be a int
+        if is_a_invalid_id(keyword_id) or is_a_invalid_id(parent_id) or is_a_invalid_id(user_id_creator):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_keyword_table(keyword_id=keyword_id, name=name,
+                                              parent_id=parent_id, user_id_creator=user_id_creator)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Keyword',
+                    'properties', json_build_object(
+                        'keyword_id',      keyword_id,
+                        'name',            name,
+                        'parent_id',       parent_id,
+                        'user_id_creator', user_id_creator
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any feature.")
+
+        return results_of_query
+
+    def add_keyword_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            INSERT INTO keyword (name, parent_id, user_id_creator, created_at)
+            VALUES ('{0}', {1}, {2}, LOCALTIMESTAMP) RETURNING keyword_id;
+        """.format(p["name"], p["parent_id"], p["user_id_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_keyword(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        try:
+            # add the reference in db and get the id of it
+            id_in_json = self.add_keyword_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+        return id_in_json
+
+    def delete_keyword_in_db(self, resource_id):
+        if is_a_invalid_id(resource_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete the reference
+        query_text = """
+            DELETE FROM keyword WHERE keyword_id={0};
+        """.format(resource_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any feature.")
+
+    ################################################################################
     # CHANGESET
     ################################################################################
 
