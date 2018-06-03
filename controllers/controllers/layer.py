@@ -19,13 +19,11 @@ class APILayer(BaseHandlerLayer):
             r"/api/layer/?(?P<param>[A-Za-z0-9-]+)?"]
 
     def get(self, param=None):
-        # self.get_method_api_layer()
         self.get_method_api_feature()
 
     @auth_non_browser_based
     def post(self, param=None):
-        # self.put_method_api_layer(param)
-        self.put_method_api_feature(param)
+        self.post_method_api_feature(param)
 
     @auth_non_browser_based
     def delete(self, param=None):
@@ -43,7 +41,7 @@ class APIUserLayer(BaseHandlerUserLayer):
 
     @auth_non_browser_based
     def post(self, param=None):
-        self.put_method_api_feature(param)
+        self.post_method_api_feature(param)
 
     @auth_non_browser_based
     def delete(self, param=None):

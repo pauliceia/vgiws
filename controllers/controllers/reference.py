@@ -23,7 +23,7 @@ class APIReference(BaseHandlerReference):
 
     @auth_non_browser_based
     def post(self, param=None):
-        self.put_method_api_feature(param)
+        self.post_method_api_feature(param)
 
     @auth_non_browser_based
     def delete(self, param=None):

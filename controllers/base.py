@@ -240,34 +240,30 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         raise NotImplementedError
 
     ##################################################
-    # PUT METHOD
+    # POST METHOD
     ##################################################
 
     @catch_generic_exception
-    def put_method_api_feature(self, *args):
+    def post_method_api_feature(self, *args):
         param = args[0]
 
         # remove the first argument ('param'), because it is not necessary anymore
-        args = args[1:]  # get the second argument and so on
+        # args = args[1:]  # get the second argument and so on
 
         if param == "create":
-            # self._create_feature(*args)
-            self.put_method_api_feature_create(*args)
-        # elif param == "update":
-        #     # self._update_feature(*args)
-        #     self.put_method_api_feature_update(*args)
-        elif param == "close":
-            self._close_feature(*args)
-        elif param == "request":
-            self._request_feature(*args)
-        elif param == "accept":
-            self._accept_feature(*args)
+            self.put_method_api_feature_create()
+        # elif param == "close":
+        #     self._close_feature(*args)
+        # elif param == "request":
+        #     self._request_feature(*args)
+        # elif param == "accept":
+        #     self._accept_feature(*args)
         else:
             raise HTTPError(404, "Invalid URL.")
 
     # create
 
-    def put_method_api_feature_create(self, *args):
+    def put_method_api_feature_create(self):
         # get the JSON sent, to add in DB
         feature_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
@@ -282,7 +278,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + ").")
 
-        # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(json_with_id))
 
     def _create_feature(self, feature_json, current_user_id, **kwargs):
@@ -310,18 +305,18 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
     # close
 
-    def _close_feature(self, *args, **kwargs):
-        raise NotImplementedError
+    # def _close_feature(self, *args, **kwargs):
+    #     raise NotImplementedError
 
     # request
 
-    def _request_feature(self, *args, **kwargs):
-        raise NotImplementedError
+    # def _request_feature(self, *args, **kwargs):
+    #     raise NotImplementedError
 
     # accept
 
-    def _accept_feature(self, *args, **kwargs):
-        raise NotImplementedError
+    # def _accept_feature(self, *args, **kwargs):
+    #     raise NotImplementedError
 
     ##################################################
     # DELETE METHOD

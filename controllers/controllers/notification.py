@@ -5,7 +5,7 @@
     Responsible module to create controllers.
 """
 
-# from ..base import BaseHandlerChangeset
+# from ..base import BaseHandlerNotification
 # from modules.common import auth_non_browser_based
 
 
@@ -21,8 +21,8 @@
 #         self.get_method_api_feature()
 #
 #     @auth_non_browser_based
-#     def put(self, param=None):
-#         self.put_method_api_feature(param)
+#     def post(self, param=None):
+#         self.post_method_api_feature(param)
 #
 #     @auth_non_browser_based
 #     def delete(self, param=None):
