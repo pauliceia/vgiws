@@ -42,7 +42,7 @@ This method gets keywords from DB. If you doesn't put any parameter, so it will 
 This method creates a new keyword described in a JSON.
 - Parameters:
 - Examples:
-    - Create a keyword: ```PUT http://localhost:8888/api/keyword/create```
+    - Create a keyword: ```POST http://localhost:8888/api/keyword/create```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {

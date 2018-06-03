@@ -34,12 +34,12 @@ This method gets references from DB. If you doesn't put any parameter, so it wil
 - Notes:
 
 
-### PUT /api/reference/create/
+### POST /api/reference/create/
 
 This method creates a new reference described in a JSON.
 - Parameters:
 - Examples:
-    - Create a reference: ```PUT http://localhost:8888/api/reference/create```
+    - Create a reference: ```POST http://localhost:8888/api/reference/create```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {

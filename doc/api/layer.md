@@ -40,14 +40,14 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
 - Notes:
 
 
-### PUT /api/layer/create/?\<params>
+### POST /api/layer/create/?\<params>
 
 This method creates a new layer described in a JSON.
 - Parameters:
     - is_to_create_feature_table (optional): it is a boolean that indicates if a feature table will be created together the layer or not (e.g. 'TRUE' or 'FALSE'; default is 'TRUE');
 - Examples:
-    - Create a layer with feature table: ```PUT http://localhost:8888/api/layer/create```
-    - Create a layer without feature table: ```PUT http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
+    - Create a layer with feature table: ```POST http://localhost:8888/api/layer/create```
+    - Create a layer without feature table: ```POST http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
@@ -140,12 +140,12 @@ This method gets users in layers from DB. If you doesn't put any parameter, so i
 - Notes:
 
 
-### PUT /api/user_layer/create
+### POST /api/user_layer/create
 
 This method adds a user in a layer described in JSON.
 - Parameters:
 - Examples:
-    - Add a user in a layer: ```PUT http://localhost:8888/api/user_layer/create```
+    - Add a user in a layer: ```POST http://localhost:8888/api/user_layer/create```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {

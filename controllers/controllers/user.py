@@ -22,7 +22,7 @@ class APIUser(BaseHandlerUser):
         # self.get_method_api_user()
         self.get_method_api_feature()
 
-    def put(self, param=None):
+    def post(self, param=None):
         self.put_method_api_feature(param)
 
     @auth_non_browser_based

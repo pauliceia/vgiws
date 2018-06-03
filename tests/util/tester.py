@@ -109,8 +109,8 @@ class UtilTester:
         # cryptography the password before to send
         feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
 
-        response = self.session.put(self.URL + '/api/user/create/',
-                                    data=dumps(feature_json_copy), headers=self.headers)
+        response = self.session.post(self.URL + '/api/user/create/',
+                                     data=dumps(feature_json_copy), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -155,7 +155,7 @@ class UtilTester:
         # cryptography the password before to send
         feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
 
-        response = self.session.put(self.URL + '/api/user/create/',
+        response = self.session.post(self.URL + '/api/user/create/',
                                     data=dumps(feature_json_copy), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
@@ -206,8 +206,8 @@ class UtilTester:
     def api_layer_create(self, feature_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.put(self.URL + '/api/layer/create/{0}'.format(arguments),
-                                    data=dumps(feature_json), headers=self.headers)
+        response = self.session.post(self.URL + '/api/layer/create/{0}'.format(arguments),
+                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -246,13 +246,13 @@ class UtilTester:
     # layer errors - create
 
     def api_layer_create_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/layer/create/',
+        response = self.session.post(self.URL + '/api/layer/create/',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_create_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/layer/create/',
+        response = self.session.post(self.URL + '/api/layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
@@ -301,7 +301,7 @@ class UtilTester:
     def api_user_layer_create(self, feature_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.put(self.URL + '/api/user_layer/create/{0}'.format(arguments),
+        response = self.session.post(self.URL + '/api/user_layer/create/{0}'.format(arguments),
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -335,19 +335,19 @@ class UtilTester:
     # user layer errors - create
 
     def api_user_layer_create_error_400_bad_request(self, feature_json):
-        response = self.session.put(self.URL + '/api/user_layer/create/',
+        response = self.session.post(self.URL + '/api/user_layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_user_layer_create_error_401_unauthorized_without_authorization_header(self, feature_json):
-        response = self.session.put(self.URL + '/api/user_layer/create/',
+        response = self.session.post(self.URL + '/api/user_layer/create/',
                                     data=dumps(feature_json))
 
         self.ut_self.assertEqual(response.status_code, 401)
 
     def api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self, feature_json):
-        response = self.session.put(self.URL + '/api/user_layer/create/',
+        response = self.session.post(self.URL + '/api/user_layer/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
@@ -406,7 +406,7 @@ class UtilTester:
     def api_reference_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.put(self.URL + '/api/reference/create/{0}'.format(arguments),
+        response = self.session.post(self.URL + '/api/reference/create/{0}'.format(arguments),
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -446,13 +446,13 @@ class UtilTester:
     # reference errors - create
 
     def api_reference_create_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/reference/create/',
+        response = self.session.post(self.URL + '/api/reference/create/',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_reference_create_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/reference/create/',
+        response = self.session.post(self.URL + '/api/reference/create/',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
@@ -623,7 +623,7 @@ class UtilTester:
     #     self.ut_self.assertEqual(expected, resulted)
 
     # def api_feature_table_create(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/feature_table/create/',
+    #     response = self.session.post(self.URL + '/api/feature_table/create/',
     #                                 data=dumps(feature_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
@@ -633,7 +633,7 @@ class UtilTester:
         # self.ut_self.assertIn("id", resulted)
         # self.ut_self.assertNotEqual(resulted["id"], -1)
         #
-        # # put the id received in the original JSON of changeset
+        # # post the id received in the original JSON of changeset
         # feature_json["properties"]["id"] = resulted["id"]
         #
         # return feature_json
@@ -678,7 +678,7 @@ class UtilTester:
     #
     # def api_changeset_create(self, feature_json):
     #     # do a GET call, sending a changeset to add in DB
-    #     response = self.session.put(self.URL + '/api/changeset/create/',
+    #     response = self.session.post(self.URL + '/api/changeset/create/',
     #                                 data=dumps(feature_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
@@ -688,13 +688,13 @@ class UtilTester:
     #     self.ut_self.assertIn("id", resulted)
     #     self.ut_self.assertNotEqual(resulted["id"], -1)
     #
-    #     # put the id received in the original JSON of changeset
+    #     # post the id received in the original JSON of changeset
     #     feature_json["properties"]["id"] = resulted["id"]
     #
     #     return feature_json
     #
     # def api_changeset_close(self, feature_id):
-    #     response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
     #                                 headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
@@ -725,7 +725,7 @@ class UtilTester:
     #
     # def api_changeset_create_error_403_forbidden(self, feature_json):
     #     # do a GET call, sending a changeset to add in DB
-    #     response = self.session.put(self.URL + '/api/changeset/create/',
+    #     response = self.session.post(self.URL + '/api/changeset/create/',
     #                                 data=dumps(feature_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 403)
@@ -733,19 +733,19 @@ class UtilTester:
     # # changeset errors - close
     #
     # def api_changeset_close_error_400_bad_request(self, feature_id):
-    #     response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
     #                                 headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 400)
     #
     # def api_changeset_close_error_403_forbidden(self, feature_id):
-    #     response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
     #                                 headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 403)
     #
     # def api_changeset_close_error_404_not_found(self, feature_id):
-    #     response = self.session.put(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
     #                                 headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 404)
@@ -784,7 +784,7 @@ class UtilTester:
     #     self.ut_self.assertEqual(expected, resulted)
     #
     # def api_notification_create(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/notification/create/',
+    #     response = self.session.post(self.URL + '/api/notification/create/',
     #                                 data=dumps(feature_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
@@ -824,7 +824,7 @@ class UtilTester:
     # # notification errors - create
     #
     # def api_notification_create_error_403_forbidden(self, feature_json):
-    #     response = self.session.put(self.URL + '/api/notification/create/',
+    #     response = self.session.post(self.URL + '/api/notification/create/',
     #                                 data=dumps(feature_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 403)
@@ -870,8 +870,8 @@ class UtilTester:
     #     multi_element = element_json["features"][0]["geometry"]["type"]
     #     element = by_multi_element_get_url_name(multi_element)
     #
-    #     # do a PUT call, sending a node to add in DB
-    #     response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
+    #     # do a post call, sending a node to add in DB
+    #     response = self.session.post(self.URL + '/api/{0}/create/'.format(element),
     #                                 data=dumps(element_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
@@ -941,8 +941,8 @@ class UtilTester:
     #     multi_element = element_json["features"][0]["geometry"]["type"]
     #     element = by_multi_element_get_url_name(multi_element)
     #
-    #     # do a PUT call, sending a node to add in DB
-    #     response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
+    #     # do a post call, sending a node to add in DB
+    #     response = self.session.post(self.URL + '/api/{0}/create/'.format(element),
     #                                 data=dumps(element_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 403)
@@ -951,8 +951,8 @@ class UtilTester:
     #     multi_element = element_json["features"][0]["geometry"]["type"]
     #     element = by_multi_element_get_url_name(multi_element)
     #
-    #     # do a PUT call, sending a node to add in DB
-    #     response = self.session.put(self.URL + '/api/{0}/create/'.format(element),
+    #     # do a post call, sending a node to add in DB
+    #     response = self.session.post(self.URL + '/api/{0}/create/'.format(element),
     #                                 data=dumps(element_json), headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 409)

@@ -23,7 +23,7 @@ class APILayer(BaseHandlerLayer):
         self.get_method_api_feature()
 
     @auth_non_browser_based
-    def put(self, param=None):
+    def post(self, param=None):
         # self.put_method_api_layer(param)
         self.put_method_api_feature(param)
 
@@ -42,7 +42,7 @@ class APIUserLayer(BaseHandlerUserLayer):
         self.get_method_api_feature()
 
     @auth_non_browser_based
-    def put(self, param=None):
+    def post(self, param=None):
         self.put_method_api_feature(param)
 
     @auth_non_browser_based

@@ -35,12 +35,12 @@ This method gets users from DB. If you doesn't put any parameter, so will return
 - Notes:
 
 
-### PUT /api/user/create
+### POST /api/user/create
 
 This method create a new user described in a JSON.
 - Parameters:
 - Examples:
-     - Create a resource: ```PUT http://localhost:8888/api/user/create```
+     - Create a resource: ```POST http://localhost:8888/api/user/create```
 - Send: a JSON describing the resource. Example:
     ```javascript
     {

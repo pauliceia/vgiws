@@ -38,12 +38,12 @@ This method gets notifications from DB. If you doesn't put any parameter, so wil
 - Notes:
 
 
-### PUT /api/notification/create
+### POST /api/notification/create
 
 This method create a new notification described in a JSON.
 - Parameters:
 - Examples:
-     - Create a feature: ```PUT http://localhost:8888/api/notification/create```
+     - Create a feature: ```POST http://localhost:8888/api/notification/create```
 - Send: a JSON describing the feature. Example:
     ```javascript
     {
