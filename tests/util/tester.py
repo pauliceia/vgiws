@@ -501,8 +501,8 @@ class UtilTester:
     def api_keyword_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.put(self.URL + '/api/keyword/create/{0}'.format(arguments),
-                                    data=dumps(resource_json), headers=self.headers)
+        response = self.session.post(self.URL + '/api/keyword/create/{0}'.format(arguments),
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -541,14 +541,14 @@ class UtilTester:
     # keyword errors - create
 
     def api_keyword_create_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/keyword/create/',
-                                    data=dumps(resource_json), headers=self.headers)
+        response = self.session.post(self.URL + '/api/keyword/create/',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_keyword_create_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/keyword/create/',
-                                    data=dumps(feature_json), headers=self.headers)
+        response = self.session.post(self.URL + '/api/keyword/create/',
+                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 

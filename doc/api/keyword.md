@@ -37,7 +37,7 @@ This method gets keywords from DB. If you doesn't put any parameter, so it will 
 - Notes:
 
 
-### PUT /api/keyword/create/
+### POST /api/keyword/create/
 
 This method creates a new keyword described in a JSON.
 - Parameters:
