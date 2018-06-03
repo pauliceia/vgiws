@@ -222,11 +222,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     ##################################################
 
     @catch_generic_exception
-    def get_method_api_feature(self, *args):
+    def get_method_api_resource(self, *args):
         arguments = self.get_aguments()
 
         try:
-            result = self._get_feature(*args, **arguments)
+            result = self._get_resource(*args, **arguments)
         except TypeError as error:
             raise HTTPError(400, str(error))
         except DataError as error:
@@ -236,7 +236,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     ##################################################
@@ -244,35 +244,35 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     ##################################################
 
     @catch_generic_exception
-    def post_method_api_feature(self, *args):
+    def post_method_api_resource(self, *args):
         param = args[0]
 
         # remove the first argument ('param'), because it is not necessary anymore
         # args = args[1:]  # get the second argument and so on
 
         if param == "create":
-            self.put_method_api_feature_create()
+            self.put_method_api_resource_create()
         # elif param == "close":
-        #     self._close_feature(*args)
+        #     self._close_resource(*args)
         # elif param == "request":
-        #     self._request_feature(*args)
+        #     self._request_resource(*args)
         # elif param == "accept":
-        #     self._accept_feature(*args)
+        #     self._accept_resource(*args)
         else:
             raise HTTPError(404, "Invalid URL.")
 
     # create
 
-    def put_method_api_feature_create(self):
-        # get the JSON sent, to add in DB
-        feature_json = self.get_the_json_validated()
+    def put_method_api_resource_create(self):
+        # get the sent JSON, to add in DB
+        resource_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
         arguments = self.get_aguments()
 
         try:
-            json_with_id = self._create_feature(feature_json, current_user_id, **arguments)
+            json_with_id = self._create_resource(resource_json, current_user_id, **arguments)
 
-            # do commit after create a feature
+            # do commit after create a resource
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
@@ -280,42 +280,43 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         self.write(json_encode(json_with_id))
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
 
     # update
 
-    def put_method_api_feature_update(self, *args):
-        # get the JSON sent, to add in DB
-        feature_json = self.get_the_json_validated()
-        # current_user_id = self.get_current_user_id()
+    def put_method_api_resource_update(self, *args):
+        # get the sent JSON, to update in DB
+        resource_json = self.get_the_json_validated()
+        current_user_id = self.get_current_user_id()
+        arguments = self.get_aguments()
 
         try:
-            # json_with_id = self._create_feature(feature_json, current_user_id)
-            self._update_feature(feature_json)
+            # json_with_id = self._create_resource(resource_json, current_user_id)
+            self._update_resource(resource_json, current_user_id, **arguments)
 
-            # do commit after create a feature
+            # do commit after update a resource
             self.PGSQLConn.commit()
         except DataError as error:
-            raise HTTPError(500, "Problem when update a feature. Please, contact the administrator. " +
+            raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + ").")
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
 
     # close
 
-    # def _close_feature(self, *args, **kwargs):
+    # def _close_resource(self, *args, **kwargs):
     #     raise NotImplementedError
 
     # request
 
-    # def _request_feature(self, *args, **kwargs):
+    # def _request_resource(self, *args, **kwargs):
     #     raise NotImplementedError
 
     # accept
 
-    # def _accept_feature(self, *args, **kwargs):
+    # def _accept_resource(self, *args, **kwargs):
     #     raise NotImplementedError
 
     ##################################################
@@ -323,20 +324,20 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     ##################################################
 
     @catch_generic_exception
-    def delete_method_api_feature(self, *args):
+    def delete_method_api_resource(self, *args):
         current_user_id = self.get_current_user_id()
         arguments = self.get_aguments()
 
         try:
-            self._delete_feature(current_user_id, *args, **arguments)
+            self._delete_resource(current_user_id, *args, **arguments)
 
-            # do commit after delete the feature
+            # do commit after delete the resource
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + ").")
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         raise NotImplementedError
 
 
@@ -346,20 +347,20 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_user(feature_json)
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_user(resource_json)
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         self.is_current_user_an_administrator()
 
         user_id = args[0]
@@ -387,20 +388,20 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_layers(**kwargs)
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_layer(feature_json, current_user_id, **kwargs)
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         layer_id = args[0]
         self.can_current_user_delete_a_layer(current_user_id, layer_id)
 
@@ -432,25 +433,25 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_user_layers(**kwargs)
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
-        if "layer_id" not in feature_json["properties"]:
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        if "layer_id" not in resource_json["properties"]:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: layer_id)")
 
-        self.can_current_user_add_user_in_layer(current_user_id, feature_json["properties"]["layer_id"])
+        self.can_current_user_add_user_in_layer(current_user_id, resource_json["properties"]["layer_id"])
 
-        return self.PGSQLConn.create_user_layer(feature_json, **kwargs)
+        return self.PGSQLConn.create_user_layer(resource_json, **kwargs)
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         self.can_current_user_delete_user_in_layer(current_user_id, kwargs["layer_id"])
 
         self.PGSQLConn.delete_user_layer(**kwargs)
@@ -500,20 +501,20 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_references(**kwargs)
 
     # PUT
 
-    def _create_feature(self, resource_json, current_user_id, **kwargs):
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         reference_id = args[0]
         self.can_current_user_delete_a_reference(current_user_id, reference_id)
 
@@ -544,20 +545,20 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_keywords(**kwargs)
 
     # PUT
 
-    def _create_feature(self, resource_json, current_user_id, **kwargs):
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_keyword(resource_json, current_user_id, **kwargs)
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         keyword_id = args[0]
         self.can_current_user_delete_a_keyword(current_user_id, keyword_id)
 
@@ -590,20 +591,20 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
     # GET
 
-    def _get_feature(self, *args, **kwargs):
+    def _get_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # PUT
 
-    def _create_feature(self, feature_json, current_user_id, **kwargs):
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
 
-    def _update_feature(self, *args, **kwargs):
+    def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
 
-    def _delete_feature(self, current_user_id, *args, **kwargs):
+    def _delete_resource(self, current_user_id, *args, **kwargs):
         raise NotImplementedError
 
     # IMPORT
@@ -688,36 +689,36 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
 #
-#     def _get_feature(self, *args, **kwargs):
+#     def _get_resource(self, *args, **kwargs):
 #         # print("\n\n*args: ", args)
 #         # print("**kwargs: ", kwargs, "\n\n")
-#         return self.PGSQLConn.get_feature_table(**kwargs)
+#         return self.PGSQLConn.get_resource_table(**kwargs)
 #
-#     def _create_feature(self, feature_json, current_user_id, **kwargs):
+#     def _create_resource(self, resource_json, current_user_id, **kwargs):
 #         raise NotImplementedError
 #
-#     def _update_feature(self, *args, **kwargs):
+#     def _update_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 #
-#     def _delete_feature(self, *args, **kwargs):
+#     def _delete_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 
 
 # class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
 #
-#     def _get_feature(self, *args, **kwargs):
+#     def _get_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 #
 #     @catch_generic_exception
-#     def _create_feature(self):
+#     def _create_resource(self):
 #         # get the JSON sent, to add in DB
-#         feature_json = self.get_the_json_validated()
+#         resource_json = self.get_the_json_validated()
 #         current_user_id = self.get_current_user_id()
 #
 #         try:
-#             self.PGSQLConn.create_feature_table(feature_json, current_user_id)
+#             self.PGSQLConn.create_resource_table(resource_json, current_user_id)
 #
-#             # do commit after create a feature
+#             # do commit after create a resource
 #             self.PGSQLConn.commit()
 #         except DataError as error:
 #             # print("Error: ", error)
@@ -725,82 +726,67 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 #         except ProgrammingError as error:
 #             if error.pgcode == "42P07":
 #                 self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-#                 raise HTTPError(400, "Feature table already exist.")
+#                 raise HTTPError(400, "resource table already exist.")
 #             else:
 #                 raise error
 #
-#     def _update_feature(self, *args, **kwargs):
+#     def _update_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 #
-#     def _delete_feature(self, *args, **kwargs):
+#     def _delete_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
-#     def _get_feature(self, *args, **kwargs):
+#     def _get_resource(self, *args, **kwargs):
 #         return self.PGSQLConn.get_changesets(**kwargs)
 #
-#     def _create_feature(self, feature_json, current_user_id):
-#         return self.PGSQLConn.create_changeset(feature_json, current_user_id)
+#     def _create_resource(self, resource_json, current_user_id):
+#         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
 #
-#     def _update_feature(self, *args, **kwargs):
+#     def _update_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 #
-#     def _close_feature(self, *args, **kwargs):
+#     def _close_resource(self, *args, **kwargs):
 #         try:
 #             self.PGSQLConn.close_changeset(args[0])
 #         except DataError as error:
 #             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when close a feature. Please, contact the administrator.")
+#             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator.")
 #
-#     def _delete_feature(self, *args, **kwargs):
+#     def _delete_resource(self, *args, **kwargs):
 #         self.PGSQLConn.delete_changeset_in_db(*args)
-
-
-# class BaseHandlerNotification(BaseHandlerTemplateMethod):
-#
-#     def _get_feature(self, *args, **kwargs):
-#         return self.PGSQLConn.get_notification(**kwargs)
-#
-#     def _create_feature(self, feature_json, current_user_id):
-#         return self.PGSQLConn.create_notification(feature_json, current_user_id)
-#
-#     def _update_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_feature(self, *args, **kwargs):
-#         self.PGSQLConn.delete_notification_in_db(*args)
 
 
 # class BaseHandlerElement(BaseHandlerTemplateMethod):
 #
-#     def _get_feature(self, *args, **kwargs):
+#     def _get_resource(self, *args, **kwargs):
 #         return self.PGSQLConn.get_elements(args[0], **kwargs)
 #
-#     def _create_feature(self, feature_json, current_user_id):
+#     def _create_resource(self, resource_json, current_user_id):
 #         raise NotImplementedError
 #
 #     @catch_generic_exception
-#     def put_method_api_feature_create(self, *args):
+#     def put_method_api_resource_create(self, *args):
 #         element = args[0]
-#         feature_json = self.get_the_json_validated()
+#         resource_json = self.get_the_json_validated()
 #
-#         if not self.is_element_type_valid(element, feature_json):
+#         if not self.is_element_type_valid(element, resource_json):
 #             raise HTTPError(404, "Invalid URL.")
 #
 #         # current_user_id = self.get_current_user_id()
 #
-#         list_of_id_of_features_created = []
+#         list_of_id_of_resources_created = []
 #
 #         try:
-#             for feature in feature_json["features"]:
+#             for resource in resource_json["features"]:
 #                 # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-#                 feature["geometry"]["crs"] = feature_json["crs"]
+#                 resource["geometry"]["crs"] = resource_json["crs"]
 #
-#                 list_of_id_of_features_created.append(
+#                 list_of_id_of_resources_created.append(
 #                     # create_element returns the id of the element created
-#                     self.PGSQLConn.create_element(element, feature)
+#                     self.PGSQLConn.create_element(element, resource)
 #                 )
 #
 #             # send the elements created to DB
@@ -821,80 +807,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 #
 #         except DataError as error:
 #             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when create a feature. Please, contact the administrator.")
+#             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
 #
 #         # Default: self.set_header('Content-Type', 'application/json')
-#         self.write(json_encode(list_of_id_of_features_created))
+#         self.write(json_encode(list_of_id_of_resources_created))
 #
-#     def _update_feature(self, *args, **kwargs):
+#     def _update_resource(self, *args, **kwargs):
 #         raise NotImplementedError
 #
-#     def _delete_feature(self, *args, **kwargs):
+#     def _delete_resource(self, *args, **kwargs):
 #         self.PGSQLConn.delete_element_in_db(*args)
-
-
-# class BaseHandlerThemeTree(BaseHandlerTemplateMethod):
-#
-#     def _get_feature(self, *args, **kwargs):
-#         return self.Neo4JConn.get_theme_tree()
-#
-#     def _create_feature(self, feature_json, current_user_id):
-#         raise NotImplementedError
-#
-#     def _update_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_feature(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     # def get_method_api_theme(self, param):
-#     #     if param == "tree":
-#     #         self.get_method_api_theme_tree()
-#     #     # else:
-#     #     #     self.get_method_api_theme_other()
-#
-#     # def get_method_api_theme_tree(self):
-#     #     try:
-#     #         result = self.Neo4JConn.get_theme_tree()
-#     #     except DataError as error:
-#     #         # print("Error: ", error)
-#     #         raise HTTPError(500, "Problem when get the theme tree. Please, contact the administrator.")
-#     #     except exceptions.ConnectionError as error:
-#     #         # print("Error: ", error)
-#     #         raise HTTPError(503, "Connection refused. Please, contact the administrator.")
-#     #
-#     #     # Default: self.set_header('Content-Type', 'application/json')
-#     #     self.write(json_encode(result))
-#
-#     # def put_method_api_layer_create(self):
-#     #     # get the JSON sent, to add in DB
-#     #     layer_json = self.get_the_json_validated()
-#     #
-#     #     current_user_id = self.get_current_user_id()
-#     #
-#     #     try:
-#     #         json_with_id = self.PGSQLConn.create_layer(layer_json, current_user_id)
-#     #     except DataError as error:
-#     #         # print("Error: ", error)
-#     #         raise HTTPError(500, "Problem when create a layer. Please, contact the administrator.")
-#     #
-#     #     # Default: self.set_header('Content-Type', 'application/json')
-#     #     self.write(json_encode(json_with_id))
-#     #
-#     # def put_method_api_layer(self, param):
-#     #     # param on this case is "create" or "update"
-#     #     if param == "create":
-#     #         self.put_method_api_layer_create()
-#     #     elif param == "update":
-#     #         self.write(json_encode({"ok", 1}))
-#     #     else:
-#     #         raise HTTPError(404, "Invalid URL")
-#     #
-#     # def delete_method_api_layer(self, param):
-#     #     # param on this case is the id of element
-#     #     try:
-#     #         self.PGSQLConn.delete_layer_in_db(param)
-#     #     except DataError as error:
-#     #         # print("Error: ", error)
-#     #         raise HTTPError(500, "Problem when delete a layer. Please, contact the administrator.")
-
