@@ -110,7 +110,7 @@ class TestAPIKeyword(TestCase):
 
         self.tester.api_keyword(expected, keyword_id="1003")
 
-    def test_get_api_keyword_return_keyword_by_user_id(self):
+    def test_get_api_keyword_return_keyword_by_user_id_creator(self):
         expected = {
             'features': [
                 {

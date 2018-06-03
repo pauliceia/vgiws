@@ -5,8 +5,8 @@
 - [Import](import.md)
 - [Layer](layer.md)
 - [Reference](reference.md)
+- [Keyword](keyword.md)
 - [User](user.md)
-<!-- - [Theme](theme.md) -->
 <!-- - [Changeset](changeset.md) -->
 <!-- - [Element](element.md) -->
 <!-- - [Dynamic Attribute](dynamic_attribute.md) -->
