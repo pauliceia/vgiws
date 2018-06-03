@@ -206,15 +206,35 @@ class TestAPIKeyword(TestCase):
         self.tester.api_keyword(expected, name="As")
 
     # keyword - create and delete
-    """
+
     def test_api_keyword_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a keyword
+        ##################################################
+        # create a keyword with parent_id = None
+        ##################################################
         resource = {
-            'type': 'keyword',
-            'properties': {'description': 'ArticleA'}
+            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
+            'type': 'Keyword'
+        }
+        resource = self.tester.api_keyword_create(resource)
+
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["keyword_id"]
+
+        # remove the resource
+        self.tester.api_keyword_delete(resource_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+
+        ##################################################
+        # create a keyword with parent_id = 1003
+        ##################################################
+        resource = {
+            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
+            'type': 'Keyword'
         }
         resource = self.tester.api_keyword_create(resource)
 
@@ -229,7 +249,6 @@ class TestAPIKeyword(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 
 class TestAPIKeywordErrors(TestCase):
@@ -270,43 +289,50 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.api_keyword_error_404_not_found(user_id_creator="998")
 
     # keyword errors - create
-    """
-    def test_put_api_keyword_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a layer
-        resource = {
-            'type': 'keyword',
-            'properties': {'description': 'ArticleA'}
-        }
-        resource = self.tester.api_keyword_create(resource)
-
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        ##################################################
-        # try to insert the keyword again, raising the 400
-        ##################################################
-        self.tester.api_keyword_create_error_400_bad_request(resource)
-
-        # remove the resource after the tests
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    # def test_put_api_keyword_create_error_400_bad_request_attribute_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # create a layer
+    #     resource = {
+    #         'properties': {'name': 'newkeyword', 'parent_id': 1003},
+    #         'type': 'Keyword'
+    #     }
+    #     resource = self.tester.api_keyword_create(resource)
+    #
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["keyword_id"]
+    #
+    #     ##################################################
+    #     # try to insert the keyword again, raising the 400
+    #     ##################################################
+    #     self.tester.api_keyword_create_error_400_bad_request(resource)
+    #
+    #     # remove the resource after the tests
+    #     self.tester.api_keyword_delete(resource_id)
+    #
+    #     # it is not possible to find the resource that just deleted
+    #     self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     def test_put_api_keyword_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a layer (without description)
+        # try to create a layer (without name)
         resource = {
-            'type': 'keyword',
-            'properties': {}
+            'properties': {'parent_id': 1003},
+            'type': 'Keyword'
+        }
+        self.tester.api_keyword_create_error_400_bad_request(resource)
+
+        # try to create a layer (without parent_id)
+        resource = {
+            'properties': {'name': 'newkeyword'},
+            'type': 'Keyword'
         }
         self.tester.api_keyword_create_error_400_bad_request(resource)
 
@@ -314,14 +340,14 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.auth_logout()
 
     def test_put_api_keyword_create_error_401_unauthorized(self):
-        feature = {
-            'properties': {'description': 'BookA'},
-            'type': 'keyword'
+        resource = {
+            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
+            'type': 'Keyword'
         }
-        self.tester.api_keyword_create_error_401_unauthorized(feature)
+        self.tester.api_keyword_create_error_401_unauthorized(resource)
 
     # keyword errors - delete
-
+    """
     def test_delete_api_keyword_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)

@@ -839,6 +839,9 @@ class PGSQLConnection:
     def add_keyword_in_db(self, properties):
         p = properties
 
+        if p["parent_id"] is None:
+            p["parent_id"] = "NULL"
+
         query_text = """
             INSERT INTO keyword (name, parent_id, user_id_creator, created_at)
             VALUES ('{0}', {1}, {2}, LOCALTIMESTAMP) RETURNING keyword_id;
