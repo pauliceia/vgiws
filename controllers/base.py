@@ -190,15 +190,6 @@ class BaseHandler(RequestHandler):
 
         return arguments
 
-    # AUXILIAR FUNCTION
-
-    # def is_element_type_valid(self, element, element_json):
-    #     multi_element = element_json["features"][0]["geometry"]["type"]
-    #
-    #     return ((element == "point" and multi_element == "MultiPoint") or
-    #             (element == "line" and multi_element == "MultiLineString") or
-    #             (element == "polygon" and multi_element == "MultiPolygon"))
-
     def get_q_param_as_dict_from_str(self, str_query):
         str_query = str_query.strip()
 
@@ -262,7 +253,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(404, "Invalid URL.")
 
     # create
-
     def put_method_api_resource_create(self):
         # get the sent JSON, to add in DB
         resource_json = self.get_the_json_validated()
@@ -283,17 +273,32 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
 
-    # update
+    # close
+    # def _close_resource(self, *args, **kwargs):
+    #     raise NotImplementedError
 
-    def put_method_api_resource_update(self, *args):
+    # request
+    # def _request_resource(self, *args, **kwargs):
+    #     raise NotImplementedError
+
+    # accept
+    # def _accept_resource(self, *args, **kwargs):
+    #     raise NotImplementedError
+
+    ##################################################
+    # PUT METHOD
+    ##################################################
+
+    # update
+    @catch_generic_exception
+    def put_method_api_resource(self, *args):
         # get the sent JSON, to update in DB
         resource_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
         arguments = self.get_aguments()
 
         try:
-            # json_with_id = self._create_resource(resource_json, current_user_id)
-            self._update_resource(resource_json, current_user_id, **arguments)
+            self._put_resource(resource_json, current_user_id, **arguments)
 
             # do commit after update a resource
             self.PGSQLConn.commit()
@@ -301,23 +306,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + ").")
 
-    def _update_resource(self, resource_json, current_user_id, **kwargs):
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
-
-    # close
-
-    # def _close_resource(self, *args, **kwargs):
-    #     raise NotImplementedError
-
-    # request
-
-    # def _request_resource(self, *args, **kwargs):
-    #     raise NotImplementedError
-
-    # accept
-
-    # def _accept_resource(self, *args, **kwargs):
-    #     raise NotImplementedError
 
     ##################################################
     # DELETE METHOD
@@ -350,12 +340,14 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_users(**kwargs)
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_user(resource_json)
 
-    def _update_resource(self, *args, **kwargs):
+    # PUT
+
+    def _put_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
@@ -391,12 +383,14 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_layers(**kwargs)
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
-    def _update_resource(self, *args, **kwargs):
+    # PUT
+
+    def _put_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
@@ -436,7 +430,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_user_layers(**kwargs)
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         if "layer_id" not in resource_json["properties"]:
@@ -446,7 +440,9 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
         return self.PGSQLConn.create_user_layer(resource_json, **kwargs)
 
-    def _update_resource(self, *args, **kwargs):
+    # PUT
+
+    def _put_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
@@ -504,12 +500,14 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_references(**kwargs)
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
 
-    def _update_resource(self, *args, **kwargs):
+    # PUT
+
+    def _put_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
@@ -548,12 +546,14 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         return self.PGSQLConn.get_keywords(**kwargs)
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_keyword(resource_json, current_user_id, **kwargs)
 
-    def _update_resource(self, *args, **kwargs):
+    # PUT
+
+    def _put_resource(self, *args, **kwargs):
         raise NotImplementedError
 
     # DELETE
@@ -594,10 +594,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
     def _get_resource(self, *args, **kwargs):
         raise NotImplementedError
 
-    # PUT
+    # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
+
+    # PUT
 
     def _update_resource(self, *args, **kwargs):
         raise NotImplementedError
@@ -607,7 +609,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
     def _delete_resource(self, current_user_id, *args, **kwargs):
         raise NotImplementedError
 
-    # IMPORT
+    # POST - IMPORT
 
     def save_binary_file_in_folder(self, binary_file, folder_with_file_name):
         """

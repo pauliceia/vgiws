@@ -24,13 +24,11 @@ def catch_generic_exception(method):
 
         # all methods can raise a psycopg exception, so catch it
         except ProgrammingError as error:
-            # print(">>>> ", error)
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Psycopg2 error (psycopg2.ProgrammingError). Please, contact the administrator. " +
                                  "\nInformation: " + str(error) + "\npgcode: " + str(error.pgcode))
 
         except Error as error:
-            # print(">>>> ", dir(error))
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Psycopg2 error (psycopg2.Error). Please, contact the administrator. " +
                                  "\n Information: " + str(error) + "\npgcode: " + str(error.pgcode))
