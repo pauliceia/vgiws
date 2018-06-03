@@ -807,7 +807,8 @@ class PGSQLConnection:
                         'keyword_id',      keyword_id,
                         'name',            name,
                         'parent_id',       parent_id,
-                        'user_id_creator', user_id_creator
+                        'user_id_creator', user_id_creator,
+                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
                     )
                 ))
             ) AS row_to_json

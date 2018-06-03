@@ -98,21 +98,21 @@ DELETE FROM keyword;
 INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1001, 'generic', NULL, 1001, '2017-01-01');
     INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1002, 'event', 1001, 1001, '2017-01-01');
         -- event's children (1002)
-        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1003, 'crime', 1002, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1003, 'crime', 1002, 1002, '2017-01-01');
             -- crime's children (1003)
-            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1004, 'assalt', 1003, 1001, '2017-01-01');
-            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1005, 'robbery', 1003, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1004, 'assault', 1003, 1002, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1005, 'robbery', 1003, 1002, '2017-01-01');
 
         INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1010, 'disease', 1002, 1001, '2017-01-01');
 
     INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1020, 'object', 1001, 1001, '2017-01-01');
         -- object's children (1020)
-        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1021, 'building', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1021, 'building', 1020, 1003, '2017-01-01');
             -- building's children (1021)
-            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1022, 'school', 1021, 1001, '2017-01-01');
-            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1023, 'hospital', 1021, 1001, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1022, 'school', 1021, 1003, '2017-01-01');
+            INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1023, 'hospital', 1021, 1003, '2017-01-01');
 
-        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1030, 'cultural place', 1020, 1001, '2017-01-01');
+        INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1030, 'cultural place', 1020, 1003, '2017-01-01');
             -- cultural place's children (1030)
             INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) VALUES (1031, 'cinema', 1030, 1001, '2017-01-01');
 

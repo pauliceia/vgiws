@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-"""
+
 class TestAPIKeyword(TestCase):
 
     def setUp(self):
@@ -19,110 +19,194 @@ class TestAPIKeyword(TestCase):
 
     def test_get_api_keyword_return_all_keywords(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1002, 'name': 'crime', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1005, 'keyword_id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1007, 'keyword_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1003, 'name': 'robbery', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1005},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1050, 'description': 'BookA'}
+                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1002, 'keyword_id': 1051, 'description': 'ArticleB'}
+                    'properties': {'parent_id': 1001, 'name': 'object', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1003, 'keyword_id': 1052, 'description': 'ThesisC'}
+                    'properties': {'parent_id': 1020, 'name': 'building', 'user_id_creator': 1003,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1021},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1003, 'keyword_id': 1053, 'description': 'DissertationD'}
+                    'properties': {'parent_id': 1021, 'name': 'school', 'user_id_creator': 1003,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1022},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1021, 'name': 'hospital', 'user_id_creator': 1003,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1023},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1020, 'name': 'cultural place', 'user_id_creator': 1003,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1030},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1030, 'name': 'cinema', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1020, 'name': 'street', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1020, 'name': 'address', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
+                    'type': 'Keyword'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
         self.tester.api_keyword(expected)
 
     def test_get_api_keyword_return_keyword_by_keyword_id(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1001,
-                                   'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
-                }
-            ]
+                    'properties': {'parent_id': 1002, 'name': 'crime', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
+                    'type': 'Keyword'
+                },
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, keyword_id="1001")
+        self.tester.api_keyword(expected, keyword_id="1003")
 
     def test_get_api_keyword_return_keyword_by_user_id(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1001,
-                                   'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1002,
-                                   'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1050, 'description': 'BookA'}
+                    'properties': {'parent_id': 1001, 'name': 'object', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1030, 'name': 'cinema', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1020, 'name': 'street', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1020, 'name': 'address', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
+                    'type': 'Keyword'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, user_id="1001")
+        self.tester.api_keyword(expected, user_id_creator="1001")
 
-    def test_get_api_keyword_return_keyword_by_description(self):
+    def test_get_api_keyword_return_keyword_by_parent_id(self):
+        # expected = {
+        #     'features': [
+        #         {
+        #             'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
+        #                            'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
+        #             'type': 'Keyword'
+        #         }
+        #     ],
+        #     'type': 'FeatureCollection'
+        # }
+        #
+        # self.tester.api_keyword(expected, parent_id="None")
+
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1001, 'keyword_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
+                    'type': 'Keyword'
                 },
                 {
-                    'type': 'keyword',
-                    'properties': {'user_id': 1005, 'keyword_id': 1010,
-                                   'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'parent_id': 1003, 'name': 'robbery', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1005},
+                    'type': 'Keyword'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, description="marco")
+        self.tester.api_keyword(expected, parent_id="1003")
+
+    def test_get_api_keyword_return_keyword_by_name(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
+                    'type': 'Keyword'
+                },
+                {
+                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
+                    'type': 'Keyword'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_keyword(expected, name="As")
 
     # keyword - create and delete
-
+    """
     def test_api_keyword_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -145,7 +229,7 @@ class TestAPIKeyword(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 """
 class TestAPIKeywordErrors(TestCase):
