@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS keyword CASCADE ;
 
 CREATE TABLE IF NOT EXISTS keyword (
   keyword_id SERIAL ,
-  name TEXT NULL,
+  name TEXT NULL UNIQUE,
   created_at TIMESTAMP NULL,
   parent_id INT NULL,
   user_id_creator INT NOT NULL,

@@ -132,6 +132,11 @@ def remove_bad_lines_and_put_default_values(text):
         if "reference" in lines[i-2] and "description text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
+        # KEYWORD
+        # just change the 'name' of the 'keyword'
+        if "keyword" in lines[i-2] and "name text" in line_lower:
+            lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
+
     text = "\n".join(lines)
 
     return text
