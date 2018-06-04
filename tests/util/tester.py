@@ -370,6 +370,20 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    # user_layer errors - update
+
+    # def api_user_layer_update_error_400_bad_request(self, resource_json):
+    #     response = self.session.put(self.URL + '/api/user_layer',
+    #                                 data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 400)
+    #
+    # def api_user_layer_update_error_401_unauthorized(self, feature_json):
+    #     response = self.session.put(self.URL + '/api/user_layer',
+    #                                 data=dumps(feature_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 401)
+
     # user layer errors - delete
 
     def api_user_layer_delete_error_400_bad_request(self, **arguments):
@@ -481,6 +495,20 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 401)
 
+    # reference errors - update
+
+    # def api_reference_update_error_400_bad_request(self, resource_json):
+    #     response = self.session.put(self.URL + '/api/reference',
+    #                                 data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 400)
+    #
+    # def api_reference_update_error_401_unauthorized(self, feature_json):
+    #     response = self.session.put(self.URL + '/api/reference',
+    #                                 data=dumps(feature_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 401)
+
     # reference errors - delete
 
     def api_reference_delete_error_400_bad_request(self, feature_id):
@@ -591,6 +619,12 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_keyword_update_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/keyword',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_keyword_update_error_403_forbidden(self, feature_json):
         response = self.session.put(self.URL + '/api/keyword',
                                     data=dumps(feature_json), headers=self.headers)
 
