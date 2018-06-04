@@ -65,7 +65,28 @@ This method creates a new keyword described in a JSON.
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- - PUT /api/layer/update -->
+### PUT /api/keyword
+
+This method updates a keyword described in a JSON.
+- Parameters:
+- Examples:
+    - Update a keyword: ```PUT http://localhost:8888/api/keyword```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'keyword_id': 1001, 'name': 'keyword', 'parent_id': 1002},
+        'type': 'Keyword'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Attribute already exists.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
 
 
 ### DELETE /api/keyword/#id

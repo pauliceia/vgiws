@@ -364,6 +364,64 @@ class TestAPIKeywordErrors(TestCase):
         }
         self.tester.api_keyword_create_error_401_unauthorized(resource)
 
+    # keyword errors - update
+
+    # def test_put_api_keyword_update_error_400_bad_request_attribute_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # create a layer
+    #     resource = {
+    #         'properties': {'name': 'newkeyword', 'parent_id': 1003},
+    #         'type': 'Keyword'
+    #     }
+    #     resource = self.tester.api_keyword_create(resource)
+    #
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["keyword_id"]
+    #
+    #     ##################################################
+    #     # try to insert the keyword again, raising the 400
+    #     ##################################################
+    #     self.tester.api_keyword_create_error_400_bad_request(resource)
+    #
+    #     # remove the resource after the tests
+    #     self.tester.api_keyword_delete(resource_id)
+    #
+    #     # it is not possible to find the resource that just deleted
+    #     self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+
+    # def test_put_api_keyword_update_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # try to create a layer (without name)
+    #     resource = {
+    #         'properties': {'parent_id': 1003},
+    #         'type': 'Keyword'
+    #     }
+    #     self.tester.api_keyword_create_error_400_bad_request(resource)
+    #
+    #     # try to create a layer (without parent_id)
+    #     resource = {
+    #         'properties': {'name': 'newkeyword'},
+    #         'type': 'Keyword'
+    #     }
+    #     self.tester.api_keyword_create_error_400_bad_request(resource)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+
+    def test_put_api_keyword_update_error_401_unauthorized(self):
+        resource = {
+            'properties': {'keyword_id': 1001, 'name': 'newkeyword', 'parent_id': 1003},
+            'type': 'Keyword'
+        }
+        self.tester.api_keyword_update_error_401_unauthorized(resource)
+
     # keyword errors - delete
 
     def test_delete_api_keyword_error_400_bad_request(self):
