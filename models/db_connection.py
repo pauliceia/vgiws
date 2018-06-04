@@ -39,7 +39,8 @@ from psycopg2.extras import RealDictCursor
 
 from modules.design_pattern import Singleton
 
-from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__
+from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__, \
+                                    __GEOSERVER_CONNECTION_SETTINGS__, __DEBUG_GEOSERVER_CONNECTION_SETTINGS__
 
 from .util import *
 
@@ -102,13 +103,20 @@ class PGSQLConnection:
         if self.__ARGS__["DEBUG_MODE"]:
             self.__DO_CONNECTION__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
             self.__DB_CONNECTION__ = __DEBUG_PGSQL_CONNECTION_SETTINGS__
+            self.__GEOSERVER_CONNECTION__ = __DEBUG_GEOSERVER_CONNECTION_SETTINGS__
         else:
             self.__DO_CONNECTION__(__PGSQL_CONNECTION_SETTINGS__)
             self.__DB_CONNECTION__ = __PGSQL_CONNECTION_SETTINGS__
+            self.__GEOSERVER_CONNECTION__ = __GEOSERVER_CONNECTION_SETTINGS__
 
         # cursor_factory=RealDictCursor means that the "row" of the table will be
         # represented by a dictionary in python
         self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
+
+        # create a browser simulator to connect with geoserver
+        self.__SESSION__ = Session()
+        self.__URL_GEOSERVER__ = "http://{0}:{1}".format(self.__GEOSERVER_CONNECTION__["HOSTNAME"],
+                                                         self.__GEOSERVER_CONNECTION__["PORT"])
 
     def __DO_CONNECTION__(self, __connection_settings__):
         """
@@ -204,6 +212,45 @@ class PGSQLConnection:
             self.commit()
 
         return results_of_query
+
+    ################################################################################
+    # GEOSERVER
+    ################################################################################
+
+    def get_layers_from_geoserver(self, f_table_name):
+        response = self.__SESSION__.get(self.__URL_GEOSERVER__ + '/layers/{0}/{1}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                          self.__GEOSERVER_CONNECTION__["DATASTORE"]))
+
+        if response.status_code == 404:
+            raise HTTPError(404, str(response))
+        elif response.status_code == 500:
+            raise HTTPError(500, str(response))
+
+    def publish_feature_table_in_geoserver(self, f_table_name):
+        request_body = {
+            "workspace": self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+            "datastore": self.__GEOSERVER_CONNECTION__["DATASTORE"],
+            "layer": f_table_name,
+            "description": "Description",
+            "projection": "EPSG: 4326"
+        }
+
+        response = self.__SESSION__.post(self.__URL_GEOSERVER__ + '/layer/publish', data=request_body)
+
+        if response.status_code == 404:
+            raise HTTPError(404, str(response))
+        elif response.status_code == 500:
+            raise HTTPError(500, str(response))
+
+    def unpublish_feature_table_in_geoserver(self, f_table_name):
+        response = self.__SESSION__.delete(self.__URL_GEOSERVER__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                                       self.__GEOSERVER_CONNECTION__["DATASTORE"],
+                                                                                                       f_table_name))
+
+        if response.status_code == 404:
+            raise HTTPError(404, str(response))
+        elif response.status_code == 500:
+            raise HTTPError(500, str(response))
 
     ################################################################################
     # LAYER

@@ -11,6 +11,7 @@ from os import makedirs
 from os.path import exists
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile
+from requests import Session
 
 from psycopg2._psycopg import DataError
 
@@ -687,6 +688,8 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+
+
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
