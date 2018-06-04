@@ -554,8 +554,11 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        # keyword_id = resource_json["properties"]["keyword_id"]
-        # self.can_current_user_update_or_delete_a_keyword(current_user_id, keyword_id)
+        if "keyword_id" not in resource_json["properties"]:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: keyword_id)")
+
+        keyword_id = resource_json["properties"]["keyword_id"]
+        self.can_current_user_update_or_delete_a_keyword(current_user_id, keyword_id)
 
         return self.PGSQLConn.update_keyword(resource_json, current_user_id, **kwargs)
 
