@@ -554,8 +554,8 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _put_resource(self, *args, **kwargs):
-        raise NotImplementedError
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.update_keyword(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
@@ -689,7 +689,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-
+        # self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):

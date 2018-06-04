@@ -516,6 +516,12 @@ class UtilTester:
 
         return resource_json
 
+    def api_keyword_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/keyword/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
     def api_keyword_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
                                        headers=self.headers)

@@ -924,6 +924,40 @@ class PGSQLConnection:
 
         return id_in_json
 
+    def update_keyword_in_db(self, properties):
+        p = properties
+
+        if p["parent_id"] is None:
+            p["parent_id"] = "NULL"
+
+        query_text = """
+            UPDATE keyword SET name = '{1}', parent_id = {2}, user_id_creator = {3}
+            WHERE keyword_id={0};
+        """.format(p["keyword_id"], p["name"], p["parent_id"], p["user_id_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_keyword(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        try:
+            # add the reference in db and get the id of it
+            self.update_keyword_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
     def delete_keyword_in_db(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")

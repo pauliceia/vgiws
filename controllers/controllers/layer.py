@@ -26,6 +26,10 @@ class APILayer(BaseHandlerLayer):
         self.post_method_api_resource(param)
 
     @auth_non_browser_based
+    def put(self, param=None):
+        self.put_method_api_resource(param)
+
+    @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_resource(param)
 
@@ -42,6 +46,10 @@ class APIUserLayer(BaseHandlerUserLayer):
     @auth_non_browser_based
     def post(self, param=None):
         self.post_method_api_resource(param)
+
+    @auth_non_browser_based
+    def put(self, param=None):
+        self.put_method_api_resource(param)
 
     @auth_non_browser_based
     def delete(self, param=None):
