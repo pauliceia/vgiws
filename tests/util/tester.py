@@ -628,7 +628,7 @@ class UtilTester:
         response = self.session.put(self.URL + '/api/keyword',
                                     data=dumps(feature_json), headers=self.headers)
 
-        self.ut_self.assertEqual(response.status_code, 401)
+        self.ut_self.assertEqual(response.status_code, 403)
 
     # keyword errors - delete
 

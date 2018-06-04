@@ -454,6 +454,48 @@ class TestAPIKeywordErrors(TestCase):
         }
         self.tester.api_keyword_update_error_401_unauthorized(resource)
 
+    def test_put_api_keyword_update_error_403_forbidden_user_forbidden_to_update(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        ##################################################
+        # create a keyword with parent_id = None
+        ##################################################
+        resource = {
+            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
+            'type': 'Keyword'
+        }
+        resource = self.tester.api_keyword_create(resource)
+
+        # logout with rodrigo and login with admin
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        ##################################################
+        # update the keyword
+        ##################################################
+        resource["properties"]["name"] = 'nova_keyword'
+        self.tester.api_keyword_update_error_403_forbidden(resource)
+
+        # logout with admin and login with rodrigo again
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        ##################################################
+        # remove the keyword
+        ##################################################
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["keyword_id"]
+
+        # remove the resource
+        self.tester.api_keyword_delete(resource_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # keyword errors - delete
 
     def test_delete_api_keyword_error_400_bad_request(self):
