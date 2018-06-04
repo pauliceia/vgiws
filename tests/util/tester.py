@@ -124,6 +124,12 @@ class UtilTester:
 
         return feature_json
 
+    def api_user_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/user/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
     def api_user_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
                                        headers=self.headers)
@@ -221,6 +227,12 @@ class UtilTester:
 
         return feature_json
 
+    def api_layer_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
     def api_layer_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
                                        headers=self.headers)
@@ -307,6 +319,12 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
         # resulted = loads(response.text)  # convert string to dict/JSON
+
+    def api_user_layer_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/user_layer/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     def api_user_layer_delete(self, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -420,6 +438,12 @@ class UtilTester:
         resource_json["properties"]["reference_id"] = resulted["reference_id"]
 
         return resource_json
+
+    def api_reference_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/reference/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     def api_reference_delete(self, feature_id):
         response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
