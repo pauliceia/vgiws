@@ -159,6 +159,29 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, f_table_name="layer_1003")
 
+    def test_get_api_layer_return_layer_by_keyword_id(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
+                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                                   'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
+                                   'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
+                    'type': 'Layer'
+                },
+                {
+                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
+                                   'name': 'Streets in 1930', 'reference': [1010],
+                                   'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
+                                   'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
+                    'type': 'Layer'
+                }
+            ]
+        }
+
+        self.tester.api_layer(expected, keyword_id="1001")
+
     # layer - create and delete
 
     def test_api_layer_create_and_delete(self):
@@ -400,6 +423,7 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

@@ -10,11 +10,13 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
     - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
     - is_published (optional): it is a boolean that indicates if a layer is published or not (e.g. 'TRUE' or 'FALSE');
     - f_table_name (optional): the name of the table that is a text (e.g. '_1005_layer_1003').
+    - keyword_id (optional): the id of a keyword that is a positive integer not null (e.g. 1, 2, 3, ...);
 - Examples:
      - Get all layers: http://localhost:8888/api/layer/
      - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
      - Get layers by is_published: http://localhost:8888/api/layer/?is_published=TRUE
      - Get one layer by f_table_name: http://localhost:8888/api/layer/?f_table_name=layer_1003
+     - Get layers by keyword id: http://localhost:8888/api/layer/?keyword_id=1001
 - Send (in Body):
 - Send (in Header):
 - Response: a JSON that contains the resources selected. Example:

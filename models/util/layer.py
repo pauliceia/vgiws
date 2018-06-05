@@ -6,6 +6,7 @@ def get_subquery_layer_table(**kwargs):
     # DEFAULT WHERE
     # by default, get all results that are visible (that exist)
     # conditions_of_where = ["removed_at is NULL"]  # visible=True
+    layer_keyword_subquery = ""
     conditions_of_where = []  # visible=True
 
     # conditions of WHERE CLAUSE
@@ -14,9 +15,6 @@ def get_subquery_layer_table(**kwargs):
 
     if "f_table_name" in kwargs and kwargs["f_table_name"] is not None:
         conditions_of_where.append("f_table_name = '{0}'".format(kwargs["f_table_name"]))
-
-    # if "user_id_author" in kwargs and kwargs["user_id_author"] is not None:
-    #     conditions_of_where.append("fk_user_id_author = {0}".format(kwargs["user_id_author"]))
 
     if "is_published" in kwargs and kwargs["is_published"] is not None:
         conditions_of_where.append("is_published = {0}".format(kwargs["is_published"]))
@@ -28,12 +26,31 @@ def get_subquery_layer_table(**kwargs):
     if conditions_of_where:
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
-    # default get all features
-    subquery_table = """
-        (
-            SELECT * FROM layer {0} ORDER BY layer_id
-        ) AS layer
-    """.format(where_clause)
+    # if is searching by keyword_id, so do a subquery with layer_keyword, putting the
+    # keyword_id and the where_clause...
+    if "keyword_id" in kwargs and kwargs["keyword_id"] is not None:
+        subquery_table = """        
+            (
+                SELECT * FROM
+                (
+                    SELECT layer_id as lk_layer_id, keyword_id 
+                    FROM layer_keyword WHERE keyword_id = {0}
+                ) lk
+                LEFT JOIN layer l
+                ON lk.lk_layer_id = l.layer_id
+                {1}
+                ORDER BY l.layer_id
+            ) AS layer
+        """.format(kwargs["keyword_id"], where_clause)
+
+    # ... else do a basic SELECT
+    else:
+        # default get all features
+        subquery_table = """
+            (
+                SELECT * FROM layer {0} ORDER BY layer_id
+            ) AS layer
+        """.format(where_clause)
 
     return subquery_table
 

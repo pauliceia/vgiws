@@ -256,13 +256,13 @@ class PGSQLConnection:
     # LAYER
     ################################################################################
 
-    def get_layers(self, layer_id=None, f_table_name=None, is_published=None):
+    def get_layers(self, layer_id=None, f_table_name=None, is_published=None, keyword_id=None):
         # the id have to be a int
-        if is_a_invalid_id(layer_id):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
             raise HTTPError(400, "Invalid parameter.")
 
         subquery = get_subquery_layer_table(layer_id=layer_id, f_table_name=f_table_name,
-                                            is_published=is_published)
+                                            is_published=is_published, keyword_id=keyword_id)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -280,7 +280,7 @@ class PGSQLConnection:
                         'is_published',         is_published,
                         'user_id_published_by', user_id_published_by,
                         'reference',            reference_.jsontags,
-                        'keyword',                keyword.jsontags
+                        'keyword',              keyword.jsontags
                     )
                 ))
             ) AS row_to_json
@@ -291,14 +291,11 @@ class PGSQLConnection:
                 SELECT json_agg(reference_id) AS jsontags 
                 FROM 
                 (
-                    -- (2) get the references of some resource
-                    SELECT r.reference_id
-                    FROM reference r, 
-                    (
-                        SELECT layer_id, reference_id FROM layer_reference WHERE layer_id = layer.layer_id
-                    ) lr
-                    WHERE r.reference_id = lr.reference_id
-                    ORDER BY r.reference_id
+                    -- (2) get the references of some resource                    
+                    SELECT reference_id 
+                    FROM layer_reference 
+                    WHERE layer_id = layer.layer_id                    
+                    ORDER BY reference_id
                 ) subquery
             ) AS reference_
             CROSS JOIN LATERAL (                
