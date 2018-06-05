@@ -1665,16 +1665,16 @@ class PGSQLConnection:
     #         raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
-    # user
+    # USER
     ################################################################################
 
-    def get_users(self, user_id=None, email=None, password=None, name=None):
+    def get_users(self, user_id=None, username=None, name=None, email=None, password=None):
         # the id have to be a int
         if is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_user_table(user_id=user_id, email=email, password=password,
-                                           name=name)
+        subquery = get_subquery_user_table(user_id=user_id, username=username, name=name,
+                                           email=email, password=password)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """

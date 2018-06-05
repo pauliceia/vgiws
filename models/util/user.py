@@ -4,8 +4,7 @@
 
 def get_subquery_user_table(**kwargs):
     # DEFAULT WHERE
-    # by default, get all results that are visible (that exist)
-    # conditions_of_where = ["removed_at is NULL"]  # visible=TRUE
+    # by default, get all results
     conditions_of_where = []
 
     # conditions of WHERE CLAUSE
@@ -18,6 +17,9 @@ def get_subquery_user_table(**kwargs):
         # if put email and password, so they are trying do a login
         if "password" in kwargs and kwargs["password"] is not None:
             conditions_of_where.append("password = '{0}'".format(kwargs["password"]))
+
+    if "username" in kwargs and kwargs["username"] is not None:
+        conditions_of_where.append("username = '{0}'".format(kwargs["username"]))
 
     # case insensitive query
     if "name" in kwargs and kwargs["name"] is not None:

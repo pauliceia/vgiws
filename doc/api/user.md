@@ -7,10 +7,14 @@ This method gets users from DB. If you doesn't put any parameter, so will return
 - Parameters:
     - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
     - name (optional): a text with a name (e.g 'José').
+    - email (optional): a text with a email (e.g 'joao@mail.com').
+    - username (optional): a text with a username (e.g 'jose').
 - Examples:
     - Get all users: http://localhost:8888/api/user/
     - Get one user by id: http://localhost:8888/api/user/?user_id=1002
     - Get users by name: http://localhost:8888/api/user/?name=Joao
+    - Get user by email: http://localhost:8888/api/user/?email=joao@mail.com
+    - Get user by username: http://localhost:8888/api/user/?username=jose
 - Send:
 - Response: a JSON that contains the selected resources. Example:
     ```javascript

@@ -112,7 +112,7 @@ class TestAPIUser(TestCase):
 
         self.tester.api_user(expected, user_id="1002")
 
-    def test_get_api_user_return_all_users_by_name(self):
+    def test_get_api_user_return_users_by_name(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -144,6 +144,40 @@ class TestAPIUser(TestCase):
         }
 
         self.tester.api_user(expected, name="êL")
+
+    def test_get_api_user_return_users_by_email(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
+                                   'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
+                                   'name': 'Rafael', 'is_the_admin': False, 'can_add_layer': True,
+                                   'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
+                                   'is_email_valid': True}
+                }
+            ]
+        }
+
+        self.tester.api_user(expected, email="rafael@admin.com")
+
+    def test_get_api_user_return_users_by_username(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'User',
+                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                                   'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
+                                   'name': 'Miguel', 'is_the_admin': True, 'can_add_layer': True,
+                                   'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
+                                   'is_email_valid': False}
+                }
+            ]
+        }
+
+        self.tester.api_user(expected, username="miguel")
 
     # user - create and delete
 
