@@ -207,66 +207,67 @@ class TestAPIKeyword(TestCase):
 
     # keyword - create, update and delete
 
-    def test_api_keyword_create_update_and_delete(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # create a keyword with parent_id = None
-        ##################################################
-        resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
-            'type': 'Keyword'
-        }
-        resource = self.tester.api_keyword_create(resource)
-
-        ##################################################
-        # update the keyword
-        ##################################################
-        resource["properties"]["name"] = 'nova_keyword'
-        self.tester.api_keyword_update(resource)
-
-        ##################################################
-        # remove the keyword
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        # remove the resource
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
-
-        ##################################################
-        # create a keyword with parent_id = 1003
-        ##################################################
-        resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
-            'type': 'Keyword'
-        }
-        resource = self.tester.api_keyword_create(resource)
-
-        ##################################################
-        # update the keyword
-        ##################################################
-        resource["properties"]["parent_id"] = 1004
-        self.tester.api_keyword_update(resource)
-
-        ##################################################
-        # remove the keyword
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        # remove the resource
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    # user create/update/delete his/her keyword (it is not possible, because just admin can update/delete keywords
+    # def test_api_keyword_create_update_and_delete(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rafael@admin.com", "rafael")
+    #
+    #     ##################################################
+    #     # create a keyword with parent_id = None
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
+    #         'type': 'Keyword'
+    #     }
+    #     resource = self.tester.api_keyword_create(resource)
+    #
+    #     ##################################################
+    #     # update the keyword
+    #     ##################################################
+    #     resource["properties"]["name"] = 'nova_keyword'
+    #     self.tester.api_keyword_update(resource)
+    #
+    #     ##################################################
+    #     # remove the keyword
+    #     ##################################################
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["keyword_id"]
+    #
+    #     # remove the resource
+    #     self.tester.api_keyword_delete(resource_id)
+    #
+    #     # it is not possible to find the resource that just deleted
+    #     self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+    #
+    #     ##################################################
+    #     # create a keyword with parent_id = 1003
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
+    #         'type': 'Keyword'
+    #     }
+    #     resource = self.tester.api_keyword_create(resource)
+    #
+    #     ##################################################
+    #     # update the keyword
+    #     ##################################################
+    #     resource["properties"]["parent_id"] = 1004
+    #     self.tester.api_keyword_update(resource)
+    #
+    #     ##################################################
+    #     # remove the keyword
+    #     ##################################################
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["keyword_id"]
+    #
+    #     # remove the resource
+    #     self.tester.api_keyword_delete(resource_id)
+    #
+    #     # it is not possible to find the resource that just deleted
+    #     self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     def test_api_keyword_create_but_update_and_delete_with_admin_user(self):
         # DO LOGIN

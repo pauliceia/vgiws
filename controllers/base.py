@@ -600,14 +600,14 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         if self.is_current_user_an_administrator():
             return
 
-        keywords = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
-
-        # if the current user is the creator of the reference, so ok...
-        if keywords["features"][0]["properties"]['user_id_creator'] == current_user_id:
-            return
+        # keywords = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
+        #
+        # # if the current user is the creator of the reference, so ok...
+        # if keywords["features"][0]["properties"]['user_id_creator'] == current_user_id:
+        #     return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the keyword and the administrator are who can update/delete the keyword.")
+        raise HTTPError(403, "The administrator are who can update/delete the keyword.")
 
 
 # IMPORT
