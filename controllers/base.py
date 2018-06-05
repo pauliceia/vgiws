@@ -11,9 +11,8 @@ from os import makedirs
 from os.path import exists
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile
-from requests import Session
 
-from psycopg2._psycopg import DataError
+from psycopg2 import DataError
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
