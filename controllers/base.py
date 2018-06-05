@@ -514,8 +514,14 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _put_resource(self, *args, **kwargs):
-        raise NotImplementedError
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        if "reference_id" not in resource_json["properties"]:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference_id)")
+
+        reference_id = resource_json["properties"]["reference_id"]
+        self.can_current_user_update_or_delete(current_user_id, reference_id)
+
+        return self.PGSQLConn.update_reference(resource_json, current_user_id, **kwargs)
 
     # DELETE
 

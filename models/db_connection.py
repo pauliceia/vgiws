@@ -1033,6 +1033,37 @@ class PGSQLConnection:
 
         return id_in_json
 
+    def update_reference_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            UPDATE reference SET description = '{1}', user_id_creator = {2}
+            WHERE reference_id={0};
+        """.format(p["reference_id"], p["description"], p["user_id_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_reference(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        try:
+            # add the reference in db and get the id of it
+            self.update_reference_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
     def delete_reference_in_db(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
