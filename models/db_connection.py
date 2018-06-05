@@ -450,6 +450,27 @@ class PGSQLConnection:
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
+        # 1) delete all users in layer
+        self.delete_user_layer(layer_id=resource_id)
+
+        try:
+            # 2) delete all keywords in layer
+            self.delete_layer_keyword(layer_id=resource_id)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            #   error 404 is expected, because when delete a layer, may exist a layer without keyword
+
+        try:
+            # 3) delete all references in layer
+            self.delete_layer_reference(layer_id=resource_id)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            #   error 404 is expected, because when delete a layer, may exist a layer without reference
+
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=resource_id)
         f_table_name = layer["features"][0]["properties"]["f_table_name"]
@@ -715,9 +736,210 @@ class PGSQLConnection:
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        query_text = """
-            DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
-        """.format(user_id, layer_id)
+        if user_id is None:
+            query_text = """
+                DELETE FROM user_layer WHERE layer_id={0};
+            """.format(layer_id)
+        else:
+            query_text = """
+                DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
+            """.format(user_id, layer_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
+    # LAYER KEYWORD
+    ################################################################################
+
+    # def get_layer_keywords(self, layer_id=None, user_id=None, is_the_creator=None):
+    #     # the id has to be an int
+    #     # if is_the_creator is not None and is not instance of boolean, so is invalid
+    #     if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id) or \
+    #             (is_the_creator is not None and not isinstance(is_the_creator, bool)):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_user_layer_table(layer_id=layer_id, user_id=user_id,
+    #                                              is_the_creator=is_the_creator)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'UserLayer',
+    #                 'properties', json_build_object(
+    #                     'layer_id',        layer_id,
+    #                     'user_id',         user_id,
+    #                     'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'is_the_creator',  is_the_creator
+    #                 )
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_layer_keyword_in_db(self, resource_json):
+    #     p = resource_json["properties"]
+    #
+    #     query_text = """
+    #         INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator)
+    #         VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+    #     """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    # def create_layer_keyword(self, resource_json):
+    #     try:
+    #         self.add_user_layer_in_db(resource_json)
+    #     except KeyError as error:
+    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+    #     except Error as error:
+    #         self.rollback()  # do a rollback to comeback in a safe state of DB
+    #         if error.pgcode == "23505":  # 23505 - unique_violation
+    #             error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+    #             raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+    #         else:
+    #             # if is other error, so raise it up
+    #             raise error
+
+    def delete_layer_keyword(self, layer_id=None, keyword_id=None):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        if keyword_id is None:
+            query_text = """
+                DELETE FROM layer_keyword WHERE layer_id={0};
+            """.format(layer_id)
+        else:
+            query_text = """
+                DELETE FROM layer_keyword WHERE layer_id={0} AND keyword_id={1};
+            """.format(layer_id, keyword_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
+    # LAYER REFERENCE
+    ################################################################################
+
+    # def get_layer_references(self, layer_id=None, user_id=None, is_the_creator=None):
+    #     # the id has to be an int
+    #     # if is_the_creator is not None and is not instance of boolean, so is invalid
+    #     if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id) or \
+    #             (is_the_creator is not None and not isinstance(is_the_creator, bool)):
+    #         raise HTTPError(400, "Invalid parameter.")
+    #
+    #     subquery = get_subquery_user_layer_table(layer_id=layer_id, user_id=user_id,
+    #                                              is_the_creator=is_the_creator)
+    #
+    #     # CREATE THE QUERY AND EXECUTE IT
+    #     query_text = """
+    #         SELECT jsonb_build_object(
+    #             'type', 'FeatureCollection',
+    #             'features',   jsonb_agg(jsonb_build_object(
+    #                 'type',       'UserLayer',
+    #                 'properties', json_build_object(
+    #                     'layer_id',        layer_id,
+    #                     'user_id',         user_id,
+    #                     'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+    #                     'is_the_creator',  is_the_creator
+    #                 )
+    #             ))
+    #         ) AS row_to_json
+    #         FROM
+    #         {0}
+    #     """.format(subquery)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     ######################################################################
+    #     # POST-PROCESSING
+    #     ######################################################################
+    #
+    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+    #     if "row_to_json" in results_of_query:
+    #         results_of_query = results_of_query["row_to_json"]
+    #
+    #     # if there is not feature
+    #     if results_of_query["features"] is None:
+    #         raise HTTPError(404, "Not found any feature.")
+    #
+    #     return results_of_query
+    #
+    # def add_layer_reference_in_db(self, resource_json):
+    #     p = resource_json["properties"]
+    #
+    #     query_text = """
+    #         INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator)
+    #         VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+    #     """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    # def create_layer_reference(self, resource_json):
+    #     try:
+    #         self.add_user_layer_in_db(resource_json)
+    #     except KeyError as error:
+    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+    #     except Error as error:
+    #         self.rollback()  # do a rollback to comeback in a safe state of DB
+    #         if error.pgcode == "23505":  # 23505 - unique_violation
+    #             error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+    #             raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+    #         else:
+    #             # if is other error, so raise it up
+    #             raise error
+
+    def delete_layer_reference(self, layer_id=None, reference_id=None):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        if reference_id is None:
+            query_text = """
+                DELETE FROM layer_reference WHERE layer_id={0};
+            """.format(layer_id)
+        else:
+            query_text = """
+                DELETE FROM layer_reference WHERE layer_id={0} AND reference_id={1};
+            """.format(layer_id, reference_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

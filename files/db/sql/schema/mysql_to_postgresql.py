@@ -35,7 +35,7 @@ def replace_phrases(text):
     text = text.replace("`", "")
     text = text.replace("TINYINT(1)", "BOOLEAN")
     text = text.replace("ENGINE = InnoDB", "")
-    text = text.replace("ON DELETE NO ACTION", "ON DELETE CASCADE")
+    #text = text.replace("ON DELETE NO ACTION", "ON DELETE CASCADE")
     text = text.replace("ON UPDATE NO ACTION", "ON UPDATE CASCADE")
 
     text = text.replace("""SET SQL_MODE=@OLD_SQL_MODE;

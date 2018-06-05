@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS layer (
   CONSTRAINT fk_layer_user_1
     FOREIGN KEY (user_id_published_by)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -73,12 +73,12 @@ CREATE TABLE IF NOT EXISTS changeset (
   CONSTRAINT fk_tb_project_tb_user1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_change_set_project1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -100,12 +100,12 @@ CREATE TABLE IF NOT EXISTS user_layer (
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_user_layer_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -127,12 +127,12 @@ CREATE TABLE IF NOT EXISTS keyword (
   CONSTRAINT fk_theme_theme1
     FOREIGN KEY (parent_id)
     REFERENCES keyword (keyword_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_theme_user1
     FOREIGN KEY (user_id_creator)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -156,22 +156,22 @@ CREATE TABLE IF NOT EXISTS notification (
   CONSTRAINT fk_notification_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_theme1
     FOREIGN KEY (keyword_id)
     REFERENCES keyword (keyword_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_user_1
     FOREIGN KEY (user_id_creator)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_notification_notification1
     FOREIGN KEY (notification_id_parent)
     REFERENCES notification (notification_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -188,12 +188,12 @@ CREATE TABLE IF NOT EXISTS user_notification (
   CONSTRAINT fk_user_notification_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_user_notification_notification1
     FOREIGN KEY (notification_id)
     REFERENCES notification (notification_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -211,12 +211,12 @@ CREATE TABLE IF NOT EXISTS layer_followers (
   CONSTRAINT fk_user_follows_layer_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_user_follows_layer_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -234,12 +234,12 @@ CREATE TABLE IF NOT EXISTS keyword_followers (
   CONSTRAINT fk_user_follows_theme_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_user_follows_theme_theme1
     FOREIGN KEY (keyword_id)
     REFERENCES keyword (keyword_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS reference (
   CONSTRAINT fk_reference_pauliceia_user1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -275,12 +275,12 @@ CREATE TABLE IF NOT EXISTS curator (
   CONSTRAINT fk_curator_user_theme_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_curator_user_theme_theme1
     FOREIGN KEY (keyword_id)
     REFERENCES keyword (keyword_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -296,12 +296,12 @@ CREATE TABLE IF NOT EXISTS layer_keyword (
   CONSTRAINT fk_layer_theme_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_layer_theme_theme1
     FOREIGN KEY (keyword_id)
     REFERENCES keyword (keyword_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 
@@ -318,12 +318,12 @@ CREATE TABLE IF NOT EXISTS layer_reference (
   CONSTRAINT fk_reference_layer_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT fk_reference_layer_reference1
     FOREIGN KEY (reference_id)
     REFERENCES reference (reference_id)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE
 );
 

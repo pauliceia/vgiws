@@ -211,7 +211,7 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_error_404_not_found(layer_id="998")
 
     # layer errors - create
-    
+
     def test_put_api_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -332,7 +332,7 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_delete_error_401_unauthorized("-1")
         self.tester.api_layer_delete_error_401_unauthorized("0")
         self.tester.api_layer_delete_error_401_unauthorized("1001")
-
+    
     def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################
         # create a layer with user admin
