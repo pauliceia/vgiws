@@ -143,14 +143,7 @@ INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021
 -- clean table
 DELETE FROM layer_keyword;
 
--- (2) get the references of some resource
-                    SELECT r.reference_id
-                    FROM reference r, 
-                    (
-                        SELECT reference_id FROM layer_reference WHERE layer_id = 1001
-                    ) lr
-                    WHERE r.reference_id = lr.reference_id
-                    ORDER BY r.reference_id
+
             
 
 /*
