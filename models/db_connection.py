@@ -950,13 +950,13 @@ class PGSQLConnection:
     # REFERENCE
     ################################################################################
 
-    def get_references(self, reference_id=None, user_id=None, description=None):
+    def get_references(self, reference_id=None, user_id_creator=None, description=None):
         # the id have to be a int
-        if is_a_invalid_id(reference_id) or is_a_invalid_id(user_id):
+        if is_a_invalid_id(reference_id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
         subquery = get_subquery_reference_table(reference_id=reference_id, description=description,
-                                                user_id=user_id)
+                                                user_id_creator=user_id_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -965,9 +965,9 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Reference',
                     'properties', json_build_object(
-                        'reference_id',   reference_id,
-                        'description',    description,
-                        'user_id',        user_id
+                        'reference_id',     reference_id,
+                        'description',      description,
+                        'user_id_creator',  user_id_creator
                     )
                 ))
             ) AS row_to_json
@@ -999,7 +999,7 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-            INSERT INTO reference (description, user_id)
+            INSERT INTO reference (description, user_id_creator)
             VALUES ('{0}', {1}) RETURNING reference_id;
         """.format(p["description"], p["user_id"])
 

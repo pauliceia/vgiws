@@ -10,8 +10,8 @@ def get_subquery_reference_table(**kwargs):
     if "reference_id" in kwargs and kwargs["reference_id"] is not None:
         conditions_of_where.append("reference_id = {0}".format(kwargs["reference_id"]))
 
-    if "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("user_id = {0}".format(kwargs["user_id"]))
+    if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
+        conditions_of_where.append("user_id_creator = {0}".format(kwargs["user_id_creator"]))
 
     if "description" in kwargs and kwargs["description"] is not None:
         conditions_of_where.append("unaccent(LOWER(description)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["description"]))

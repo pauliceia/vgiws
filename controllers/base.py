@@ -548,7 +548,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         references = self.PGSQLConn.get_references(reference_id=reference_id)
 
         # if the current_user_id is the creator of the reference, so ok...
-        if references["features"][0]["properties"]['user_id'] == current_user_id:
+        if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
             return
 
         # ... else, raise an exception.

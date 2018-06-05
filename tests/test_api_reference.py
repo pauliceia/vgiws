@@ -23,39 +23,39 @@ class TestAPIReference(TestCase):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1007, 'reference_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1007, 'reference_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1050, 'description': 'BookA'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1002, 'reference_id': 1051, 'description': 'ArticleB'}
+                    'properties': {'user_id_creator': 1002, 'reference_id': 1051, 'description': 'ArticleB'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1003, 'reference_id': 1052, 'description': 'ThesisC'}
+                    'properties': {'user_id_creator': 1003, 'reference_id': 1052, 'description': 'ThesisC'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1003, 'reference_id': 1053, 'description': 'DissertationD'}
+                    'properties': {'user_id_creator': 1003, 'reference_id': 1053, 'description': 'DissertationD'}
                 }
             ]
         }
@@ -68,7 +68,7 @@ class TestAPIReference(TestCase):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1001,
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1001,
                                    'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 }
             ]
@@ -76,32 +76,33 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, reference_id="1001")
 
-    def test_get_api_reference_return_reference_by_user_id(self):
+    def test_get_api_reference_return_reference_by_user_id_creator(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1001,
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1001,
                                    'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1002,
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1002,
                                    'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1050, 'description': 'BookA'}
                 }
             ]
         }
 
-        self.tester.api_reference(expected, user_id="1001")
+        self.tester.api_reference(expected, user_id_creator="1001")
+
 
     def test_get_api_reference_return_reference_by_description(self):
         expected = {
@@ -109,11 +110,11 @@ class TestAPIReference(TestCase):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id': 1005, 'reference_id': 1010,
+                    'properties': {'user_id_creator': 1005, 'reference_id': 1010,
                                    'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 }
             ]
@@ -162,21 +163,21 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_error_400_bad_request(reference_id="-1")
         self.tester.api_reference_error_400_bad_request(reference_id="0")
 
-        self.tester.api_reference_error_400_bad_request(user_id="abc")
-        self.tester.api_reference_error_400_bad_request(user_id=0)
-        self.tester.api_reference_error_400_bad_request(user_id=-1)
-        self.tester.api_reference_error_400_bad_request(user_id="-1")
-        self.tester.api_reference_error_400_bad_request(user_id="0")
+        self.tester.api_reference_error_400_bad_request(user_id_creator="abc")
+        self.tester.api_reference_error_400_bad_request(user_id_creator=0)
+        self.tester.api_reference_error_400_bad_request(user_id_creator=-1)
+        self.tester.api_reference_error_400_bad_request(user_id_creator="-1")
+        self.tester.api_reference_error_400_bad_request(user_id_creator="0")
 
     def test_get_api_reference_error_404_not_found(self):
         self.tester.api_reference_error_404_not_found(reference_id="999")
         self.tester.api_reference_error_404_not_found(reference_id="998")
 
-        self.tester.api_reference_error_404_not_found(user_id="999")
-        self.tester.api_reference_error_404_not_found(user_id="998")
+        self.tester.api_reference_error_404_not_found(user_id_creator="999")
+        self.tester.api_reference_error_404_not_found(user_id_creator="998")
 
     # reference errors - create
-    
+
     def test_put_api_reference_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
