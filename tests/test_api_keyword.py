@@ -467,9 +467,9 @@ class TestAPIKeywordErrors(TestCase):
         }
         resource = self.tester.api_keyword_create(resource)
 
-        # logout with rodrigo and login with admin
+        # logout with rodrigo and login with gabriel
         self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         ##################################################
         # update the keyword
@@ -536,14 +536,13 @@ class TestAPIKeywordErrors(TestCase):
         }
         resource = self.tester.api_keyword_create(resource)
 
-        # logout with admin
+        # logout with admin and login with gabriel
         self.tester.auth_logout()
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         ########################################
-        # try to delete the keyword with user rodrigo
+        # try to delete the keyword with user gabriel
         ########################################
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["keyword_id"]
 

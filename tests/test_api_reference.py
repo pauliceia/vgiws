@@ -266,14 +266,13 @@ class TestAPIReferenceErrors(TestCase):
         }
         resource = self.tester.api_reference_create(resource)
 
-        # logout with admin
+        # logout with admin and login with gabriel
         self.tester.auth_logout()
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         ########################################
-        # try to delete the reference with user rodrigo
+        # try to delete the reference with user gabriel
         ########################################
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["reference_id"]
 
