@@ -159,6 +159,16 @@ class BaseHandler(RequestHandler):
             return None
             # raise HTTPError(500, "Problem when get the current user. Please, contact the administrator.")
 
+    def is_current_user_an_administrator(self):
+        """
+        Verify if the current user is an administrator
+        :return: True or False
+        """
+
+        current_user = self.get_current_user()
+
+        return current_user["properties"]["is_the_admin"]
+
     # URLS
 
     def get_aguments(self):
@@ -354,7 +364,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.is_current_user_an_administrator()
+        self.can_current_user_delete()
 
         user_id = args[0]
 
@@ -362,18 +372,14 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     # VALIDATION
 
-    def is_current_user_an_administrator(self):
+    def can_current_user_delete(self):
         """
-        Verify if a user is administrator to delete a user.
+        Verify if a user is administrator to delete another user.
         Just administrators can delete users.
         :return:
         """
 
-        current_user = self.get_current_user()
-
-        is_the_admin = current_user["properties"]["is_the_admin"]
-
-        if not is_the_admin:
+        if not self.is_current_user_an_administrator():
             raise HTTPError(403, "Just administrator can delete other user.")
 
 
@@ -580,9 +586,9 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         :return:
         """
 
-        references = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
+        keywords = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
 
-        if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
+        if keywords["features"][0]["properties"]['user_id_creator'] == current_user_id:
             # if the current_user_id is the creator of the reference, so ok...
             return
 
