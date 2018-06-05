@@ -331,7 +331,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         # POST PROCESSING
 
@@ -446,16 +446,16 @@ class PGSQLConnection:
 
         return id_in_json
 
-    def delete_layer_in_db(self, resource_id):
-        if is_a_invalid_id(resource_id):
+    def delete_layer_in_db(self, layer_id):
+        if is_a_invalid_id(layer_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        # 1) delete all users in layer
-        self.delete_user_layer(layer_id=resource_id)
+        # 1) delete all users from layer
+        self.delete_user_layer(layer_id=layer_id)
 
         try:
-            # 2) delete all keywords in layer
-            self.delete_layer_keyword(layer_id=resource_id)
+            # 2) delete all keywords from layer
+            self.delete_layer_keyword(layer_id=layer_id)
         except HTTPError as error:
             if error.status_code != 404:
                 raise error
@@ -463,8 +463,8 @@ class PGSQLConnection:
             #   error 404 is expected, because when delete a layer, may exist a layer without keyword
 
         try:
-            # 3) delete all references in layer
-            self.delete_layer_reference(layer_id=resource_id)
+            # 3) delete all references from layer
+            self.delete_layer_reference(layer_id=layer_id)
         except HTTPError as error:
             if error.status_code != 404:
                 raise error
@@ -472,14 +472,14 @@ class PGSQLConnection:
             #   error 404 is expected, because when delete a layer, may exist a layer without reference
 
         # get the layer information before to remove the layer
-        layer = self.get_layers(layer_id=resource_id)
+        layer = self.get_layers(layer_id=layer_id)
         f_table_name = layer["features"][0]["properties"]["f_table_name"]
 
         # delete the layer
 
         query_text = """
             DELETE FROM layer WHERE layer_id={0};
-        """.format(resource_id)
+        """.format(layer_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -487,7 +487,7 @@ class PGSQLConnection:
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         # delete the feature table
         self.delete_feature_table(f_table_name)
@@ -542,7 +542,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
     #
@@ -703,7 +703,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         return results_of_query
 
@@ -801,7 +801,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
     #
@@ -899,7 +899,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
     #
@@ -994,7 +994,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         return results_of_query
 
@@ -1051,7 +1051,7 @@ class PGSQLConnection:
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # KEYWORD
@@ -1101,7 +1101,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         return results_of_query
 
@@ -1195,7 +1195,7 @@ class PGSQLConnection:
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # CHANGESET
@@ -1245,7 +1245,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
     #
@@ -1314,7 +1314,7 @@ class PGSQLConnection:
     #     self.commit()
     #
     #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     # def delete_changeset_in_db(self, feature_id):
     #     if is_a_invalid_id(feature_id):
@@ -1331,7 +1331,7 @@ class PGSQLConnection:
     #     rows_affected = self.__PGSQL_CURSOR__.rowcount
     #
     #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # notification
@@ -1414,7 +1414,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
     #
@@ -1467,7 +1467,7 @@ class PGSQLConnection:
     #     rows_affected = self.__PGSQL_CURSOR__.rowcount
     #
     #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # FEATURE TABLE
@@ -1593,7 +1593,7 @@ class PGSQLConnection:
     #
     #     # if there is not feature
     #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
 
@@ -1665,7 +1665,7 @@ class PGSQLConnection:
     #     rows_affected = self.__PGSQL_CURSOR__.rowcount
     #
     #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any feature.")
+    #         raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # user
@@ -1720,7 +1720,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
 
         return results_of_query
 
@@ -1776,4 +1776,4 @@ class PGSQLConnection:
         rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         if rows_affected == 0:
-            raise HTTPError(404, "Not found any feature.")
+            raise HTTPError(404, "Not found any resource.")
