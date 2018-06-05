@@ -62,7 +62,29 @@ This method creates a new reference described in a JSON.
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- - PUT /api/layer/update -->
+### PUT /api/reference
+
+This method updates a reference described in a JSON.
+- Parameters:
+- Examples:
+    - Update a reference: ```PUT http://localhost:8888/api/reference```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'type': 'Reference',
+        'properties': {'reference_id': 1001, 'description': 'ArticleA'}
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Attribute already exists.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
+     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
+- Notes:
 
 
 ### DELETE /api/reference/#id
@@ -79,7 +101,7 @@ This method deletes one reference by id = #id.
 - Error codes:
      - 400 (Bad Request): Invalid parameter.
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): "The creator of the reference is the unique who can delete the reference.
+     - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

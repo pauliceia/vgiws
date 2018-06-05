@@ -521,13 +521,13 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         reference_id = args[0]
-        self.can_current_user_delete_a_reference(current_user_id, reference_id)
+        self.can_current_user_update_or_delete(current_user_id, reference_id)
 
         self.PGSQLConn.delete_reference_in_db(*args)
 
     # VALIDATION
 
-    def can_current_user_delete_a_reference(self, current_user_id, reference_id):
+    def can_current_user_update_or_delete(self, current_user_id, reference_id):
         """
         Verify if the user has permission of deleting a reference
         :param current_user_id: current user id
@@ -535,14 +535,18 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         :return:
         """
 
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
+
         references = self.PGSQLConn.get_references(reference_id=reference_id)
 
+        # if the current_user_id is the creator of the reference, so ok...
         if references["features"][0]["properties"]['user_id'] == current_user_id:
-            # if the current_user_id is the creator of the reference, so ok...
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the reference is the unique who can delete the reference.")
+        raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
 
 
 class BaseHandlerKeyword(BaseHandlerTemplateMethod):
@@ -564,7 +568,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: keyword_id)")
 
         keyword_id = resource_json["properties"]["keyword_id"]
-        self.can_current_user_update_or_delete_a_keyword(current_user_id, keyword_id)
+        self.can_current_user_update_or_delete(current_user_id, keyword_id)
 
         return self.PGSQLConn.update_keyword(resource_json, current_user_id, **kwargs)
 
@@ -572,13 +576,13 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         keyword_id = args[0]
-        self.can_current_user_update_or_delete_a_keyword(current_user_id, keyword_id)
+        self.can_current_user_update_or_delete(current_user_id, keyword_id)
 
         self.PGSQLConn.delete_keyword_in_db(*args)
 
     # VALIDATION
 
-    def can_current_user_update_or_delete_a_keyword(self, current_user_id, keyword_id):
+    def can_current_user_update_or_delete(self, current_user_id, keyword_id):
         """
         Verify if the user has permission of deleting a keyword
         :param current_user_id: current user id
@@ -586,14 +590,18 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         :return:
         """
 
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
+
         keywords = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
 
+        # if the current user is the creator of the reference, so ok...
         if keywords["features"][0]["properties"]['user_id_creator'] == current_user_id:
-            # if the current_user_id is the creator of the reference, so ok...
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the keyword is the unique who can update/delete the keyword.")
+        raise HTTPError(403, "The creator of the keyword and the administrator are who can update/delete the keyword.")
 
 
 # IMPORT
