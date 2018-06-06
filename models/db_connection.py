@@ -354,16 +354,6 @@ class PGSQLConnection:
             # do the query in database
             self.__PGSQL_CURSOR__.execute(query_text)
 
-    def add_list_of_keyword_in_layer(self, list_of_keyword, layer_id):
-        for keyword_id in list_of_keyword:
-            query_text = """
-                INSERT INTO layer_keyword (layer_id, keyword_id) 
-                VALUES ({0}, {1});
-            """.format(layer_id, keyword_id)
-
-            # do the query in database
-            self.__PGSQL_CURSOR__.execute(query_text)
-
     def add_layer_in_db(self, properties):
         p = properties
 
@@ -424,7 +414,12 @@ class PGSQLConnection:
         ##################################################
         # add the list of keyword in layer
         ##################################################
-        self.add_list_of_keyword_in_layer(properties["keyword"], id_in_json["layer_id"])
+        for keyword_id in properties["keyword"]:
+            layer_keyword_json = {
+                "properties": {"layer_id": id_in_json["layer_id"], "keyword_id": keyword_id},
+                'type': 'LayerKeyword'
+            }
+            self.create_layer_keyword(layer_keyword_json)
 
         ##################################################
         # create the feature table (if necessary)
@@ -801,31 +796,31 @@ class PGSQLConnection:
     #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
-    #
-    # def add_layer_keyword_in_db(self, resource_json):
-    #     p = resource_json["properties"]
-    #
-    #     query_text = """
-    #         INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator)
-    #         VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
-    #     """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    # def create_layer_keyword(self, resource_json):
-    #     try:
-    #         self.add_user_layer_in_db(resource_json)
-    #     except KeyError as error:
-    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-    #     except Error as error:
-    #         self.rollback()  # do a rollback to comeback in a safe state of DB
-    #         if error.pgcode == "23505":  # 23505 - unique_violation
-    #             error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-    #             raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
-    #         else:
-    #             # if is other error, so raise it up
-    #             raise error
+
+    def add_layer_keyword_in_db(self, resource_json):
+        p = resource_json["properties"]
+
+        query_text = """
+            INSERT INTO layer_keyword (layer_id, keyword_id) 
+            VALUES ({0}, {1});
+        """.format(p["layer_id"], p["keyword_id"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_layer_keyword(self, resource_json):
+        try:
+            self.add_layer_keyword_in_db(resource_json)
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                # if is other error, so raise it up
+                raise error
 
     def delete_layer_keyword(self, layer_id=None, keyword_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
