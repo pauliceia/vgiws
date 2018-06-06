@@ -230,26 +230,14 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a layer
+        ##################################################
+        # try to insert one reference that already exist, raising the 400
+        ##################################################
         resource = {
             'type': 'Reference',
-            'properties': {'description': 'ArticleA'}
+            'properties': {'description': 'BookA'}
         }
-        resource = self.tester.api_reference_create(resource)
-
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
-        ##################################################
-        # try to insert the reference again, raising the 400
-        ##################################################
         self.tester.api_reference_create_error_400_bad_request(resource)
-
-        # remove the resource after the tests
-        self.tester.api_reference_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -281,27 +269,14 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a layer
+        ##################################################
+        # try to update a reference with a description that already exist, raising the 400
+        ##################################################
         resource = {
             'type': 'Reference',
-            'properties': {'description': 'ArticleA'}
+            'properties': {'reference_id': 1051, 'description': 'ThesisC'}
         }
-        resource = self.tester.api_reference_create(resource)
-
-        ##################################################
-        # try to update the reference with a description that already exist, raising the 400
-        ##################################################
-        resource["properties"]["description"] = "BookA"
         self.tester.api_reference_update_error_400_bad_request(resource)
-
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
-        # remove the resource after the tests
-        self.tester.api_reference_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
