@@ -253,6 +253,146 @@ class PGSQLConnection:
             raise HTTPError(500, str(response))
 
     ################################################################################
+    # USER
+    ################################################################################
+
+    def get_users(self, user_id=None, username=None, name=None, email=None, password=None):
+        # the id have to be a int
+        if is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_user_table(user_id=user_id, username=username, name=name,
+                                           email=email, password=password)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'User',
+                    'properties', json_build_object(
+                        'user_id',        user_id,
+                        'email',          email,
+                        'username',       username,
+                        'name',           name,
+                        'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_email_valid', is_email_valid,
+                        'terms_agreed',   terms_agreed,                        
+                        'login_date',     login_date,
+                        'is_the_admin',   is_the_admin,
+                        'receive_notification_by_email',   receive_notification_by_email 
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def add_user_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
+                                        receive_notification_by_email) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5})
+            RETURNING user_id;
+        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
+                   p["receive_notification_by_email"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_user(self, feature_json):
+
+        validate_feature_json(feature_json)
+
+        try:
+            id_in_json = self.add_user_in_db(feature_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except IntegrityError as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error
+
+        return id_in_json
+
+    def update_user_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
+                                        terms_agreed = {4}, receive_notification_by_email = {5} 
+            WHERE user_id={0};
+        """.format(p["user_id"], p["email"], p["username"], p["name"],
+                   p["terms_agreed"], p["receive_notification_by_email"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_user(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        try:
+            # update the user in db
+            self.update_user_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+    def delete_user(self, feature_id):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            DELETE FROM pauliceia_user WHERE user_id={0};
+        """.format(feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
     # LAYER
     ################################################################################
 
@@ -344,16 +484,6 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_list_of_reference_in_layer(self, list_of_references, layer_id):
-        for reference_id in list_of_references:
-            query_text = """
-                INSERT INTO layer_reference (layer_id, reference_id) 
-                VALUES ({0}, {1});
-            """.format(layer_id, reference_id)
-
-            # do the query in database
-            self.__PGSQL_CURSOR__.execute(query_text)
-
     def add_layer_in_db(self, properties):
         p = properties
 
@@ -409,7 +539,12 @@ class PGSQLConnection:
         ##################################################
         # add the list of reference in layer
         ##################################################
-        self.add_list_of_reference_in_layer(properties["reference"], id_in_json["layer_id"])
+        for reference_id in properties["reference"]:
+            layer_keyword_json = {
+                "properties": {"layer_id": id_in_json["layer_id"], "reference_id": reference_id},
+                'type': 'LayerReference'
+            }
+            self.create_layer_reference(layer_keyword_json)
 
         ##################################################
         # add the list of keyword in layer
@@ -894,31 +1029,31 @@ class PGSQLConnection:
     #         raise HTTPError(404, "Not found any resource.")
     #
     #     return results_of_query
-    #
-    # def add_layer_reference_in_db(self, resource_json):
-    #     p = resource_json["properties"]
-    #
-    #     query_text = """
-    #         INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator)
-    #         VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
-    #     """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    # def create_layer_reference(self, resource_json):
-    #     try:
-    #         self.add_user_layer_in_db(resource_json)
-    #     except KeyError as error:
-    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-    #     except Error as error:
-    #         self.rollback()  # do a rollback to comeback in a safe state of DB
-    #         if error.pgcode == "23505":  # 23505 - unique_violation
-    #             error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-    #             raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
-    #         else:
-    #             # if is other error, so raise it up
-    #             raise error
+
+    def add_layer_reference_in_db(self, resource_json):
+        p = resource_json["properties"]
+
+        query_text = """
+            INSERT INTO layer_reference (layer_id, reference_id) 
+            VALUES ({0}, {1});
+        """.format(p["layer_id"], p["reference_id"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_layer_reference(self, resource_json):
+        try:
+            self.add_layer_reference_in_db(resource_json)
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                # if is other error, so raise it up
+                raise error
 
     def delete_layer_reference(self, layer_id=None, reference_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
@@ -1493,31 +1628,6 @@ class PGSQLConnection:
     #         raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
-    # FEATURE TABLE
-    ################################################################################
-
-    # def get_feature_table(self, f_table_name=None):
-    #
-    #     # search the columns of the feature table
-    #     query_text = """
-    #         SELECT json_agg(column_name) AS columns
-    #         FROM
-    #         (
-    #             SELECT column_name FROM information_schema.columns
-    #             WHERE table_schema = 'public' AND table_name = '{0}'
-    #         ) subquery
-    #     """.format(f_table_name)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     print("results_of_query: ", results_of_query)
-
-
-    ################################################################################
     # ELEMENT
     ################################################################################
 
@@ -1689,143 +1799,3 @@ class PGSQLConnection:
     #
     #     if rows_affected == 0:
     #         raise HTTPError(404, "Not found any resource.")
-
-    ################################################################################
-    # USER
-    ################################################################################
-
-    def get_users(self, user_id=None, username=None, name=None, email=None, password=None):
-        # the id have to be a int
-        if is_a_invalid_id(user_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_user_table(user_id=user_id, username=username, name=name,
-                                           email=email, password=password)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'User',
-                    'properties', json_build_object(
-                        'user_id',        user_id,
-                        'email',          email,
-                        'username',       username,
-                        'name',           name,
-                        'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_email_valid', is_email_valid,
-                        'terms_agreed',   terms_agreed,                        
-                        'login_date',     login_date,
-                        'is_the_admin',   is_the_admin,
-                        'receive_notification_by_email',   receive_notification_by_email 
-                    )
-                ))
-            ) AS row_to_json
-            FROM 
-            {0}
-        """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
-
-        return results_of_query
-
-    def add_user_in_db(self, properties):
-        p = properties
-
-        query_text = """
-            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
-                                        receive_notification_by_email) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5})
-            RETURNING user_id;
-        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
-                   p["receive_notification_by_email"])
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def create_user(self, feature_json):
-
-        validate_feature_json(feature_json)
-
-        try:
-            id_in_json = self.add_user_in_db(feature_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except IntegrityError as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
-            else:
-                raise error
-
-        return id_in_json
-
-    def update_user_in_db(self, properties):
-        p = properties
-
-        query_text = """
-            UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
-                                        terms_agreed = {4}, receive_notification_by_email = {5} 
-            WHERE user_id={0};
-        """.format(p["user_id"], p["email"], p["username"], p["name"],
-                   p["terms_agreed"], p["receive_notification_by_email"])
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_user(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
-        try:
-            # update the user in db
-            self.update_user_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
-
-    def delete_user(self, feature_id):
-        if is_a_invalid_id(feature_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        query_text = """
-            DELETE FROM pauliceia_user WHERE user_id={0};
-        """.format(feature_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any resource.")
