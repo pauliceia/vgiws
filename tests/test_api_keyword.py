@@ -516,7 +516,7 @@ class TestAPIKeywordErrors(TestCase):
         resource["properties"]["name"] = 'nova_keyword'
         self.tester.api_keyword_update_error_403_forbidden(resource)
 
-        # logout with admin and login with rodrigo again
+        # logout with gabriel and login with rodrigo again
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
