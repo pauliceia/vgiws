@@ -103,7 +103,6 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, user_id_creator="1001")
 
-
     def test_get_api_reference_return_reference_by_description(self):
         expected = {
             'type': 'FeatureCollection',
@@ -128,13 +127,24 @@ class TestAPIReference(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
+        ##################################################
         # create a reference
+        ##################################################
         resource = {
             'type': 'Reference',
             'properties': {'description': 'ArticleA'}
         }
         resource = self.tester.api_reference_create(resource)
 
+        ##################################################
+        # update the reference
+        ##################################################
+        # resource["properties"]["description"] = 'SomeArticleB'
+        # self.tester.api_keyword_update(resource)
+
+        ##################################################
+        # remove the reference
+        ##################################################
         # get the id of layer to REMOVE it
         resource_id = resource["properties"]["reference_id"]
 
@@ -226,6 +236,88 @@ class TestAPIReferenceErrors(TestCase):
             'type': 'Reference'
         }
         self.tester.api_reference_create_error_401_unauthorized(feature)
+
+    # reference errors - update
+
+    def test_put_api_reference_update_error_400_bad_request_attribute_already_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # create a layer
+        resource = {
+            'type': 'Reference',
+            'properties': {'description': 'ArticleA'}
+        }
+        resource = self.tester.api_reference_create(resource)
+
+        ##################################################
+        # try to update the reference with a description that already exist, raising the 400
+        ##################################################
+        resource["properties"]["description"] = "BookA"
+        self.tester.api_reference_update_error_400_bad_request(resource)
+
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["reference_id"]
+
+        # remove the resource after the tests
+        self.tester.api_reference_delete(resource_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_reference_update_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to update a layer (without reference_id)
+        resource = {
+            'type': 'Reference',
+            'properties': {'description': 'BookA'}
+        }
+        self.tester.api_reference_update_error_400_bad_request(resource)
+
+        # try to update a layer (without description)
+        resource = {
+            'type': 'Reference',
+            'properties': {'reference_id': 1001}
+        }
+        self.tester.api_reference_update_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_reference_update_error_401_unauthorized(self):
+        feature = {
+            'properties': {'reference_id': 1001, 'description': 'BookA'},
+            'type': 'Reference'
+        }
+        self.tester.api_reference_update_error_401_unauthorized(feature)
+
+    # def test_put_api_reference_update_error_403_forbidden(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     # create a reference
+    #     resource = {
+    #         'type': 'Reference',
+    #         'properties': {'description': 'ArticleA'}
+    #     }
+    #     resource = self.tester.api_reference_create(resource)
+    #
+    #     # get the id of layer to REMOVE it
+    #     resource_id = resource["properties"]["reference_id"]
+    #
+    #     # remove the resource
+    #     self.tester.api_reference_delete(resource_id)
+    #
+    #     # it is not possible to find the resource that just deleted
+    #     self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     # reference errors - delete
 
