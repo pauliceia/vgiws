@@ -5,6 +5,7 @@
 from .page import *
 from .login import *
 from .user import *
+from .curator import *
 from .layer import *
 from .reference import *
 from .import_ import *

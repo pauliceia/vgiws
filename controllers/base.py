@@ -401,6 +401,50 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
             raise HTTPError(403, "Just administrator can delete other user.")
 
 
+class BaseHandlerCurator(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_curators(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_create_update_or_delete_curator()
+
+        return self.PGSQLConn.create_curator(resource_json, **kwargs)
+
+    # PUT
+
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_create_update_or_delete_curator()
+
+        return self.PGSQLConn.update_curator(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        self.can_current_user_create_update_or_delete_curator()
+
+        self.PGSQLConn.delete_curator(**kwargs)
+
+    # VALIDATION
+
+    def can_current_user_create_update_or_delete_curator(self):
+        """
+        Verify if the current user is an administrator to create, update or delete a curator user
+        :return:
+        """
+
+        # if currente user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The administrator is who can create/update/delete a curator")
+
+
 class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # GET
