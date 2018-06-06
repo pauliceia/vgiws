@@ -410,31 +410,13 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
-        # create a resource
-        ##################################################
-        resource = {
-            'properties': {'name': 'newkeyword', 'parent_id': 1003},
-            'type': 'Keyword'
-        }
-        resource = self.tester.api_keyword_create(resource)
-
-        ##################################################
         # try to update the keyword with a name that already exist, raising the 400
         ##################################################
-        resource["properties"]["name"] = "street"
+        resource = {
+            'properties': {'keyword_id': 1003, 'name': 'street', 'parent_id': 1002},
+            'type': 'Keyword'
+        }
         self.tester.api_keyword_update_error_400_bad_request(resource)
-
-        ##################################################
-        # remove the resource
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        # remove the resource after the tests
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -443,45 +425,32 @@ class TestAPIKeywordErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a layer
+        ##################################################
+        # try to update the keyword without a keyword_id, raising the 400
+        ##################################################
         resource = {
             'properties': {'name': 'newkeyword', 'parent_id': 1003},
             'type': 'Keyword'
         }
-        resource = self.tester.api_keyword_create(resource)
-
-        ##################################################
-        # try to update the keyword without a keyword_id, raising the 400
-        ##################################################
-        resource_copy = deepcopy(resource)
-        del resource_copy["properties"]["keyword_id"]
-        self.tester.api_keyword_update_error_400_bad_request(resource_copy)
+        self.tester.api_keyword_update_error_400_bad_request(resource)
 
         ##################################################
         # try to update the keyword without a name, raising the 400
         ##################################################
-        resource_copy = deepcopy(resource)
-        del resource_copy["properties"]["name"]
-        self.tester.api_keyword_update_error_400_bad_request(resource_copy)
+        resource = {
+            'properties': {'keyword_id': 1003, 'parent_id': 1003},
+            'type': 'Keyword'
+        }
+        self.tester.api_keyword_update_error_400_bad_request(resource)
 
         ##################################################
         # try to update the keyword without a parent_id, raising the 400
         ##################################################
-        resource_copy = deepcopy(resource)
-        del resource_copy["properties"]["parent_id"]
-        self.tester.api_keyword_update_error_400_bad_request(resource_copy)
-
-        ##################################################
-        # remove the resource
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        # remove the resource after the tests
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+        resource = {
+            'properties': {'keyword_id': 1003, 'name': 'newkeyword'},
+            'type': 'Keyword'
+        }
+        self.tester.api_keyword_update_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -495,44 +464,18 @@ class TestAPIKeywordErrors(TestCase):
 
     def test_put_api_keyword_update_error_403_forbidden_user_forbidden_to_update(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # create a keyword with parent_id = None
-        ##################################################
-        resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': None},
-            'type': 'Keyword'
-        }
-        resource = self.tester.api_keyword_create(resource)
-
-        # logout with rodrigo and login with gabriel
-        self.tester.auth_logout()
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         ##################################################
-        # update the keyword
+        # gabriel tries to update one keyword that doesn't belong to him
         ##################################################
-        resource["properties"]["name"] = 'nova_keyword'
+        resource = {
+            'properties': {'keyword_id': 1003, 'name': 'street', 'parent_id': 1002},
+            'type': 'Keyword'
+        }
         self.tester.api_keyword_update_error_403_forbidden(resource)
 
-        # logout with gabriel and login with rodrigo again
-        self.tester.auth_logout()
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # remove the keyword
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
-        # remove the resource
-        self.tester.api_keyword_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
+        # DO LOGOUT
         self.tester.auth_logout()
 
     # keyword errors - delete
