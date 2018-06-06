@@ -53,34 +53,6 @@ VALUES (1008, 'bea', 'bea@gmail.com', 'bea',
 -- SELECT name FROM pauliceia_user WHERE unaccent(LOWER(name)) LIKE '%' || unaccent(LOWER('êL')) || '%';
 
 
-/*
--- -----------------------------------------------------
--- Table auth
--- -----------------------------------------------------
--- clean auth table
-DELETE FROM auth;
-
--- insert values in auth table
--- user 1001
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1001, TRUE, TRUE, TRUE, 1001);
--- user 1002
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1002, TRUE, TRUE, TRUE, 1002);
--- user 1003
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1003, FALSE, TRUE, TRUE, 1003);
--- user 1004
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1004, FALSE, FALSE, TRUE, 1004);
--- user 1005
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1005, FALSE, FALSE, TRUE, 1005);
--- user 1006
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1006, FALSE, FALSE, TRUE, 1006);
--- user 1007
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1007, FALSE, FALSE, FALSE, 1007);
--- user 1008
-INSERT INTO auth (id, is_admin, is_manager, is_curator, fk_user_id) VALUES (1008, FALSE, FALSE, FALSE, 1008);
-
-*/
-
-
 
 -- -----------------------------------------------------
 -- Table keyword
@@ -121,12 +93,12 @@ INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) V
 -- clean table
 DELETE FROM curator;
 
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, '', '2018-01-01');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, '', '2018-01-10');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, '', '2018-01-15');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, '', '2018-02-20');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, '', '2018-02-22');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021, '', '2018-03-24');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, 'Amaro', '2018-01-01');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, 'Belondres', '2018-01-10');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, 'Centro', '2018-01-15');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, 'São Francisco', '2018-02-20');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, 'São Bento', '2018-02-22');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021, 'Avenida Rodônia', '2018-03-24');
 
 
 

@@ -393,6 +393,134 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
+    # CURATOR
+    ################################################################################
+
+    def get_curators(self, user_id=None, keyword_id=None, region=None):
+        # the id have to be a int
+        if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_curator_table(user_id=user_id, keyword_id=keyword_id, region=region)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Curator',
+                    'properties', json_build_object(
+                        'user_id',     user_id,
+                        'keyword_id',  keyword_id,
+                        'region',      region,
+                        'created_at',  to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def add_curator_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            INSERT INTO curator (user_id, keyword_id, region, created_at)
+            VALUES ({0}, {1}, '{2}', LOCALTIMESTAMP) RETURNING;
+        """.format(p["user_id"], p["keyword_id"], p["region"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_curator(self, resource_json, user_id):
+        # pre-processing
+        # validate_feature_json(resource_json)
+
+        try:
+            # add the curator in db
+            self.add_curator_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+    def update_curator_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            UPDATE curator SET region = '{2}'
+            WHERE user_id = {0} AND keyword_id = {1};
+        """.format(p["user_id"], p["keyword_id"], p["region"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_curator(self, resource_json, user_id):
+        try:
+            # add the curator in db
+            self.update_curator_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+    def delete_curator_in_db(self, user_id=None, keyword_id=None):
+        if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete the curator
+        if user_id is None:
+            query_text = """
+                DELETE FROM curator WHERE keyword_id = {0};
+            """.format(keyword_id)
+        elif keyword_id is None:
+            query_text = """
+                DELETE FROM curator WHERE user_id = {0};
+            """.format(user_id)
+        else:
+            query_text = """
+                DELETE FROM curator WHERE user_id = {0} AND keyword_id = {1};
+            """.format(user_id, keyword_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
     # LAYER
     ################################################################################
 
@@ -867,6 +995,10 @@ class PGSQLConnection:
             query_text = """
                 DELETE FROM user_layer WHERE layer_id={0};
             """.format(layer_id)
+        elif layer_id is None:
+            query_text = """
+                DELETE FROM user_layer WHERE user_id={0};
+            """.format(user_id)
         else:
             query_text = """
                 DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
