@@ -181,38 +181,40 @@ class TestAPIUser(TestCase):
 
     # user - create and delete
 
-    def test_get_api_user_create_and_delete(self):
+    def test_get_api_user_create_update_and_delete(self):
         # create a fake email to avoid the error when exist the same email in DB
         email = generate_random_string() + "@roger.com"
 
+        ##################################################
         # create a feature
-        feature = {
+        ##################################################
+        resource = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
         }
+        resource = self.tester.api_user_create(resource)
 
-        feature = self.tester.api_user_create(feature)
-
-        email = feature["properties"]["email"]
-        password = feature["properties"]["password"]
-
-        # login with the user created
+        ##################################################
+        # login and logout with the created user
+        ##################################################
+        email = resource["properties"]["email"]
+        password = resource["properties"]["password"]
+        # login
         self.tester.auth_login(email, password)
-
-        # get the id of feature to REMOVE it
-        feature_id = feature["properties"]["user_id"]
-
         # logout
         self.tester.auth_logout()
 
         ##################################################
-        # log in with a admin user (who can delete an user)
+        # log in with a admin user (who can delete a user)
         ##################################################
         self.tester.auth_login("admin@admin.com", "admin")
 
+        # get the id of feature to REMOVE it
+        resource_id = resource["properties"]["user_id"]
+
         # remove the user created
-        self.tester.api_user_delete(feature_id)
+        self.tester.api_user_delete(resource_id)
 
         # logout
         self.tester.auth_logout()
@@ -239,7 +241,7 @@ class TestAPIUserErrors(TestCase):
 
     # user errors - create
 
-    def test_get_api_user_create_error_400_bad_request_attribute_already_exist(self):
+    def test_put_api_user_create_error_400_bad_request_attribute_already_exist(self):
         # try to create a resource with email that already exist
         resource = {
             'type': 'User',
@@ -258,7 +260,7 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_error_create_400_bad_request(resource)
 
-    def test_get_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # create a feature
         feature = {
             'type': 'User',
