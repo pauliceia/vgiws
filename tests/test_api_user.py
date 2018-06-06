@@ -89,7 +89,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': False,
                                    'username': 'bea', 'user_id': 1008, 'email': 'bea@gmail.com',
-                                   'name': None, 'is_the_admin': False, 
+                                   'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-30 00:00:00', 'login_date': '2017-01-30T00:00:00',
                                    'is_email_valid': False}
                 }
@@ -287,6 +287,73 @@ class TestAPIUserErrors(TestCase):
         }
 
         self.tester.api_user_error_create_400_bad_request(feature)
+    
+    # user errors - update
+
+    def test_put_api_user_update_error_400_bad_request_attribute_already_exist(self):
+        # login with gabriel
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # try to create a resource with email that already exist
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+                           'terms_agreed': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_400_bad_request(resource)
+
+        # try to create a resource with username that already exist
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 1005, 'username': 'admin', 'email': "gabriel@admin.com", 'name': 'Gabriel',
+                           'terms_agreed': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_400_bad_request(resource)
+
+        # logout
+        self.tester.auth_logout()
+
+    def test_put_api_user_update_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # login with gabriel
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # update a user
+        resource = {
+            'type': 'User',
+            'properties': {'email': "gabriel@admin.com", 'name': 'Gabriel', 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_400_bad_request(resource)
+
+        # logout
+        self.tester.auth_logout()
+
+    def test_put_api_user_update_error_401_unauthorized(self):
+        # update a user
+        resource = {
+            'type': 'User',
+            'properties': {'email': "gabriel@admin.com", 'name': 'Gabriel', 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_401_unauthorized(resource)
+
+    def test_put_api_user_update_error_403_forbidden(self):
+        # login with gabriel
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a resource with email that already exist
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+                           'terms_agreed': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_403_forbidden(resource)
+
+        # logout
+        self.tester.auth_logout()
 
     # user errors - delete
 
