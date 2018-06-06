@@ -33,7 +33,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'admin', 'user_id': 1001, 'email': 'admin@admin.com',
-                                   'name': 'Administrator', 'is_the_admin': True, 'can_add_layer': True,
+                                   'name': 'Administrator', 'is_the_admin': True,
                                    'created_at': '2017-01-01 00:00:00', 'login_date': '2017-01-01T00:00:00',
                                    'is_email_valid': True}
                 },
@@ -41,7 +41,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'rodrigo', 'user_id': 1002, 'email': 'rodrigo@admin.com',
-                                   'name': 'Rodrigo', 'is_the_admin': True, 'can_add_layer': True,
+                                   'name': 'Rodrigo', 'is_the_admin': True,
                                    'created_at': '2017-03-03 00:00:00', 'login_date': '2017-03-03T00:00:00',
                                    'is_email_valid': True}
                 },
@@ -49,7 +49,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True, 'can_add_layer': True,
+                                   'name': 'Miguel', 'is_the_admin': True,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': False}
                 },
@@ -57,7 +57,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
-                                   'name': 'Rafael', 'is_the_admin': False, 'can_add_layer': True,
+                                   'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True}
                 },
@@ -65,7 +65,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
-                                   'name': 'Gabriel', 'is_the_admin': False, 'can_add_layer': True,
+                                   'name': 'Gabriel', 'is_the_admin': False,
                                    'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
                                    'is_email_valid': False}
                 },
@@ -73,7 +73,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'fernanda', 'user_id': 1006, 'email': 'fernanda@gmail.com',
-                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-19 00:00:00', 'login_date': '2017-01-19T00:00:00',
                                    'is_email_valid': True}
                 },
@@ -81,7 +81,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'ana', 'user_id': 1007, 'email': 'ana@gmail.com',
-                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-18 00:00:00', 'login_date': '2017-01-18T00:00:00',
                                    'is_email_valid': False}
                 },
@@ -89,7 +89,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': False,
                                    'username': 'bea', 'user_id': 1008, 'email': 'bea@gmail.com',
-                                   'name': None, 'is_the_admin': False, 'can_add_layer': False,
+                                   'name': None, 'is_the_admin': False, 
                                    'created_at': '2017-01-30 00:00:00', 'login_date': '2017-01-30T00:00:00',
                                    'is_email_valid': False}
                 }
@@ -104,7 +104,7 @@ class TestAPIUser(TestCase):
                 {'properties': {'name': 'Rodrigo', 'login_date': '2017-03-03T00:00:00', 'terms_agreed': True,
                                 'receive_notification_by_email': False, 'user_id': 1002, 'username': 'rodrigo',
                                 'is_email_valid': True, 'is_the_admin': True, 'email': 'rodrigo@admin.com',
-                                'can_add_layer': True, 'created_at': '2017-03-03 00:00:00'},
+                                 'created_at': '2017-03-03 00:00:00'},
                  'type': 'User'}
             ],
             'type': 'FeatureCollection'
@@ -120,7 +120,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True, 'can_add_layer': True,
+                                   'name': 'Miguel', 'is_the_admin': True,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': False}
                 },
@@ -128,7 +128,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
-                                   'name': 'Rafael', 'is_the_admin': False, 'can_add_layer': True,
+                                   'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True}
                 },
@@ -136,7 +136,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
-                                   'name': 'Gabriel', 'is_the_admin': False, 'can_add_layer': True,
+                                   'name': 'Gabriel', 'is_the_admin': False,
                                    'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
                                    'is_email_valid': False}
                 },
@@ -153,7 +153,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
                                    'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
-                                   'name': 'Rafael', 'is_the_admin': False, 'can_add_layer': True,
+                                   'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True}
                 }
@@ -170,7 +170,7 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True, 'can_add_layer': True,
+                                   'name': 'Miguel', 'is_the_admin': True,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': False}
                 }
@@ -264,7 +264,7 @@ class TestAPIUserErrors(TestCase):
         resource = {
             'type': 'User',
             'properties': {'email': "rodrigo@admin.com", 'password': 'roger', 'username': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                           'terms_agreed': True,  'receive_notification_by_email': False}
         }
 
         self.tester.api_user_error_create_400_bad_request(resource)
@@ -273,7 +273,7 @@ class TestAPIUserErrors(TestCase):
         resource = {
             'type': 'User',
             'properties': {'username': 'rodrigo', 'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                           'terms_agreed': True,  'receive_notification_by_email': False}
         }
 
         self.tester.api_user_error_create_400_bad_request(resource)
@@ -283,7 +283,7 @@ class TestAPIUserErrors(TestCase):
         feature = {
             'type': 'User',
             'properties': {'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
-                           'can_add_layer': True, 'receive_notification_by_email': False}
+                            'receive_notification_by_email': False}
         }
 
         self.tester.api_user_error_create_400_bad_request(feature)
@@ -319,7 +319,7 @@ class TestAPIUserErrors(TestCase):
         feature = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                           'terms_agreed': True, 'receive_notification_by_email': False}
         }
 
         feature = self.tester.api_user_create(feature)

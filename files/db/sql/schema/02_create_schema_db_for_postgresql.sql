@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Ter 05 Jun 2018 17:32:36 -03
+-- Qua 06 Jun 2018 11:54:28 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS pauliceia_user (
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   login_date TIMESTAMP NULL,
   is_the_admin BOOLEAN NOT NULL  DEFAULT FALSE,
-  can_add_layer BOOLEAN NOT NULL DEFAULT FALSE,
   receive_notification_by_email BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (user_id)
 );

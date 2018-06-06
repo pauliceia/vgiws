@@ -1723,7 +1723,6 @@ class PGSQLConnection:
                         'terms_agreed',   terms_agreed,                        
                         'login_date',     login_date,
                         'is_the_admin',   is_the_admin,
-                        'can_add_layer',  can_add_layer,
                         'receive_notification_by_email',   receive_notification_by_email 
                     )
                 ))
