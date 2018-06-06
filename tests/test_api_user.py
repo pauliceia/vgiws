@@ -191,7 +191,7 @@ class TestAPIUser(TestCase):
         resource = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                           'terms_agreed': True, 'receive_notification_by_email': False}
         }
         resource = self.tester.api_user_create(resource)
 

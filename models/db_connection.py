@@ -1756,10 +1756,12 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, can_add_layer, receive_notification_by_email) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
+            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
+                                        receive_notification_by_email) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5})
             RETURNING user_id;
-        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"], p["can_add_layer"], p["receive_notification_by_email"])
+        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
+                   p["receive_notification_by_email"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -50,7 +50,7 @@ This method create a new user described in a JSON.
     {
         'type': 'User',
         'properties': {'user_id': -1, 'email': email, 'password': '29EU290UE', 'username': 'roger', 'name': 'Roger',
-                       'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                       'terms_agreed': True, 'receive_notification_by_email': False}
     }
     ```
 - Response: a JSON that contains the id of the created resource. Example:
@@ -66,7 +66,30 @@ This method create a new user described in a JSON.
     - The key "user_id", when send a JSON, is indifferent. It is just there to know where the key "user_id" have to be.
 
 
-<!-- - PUT /api/user/update -->
+### PUT /api/user
+
+This method updates a user described in a JSON.
+- Parameters:
+- Examples:
+    - Update a reference: ```PUT http://localhost:8888/api/user```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'type': 'User',
+        'properties': {'user_id': 7, 'email': email, 'username': 'roger', 'name': 'Roger',
+                       'terms_agreed': True, 'receive_notification_by_email': False}
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Attribute already exists.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): Just the own user or an administrator can update a user.
+     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
+- Notes:
 
 
 ### DELETE /api/user/#id
