@@ -157,6 +157,44 @@ class TestAPIReference(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_api_reference_create_but_update_and_delete_with_admin_user(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        ##################################################
+        # create a reference
+        ##################################################
+        resource = {
+            'type': 'Reference',
+            'properties': {'description': 'ArticleA'}
+        }
+        resource = self.tester.api_reference_create(resource)
+
+        # logout with gabriel and login with admin user
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        ##################################################
+        # update the reference
+        ##################################################
+        resource["properties"]["description"] = 'SomeArticleB'
+        self.tester.api_reference_update(resource)
+
+        ##################################################
+        # remove the reference
+        ##################################################
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["reference_id"]
+
+        # remove the resource
+        self.tester.api_reference_delete(resource_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
 
 class TestAPIReferenceErrors(TestCase):
 
