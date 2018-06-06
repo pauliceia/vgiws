@@ -121,9 +121,9 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, description="marco")
 
-    # reference - create and delete
+    # reference - create, update and delete
 
-    def test_api_reference_create_and_delete(self):
+    def test_api_reference_create_update_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 

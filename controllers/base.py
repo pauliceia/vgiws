@@ -357,8 +357,13 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _put_resource(self, *args, **kwargs):
-        raise NotImplementedError
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        if "user_id" not in resource_json["properties"]:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: user_id)")
+
+        self.can_current_user_update(current_user_id, resource_json)
+
+        return self.PGSQLConn.update_user(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
@@ -370,6 +375,20 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         self.PGSQLConn.delete_user(user_id)
 
     # VALIDATION
+
+    def can_current_user_update(self, current_user_id, resource_json):
+        """
+        Verify if a user is himself/herself or an administrator, who are can update another user.
+        :return:
+        """
+
+        if current_user_id == resource_json["properties"]["user_id"]:
+            return
+
+        if self.is_current_user_an_administrator():
+            return
+
+        raise HTTPError(403, "Just the own user or an administrator can update a user.")
 
     def can_current_user_delete(self):
         """

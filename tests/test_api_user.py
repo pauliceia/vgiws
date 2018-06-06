@@ -179,14 +179,14 @@ class TestAPIUser(TestCase):
 
         self.tester.api_user(expected, username="miguel")
 
-    # user - create and delete
+    # user - create, update and delete
 
     def test_get_api_user_create_update_and_delete(self):
         # create a fake email to avoid the error when exist the same email in DB
         email = generate_random_string() + "@roger.com"
 
         ##################################################
-        # create a feature
+        # create a user
         ##################################################
         resource = {
             'type': 'User',
@@ -196,24 +196,42 @@ class TestAPIUser(TestCase):
         resource = self.tester.api_user_create(resource)
 
         ##################################################
-        # login and logout with the created user
+        # login with the created user
         ##################################################
         email = resource["properties"]["email"]
         password = resource["properties"]["password"]
         # login
         self.tester.auth_login(email, password)
-        # logout
+
+        ##################################################
+        # update the user with himself/herself
+        ##################################################
+        resource["properties"]["name"] = "Roger Jose"
+        resource["properties"]["receive_notification_by_email"] = True
+        self.tester.api_user_update(resource)
+
+        # logout with the created user
         self.tester.auth_logout()
 
         ##################################################
-        # log in with a admin user (who can delete a user)
+        # log in with a admin user (who can update/delete a user)
         ##################################################
         self.tester.auth_login("admin@admin.com", "admin")
 
+        ##################################################
+        # update the user with a admin
+        ##################################################
+        resource["properties"]["name"] = "Roger"
+        resource["properties"]["receive_notification_by_email"] = False
+        self.tester.api_user_update(resource)
+
+        ##################################################
+        # delete the user with an administrator
+        ##################################################
         # get the id of feature to REMOVE it
         resource_id = resource["properties"]["user_id"]
 
-        # remove the user created
+        # remove the created user
         self.tester.api_user_delete(resource_id)
 
         # logout

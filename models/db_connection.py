@@ -1788,7 +1788,35 @@ class PGSQLConnection:
 
         return id_in_json
 
-    # delete user
+    def update_user_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
+                                        terms_agreed = {4}, receive_notification_by_email = {5} 
+            WHERE user_id={0};
+        """.format(p["user_id"], p["email"], p["username"], p["name"],
+                   p["terms_agreed"], p["receive_notification_by_email"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_user(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        try:
+            # update the user in db
+            self.update_user_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
 
     def delete_user(self, feature_id):
         if is_a_invalid_id(feature_id):
