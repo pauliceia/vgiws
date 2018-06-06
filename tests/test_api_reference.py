@@ -311,44 +311,18 @@ class TestAPIReferenceErrors(TestCase):
 
     def test_put_api_reference_update_error_403_forbidden(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # create a reference
-        ##################################################
-        resource = {
-            'type': 'Reference',
-            'properties': {'description': 'ArticleA'}
-        }
-        resource = self.tester.api_reference_create(resource)
-
-        # logout with rodrigo and login with gabriel
-        self.tester.auth_logout()
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         ##################################################
-        # update the reference
+        # gabriel tries to update one reference that doesn't belong to him
         ##################################################
-        resource["properties"]["description"] = 'SomeArticleB'
+        resource = {
+            'type': 'Reference',
+            'properties': {'reference_id': 1051, 'description': 'SomeArticleB'}
+        }
         self.tester.api_reference_update_error_403_forbidden(resource)
 
-        # logout with gabriel and login with rodrigo again
-        self.tester.auth_logout()
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # remove the reference
-        ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
-        # remove the resource
-        self.tester.api_reference_delete(resource_id)
-
-        # it is not possible to find the resource that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
+        # DO LOGOUT
         self.tester.auth_logout()
 
     # reference errors - delete
