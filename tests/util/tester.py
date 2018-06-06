@@ -213,6 +213,129 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
+    # CURATOR
+    ##################################################
+
+    def api_curator(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_curator_create(self, feature_json, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/curator/create/{0}'.format(arguments),
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        # resulted = loads(response.text)  # convert string to dict/JSON
+
+    def api_curator_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/curator/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_curator_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # curator errors - get
+
+    def api_curator_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_curator_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # curator errors - create
+
+    def api_curator_create_error_400_bad_request(self, feature_json):
+        response = self.session.post(self.URL + '/api/curator/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_curator_create_error_401_unauthorized_without_authorization_header(self, feature_json):
+        response = self.session.post(self.URL + '/api/curator/create/',
+                                     data=dumps(feature_json))
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_curator_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self, feature_json):
+        response = self.session.post(self.URL + '/api/curator/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # curator errors - update
+
+    def api_curator_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/curator',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_curator_update_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/curator',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    # curator errors - delete
+
+    def api_curator_delete_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_curator_delete_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_curator_delete_error_403_forbidden(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_curator_delete_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
     # LAYER
     ##################################################
 

@@ -15,9 +15,9 @@ class TestAPICurator(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # user_layer - get
+    # curator - get
 
-    def test_get_api_user_layer_return_all_users_in_layers(self):
+    def test_get_api_curator_return_all_curators(self):
         expected = {
             'features': [
                 {
@@ -94,9 +94,10 @@ class TestAPICurator(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected)
+        self.tester.api_curator(expected)
 
-    def test_get_api_user_layer_return_user_layer_by_layer_id(self):
+    
+    def test_get_api_curator_return_user_layer_by_layer_id(self):
         expected = {
             'features': [
                 {
@@ -115,7 +116,7 @@ class TestAPICurator(TestCase):
 
         self.tester.api_user_layer(expected, layer_id="1001")
 
-    def test_get_api_user_layer_return_user_layer_by_user_id(self):
+    def test_get_api_curator_return_user_layer_by_user_id(self):
         expected = {
             'features': [
                 {
@@ -134,7 +135,7 @@ class TestAPICurator(TestCase):
 
         self.tester.api_user_layer(expected, user_id="1005")
 
-    def test_get_api_user_layer_return_user_layer_by_user_id_and_layer_id(self):
+    def test_get_api_curator_return_user_layer_by_user_id_and_layer_id(self):
         expected = {
             'features': [
                 {
@@ -148,7 +149,7 @@ class TestAPICurator(TestCase):
 
         self.tester.api_user_layer(expected, user_id="1005", layer_id="1003")
 
-    def test_get_api_user_layer_return_all_user_layer_by_user_id_and_is_the_creator(self):
+    def test_get_api_curator_return_all_user_layer_by_user_id_and_is_the_creator(self):
         expected = {
             'features': [
                 {
@@ -182,7 +183,7 @@ class TestAPICurator(TestCase):
 
     # layer - create and delete
 
-    def test_api_user_layer_create_and_delete(self):
+    def test_api_curator_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -232,8 +233,9 @@ class TestAPICurator(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+"""
 
-
+"""
 class TestAPIUserCuratorErrors(TestCase):
 
     def setUp(self):
