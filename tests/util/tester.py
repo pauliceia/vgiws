@@ -273,13 +273,13 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_curator_create_error_401_unauthorized_without_authorization_header(self, feature_json):
+    def api_curator_create_error_401_unauthorized(self, feature_json):
         response = self.session.post(self.URL + '/api/curator/create/',
                                      data=dumps(feature_json))
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_curator_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self, feature_json):
+    def api_curator_create_error_403_forbidden(self, feature_json):
         response = self.session.post(self.URL + '/api/curator/create/',
                                      data=dumps(feature_json), headers=self.headers)
 

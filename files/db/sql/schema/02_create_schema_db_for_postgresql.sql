@@ -270,7 +270,7 @@ DROP TABLE IF EXISTS curator CASCADE ;
 CREATE TABLE IF NOT EXISTS curator (
   user_id SERIAL  ,
   keyword_id INT NOT NULL,
-  region TEXT NULL UNIQUE,
+  region TEXT NULL,
   created_at TIMESTAMP NULL,
   PRIMARY KEY (user_id, keyword_id),
   CONSTRAINT fk_curator_user_theme_user_1
