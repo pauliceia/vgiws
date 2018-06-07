@@ -413,7 +413,7 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         self.can_current_user_create_update_or_delete_curator()
 
-        return self.PGSQLConn.create_curator(resource_json, **kwargs)
+        return self.PGSQLConn.create_curator(resource_json, current_user_id, **kwargs)
 
     # PUT
 

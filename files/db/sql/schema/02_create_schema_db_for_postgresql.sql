@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qua 06 Jun 2018 11:54:28 -03
+-- Qui 07 Jun 2018 18:49:42 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -184,6 +184,7 @@ CREATE TABLE IF NOT EXISTS user_notification (
   user_id SERIAL ,
   notification_id INT NOT NULL,
   is_read BOOLEAN NULL DEFAULT FALSE,
+  PRIMARY KEY (user_id, notification_id),
   CONSTRAINT fk_user_notification_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
@@ -269,8 +270,9 @@ DROP TABLE IF EXISTS curator CASCADE ;
 CREATE TABLE IF NOT EXISTS curator (
   user_id SERIAL  ,
   keyword_id INT NOT NULL,
-  region TEXT NULL,
+  region TEXT NULL UNIQUE,
   created_at TIMESTAMP NULL,
+  PRIMARY KEY (user_id, keyword_id),
   CONSTRAINT fk_curator_user_theme_user_1
     FOREIGN KEY (user_id)
     REFERENCES pauliceia_user (user_id)
@@ -292,6 +294,7 @@ DROP TABLE IF EXISTS layer_keyword CASCADE ;
 CREATE TABLE IF NOT EXISTS layer_keyword (
   layer_id SERIAL ,
   keyword_id INT NOT NULL,
+  PRIMARY KEY (layer_id, keyword_id),
   CONSTRAINT fk_layer_theme_layer1
     FOREIGN KEY (layer_id)
     REFERENCES layer (layer_id)

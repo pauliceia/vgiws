@@ -446,7 +446,7 @@ class PGSQLConnection:
 
         query_text = """
             INSERT INTO curator (user_id, keyword_id, region, created_at)
-            VALUES ({0}, {1}, '{2}', LOCALTIMESTAMP) RETURNING;
+            VALUES ({0}, {1}, '{2}', LOCALTIMESTAMP);
         """.format(p["user_id"], p["keyword_id"], p["region"])
 
         # do the query in database
@@ -494,7 +494,7 @@ class PGSQLConnection:
             else:
                 raise error  # if is other error, so raise it up
 
-    def delete_curator_in_db(self, user_id=None, keyword_id=None):
+    def delete_curator(self, user_id=None, keyword_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
             raise HTTPError(400, "Invalid parameter.")
 

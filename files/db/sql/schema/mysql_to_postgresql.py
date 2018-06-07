@@ -137,6 +137,12 @@ def remove_bad_lines_and_put_default_values(text):
         if "keyword" in lines[i-2] and "name text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
+        # CURATOR
+        # just change the 'region' of the 'curator'
+        if "curator" in lines[i-3] and "region text" in line_lower:
+            lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
+
+
     text = "\n".join(lines)
 
     return text

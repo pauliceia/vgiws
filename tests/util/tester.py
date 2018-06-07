@@ -235,8 +235,6 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-        # resulted = loads(response.text)  # convert string to dict/JSON
-
     def api_curator_update(self, resource_json):
         response = self.session.put(self.URL + '/api/curator/',
                                     data=dumps(resource_json), headers=self.headers)

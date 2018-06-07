@@ -137,92 +137,32 @@ class TestAPICurator(TestCase):
 
         self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
 
-    """
-    def test_get_api_curator_return_all_user_layer_by_user_id_and_is_the_creator(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_user_layer(expected, user_id="1001", is_the_creator="TRUE")
-
-        expected = {
-            'features': [
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_user_layer(expected, user_id="1001", is_the_creator="FALSE")
-
     # layer - create and delete
 
     def test_api_curator_create_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # create a layer
-        layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        layer = self.tester.api_layer_create(layer)
-
-        # get the id of layer to use in test and after the testes, remove it
-        layer_id = layer["properties"]["layer_id"]
-
-        ##################################################
-        # main test
-        ##################################################
-
         # add a user in a layer
-        user_layer = {
-            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
-            'type': 'UserLayer'
+        resource = {
+            'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'Joana'},
+            'type': 'Curator'
         }
-        self.tester.api_user_layer_create(user_layer)
+        self.tester.api_curator_create(resource)
 
         # get the id of layer to REMOVE it
-        user_id = user_layer["properties"]["user_id"]
+        user_id = resource["properties"]["user_id"]
+        keyword_id = resource["properties"]["keyword_id"]
 
         # remove the user in layer
-        self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
+        self.tester.api_curator_delete(user_id=user_id, keyword_id=keyword_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
-
-        ##################################################
-
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(layer_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+        self.tester.api_curator_error_404_not_found(user_id=user_id, keyword_id=keyword_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
 
 
 class TestAPIUserCuratorErrors(TestCase):
@@ -232,7 +172,7 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester = UtilTester(self)
 
     # layer errors - get
-
+    
     def test_get_api_user_layer_error_400_bad_request(self):
         self.tester.api_curator_error_400_bad_request(keyword_id="abc")
         self.tester.api_curator_error_400_bad_request(keyword_id=0)
