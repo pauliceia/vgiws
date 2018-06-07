@@ -224,7 +224,7 @@ class TestAPICurator(TestCase):
         self.tester.auth_logout()
     """
 
-"""
+
 class TestAPIUserCuratorErrors(TestCase):
 
     def setUp(self):
@@ -234,33 +234,27 @@ class TestAPIUserCuratorErrors(TestCase):
     # layer errors - get
 
     def test_get_api_user_layer_error_400_bad_request(self):
-        self.tester.api_user_layer_error_400_bad_request(layer_id="abc")
-        self.tester.api_user_layer_error_400_bad_request(layer_id=0)
-        self.tester.api_user_layer_error_400_bad_request(layer_id=-1)
-        self.tester.api_user_layer_error_400_bad_request(layer_id="-1")
-        self.tester.api_user_layer_error_400_bad_request(layer_id="0")
+        self.tester.api_curator_error_400_bad_request(keyword_id="abc")
+        self.tester.api_curator_error_400_bad_request(keyword_id=0)
+        self.tester.api_curator_error_400_bad_request(keyword_id=-1)
+        self.tester.api_curator_error_400_bad_request(keyword_id="-1")
+        self.tester.api_curator_error_400_bad_request(keyword_id="0")
 
-        self.tester.api_user_layer_error_400_bad_request(user_id="abc")
-        self.tester.api_user_layer_error_400_bad_request(user_id=0)
-        self.tester.api_user_layer_error_400_bad_request(user_id=-1)
-        self.tester.api_user_layer_error_400_bad_request(user_id="-1")
-        self.tester.api_user_layer_error_400_bad_request(user_id="0")
-
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="abc")
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator=0)
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator=-1)
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="0")
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="-1")
+        self.tester.api_curator_error_400_bad_request(user_id="abc")
+        self.tester.api_curator_error_400_bad_request(user_id=0)
+        self.tester.api_curator_error_400_bad_request(user_id=-1)
+        self.tester.api_curator_error_400_bad_request(user_id="-1")
+        self.tester.api_curator_error_400_bad_request(user_id="0")
 
     def test_get_api_user_layer_error_404_not_found(self):
-        self.tester.api_user_layer_error_404_not_found(layer_id="999")
-        self.tester.api_user_layer_error_404_not_found(layer_id="998")
+        self.tester.api_curator_error_404_not_found(keyword_id="999")
+        self.tester.api_curator_error_404_not_found(keyword_id="998")
 
-        self.tester.api_user_layer_error_404_not_found(user_id="999")
-        self.tester.api_user_layer_error_404_not_found(user_id="998")
+        self.tester.api_curator_error_404_not_found(user_id="999")
+        self.tester.api_curator_error_404_not_found(user_id="998")
 
     # layer errors - create
-
+    """
     def test_put_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -533,8 +527,6 @@ class TestAPIUserCuratorErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-"""
-
+    """
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
