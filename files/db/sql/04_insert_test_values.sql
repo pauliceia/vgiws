@@ -94,7 +94,9 @@ INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) V
 DELETE FROM curator;
 
 INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, 'Amaro', '2018-01-01');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1002, 'Azure', '2018-01-10');
 INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, 'Belondres', '2018-01-10');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1010, 'Jorge', '2018-02-22');
 INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, 'Centro', '2018-01-15');
 INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, 'São Francisco', '2018-02-20');
 INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, 'São Bento', '2018-02-22');

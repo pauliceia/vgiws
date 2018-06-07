@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-"""
+
 class TestAPICurator(TestCase):
 
     def setUp(self):
@@ -19,135 +19,125 @@ class TestAPICurator(TestCase):
 
     def test_get_api_curator_return_all_curators(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-01 00:00:00', 'keyword_id': 1001,
+                                   'user_id': 1001, 'region': 'Amaro'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
-                                   'created_at': '2017-01-03 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
+                                   'user_id': 1001, 'region': 'Azure'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
+                                   'user_id': 1002, 'region': 'Belondres'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
+                                   'user_id': 1003, 'region': 'Jorge'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
+                                   'user_id': 1003, 'region': 'Centro'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
+                                   'user_id': 1004, 'region': 'São Francisco'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1006, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
+                                   'user_id': 1005, 'region': 'São Bento'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
-                                   'created_at': '2017-06-15 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1004,
-                                   'created_at': '2017-06-20 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1004,
-                                   'created_at': '2017-06-27 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1005,
-                                   'created_at': '2017-08-04 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1006,
-                                   'created_at': '2017-09-04 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1006,
-                                   'created_at': '2017-09-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-03-24 00:00:00', 'keyword_id': 1021,
+                                   'user_id': 1006, 'region': 'Avenida Rodônia'},
+                    'type': 'Curator'
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_curator(expected)
 
-    def test_get_api_curator_return_user_layer_by_layer_id(self):
+    def test_get_api_curator_return_curator_by_user_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
+                                   'user_id': 1003, 'region': 'Jorge'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
-                                   'created_at': '2017-01-03 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
+                                   'user_id': 1003, 'region': 'Centro'},
+                    'type': 'Curator'
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_user_layer(expected, layer_id="1001")
+        self.tester.api_curator(expected, user_id="1003")
 
-    def test_get_api_curator_return_user_layer_by_user_id(self):
+    def test_get_api_curator_return_curator_by_keyword_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
+                                   'user_id': 1001, 'region': 'Azure'},
+                    'type': 'Curator'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
-                                   'created_at': '2017-06-15 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
+                                   'user_id': 1002, 'region': 'Belondres'},
+                    'type': 'Curator'
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_user_layer(expected, user_id="1005")
+        self.tester.api_curator(expected, keyword_id="1002")
 
-    def test_get_api_curator_return_user_layer_by_user_id_and_layer_id(self):
+    def test_get_api_curator_return_curator_by_region(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
+                                   'user_id': 1004, 'region': 'São Francisco'},
+                    'type': 'Curator'
+                },
+                {
+                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
+                                   'user_id': 1005, 'region': 'São Bento'},
+                    'type': 'Curator'
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_user_layer(expected, user_id="1005", layer_id="1003")
+        self.tester.api_curator(expected, region="SÃo")
 
+    def test_get_api_curator_return_curator_by_user_id_and_keyword_id(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
+                                   'user_id': 1002, 'region': 'Belondres'},
+                    'type': 'Curator'
+                }
+            ]
+        }
+
+        self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
+
+    """
     def test_get_api_curator_return_all_user_layer_by_user_id_and_is_the_creator(self):
         expected = {
             'features': [
@@ -232,7 +222,7 @@ class TestAPICurator(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 """
 class TestAPIUserCuratorErrors(TestCase):
@@ -545,5 +535,6 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester.auth_logout()
 
 """
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
