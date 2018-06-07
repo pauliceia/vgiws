@@ -531,6 +531,10 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         :return:
         """
 
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
+
         layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
         for layer in layers["features"]:
@@ -549,6 +553,10 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         :param layer_id: layer id
         :return:
         """
+
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
 
         resources = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
