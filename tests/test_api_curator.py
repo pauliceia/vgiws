@@ -172,7 +172,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
     # layer errors - get
 
-    def test_get_api_user_layer_error_400_bad_request(self):
+    def test_get_api_curator_error_400_bad_request(self):
         self.tester.api_curator_error_400_bad_request(keyword_id="abc")
         self.tester.api_curator_error_400_bad_request(keyword_id=0)
         self.tester.api_curator_error_400_bad_request(keyword_id=-1)
@@ -185,7 +185,7 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester.api_curator_error_400_bad_request(user_id="-1")
         self.tester.api_curator_error_400_bad_request(user_id="0")
 
-    def test_get_api_user_layer_error_404_not_found(self):
+    def test_get_api_curator_error_404_not_found(self):
         self.tester.api_curator_error_404_not_found(keyword_id="999")
         self.tester.api_curator_error_404_not_found(keyword_id="998")
 
@@ -194,7 +194,7 @@ class TestAPIUserCuratorErrors(TestCase):
     
     # layer errors - create
 
-    def test_put_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
+    def test_put_api_curator_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -208,7 +208,7 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_put_api_user_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_curator_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -236,14 +236,14 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_put_api_user_layer_create_error_401_unauthorized_without_authorization_header(self):
+    def test_put_api_curator_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'Joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_401_unauthorized(resource)
 
-    def test_put_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+    def test_put_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
@@ -257,103 +257,53 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    """
     # layer errors - delete
 
-    def test_delete_api_user_layer_error_400_bad_request(self):
+    def test_delete_api_curator_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="abc", layer_id="abc")
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id=0, layer_id=0)
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id=-1, layer_id=-1)
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="-1", layer_id="-1")
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="0", layer_id="0")
+        self.tester.api_curator_delete_error_400_bad_request(user_id="abc", keyword_id="abc")
+        self.tester.api_curator_delete_error_400_bad_request(user_id=0, keyword_id=0)
+        self.tester.api_curator_delete_error_400_bad_request(user_id=-1, keyword_id=-1)
+        self.tester.api_curator_delete_error_400_bad_request(user_id="-1", keyword_id="-1")
+        self.tester.api_curator_delete_error_400_bad_request(user_id="0", keyword_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-    def test_delete_api_user_layer_error_401_unauthorized_user_without_login(self):
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id=1001)
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id="1001")
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=0, layer_id=-1)
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id="0", layer_id="-1")
-
-    def test_delete_api_user_layer_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # create a layer
-        layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
-        }
-        layer = self.tester.api_layer_create(layer)
-
-        # get the id of layer to use in test and after the testes, remove it
-        layer_id = layer["properties"]["layer_id"]
-
-        # add a user in a layer
-        user_layer = {
-            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': layer_id},
-            'type': 'UserLayer'
-        }
-        self.tester.api_user_layer_create(user_layer)
-
-        # get the id of layer to REMOVE it
-        user_id = user_layer["properties"]["user_id"]
-
-        # logout with rodrigo
-        self.tester.auth_logout()
-
-        ##################################################
-        # main test
-        ##################################################
-
-        # login with other user (admin) and he tries to delete a user from a layer of rodrigo
-        self.tester.auth_login("admin@admin.com", "admin")
+    
+    def test_delete_api_curator_error_401_unauthorized_user_without_login(self):
+        self.tester.api_curator_delete_error_401_unauthorized(user_id=1001, keyword_id=1001)
+        self.tester.api_curator_delete_error_401_unauthorized(user_id=1001, keyword_id="1001")
+        self.tester.api_curator_delete_error_401_unauthorized(user_id=0, keyword_id=-1)
+        self.tester.api_curator_delete_error_401_unauthorized(user_id="0", keyword_id="-1")
+    
+    def test_delete_api_curator_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
+        # login with user who is not an admin
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         # try to remove the user in layer
-        self.tester.api_user_layer_delete_error_403_forbidden(user_id=user_id, layer_id=layer_id)
-
-        ##################################################
-
-        # logout with admin
-        self.tester.auth_logout()
-
-        # login with rodrigo to delete the layer
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(layer_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+        self.tester.api_curator_delete_error_403_forbidden(user_id=1001, keyword_id=1001)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_user_layer_error_404_not_found(self):
+    def test_delete_api_curator_error_404_not_found(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5000)
-        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5001)
+        self.tester.api_curator_delete_error_404_not_found(user_id=1001, keyword_id=5000)
+        self.tester.api_curator_delete_error_404_not_found(user_id=5001, keyword_id=1001)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

@@ -3,18 +3,16 @@
 
 ### GET /api/curator/?\<params>
 
-This method gets layers from DB. If you doesn't put any parameter, so it will return all.
+This method gets curators from DB. If you doesn't put any parameter, so it will return all.
 - Parameters:
-    - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
-    - is_published (optional): it is a boolean that indicates if a layer is published or not (e.g. 'TRUE' or 'FALSE');
-    - f_table_name (optional): the name of the table that is a text (e.g. '_1005_layer_1003').
+    - user_id (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
     - keyword_id (optional): the id of a keyword that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - region (optional): the name of the region that is a text (e.g. 'Centro').
 - Examples:
-     - Get all layers: http://localhost:8888/api/layer/
-     - Get one layer by id: http://localhost:8888/api/layer/?layer_id=1001
-     - Get layers by is_published: http://localhost:8888/api/layer/?is_published=TRUE
-     - Get one layer by f_table_name: http://localhost:8888/api/layer/?f_table_name=layer_1003
-     - Get layers by keyword id: http://localhost:8888/api/layer/?keyword_id=1001
+     - Get all curators: http://localhost:8888/api/curator/
+     - Get curators by user id: http://localhost:8888/api/curator/?user_id=1001
+     - Get curators by keyword id: http://localhost:8888/api/curator/?keyword_id=1001
+     - Get curators by region: http://localhost:8888/api/curator/?region=Centro
 - Send (in Body):
 - Send (in Header):
 - Response: a JSON that contains the resources selected. Example:
@@ -22,13 +20,10 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
     {
         'features': [
             {
-                'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                               'name': 'Robberies between 1880 to 1900',
-                               'reference': [{'reference_id': 1005, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                               'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                               'created_at': '2017-03-05 00:00:00'},
-                'type': 'Layer'
-            },
+                'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
+                               'user_id': 1004, 'region': 'São Francisco'},
+                'type': 'Curator'
+            }
         ],
         'type': 'FeatureCollection'
     }
@@ -40,54 +35,42 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
 - Notes:
 
 
-### POST /api/layer/create/?\<params>
+### POST /api/curator/create/?\<params>
 
-This method creates a new layer described in a JSON.
+This method creates a new curator described in a JSON.
 - Parameters:
-    - is_to_create_feature_table (optional): it is a boolean that indicates if a feature table will be created together the layer or not (e.g. 'TRUE' or 'FALSE'; default is 'TRUE');
 - Examples:
-    - Create a layer with feature table: ```POST http://localhost:8888/api/layer/create```
-    - Create a layer without feature table: ```POST http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
+    - Create a curator: ```POST http://localhost:8888/api/curator/create```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
-        'type': 'Layer',
-        'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
-                       'description': '', 'source_description': '',
-                       'reference': [1050, 1052], 'keyword': [1001, 1041]},
-        'feature_table': {
-            'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-            'geometry': {"type": "MultiPoint"}
-        }
+        'properties': {'user_id': 1004, 'keyword_id': 1003, 'region': 'São Francisco'},
+        'type': 'Curator'
     }
     ```
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.
-- Response: a JSON that contains the id of the resource created. Example:
-    ```javascript
-    {'layer_id': 7}
-    ```
+- Response:
 - Error codes:
     - 400 (Bad Request): Attribute already exists.
-    - 400 (Bad Request): The parameters reference and keyword need to be a list.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
-    - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).
-    - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- - PUT /api/layer/update -->
+<!-- - PUT /api/curator/update -->
 
 
-### DELETE /api/layer/#id
+### DELETE /api/curator/?\<params>
 
-This method deletes one layer by id = #id.
+This method deletes one curator.
 - Parameters:
-    - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - user_id (mandatory): the id of the user that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - keyword_id (mandatory): the id of the keyword that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a resource by id: ```DELETE http://localhost:8888/api/layer/7```
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/curator/?user_id=1001&keyword_id=1002```
 - Send (in Body):
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.
@@ -95,7 +78,7 @@ This method deletes one layer by id = #id.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The owner of the layer is the unique who can delete the layer.
+    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

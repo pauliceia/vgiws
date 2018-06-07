@@ -7,6 +7,7 @@
 - [Reference](reference.md)
 - [Keyword](keyword.md)
 - [User](user.md)
+- [Curator](curator.md)
 <!-- - [Changeset](changeset.md) -->
 <!-- - [Element](element.md) -->
 <!-- - [Dynamic Attribute](dynamic_attribute.md) -->
