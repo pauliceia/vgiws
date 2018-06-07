@@ -8,6 +8,8 @@ files/ignore/*
 settings/db_settings.py
 settings/accounts.py
 
+files/db/sql/secreto/*
+
 # backup file of MySQL
 *.mwb.bak
 *.bak

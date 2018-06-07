@@ -96,7 +96,6 @@ class TestAPICurator(TestCase):
 
         self.tester.api_curator(expected)
 
-    
     def test_get_api_curator_return_user_layer_by_layer_id(self):
         expected = {
             'features': [
