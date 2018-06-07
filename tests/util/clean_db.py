@@ -40,6 +40,7 @@ from models.db_connection import PGSQLConnection
 __PATH_SQL_SCHEMA_FILE__ = ROOT_PROJECT_PATH + "/files/db/sql/schema/02_create_schema_db_for_postgresql.sql"
 __PATH_SQL_TRIGGER_FILE__ = ROOT_PROJECT_PATH + "/files/db/sql/03_create_triggers.sql"
 __PATH_SQL_INSERT_FILE__ = ROOT_PROJECT_PATH + "/files/db/sql/04_insert_test_values.sql"
+__PATH_SQL_INSERT_FILE_PRODUCTION__ = ROOT_PROJECT_PATH + "/files/db/sql/secreto/04_insert_production_values.sql"
 
 
 def remove_comments_from_sql_file(sql_file):
@@ -66,10 +67,7 @@ def remove_comments_from_sql_file(sql_file):
 def remove_special_characters(text):
     # remove special character
     text = text.replace("\ufeff", "")
-
     text = text.replace("\n\n\n", "").replace("\n\n", "")
-    # text = text.replace("\n", " ")
-    # text = text.replace("  ", " ")
 
     return text
 
@@ -84,12 +82,14 @@ def prepare_test_db_before_tests(arguments):
     # open the schema file and the insert file, both to edit the DB
     with open(__PATH_SQL_SCHEMA_FILE__, 'r') as schema_file, \
             open(__PATH_SQL_TRIGGER_FILE__, 'r') as trigger_file, \
-                open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file:
+                open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file, \
+                    open(__PATH_SQL_INSERT_FILE_PRODUCTION__, 'r') as insert_file_production:
 
         # get the data of files
         schema_data = schema_file.read()
-        insert_data = insert_file.read()
         trigger_data = trigger_file.read()
+        insert_data = insert_file.read()
+        insert_file_production = insert_file_production.read()
 
         # cleaning and arranging the files
         schema_data = remove_comments_from_sql_file(schema_data)
@@ -98,9 +98,13 @@ def prepare_test_db_before_tests(arguments):
         trigger_data = remove_comments_from_sql_file(trigger_data)
         trigger_data = remove_special_characters(trigger_data)
 
-        # just insert test data if it is in debug mode
+        # if in debug mode, so insert test data
         if "--debug" in arguments and arguments["--debug"] is True:
             insert_data = remove_comments_from_sql_file(insert_data)
+            insert_data = remove_special_characters(insert_data)
+        # if in production mode, so insert initial/real data
+        else:
+            insert_data = remove_comments_from_sql_file(insert_file_production)
             insert_data = remove_special_characters(insert_data)
 
         # executing the SQL files
@@ -110,10 +114,8 @@ def prepare_test_db_before_tests(arguments):
         # print("Inserting the triggers in DB.")
         # PGSQLConn.execute(trigger_data, modify_information=True)
 
-        # just insert test data if it is in debug mode
-        if "--debug" in arguments and arguments["--debug"] is True:
-            print("Inserting the test data in DB.\n")
-            PGSQLConn.execute(insert_data, modify_information=True)
+        print("Inserting the data in DB.\n")
+        PGSQLConn.execute(insert_data, modify_information=True)
 
         # send modifications to DB
         PGSQLConn.commit()
