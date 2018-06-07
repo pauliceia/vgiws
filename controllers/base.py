@@ -468,7 +468,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         layer_id = args[0]
         self.can_current_user_delete_a_layer(current_user_id, layer_id)
 
-        self.PGSQLConn.delete_layer_in_db(*args)
+        self.PGSQLConn.delete_layer(*args)
 
     # VALIDATION
 
@@ -591,7 +591,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         reference_id = args[0]
         self.can_current_user_update_or_delete(current_user_id, reference_id)
 
-        self.PGSQLConn.delete_reference_in_db(*args)
+        self.PGSQLConn.delete_reference(*args)
 
     # VALIDATION
 
@@ -646,7 +646,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         keyword_id = args[0]
         self.can_current_user_update_or_delete(current_user_id, keyword_id)
 
-        self.PGSQLConn.delete_keyword_in_db(*args)
+        self.PGSQLConn.delete_keyword(*args)
 
     # VALIDATION
 

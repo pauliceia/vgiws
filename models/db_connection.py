@@ -701,7 +701,7 @@ class PGSQLConnection:
 
         return id_in_json
 
-    def delete_layer_in_db(self, layer_id):
+    def delete_layer(self, layer_id):
         if is_a_invalid_id(layer_id):
             raise HTTPError(400, "Invalid parameter.")
 
@@ -1130,7 +1130,7 @@ class PGSQLConnection:
             else:
                 raise error  # if is other error, so raise it up
 
-    def delete_reference_in_db(self, resource_id):
+    def delete_reference(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
@@ -1372,7 +1372,7 @@ class PGSQLConnection:
             else:
                 raise error  # if is other error, so raise it up
 
-    def delete_keyword_in_db(self, resource_id):
+    def delete_keyword(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
