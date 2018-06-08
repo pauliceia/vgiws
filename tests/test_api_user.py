@@ -96,7 +96,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user(expected_at_least=expected_at_least)
+        self.tester.api_user_get(expected_at_least=expected_at_least)
 
     def test_get_api_user_return_user_by_user_id(self):
         expected = {
@@ -110,7 +110,7 @@ class TestAPIUser(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user(expected, user_id="1002")
+        self.tester.api_user_get(expected, user_id="1002")
 
     def test_get_api_user_return_users_by_name(self):
         expected = {
@@ -143,7 +143,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user(expected, name="êL")
+        self.tester.api_user_get(expected, name="êL")
 
     def test_get_api_user_return_users_by_email(self):
         expected = {
@@ -160,7 +160,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user(expected, email="rafael@admin.com")
+        self.tester.api_user_get(expected, email="rafael@admin.com")
 
     def test_get_api_user_return_users_by_username(self):
         expected = {
@@ -177,7 +177,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user(expected, username="miguel")
+        self.tester.api_user_get(expected, username="miguel")
 
     # user - create, update and delete
 

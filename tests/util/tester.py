@@ -87,7 +87,7 @@ class UtilTester:
     # USER
     ##################################################
 
-    def api_user(self, expected=None, expected_at_least=None, **arguments):
+    def api_user_get(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
