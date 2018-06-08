@@ -441,12 +441,12 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_curator_in_db(self, properties):
+    def create_curator_in_db(self, properties):
         p = properties
 
         query_text = """
             INSERT INTO curator (user_id, keyword_id, region, created_at)
-            VALUES ({0}, {1}, '{2}', LOCALTIMESTAMP);
+            VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
         """.format(p["user_id"], p["keyword_id"], p["region"])
 
         # do the query in database
@@ -458,7 +458,7 @@ class PGSQLConnection:
 
         try:
             # add the curator in db
-            self.add_curator_in_db(resource_json["properties"])
+            self.create_curator_in_db(resource_json["properties"])
         except KeyError as error:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
         except Error as error:
@@ -473,7 +473,7 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-            UPDATE curator SET region = '{2}'
+            UPDATE curator SET region = LOWER('{2}')
             WHERE user_id = {0} AND keyword_id = {1};
         """.format(p["user_id"], p["keyword_id"], p["region"])
 

@@ -93,14 +93,14 @@ INSERT INTO keyword (keyword_id, name, parent_id, user_id_creator, created_at) V
 -- clean table
 DELETE FROM curator;
 
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, 'Amaro', '2018-01-01');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1002, 'Azure', '2018-01-10');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, 'Belondres', '2018-01-10');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1010, 'Jorge', '2018-02-22');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, 'Centro', '2018-01-15');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, 'São Francisco', '2018-02-20');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, 'São Bento', '2018-02-22');
-INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021, 'Avenida Rodônia', '2018-03-24');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1001, 'amaro', '2018-01-01');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1001, 1002, 'azure', '2018-01-10');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1002, 1002, 'belondres', '2018-01-10');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1010, 'jorge', '2018-02-22');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1003, 1020, 'centro', '2018-01-15');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1004, 1003, 'são francisco', '2018-02-20');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1005, 1010, 'são bento', '2018-02-22');
+INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021, 'avenida rodônia', '2018-03-24');
 
 
 

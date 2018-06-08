@@ -23,42 +23,42 @@ class TestAPICurator(TestCase):
             'features': [
                 {
                     'properties': {'created_at': '2018-01-01 00:00:00', 'keyword_id': 1001,
-                                   'user_id': 1001, 'region': 'Amaro'},
+                                   'user_id': 1001, 'region': 'amaro'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1001, 'region': 'Azure'},
+                                   'user_id': 1001, 'region': 'azure'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'Belondres'},
+                                   'user_id': 1002, 'region': 'belondres'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1003, 'region': 'Jorge'},
+                                   'user_id': 1003, 'region': 'jorge'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
-                                   'user_id': 1003, 'region': 'Centro'},
+                                   'user_id': 1003, 'region': 'centro'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
-                                   'user_id': 1004, 'region': 'São Francisco'},
+                                   'user_id': 1004, 'region': 'são francisco'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1005, 'region': 'São Bento'},
+                                   'user_id': 1005, 'region': 'são bento'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-03-24 00:00:00', 'keyword_id': 1021,
-                                   'user_id': 1006, 'region': 'Avenida Rodônia'},
+                                   'user_id': 1006, 'region': 'avenida rodônia'},
                     'type': 'Curator'
                 }
             ]
@@ -72,12 +72,12 @@ class TestAPICurator(TestCase):
             'features': [
                 {
                     'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1003, 'region': 'Jorge'},
+                                   'user_id': 1003, 'region': 'jorge'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
-                                   'user_id': 1003, 'region': 'Centro'},
+                                   'user_id': 1003, 'region': 'centro'},
                     'type': 'Curator'
                 }
             ]
@@ -91,12 +91,12 @@ class TestAPICurator(TestCase):
             'features': [
                 {
                     'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1001, 'region': 'Azure'},
+                                   'user_id': 1001, 'region': 'azure'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'Belondres'},
+                                   'user_id': 1002, 'region': 'belondres'},
                     'type': 'Curator'
                 }
             ]
@@ -110,12 +110,12 @@ class TestAPICurator(TestCase):
             'features': [
                 {
                     'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
-                                   'user_id': 1004, 'region': 'São Francisco'},
+                                   'user_id': 1004, 'region': 'são francisco'},
                     'type': 'Curator'
                 },
                 {
                     'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1005, 'region': 'São Bento'},
+                                   'user_id': 1005, 'region': 'são bento'},
                     'type': 'Curator'
                 }
             ]
@@ -129,7 +129,7 @@ class TestAPICurator(TestCase):
             'features': [
                 {
                     'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'Belondres'},
+                                   'user_id': 1002, 'region': 'belondres'},
                     'type': 'Curator'
                 }
             ]
@@ -137,7 +137,7 @@ class TestAPICurator(TestCase):
 
         self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
     
-    # layer - create and delete
+    # curator - create and delete
 
     def test_api_curator_create_and_delete(self):
         # DO LOGIN
@@ -145,7 +145,7 @@ class TestAPICurator(TestCase):
 
         # add a user in a layer
         resource = {
-            'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'Jorge'},
+            'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'jorge'},
             'type': 'Curator'
         }
         self.tester.api_curator_create(resource)
@@ -170,7 +170,7 @@ class TestAPIUserCuratorErrors(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # layer errors - get
+    # curator errors - get
 
     def test_get_api_curator_error_400_bad_request(self):
         self.tester.api_curator_error_400_bad_request(keyword_id="abc")
@@ -192,15 +192,15 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester.api_curator_error_404_not_found(user_id="999")
         self.tester.api_curator_error_404_not_found(user_id="998")
     
-    # layer errors - create
+    # curator errors - create
 
-    def test_put_api_curator_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_curator_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'Joana'},
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_400_bad_request(resource)
@@ -208,20 +208,20 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_put_api_curator_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_curator_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a curator (without user_id)
         resource = {
-            'properties': {'keyword_id': 1010, 'region': 'Joana'},
+            'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_400_bad_request(resource)
 
         # try to create a curator (without keyword_id)
         resource = {
-            'properties': {'keyword_id': 1010, 'region': 'Joana'},
+            'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_400_bad_request(resource)
@@ -236,20 +236,20 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_put_api_curator_create_error_401_unauthorized_without_authorization_header(self):
+    def test_post_api_curator_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'Joana'},
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_401_unauthorized(resource)
 
-    def test_put_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+    def test_post_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
         # add a user in a layer
         resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'Joana'},
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_403_forbidden(resource)
@@ -257,7 +257,72 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # layer errors - delete
+    # curator errors - update
+    """
+    def test_put_api_curator_error_400_bad_request_attribute_already_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to insert a curator with user_id and keyword_id that already exist
+        resource = {
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_update_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_curator_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a curator (without user_id)
+        resource = {
+            'properties': {'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_create_error_400_bad_request(resource)
+
+        # try to create a curator (without keyword_id)
+        resource = {
+            'properties': {'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_create_error_400_bad_request(resource)
+
+        # try to create a curator (without region)
+        resource = {
+            'properties': {'user_id': 1003, 'keyword_id': 1010},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_curator_error_401_unauthorized_without_authorization_header(self):
+        resource = {
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_create_error_401_unauthorized(resource)
+
+    def test_put_api_curator_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # add a user in a layer
+        resource = {
+            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_create_error_403_forbidden(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+    """
+    # curator errors - delete
 
     def test_delete_api_curator_error_400_bad_request(self):
         # create a tester passing the unittest self
