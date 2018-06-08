@@ -227,11 +227,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    def api_curator_create(self, feature_json, **arguments):
+    def api_curator_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.post(self.URL + '/api/curator/create/{0}'.format(arguments),
-                                     data=dumps(feature_json), headers=self.headers)
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -298,6 +298,12 @@ class UtilTester:
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_curator_update_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/curator',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
 
     # curator errors - delete
 

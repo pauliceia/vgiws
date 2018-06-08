@@ -137,19 +137,30 @@ class TestAPICurator(TestCase):
 
         self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
     
-    # curator - create and delete
+    # curator - create, update and delete
 
-    def test_api_curator_create_and_delete(self):
+    def test_api_curator_create_update_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # add a user in a layer
+        ##################################################
+        # create curator
+        ##################################################
         resource = {
             'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'jorge'},
             'type': 'Curator'
         }
         self.tester.api_curator_create(resource)
 
+        ##################################################
+        # update curator
+        ##################################################
+        resource["properties"]["region"] = "cabral"
+        self.tester.api_curator_update(resource)
+
+        ##################################################
+        # remove curator
+        ##################################################
         # get the id of layer to REMOVE it
         user_id = resource["properties"]["user_id"]
         keyword_id = resource["properties"]["keyword_id"]
@@ -258,20 +269,6 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester.auth_logout()
 
     # curator errors - update
-    """
-    def test_put_api_curator_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to insert a curator with user_id and keyword_id that already exist
-        resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
 
     def test_put_api_curator_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
@@ -282,21 +279,21 @@ class TestAPIUserCuratorErrors(TestCase):
             'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.tester.api_curator_update_error_400_bad_request(resource)
 
         # try to create a curator (without keyword_id)
         resource = {
             'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.tester.api_curator_update_error_400_bad_request(resource)
 
         # try to create a curator (without region)
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.tester.api_curator_update_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -306,7 +303,7 @@ class TestAPIUserCuratorErrors(TestCase):
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_401_unauthorized(resource)
+        self.tester.api_curator_update_error_401_unauthorized(resource)
 
     def test_put_api_curator_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
         # DO LOGIN
@@ -317,11 +314,11 @@ class TestAPIUserCuratorErrors(TestCase):
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_403_forbidden(resource)
+        self.tester.api_curator_update_error_403_forbidden(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
     # curator errors - delete
 
     def test_delete_api_curator_error_400_bad_request(self):
