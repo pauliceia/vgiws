@@ -259,7 +259,7 @@ class TestAPIUserErrors(TestCase):
 
     # user errors - create
 
-    def test_put_api_user_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_user_create_error_400_bad_request_attribute_already_exist(self):
         # try to create a resource with email that already exist
         resource = {
             'type': 'User',
@@ -278,7 +278,7 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_error_create_400_bad_request(resource)
 
-    def test_put_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # create a feature
         feature = {
             'type': 'User',
@@ -290,7 +290,7 @@ class TestAPIUserErrors(TestCase):
     
     # user errors - update
 
-    def test_put_api_user_update_error_400_bad_request_attribute_already_exist(self):
+    def test_put_api_user_error_400_bad_request_attribute_already_exist(self):
         # login with gabriel
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
@@ -315,7 +315,7 @@ class TestAPIUserErrors(TestCase):
         # logout
         self.tester.auth_logout()
 
-    def test_put_api_user_update_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_user_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # login with gabriel
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
@@ -330,7 +330,7 @@ class TestAPIUserErrors(TestCase):
         # logout
         self.tester.auth_logout()
 
-    def test_put_api_user_update_error_401_unauthorized(self):
+    def test_put_api_user_error_401_unauthorized(self):
         # update a user
         resource = {
             'type': 'User',
@@ -339,7 +339,7 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_update_error_401_unauthorized(resource)
 
-    def test_put_api_user_update_error_403_forbidden(self):
+    def test_put_api_user_error_403_forbidden(self):
         # login with gabriel
         self.tester.auth_login("rafael@admin.com", "rafael")
 

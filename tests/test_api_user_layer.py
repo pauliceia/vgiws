@@ -270,7 +270,7 @@ class TestAPIUserLayerErrors(TestCase):
     
     # user_layer errors - create
 
-    def test_put_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
@@ -285,7 +285,7 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_user_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_user_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
@@ -316,14 +316,14 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_put_api_user_layer_create_error_401_unauthorized_without_authorization_header(self):
+    def test_post_api_user_layer_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1001},
             'type': 'UserLayer'
         }
         self.tester.api_user_layer_create_error_401_unauthorized(resource)
 
-    def test_put_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
+    def test_post_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
         # DO LOGIN
         # login with gabriel and he tries to add a user in the layer of admin
         self.tester.auth_login("gabriel@admin.com", "gabriel")

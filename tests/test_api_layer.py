@@ -235,7 +235,7 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - create
 
-    def test_put_api_layer_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -269,7 +269,7 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -322,7 +322,7 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_layer_create_error_401_unauthorized(self):
+    def test_post_api_layer_create_error_401_unauthorized(self):
         feature = {
             'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
                            'description': '', 'fk_keyword_id': 1041},

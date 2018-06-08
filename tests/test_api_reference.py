@@ -226,7 +226,7 @@ class TestAPIReferenceErrors(TestCase):
 
     # reference errors - create
 
-    def test_put_api_reference_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_reference_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -242,7 +242,7 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_reference_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_reference_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -256,7 +256,7 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_reference_create_error_401_unauthorized(self):
+    def test_post_api_reference_create_error_401_unauthorized(self):
         feature = {
             'properties': {'description': 'BookA'},
             'type': 'Reference'
@@ -265,7 +265,7 @@ class TestAPIReferenceErrors(TestCase):
 
     # reference errors - update
 
-    def test_put_api_reference_update_error_400_bad_request_attribute_already_exist(self):
+    def test_put_api_reference_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -281,7 +281,7 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_reference_update_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_reference_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -302,14 +302,14 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_reference_update_error_401_unauthorized(self):
+    def test_put_api_reference_error_401_unauthorized(self):
         feature = {
             'properties': {'reference_id': 1001, 'description': 'BookA'},
             'type': 'Reference'
         }
         self.tester.api_reference_update_error_401_unauthorized(feature)
 
-    def test_put_api_reference_update_error_403_forbidden(self):
+    def test_put_api_reference_error_403_forbidden(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
