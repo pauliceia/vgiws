@@ -45,10 +45,10 @@ Install the dependencies that are in requirements.txt file:
 $ pip install -r requirements.txt
 ```
 
-Run the application normally or on Debug Mode:
+Run the application normally, on Debug Mode, or on Debug Mode and not publishing the layers in geoserver:
 
 ```
 $ python main.py
 $ python main.py --debug=True
-$ python main.py --debug=True
+$ python main.py --debug=True --publish_layers_in_geoserver=False
 ```
