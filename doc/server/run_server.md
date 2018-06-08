@@ -50,4 +50,5 @@ Run the application normally or on Debug Mode:
 ```
 $ python main.py
 $ python main.py --debug=True
+$ python main.py --debug=True
 ```

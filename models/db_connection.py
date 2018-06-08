@@ -97,10 +97,11 @@ class BaseDBConnection(metaclass=ABCMeta):
 @Singleton
 class PGSQLConnection:
 
-    def __init__(self, args={}):
-        self.__ARGS__ = args
+    def __init__(self, debug_mode, publish_layers_in_geoserver):
+        self.DEBUG_MODE = debug_mode
+        self.PUBLISH_LAYERS_IN_GEOSERVER = publish_layers_in_geoserver
 
-        if self.__ARGS__["DEBUG_MODE"]:
+        if self.DEBUG_MODE:
             self.__DO_CONNECTION__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
             self.__DB_CONNECTION__ = __DEBUG_PGSQL_CONNECTION_SETTINGS__
             self.__GEOSERVER_CONNECTION__ = __DEBUG_GEOSERVER_CONNECTION_SETTINGS__
@@ -125,7 +126,7 @@ class PGSQLConnection:
         It can be for the normal DB or test DB
         :return:
         """
-        if self.__ARGS__["DEBUG_MODE"]:
+        if self.DEBUG_MODE:
             print("\nConnecting in PostgreSQL with:"
                   "\n- hostname: ", __connection_settings__["HOSTNAME"],
                   "\n- port: ", __connection_settings__["PORT"],
@@ -174,7 +175,7 @@ class PGSQLConnection:
         # close the connection
         self.__PGSQL_CONNECTION__.close()
 
-        print("Closed the PostgreSQL's connection!\n")
+        print("\nClosed the PostgreSQL's connection!\n")
 
     def commit(self):
         """

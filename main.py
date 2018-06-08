@@ -20,11 +20,13 @@ from models import *
 
 # define all arguments to pass in command line
 # Define which IP will be used
-define("address", default=IP_APP, help="run on the IP given", type=str)
+define("address", default=IP_APP, help="run on the given IP", type=str)
 # Define which port will be used
-define("port", default=PORT_APP, help="run on the port given", type=int)
-# Debug mode will detail the information on console
+define("port", default=PORT_APP, help="run on the given port", type=int)
+# Debug mode will detail the information on console and use the test DB
 define("debug", default=DEBUG_MODE, help="run in debug mode", type=bool)
+# Define if the layers will be published in geoserver
+define("publish_layers_in_geoserver", default=PUBLISH_LAYERS_IN_GEOSERVER, help="publish or not the layers in geoserver", type=bool)
 # to see the list of arguments, use:
 # $ python main.py --help
 
@@ -71,12 +73,10 @@ class HttpServerApplication(Application):
             template_path=join(dirname(__file__), "templates"),
             # xsrf_cookies=True,
             xsrf_cookies=False,
-
             # how to generate: https://gist.github.com/didip/823887
             cookie_secret=__COOKIE_SECRET__,
             # login_url="/auth/login/",
             login_url=LOGIN_URL,
-
             debug=options.debug,
             current_year=CURRENT_YEAR,
             author=AUTHOR,
@@ -88,8 +88,10 @@ class HttpServerApplication(Application):
         # create a global variable to debug mode
         self.DEBUG_MODE = options.debug
 
+        self.PUBLISH_LAYERS_IN_GEOSERVER = options.publish_layers_in_geoserver
+
         # create a instance of the databases passing arguments
-        self.PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
+        self.PGSQLConn = PGSQLConnection.get_instance(self.DEBUG_MODE, self.PUBLISH_LAYERS_IN_GEOSERVER)
         # self.Neo4JConn = Neo4JConnection.get_instance({"DEBUG_MODE": self.DEBUG_MODE})
 
         # Pass the handlers and the settings created to the constructor of the super class (father class)
@@ -101,7 +103,8 @@ def start_application():
     http_server = HTTPServer(HttpServerApplication())
     http_server.listen(options.port, address=options.address)
     print("\nRunning Tornado on " + URL_APP)
-    print("Debug mode? ", options.debug)
+    print("Is debug mode? ", options.debug)
+    print("Is publishing the layers in Geoserver? ", options.publish_layers_in_geoserver)
     print("Version of service: ", VERSION, "\n")
     IOLoop.current().start()
 
@@ -131,7 +134,6 @@ def main():
 
     try:
         start_application()
-
     # CTRL+C on linux / CTRL+BREAK on windows
     except KeyboardInterrupt:
         stop_application()

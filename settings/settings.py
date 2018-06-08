@@ -32,7 +32,10 @@ LOGIN_URL = "/"
 # By default is False, so run the application normally
 # True is just for Debug
 DEBUG_MODE = False
-# DEBUG_MODE = True
+
+# By default is True, so publish the layers in geoserver
+# False is just for Debug
+PUBLISH_LAYERS_IN_GEOSERVER = True
 
 # A list of hosts that have permission to access the application
 # HOSTS_ALLOWED = ["http://localhost:8888", "http://localhost:8080"]
