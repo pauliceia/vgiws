@@ -743,19 +743,18 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
 
         postgresql_connection = '"host=' + __DB_CONNECTION__["HOSTNAME"] + ' dbname=' + __DB_CONNECTION__["DATABASE"] + \
-                                ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__[
-                                    "PASSWORD"] + '"'
+                                ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
         try:
             # FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-                                                 ' -nln ' + f_table_name + ' -skipfailures'
+                                                 ' -nln ' + f_table_name + ' -lco FID=id -skipfailures'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
             # VERSION FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-                                                 ' -nln version_' + f_table_name + ' -skipfailures'
+                                                 ' -nln version_' + f_table_name + ' -lco FID=id -skipfailures'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
