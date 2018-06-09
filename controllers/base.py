@@ -745,8 +745,16 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
                                 ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__[
                                     "PASSWORD"] + '"'
         try:
+            # FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
                                                  ' -nln ' + f_table_name + ' -skipfailures'
+
+            # call a process to execute the command to import the SHP into the PostGIS
+            check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
+
+            # VERSION FEATURE TABLE
+            command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
+                                                 ' -nln version_' + f_table_name + ' -skipfailures'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
@@ -783,7 +791,16 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-        # self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
+
+
+
+        # TODO: remove the SHP file from temp folder
+
+        # commit the feature table
+        self.PGSQLConn.commit()
+        # publish the feature table/layer in geoserver
+        self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
+        self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):

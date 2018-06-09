@@ -182,13 +182,15 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, keyword_id="1001")
 
-    # layer - create and delete
+    # layer - create, update and delete
 
-    def test_api_layer_create_and_delete(self):
+    def test_api_layer_create_update_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
+        ##################################################
         # create a layer
+        ##################################################
         resource = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
@@ -201,6 +203,13 @@ class TestAPILayer(TestCase):
         }
         resource = self.tester.api_layer_create(resource)
 
+        ##################################################
+        # update the layer
+        ##################################################
+
+        ##################################################
+        # delete the layer
+        ##################################################
         # get the id of layer to SEARCH AND REMOVE it
         resource_id = resource["properties"]["layer_id"]
 

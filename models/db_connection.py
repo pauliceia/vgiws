@@ -40,24 +40,34 @@ from psycopg2.extras import RealDictCursor
 from modules.design_pattern import Singleton
 
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__, \
-                                    __GEOSERVER_CONNECTION_SETTINGS__, __DEBUG_GEOSERVER_CONNECTION_SETTINGS__
+                                    __GEOSERVER_CONNECTION_SETTINGS__, __DEBUG_GEOSERVER_CONNECTION_SETTINGS__, \
+                                    __GEOSERVER_REST_CONNECTION_SETTINGS__
 
 from .util import *
 
 
-def if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status(method):
+# def if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status(method):
+#
+#     def wrapper(self, *args, **kwargs):
+#
+#         try:
+#             result = method(self, *args, **kwargs)
+#         except exceptions.ConnectionError:
+#             # put DB status on offline
+#             self.set_connection_status(status=False)
+#
+#             raise HTTPError(500, "Neo4J is not running.")
+#
+#         return result
+#
+#     return wrapper
+
+
+def run_if_can_publish_layers_in_geoserver(method):
 
     def wrapper(self, *args, **kwargs):
-
-        try:
-            result = method(self, *args, **kwargs)
-        except exceptions.ConnectionError:
-            # put DB status on offline
-            self.set_connection_status(status=False)
-
-            raise HTTPError(500, "Neo4J is not running.")
-
-        return result
+        if self.PUBLISH_LAYERS_IN_GEOSERVER:
+            method(self, *args, **kwargs)
 
     return wrapper
 
@@ -110,14 +120,16 @@ class PGSQLConnection:
             self.__DB_CONNECTION__ = __PGSQL_CONNECTION_SETTINGS__
             self.__GEOSERVER_CONNECTION__ = __GEOSERVER_CONNECTION_SETTINGS__
 
+        self.__GEOSERVER_REST_CONNECTION_SETTINGS__ = __GEOSERVER_REST_CONNECTION_SETTINGS__
+
         # cursor_factory=RealDictCursor means that the "row" of the table will be
         # represented by a dictionary in python
         self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
 
         # create a browser simulator to connect with geoserver
         self.__SESSION__ = Session()
-        self.__URL_GEOSERVER__ = "http://{0}:{1}".format(self.__GEOSERVER_CONNECTION__["HOSTNAME"],
-                                                         self.__GEOSERVER_CONNECTION__["PORT"])
+        self.__URL_GEOSERVER_REST__ = "http://{0}:{1}".format(self.__GEOSERVER_REST_CONNECTION_SETTINGS__["HOSTNAME"],
+                                                              self.__GEOSERVER_REST_CONNECTION_SETTINGS__["PORT"])
 
     def __DO_CONNECTION__(self, __connection_settings__):
         """
@@ -218,15 +230,17 @@ class PGSQLConnection:
     # GEOSERVER
     ################################################################################
 
-    def get_layers_from_geoserver(self, f_table_name):
-        response = self.__SESSION__.get(self.__URL_GEOSERVER__ + '/layers/{0}/{1}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
-                                                                                          self.__GEOSERVER_CONNECTION__["DATASTORE"]))
+    @run_if_can_publish_layers_in_geoserver
+    def get_layers_from_geoserver(self):
+        response = self.__SESSION__.get(self.__URL_GEOSERVER_REST__ + '/layers/{0}/{1}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                               self.__GEOSERVER_CONNECTION__["DATASTORE"]))
 
         if response.status_code == 404:
             raise HTTPError(404, str(response))
         elif response.status_code == 500:
             raise HTTPError(500, str(response))
 
+    @run_if_can_publish_layers_in_geoserver
     def publish_feature_table_in_geoserver(self, f_table_name):
         request_body = {
             "workspace": self.__GEOSERVER_CONNECTION__["WORKSPACE"],
@@ -236,22 +250,23 @@ class PGSQLConnection:
             "projection": "EPSG: 4326"
         }
 
-        response = self.__SESSION__.post(self.__URL_GEOSERVER__ + '/layer/publish', data=request_body)
+        response = self.__SESSION__.post(self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body)
 
         if response.status_code == 404:
-            raise HTTPError(404, str(response))
+            raise HTTPError(404, str(response.text))
         elif response.status_code == 500:
-            raise HTTPError(500, str(response))
+            raise HTTPError(500, str(response.text))
 
+    @run_if_can_publish_layers_in_geoserver
     def unpublish_feature_table_in_geoserver(self, f_table_name):
-        response = self.__SESSION__.delete(self.__URL_GEOSERVER__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
-                                                                                                       self.__GEOSERVER_CONNECTION__["DATASTORE"],
-                                                                                                       f_table_name))
+        response = self.__SESSION__.delete(self.__URL_GEOSERVER_REST__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                                            self.__GEOSERVER_CONNECTION__["DATASTORE"],
+                                                                                                            f_table_name))
 
         if response.status_code == 404:
-            raise HTTPError(404, str(response))
+            raise HTTPError(404, str(response.text))
         elif response.status_code == 500:
-            raise HTTPError(500, str(response))
+            raise HTTPError(500, str(response.text))
 
     ################################################################################
     # USER
@@ -838,8 +853,6 @@ class PGSQLConnection:
 
         # create the feature table in __feature__ schema and create the version feature table in __version__ schema
 
-        # for schema in ["__feature__", "__version__"]:
-
         # build the query to create a new feature table
         query_text = """        
             CREATE TABLE {0} (
@@ -861,9 +874,11 @@ class PGSQLConnection:
 
         # version
 
+        version_f_table_name = "version_{0}".format(f_table_name)
+
         # build the query to create a new feature table
         query_text = """        
-            CREATE TABLE version_{0} (
+            CREATE TABLE {0} (
               id SERIAL,              
               geom GEOMETRY({1}, 4326) NOT NULL,              
               {2}              
@@ -876,9 +891,15 @@ class PGSQLConnection:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
             );        
-        """.format(f_table_name, geometry, properties)
+        """.format(version_f_table_name, geometry, properties)
 
         self.__PGSQL_CURSOR__.execute(query_text)
+
+        # put the feature tables in database
+        self.commit()
+        # publish the features tables/layers in geoserver
+        self.publish_feature_table_in_geoserver(f_table_name)
+        self.publish_feature_table_in_geoserver(version_f_table_name)
 
     def delete_feature_table(self, f_table_name):
 
@@ -900,16 +921,24 @@ class PGSQLConnection:
 
         # version
 
+        version_f_table_name = "version_{0}".format(f_table_name)
+
         # build the query to create a new feature table
         query_text = """        
-                DROP TABLE IF EXISTS version_{0} CASCADE ;
-            """.format(f_table_name)
+            DROP TABLE IF EXISTS {0} CASCADE ;
+        """.format(version_f_table_name)
 
         try:
             self.__PGSQL_CURSOR__.execute(query_text)
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, str(error))
+
+        # remove the feature tables in database
+        self.commit()
+        # unpublish the features tables/layers in geoserver
+        self.unpublish_feature_table_in_geoserver(f_table_name)
+        self.unpublish_feature_table_in_geoserver(version_f_table_name)
 
     ################################################################################
     # USER_LAYER

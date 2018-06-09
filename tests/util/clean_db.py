@@ -75,9 +75,9 @@ def remove_special_characters(text):
 def prepare_test_db_before_tests(arguments):
     if "--debug" in arguments and arguments["--debug"] is True:
         # create a instance of DB passing arguments
-        PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": True})
+        PGSQLConn = PGSQLConnection.get_instance(True, True)
     else:
-        PGSQLConn = PGSQLConnection.get_instance({"DEBUG_MODE": False})
+        PGSQLConn = PGSQLConnection.get_instance(False, True)
 
     # open the schema file and the insert file, both to edit the DB
     with open(__PATH_SQL_SCHEMA_FILE__, 'r') as schema_file, \
