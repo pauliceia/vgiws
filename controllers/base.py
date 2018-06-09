@@ -7,8 +7,9 @@
 
 from json import loads
 from abc import ABCMeta
-from os import makedirs
+from os import makedirs, remove as remove_file
 from os.path import exists
+from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile
 
@@ -791,16 +792,15 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-
-
-
-        # TODO: remove the SHP file from temp folder
-
         # commit the feature table
         self.PGSQLConn.commit()
         # publish the feature table/layer in geoserver
         self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
         self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
+
+        # remove the temporary file and folder of the shapefile
+        remove_file(ZIP_FILE_NAME)
+        remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
 
 
 # class BaseFeatureTable(BaseHandlerTemplateMethod):
