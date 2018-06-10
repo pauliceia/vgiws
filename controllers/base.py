@@ -747,14 +747,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         try:
             # FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-                                                 ' -nln ' + f_table_name + ' -lco FID=id -skipfailures'
+                                                 ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
             # VERSION FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-                                                 ' -nln version_' + f_table_name + ' -lco FID=id -skipfailures'
+                                                 ' -nln version_' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
