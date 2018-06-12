@@ -7,7 +7,7 @@ This method imports a ShapeFile as feature table of a layer.
     - f_table_name (mandatory) (text): the name of the layer/feature table used to save the ShapeFile (e.g. points).
     - file_name (mandatory) (text): the file name of the zip with the extension (e.g. points.zip).
 - Examples:
-    - Import a ShapeFile: ```DELETE http://localhost:8888/api/import/shp/?f_table_name=points&?file_name=points.zip```
+    - Import a ShapeFile: ```DELETE http://localhost:8888/api/import/shp/?f_table_name=points&file_name=points.zip```
 - Send:
     - Send the binary of the zip file.
 - Response:

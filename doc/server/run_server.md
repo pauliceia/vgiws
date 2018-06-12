@@ -24,13 +24,13 @@ If you don't have the pip, install it:
 ```
 $ sudo apt-get update
 $ sudo apt-get -y install python-pip
-$ sudo apt-get -y install python-pip3
+$ sudo apt-get -y install python3-pip
 ```
 
 To create a new virtualenv with Python 3:
 
 ```
-$ mkvirtualenv -p /usr/bin/python3 pauliceia_webservice
+$ mkvirtualenv -p /usr/bin/python3.5 pauliceia_webservice
 ```
 
 If the environment do not turn on automatically, so switch it:
