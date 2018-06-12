@@ -52,5 +52,5 @@ __REDIRECT_URI_FACEBOOK__ = "http://localhost:8888/api/auth/facebook"
 __REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"
 
 # after login with social login, redirect to... (production and debug)
-__AFTER_LOGIN_REDIRECT_TO__ = "http://localhost:8888"
-__AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8888"
+__AFTER_LOGIN_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/social"
+__AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social"
