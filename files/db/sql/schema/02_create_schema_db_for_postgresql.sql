@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qui 07 Jun 2018 18:49:42 -03
+-- Ter 12 Jun 2018 14:02:46 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -45,14 +45,7 @@ CREATE TABLE IF NOT EXISTS layer (
   description TEXT NULL,
   source_description TEXT NULL ,
   created_at TIMESTAMP NOT NULL,
-  is_published BOOLEAN NOT NULL DEFAULT FALSE,
-  user_id_published_by INT NULL,
-  PRIMARY KEY (layer_id),
-  CONSTRAINT fk_layer_user_1
-    FOREIGN KEY (user_id_published_by)
-    REFERENCES pauliceia_user (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE
+  PRIMARY KEY (layer_id)
 );
 
 

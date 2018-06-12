@@ -561,8 +561,6 @@ class PGSQLConnection:
                         'description',          description,
                         'source_description',   source_description,
                         'created_at',           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_published',         is_published,
-                        'user_id_published_by', user_id_published_by,
                         'reference',            reference_.jsontags,
                         'keyword',              keyword.jsontags
                     )
@@ -632,8 +630,8 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-            INSERT INTO layer (f_table_name, name, description, source_description, created_at, user_id_published_by) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, NULL) RETURNING layer_id;
+            INSERT INTO layer (f_table_name, name, description, source_description, created_at) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id;
         """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
 
         # do the query in database

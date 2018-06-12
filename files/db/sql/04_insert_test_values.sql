@@ -174,8 +174,8 @@ DELETE FROM layer;
 
 
 -- add layer 1001
-INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
-(1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01', TRUE, 1001);
+INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at) VALUES 
+(1001, 'layer_1001', 'Addresses in 1869', '', '', '2017-01-01');
 
 -- add reference
 INSERT INTO reference (reference_id, description, user_id_creator) VALUES (1001, 
@@ -277,8 +277,8 @@ SELECT * FROM changeset WHERE id=1001;
 
 
 -- add layer 1002
-INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
-(1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05', TRUE, 1003);
+INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at) VALUES 
+(1002, 'layer_1002', 'Robberies between 1880 to 1900', '', '', '2017-03-05');
 
 -- add reference
 INSERT INTO reference (reference_id, description, user_id_creator) VALUES (1005, 
@@ -469,8 +469,8 @@ SELECT * FROM changeset WHERE id=1003;
 
 
 -- add layer_1004
-INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at, is_published, user_id_published_by) VALUES 
-(1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15', TRUE, 1003);
+INSERT INTO layer (layer_id, f_table_name, name, description, source_description, created_at) VALUES 
+(1004, 'layer_1004', 'Streets in 1920', 'streets', '', '2017-06-15');
 
 -- add reference
 -- ...
@@ -638,8 +638,8 @@ SELECT * FROM changeset WHERE id=1005;
 
 
 -- add layer_1006
-INSERT INTO layer (layer_id, f_table_name, name, description, created_at, is_published, user_id_published_by) VALUES 
-(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04', TRUE, 1003);
+INSERT INTO layer (layer_id, f_table_name, name, description, created_at) VALUES 
+(1006, 'layer_1006', 'Cinemas between 1900 to 1950', '', '2017-09-04');
 
 -- add reference
 INSERT INTO reference (reference_id, description, user_id_creator) VALUES (1025,

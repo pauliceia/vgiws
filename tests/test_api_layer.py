@@ -21,43 +21,37 @@ class TestAPILayer(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                    'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900', 'reference': [1005],
+                    'properties': {'description': '', 'name': 'Robberies between 1880 to 1900', 'reference': [1005],
                                    'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
                                    'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930', 'reference': [1010],
+                    'properties': {'description': '', 'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
-                                   'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
+                    'properties': {'description': 'streets', 'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
                                    'f_table_name': 'layer_1004', 'source_description': '',
                                    'created_at': '2017-06-15 00:00:00', 'keyword': [1040]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
-                                   'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
+                    'properties': {'description': 'some hospitals', 'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
                                    'f_table_name': 'layer_1005', 'source_description': None,
                                    'created_at': '2017-08-04 00:00:00', 'keyword': [1023]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950', 'reference': [1025],
+                    'properties': {'description': '', 'name': 'Cinemas between 1900 to 1950', 'reference': [1025],
                                    'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
                                    'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
                     'type': 'Layer'
@@ -71,8 +65,7 @@ class TestAPILayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                    'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
@@ -83,72 +76,11 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, layer_id="1001")
 
-    def test_get_api_layer_return_layer_by_is_published(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869',
-                                   'reference': [1001, 1002],
-                                   'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
-                                   'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Robberies between 1880 to 1900', 'reference': [1005],
-                                   'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                                   'created_at': '2017-03-05 00:00:00', 'keyword': [1010]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': 'streets',
-                                   'name': 'Streets in 1920', 'reference': None, 'layer_id': 1004,
-                                   'f_table_name': 'layer_1004', 'source_description': '',
-                                   'created_at': '2017-06-15 00:00:00', 'keyword': [1040]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                                   'name': 'Cinemas between 1900 to 1950', 'reference': [1025],
-                                   'layer_id': 1006, 'f_table_name': 'layer_1006', 'source_description': None,
-                                   'created_at': '2017-09-04 00:00:00', 'keyword': [1031]},
-                    'type': 'Layer'
-                }
-            ]
-        }
-
-        self.tester.api_layer(expected, is_published="TRUE")
-
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930', 'reference': [1010],
-                                   'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
-                                   'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
-                    'type': 'Layer'
-                },
-                {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': 'some hospitals',
-                                   'name': 'Hospitals between 1800 to 1950', 'reference': None, 'layer_id': 1005,
-                                   'f_table_name': 'layer_1005', 'source_description': None,
-                                   'created_at': '2017-08-04 00:00:00', 'keyword': [1023]},
-                    'type': 'Layer'
-                },
-            ]
-        }
-
-        self.tester.api_layer(expected, is_published="FALSE")
-
     def test_get_api_layer_return_layer_by_f_table_name(self):
         expected = {
             'features': [
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930', 'reference': [1010],
+                    'properties': {'description': '', 'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'
@@ -164,15 +96,13 @@ class TestAPILayer(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'user_id_published_by': 1001, 'is_published': True, 'description': '',
-                                   'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                    'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
                                    'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
                                    'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                     'type': 'Layer'
                 },
                 {
-                    'properties': {'user_id_published_by': None, 'is_published': False, 'description': '',
-                                   'name': 'Streets in 1930', 'reference': [1010],
+                    'properties': {'description': '', 'name': 'Streets in 1930', 'reference': [1010],
                                    'layer_id': 1003, 'f_table_name': 'layer_1003', 'source_description': '',
                                    'created_at': '2017-04-10 00:00:00', 'keyword': [1001, 1040]},
                     'type': 'Layer'

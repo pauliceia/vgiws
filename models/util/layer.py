@@ -16,9 +16,6 @@ def get_subquery_layer_table(**kwargs):
     if "f_table_name" in kwargs and kwargs["f_table_name"] is not None:
         conditions_of_where.append("f_table_name = '{0}'".format(kwargs["f_table_name"]))
 
-    if "is_published" in kwargs and kwargs["is_published"] is not None:
-        conditions_of_where.append("is_published = {0}".format(kwargs["is_published"]))
-
     # default get all features, without where clause
     where_clause = ""
 
