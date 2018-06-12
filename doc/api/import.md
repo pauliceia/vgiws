@@ -12,9 +12,8 @@ This method imports a ShapeFile as feature table of a layer.
     - Send the binary of the zip file.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Invalid file name: \<FILE_NAME\>.
+     - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
      - 400 (Bad Request): Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.
-     - 404 (Not Found): Not found a route with the parameter: \<PARAMETER\>.
      - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
 - Notes:
     - It is necessary create a new layer without a feature table before to import the ShapeFile.

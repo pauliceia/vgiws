@@ -813,7 +813,7 @@ class UtilTester:
     # IMPORT
     ##################################################
 
-    def api_import_shp(self, binary_file, **arguments):
+    def api_import_shp_create(self, binary_file, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
@@ -821,9 +821,16 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-        # resulted = response.text  # convert string to dict/JSON
-        #
-        # print("resulted: ", resulted)
+    # import errors - create
+
+    def api_import_shp_create_error_400_bad_request(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
 
     ##################################################
     # FEATURE TABLE

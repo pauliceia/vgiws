@@ -774,7 +774,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         # the file needs to be in a zip file
         if not arguments["file_name"].endswith(".zip"):
-            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]))
+            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]) + ". It is necessary to be a zip.")
 
         # file name of the zip (e.g. /tmp/vgiws/points.zip)
         ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
