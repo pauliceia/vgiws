@@ -7,7 +7,7 @@
 
 from base64 import b64decode
 
-from ..base import *
+from ..base import BaseHandler, BaseHandlerSocialLogin
 
 from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
 from tornado.gen import coroutine
@@ -70,7 +70,7 @@ class AuthLoginHandler(BaseHandler):
         self.write(json_encode({}))
 
 
-class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
+class GoogleLoginHandler(BaseHandlerSocialLogin, GoogleOAuth2Mixin):
     """
         Tornado Auth:
         http://www.tornadoweb.org/en/stable/auth.html
@@ -96,19 +96,8 @@ class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
             # for key in user:
             #     print(key, ": ", user[key])
 
-            # to social login, create a blank password
-            user_json = {
-                'type': 'User',
-                'properties': {'user_id': -1, 'email': user["email"], 'password': '',
-                               'username': user["email"], 'name': user["name"],
-                               'terms_agreed': True, 'can_add_layer': True,
-                               'receive_notification_by_email': False}
-            }
+            self.social_login(user)
 
-            encoded_jwt_token = self.login(user_json)
-            self.set_header('Authorization', encoded_jwt_token)
-
-            super(BaseHandler, self).redirect(self.__AFTER_LOGIN_REDIRECT_TO__)
         else:
             yield self.authorize_redirect(
                 redirect_uri=redirect_uri,
@@ -119,7 +108,7 @@ class GoogleLoginHandler(BaseHandler, GoogleOAuth2Mixin):
             )
 
 
-class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
+class FacebookLoginHandler(BaseHandlerSocialLogin, FacebookGraphMixin):
     """
         Tornado Auth:
         http://www.tornadoweb.org/en/stable/auth.html
@@ -158,17 +147,8 @@ class FacebookLoginHandler(BaseHandler, FacebookGraphMixin):
             # for key in user:
             #     print(key, ": ", user[key])
 
-            user_json = {
-                'type': 'User',
-                'properties': {'user_id': -1, 'email': user["email"], 'password': '',
-                               'username': user["email"], 'name': user['name'],
-                               'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
-            }
+            self.social_login(user)
 
-            encoded_jwt_token = self.login(user_json)
-            self.set_header('Authorization', encoded_jwt_token)
-
-            super(BaseHandler, self).redirect(self.__AFTER_LOGIN_REDIRECT_TO__)
         else:
             yield self.authorize_redirect(
                     redirect_uri=redirect_uri,

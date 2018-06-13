@@ -136,7 +136,7 @@ class BaseHandler(RequestHandler):
 
     # def logout(self):
     #     # if there is no user logged, so raise a exception
-    #     if not self.get_current_user():
+    #     if not self.get_current_user_():
     #         raise HTTPError(404, "Not found any user to logout.")
     #
     #     # if there is a user logged, so remove it from cookie
@@ -146,14 +146,14 @@ class BaseHandler(RequestHandler):
 
     # CURRENT USER
 
-    def get_current_user(self):
+    def get_current_user_(self):
         token = self.request.headers["Authorization"]
         user = get_decoded_jwt_token(token)
         return user
 
     def get_current_user_id(self):
         try:
-            current_user = self.get_current_user()
+            current_user = self.get_current_user_()
             return current_user["properties"]["user_id"]
         except KeyError as error:
             return None
@@ -165,7 +165,7 @@ class BaseHandler(RequestHandler):
         :return: True or False
         """
 
-        current_user = self.get_current_user()
+        current_user = self.get_current_user_()
 
         return current_user["properties"]["is_the_admin"]
 
@@ -214,6 +214,25 @@ class BaseHandler(RequestHandler):
             query[parts[0]] = parts[1]
 
         return query
+
+
+class BaseHandlerSocialLogin(BaseHandler):
+
+    def social_login(self, user):
+        user_json = {
+            'type': 'User',
+            'properties': {'user_id': -1, 'email': user["email"], 'password': '',
+                           'username': user["email"], 'name': user['name'],
+                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+        }
+
+        encoded_jwt_token = self.login(user_json)
+        self.set_header('Authorization', encoded_jwt_token)
+
+        # put the Token in the URL that redirect
+        URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token.decode("utf-8")
+
+        super(BaseHandler, self).redirect(URL_TO_REDIRECT)
 
 
 # TEMPLATE METHOD
