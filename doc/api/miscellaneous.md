@@ -23,7 +23,7 @@ This method return the current logged user.
     ```
 - Error codes:
     - 400 (Bad Request): Invalid Token.
-    - 403 (Forbidden): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
 - Notes:
 
 

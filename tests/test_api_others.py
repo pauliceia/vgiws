@@ -22,7 +22,7 @@ class TestAPICapabilities(TestCase):
 """
 
 
-class TestAPISessionUser(TestCase):
+class TestAPICurrentUser(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -47,11 +47,21 @@ class TestAPISessionUser(TestCase):
         # DO LOGOUT AFTER THE TEST
         self.tester.auth_logout()
 
-    def test_api_user_by_token_without_login(self):
+
+class TestAPICurrentUserError(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    def test_api_user_by_token_invalid_token(self):
         # do not put the "login_date" and "created_at" attributes, because they are created dynamically
         invalid_authorization = "29uj29uç0suk2"
 
-        self.tester.api_user_by_token_with_invalid_authorization(invalid_authorization)
+        self.tester.api_user_by_token_400_bad_request(invalid_authorization)
+
+    def test_api_user_by_token_without_login(self):
+        self.tester.api_user_by_token_401_unauthorized()
 
 
 # It is not necessary to pyt the main() of unittest here,

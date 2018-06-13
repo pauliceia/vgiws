@@ -1234,6 +1234,8 @@ class UtilTester:
 
         self.ut_self.assertEqual(resulted, expected)
 
+    # user_by_token
+
     def api_user_by_token(self, expected_at_least):
         response = self.session.get(self.URL + '/api/user_by_token', headers=self.headers)
 
@@ -1251,13 +1253,20 @@ class UtilTester:
             self.ut_self.assertEqual(resulted["properties"][key], expected_at_least["properties"][key])
         self.ut_self.assertEqual(resulted["type"], expected_at_least["type"])
 
-    def api_user_by_token_with_invalid_authorization(self, invalid_authorization):
+    # user_by_token - errors
+
+    def api_user_by_token_400_bad_request(self, invalid_authorization):
         headers = deepcopy(self.headers)
         headers["Authorization"] = invalid_authorization
 
         response = self.session.get(self.URL + '/api/user_by_token', headers=headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_user_by_token_401_unauthorized(self):
+        response = self.session.get(self.URL + '/api/user_by_token', headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
 
     ##################################################
     # METHODS
