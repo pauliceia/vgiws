@@ -11,6 +11,7 @@ from ..base import BaseHandler, BaseHandlerSocialLogin
 
 from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
 from tornado.gen import coroutine
+from tornado.escape import json_encode
 
 from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__
 

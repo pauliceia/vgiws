@@ -784,6 +784,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
     def import_shp(self):
         arguments = self.get_aguments()
 
+        # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
+        arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
+
         # remove the extension of the file name (e.g. points)
         FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
 
