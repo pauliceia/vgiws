@@ -1527,6 +1527,36 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+    def add_version_column_in_table(self, table_name):
+        query_text = """
+            ALTER TABLE {0} 
+            ADD COLUMN version INT NOT NULL DEFAULT 1
+        """.format(table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def add_changeset_id_column_in_table(self, table_name):
+        # create the column
+        query_text = """
+            ALTER TABLE {0} ADD COLUMN changeset_id INT
+        """.format(table_name)
+
+        # put the column as FK
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        query_text = """
+            ALTER TABLE {0}
+            ADD CONSTRAINT constraint_changeset_id
+            FOREIGN KEY (changeset_id)
+                REFERENCES changeset (changeset_id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        """.format(table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
     ################################################################################
     # CHANGESET
     ################################################################################

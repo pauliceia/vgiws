@@ -771,13 +771,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
-            # VERSION FEATURE TABLE
-            # command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-            #                                      ' -nln version_' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
-            #
-            # # call a process to execute the command to import the SHP into the PostGIS
-            # check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
-
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
@@ -813,8 +806,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-        self.PGSQLConn.create_new_table_with_the_schema_of_old_table("version_" + arguments["f_table_name"],
-                                                                     arguments["f_table_name"])
+        VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
+
+        self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, arguments["f_table_name"])
+
+        self.PGSQLConn.add_version_column_in_table(arguments["f_table_name"])
+        self.PGSQLConn.add_changeset_id_column_in_table(arguments["f_table_name"])
+        self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
+        self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
 
         # commit the feature table
         self.PGSQLConn.commit()
