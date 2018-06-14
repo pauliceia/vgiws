@@ -1516,6 +1516,18 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
+    # IMPORT
+    ################################################################################
+
+    def create_new_table_with_the_schema_of_old_table(self, new_table_name, old_table_name):
+        query_text = """
+            CREATE TABLE {0} ( like {1} including all )
+        """.format(new_table_name, old_table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    ################################################################################
     # CHANGESET
     ################################################################################
 
