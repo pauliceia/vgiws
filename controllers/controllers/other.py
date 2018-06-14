@@ -20,7 +20,7 @@ class APIUserByToken(BaseHandler):
 
     @auth_non_browser_based
     def get(self):
-        current_user = self.get_current_user()
+        current_user = self.get_current_user_()
 
         self.write(json_encode(current_user))
 

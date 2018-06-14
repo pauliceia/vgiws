@@ -47,7 +47,7 @@ class TestAPICurrentUser(TestCase):
         # DO LOGOUT AFTER THE TEST
         self.tester.auth_logout()
 
-
+"""
 class TestAPICurrentUserError(TestCase):
 
     def setUp(self):
@@ -62,7 +62,7 @@ class TestAPICurrentUserError(TestCase):
 
     def test_api_user_by_token_without_login(self):
         self.tester.api_user_by_token_401_unauthorized()
-
+"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
