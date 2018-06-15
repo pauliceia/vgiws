@@ -255,31 +255,55 @@ class TestAPIChangeset(TestCase):
 
         self.tester.api_changeset(expected, closed=True, user_id_creator="1005")
     
-    # changeset - create and delete
-    """
-    def test_get_api_changeset_create_close_and_delete(self):
-        # DO LOGIN
-        self.tester.auth_login_fake()
+    # changeset - create, close and delete
 
-        feature = {
-            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
-            'properties': {'id': -1, "fk_layer_id": 1004},
+    def test_get_api_changeset_create_and_close_but_delete_with_admin(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        resource = {
+            'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
-        feature = self.tester.api_changeset_create(feature)
+        resource = self.tester.api_changeset_create(resource)
 
         # get the id of changeset to CLOSE the changeset
-        feature_id = feature["properties"]["id"]
+        resource_id = resource["properties"]["changeset_id"]
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(feature_id)
+        self.tester.api_changeset_close(changeset_id=resource_id)
+
+        # login with admin to delete the changeset
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(feature_id)
+        self.tester.api_changeset_delete(changeset_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
+    def test_get_api_changeset_create_close_and_delete_with_admin(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        resource = {
+            'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
+            'type': 'Changeset'
+        }
+        resource = self.tester.api_changeset_create(resource)
+
+        # get the id of changeset to CLOSE the changeset
+        resource_id = resource["properties"]["changeset_id"]
+
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=resource_id)
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 class TestAPIChangesetErrors(TestCase):
@@ -299,9 +323,9 @@ class TestAPIChangesetErrors(TestCase):
     def test_get_api_changeset_error_404_not_found(self):
         self.tester.api_changeset_error_404_not_found(changeset_id="999")
         self.tester.api_changeset_error_404_not_found(changeset_id="998")
-    """
+    
     # changeset errors - create
-
+    """
     def test_put_api_changeset_create_error_403_forbidden(self):
         feature = {
             'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},

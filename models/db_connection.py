@@ -1614,7 +1614,7 @@ class PGSQLConnection:
 
         query_text = """
             INSERT INTO changeset (description, created_at, layer_id, user_id_creator)
-    #         VALUES ({0}, LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
+            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
         """.format(p["description"], p["layer_id"], p["user_id_creator"])
 
         # do the query in database
@@ -1647,48 +1647,13 @@ class PGSQLConnection:
 
         return id_in_json
 
-    # def add_changeset_in_db(self, layer_id, user_id, tags):
-    #     """
-    #     Add a changeset in DB
-    #     :param layer_id: id of the layer associated with the changeset
-    #     :param user_id: id of the user (owner) of the changeset
-    #     :return: the id of the changeset created inside a JSON, example: {"id": -1}
-    #     """
-    #
-    #     tags = dumps(tags)  # convert python dict to json to save in db
-    #
-    #     query_text = """
-    #         INSERT INTO changeset (created_at, fk_layer_id, fk_user_id, tags)
-    #         VALUES (LOCALTIMESTAMP, {0}, {1}, '{2}') RETURNING id;
-    #     """.format(layer_id, user_id, tags)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     result = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     return result
-    #
-    # def create_changeset(self, feature_json, user_id):
-    #
-    #     validate_feature_json(feature_json)
-    #
-    #     # get the fields to add in DB
-    #     layer_id = feature_json["properties"]["fk_layer_id"]
-    #
-    #     # add the chengeset in db and get the id of it
-    #     changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
-    #
-    #     return changeset_id_in_json
-
-    def close_changeset(self, resource_id=None):
-        if is_a_invalid_id(resource_id):
+    def close_changeset(self, changeset_id):
+        if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
-        """.format(resource_id)
+        """.format(changeset_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1698,22 +1663,22 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    # def delete_changeset_in_db(self, feature_id):
-    #     if is_a_invalid_id(feature_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     query_text = """
-    #         UPDATE changeset SET visible = FALSE
-    #         WHERE id={0};
-    #     """.format(feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any resource.")
+    def delete_changeset(self, changeset_id):
+        if is_a_invalid_id(changeset_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete the reference
+        query_text = """
+            DELETE FROM changeset WHERE changeset_id={0};
+        """.format(changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # notification

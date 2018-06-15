@@ -306,12 +306,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     # close
     def put_method_api_resource_close(self):
         # get the sent JSON, to add in DB
-        resource_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
         arguments = self.get_aguments()
 
         try:
-            self._close_resource(resource_json, current_user_id, **arguments)
+            self._close_resource(current_user_id, **arguments)
 
             # do commit after create a resource
             self.PGSQLConn.commit()
@@ -319,7 +318,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + ").")
 
-    def _close_resource(self, resource_json, current_user_id, **kwargs):
+    def _close_resource(self, current_user_id, **kwargs):
         raise NotImplementedError
 
     # request
@@ -727,7 +726,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
 
-    def _close_resource(self, resource_json, current_user_id, **kwargs):
+    def _close_resource(self, current_user_id, **kwargs):
         self.PGSQLConn.close_changeset(**kwargs)
 
     # PUT
@@ -738,31 +737,23 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        # self.PGSQLConn.delete_changeset_in_db(*args)
-        raise NotImplementedError
+        self.can_current_user_delete()
+        self.PGSQLConn.delete_changeset(**kwargs)
 
     # VALIDATION
 
-    # def can_current_user_update_or_delete(self, current_user_id, reference_id):
-    #     """
-    #     Verify if the user has permission of deleting a reference
-    #     :param current_user_id: current user id
-    #     :param reference_id: reference id
-    #     :return:
-    #     """
-    #
-    #     # if the current user is admin, so ok...
-    #     if self.is_current_user_an_administrator():
-    #         return
-    #
-    #     references = self.PGSQLConn.get_references(reference_id=reference_id)
-    #
-    #     # if the current_user_id is the creator of the reference, so ok...
-    #     if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
-    #         return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
+    def can_current_user_delete(self):
+        """
+        Verify if the user has permission of deleting a resource
+        :return:
+        """
+
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The administrator is who can delete the changeset.")
 
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):

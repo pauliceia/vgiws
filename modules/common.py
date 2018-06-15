@@ -52,11 +52,29 @@ def auth_non_browser_based(method):
             except HTTPError as error:
                 raise error
             except Exception as error:
-                raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator.")
+                raise HTTPError(500, "Problem when authorize a resource. Please, contact the administrator. " +
+                                     "(" + str(error) + ")")
 
             return method(self, *args, **kwargs)
         else:
             raise HTTPError(401, "It is necessary an Authorization header valid.")
+
+    return wrapper
+
+
+def auth_just_admin_can_use(method):
+    """
+    Authentication to non browser based service
+    :param method: the method decorated
+    :return: the method wrapped
+    """
+
+    def wrapper(self, *args, **kwargs):
+
+        if not self.is_current_user_an_administrator():
+            raise HTTPError(403, "The administrator is who can use this resource.")
+
+        return method(self, *args, **kwargs)
 
     return wrapper
 

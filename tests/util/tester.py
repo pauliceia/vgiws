@@ -60,13 +60,13 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def auth_login_fake(self):
-        response = self.session.get(self.URL + '/api/auth/login/fake/')
-
-        # Save the JWT token of the server in Authorization header
-        self.headers["Authorization"] = response.headers["Authorization"]
-
-        self.ut_self.assertEqual(response.status_code, 200)
+    # def auth_login_fake(self):
+    #     response = self.session.get(self.URL + '/api/auth/login/fake/')
+    #
+    #     # Save the JWT token of the server in Authorization header
+    #     self.headers["Authorization"] = response.headers["Authorization"]
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
 
     def auth_logout(self):
         # response = self.session.get(self.URL + '/auth/logout')
@@ -924,22 +924,26 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
+        self.ut_self.assertIn("changeset_id", resulted)
+        self.ut_self.assertNotEqual(resulted["changeset_id"], -1)
 
         # post the id received in the original JSON of changeset
-        feature_json["properties"]["id"] = resulted["id"]
+        feature_json["properties"]["changeset_id"] = resulted["changeset_id"]
 
         return feature_json
 
-    def api_changeset_close(self, feature_id):
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-                                    headers=self.headers)
+    def api_changeset_close(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
+                                     headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def api_changeset_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+    def api_changeset_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)

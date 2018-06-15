@@ -6,7 +6,7 @@
 """
 
 from ..base import BaseHandlerChangeset
-from modules.common import auth_non_browser_based
+from modules.common import auth_non_browser_based, auth_just_admin_can_use
 
 
 # CHANGESET
@@ -28,6 +28,7 @@ class APIChangeset(BaseHandlerChangeset):
     # def put(self, param=None):
     #     self.put_method_api_resource(param)
 
-    # @auth_non_browser_based
-    # def delete(self, param=None):
-    #     self.delete_method_api_resource(param)
+    @auth_just_admin_can_use
+    @auth_non_browser_based
+    def delete(self, param=None):
+        self.delete_method_api_resource(param)
