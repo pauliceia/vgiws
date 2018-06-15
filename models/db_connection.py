@@ -1651,6 +1651,13 @@ class PGSQLConnection:
         if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
+        # verify if the changeset is closed or not, if it is closed, raise 409 exception
+        list_changesets = self.get_changesets(changeset_id=changeset_id)
+
+        closed_at = list_changesets['features'][0]['properties']['closed_at']
+        if closed_at is not None:
+            raise HTTPError(409, "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
+
         query_text = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
         """.format(changeset_id)

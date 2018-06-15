@@ -1004,6 +1004,14 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    def api_changeset_close_error_409_conflict(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
+                                     headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
     # changeset errors - delete
 
     def api_changeset_delete_error_400_bad_request(self, **arguments):

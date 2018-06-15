@@ -80,6 +80,7 @@ This method close a changeset.
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 404 (Not Found): Not found any feature.
+    - 409 (Conflict): Changeset with ID <id> has already been closed at <datetime>.
     - 500 (Internal Server Error): Problem when close a feature. Please, contact the administrator.
 - Notes:
 
