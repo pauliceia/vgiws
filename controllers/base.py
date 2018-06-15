@@ -727,7 +727,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
 
     def _close_resource(self, current_user_id, **kwargs):
-        self.PGSQLConn.close_changeset(**kwargs)
+        self.PGSQLConn.close_changeset(current_user_id, **kwargs)
 
     # PUT
 

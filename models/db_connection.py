@@ -1647,16 +1647,20 @@ class PGSQLConnection:
 
         return id_in_json
 
-    def close_changeset(self, changeset_id):
+    def close_changeset(self, current_user_id, changeset_id):
         if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
         # verify if the changeset is closed or not, if it is closed, raise 409 exception
         list_changesets = self.get_changesets(changeset_id=changeset_id)
-
         closed_at = list_changesets['features'][0]['properties']['closed_at']
         if closed_at is not None:
             raise HTTPError(409, "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
+
+        # verify if the user created the changeset
+        user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
+        if user_id_creator != current_user_id:
+            raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
 
         query_text = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};

@@ -397,6 +397,15 @@ class TestAPIChangesetErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_put_api_changeset_close_error_409_conflict_user_didnt_create_the_changeset(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        self.tester.api_changeset_close_error_409_conflict(changeset_id="1011")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # changeset errors - delete
 
     def test_delete_api_changeset_error_400_bad_request(self):

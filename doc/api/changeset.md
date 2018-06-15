@@ -81,6 +81,7 @@ This method close a changeset.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 404 (Not Found): Not found any feature.
     - 409 (Conflict): Changeset with ID <id> has already been closed at <datetime>.
+    - 409 (Conflict): The user <id> didn't create the changeset <id>.
     - 500 (Internal Server Error): Problem when close a feature. Please, contact the administrator.
 - Notes:
 
