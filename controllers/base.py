@@ -273,8 +273,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         if param == "create":
             self.put_method_api_resource_create()
-        # elif param == "close":
-        #     self._close_resource(*args)
+        elif param == "close":
+            self.put_method_api_resource_close()
         # elif param == "request":
         #     self._request_resource(*args)
         # elif param == "accept":
@@ -304,8 +304,23 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         raise NotImplementedError
 
     # close
-    # def _close_resource(self, *args, **kwargs):
-    #     raise NotImplementedError
+    def put_method_api_resource_close(self):
+        # get the sent JSON, to add in DB
+        resource_json = self.get_the_json_validated()
+        current_user_id = self.get_current_user_id()
+        arguments = self.get_aguments()
+
+        try:
+            self._close_resource(resource_json, current_user_id, **arguments)
+
+            # do commit after create a resource
+            self.PGSQLConn.commit()
+        except DataError as error:
+            raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
+                            "(error: " + str(error) + ").")
+
+    def _close_resource(self, resource_json, current_user_id, **kwargs):
+        raise NotImplementedError
 
     # request
     # def _request_resource(self, *args, **kwargs):
@@ -700,6 +715,77 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The administrator are who can update/delete the keyword.")
 
 
+class BaseHandlerChangeset(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_changesets(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        return self.PGSQLConn.create_changeset(resource_json, current_user_id)
+
+    def _close_resource(self, resource_json, current_user_id, **kwargs):
+        self.PGSQLConn.close_changeset(**kwargs)
+
+    # PUT
+
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        raise NotImplementedError
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        # self.PGSQLConn.delete_changeset_in_db(*args)
+        raise NotImplementedError
+
+    # VALIDATION
+
+    # def can_current_user_update_or_delete(self, current_user_id, reference_id):
+    #     """
+    #     Verify if the user has permission of deleting a reference
+    #     :param current_user_id: current user id
+    #     :param reference_id: reference id
+    #     :return:
+    #     """
+    #
+    #     # if the current user is admin, so ok...
+    #     if self.is_current_user_an_administrator():
+    #         return
+    #
+    #     references = self.PGSQLConn.get_references(reference_id=reference_id)
+    #
+    #     # if the current_user_id is the creator of the reference, so ok...
+    #     if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
+    #         return
+    #
+    #     # ... else, raise an exception.
+    #     raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
+
+
+# class BaseHandlerChangeset(BaseHandlerTemplateMethod):
+#
+#     def _get_resource(self, *args, **kwargs):
+#         return self.PGSQLConn.get_changesets(**kwargs)
+#
+#     def _create_resource(self, resource_json, current_user_id):
+#         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
+#
+#     def _update_resource(self, *args, **kwargs):
+#         raise NotImplementedError
+#
+#     def _close_resource(self, *args, **kwargs):
+#         try:
+#             self.PGSQLConn.close_changeset(args[0])
+#         except DataError as error:
+#             # print("Error: ", error)
+#             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator.")
+#
+#     def _delete_resource(self, *args, **kwargs):
+#         self.PGSQLConn.delete_changeset_in_db(*args)
+
 # IMPORT
 
 class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
@@ -874,29 +960,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 #
 #     def _delete_resource(self, *args, **kwargs):
 #         raise NotImplementedError
-
-
-# class BaseHandlerChangeset(BaseHandlerTemplateMethod):
-#
-#     def _get_resource(self, *args, **kwargs):
-#         return self.PGSQLConn.get_changesets(**kwargs)
-#
-#     def _create_resource(self, resource_json, current_user_id):
-#         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
-#
-#     def _update_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _close_resource(self, *args, **kwargs):
-#         try:
-#             self.PGSQLConn.close_changeset(args[0])
-#         except DataError as error:
-#             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator.")
-#
-#     def _delete_resource(self, *args, **kwargs):
-#         self.PGSQLConn.delete_changeset_in_db(*args)
-
 
 # class BaseHandlerElement(BaseHandlerTemplateMethod):
 #

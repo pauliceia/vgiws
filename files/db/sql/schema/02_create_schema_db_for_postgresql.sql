@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Ter 12 Jun 2018 14:02:46 -03
+-- Sex 15 Jun 2018 09:39:33 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -56,14 +56,14 @@ DROP TABLE IF EXISTS changeset CASCADE ;
 
 CREATE TABLE IF NOT EXISTS changeset (
   changeset_id SERIAL ,
-  description TEXT NULL,
+  description TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL,
   closed_at TIMESTAMP NULL,
-  user_id INT NOT NULL,
+  user_id_creator INT NOT NULL,
   layer_id INT NOT NULL,
   PRIMARY KEY (changeset_id),
   CONSTRAINT fk_tb_project_tb_user1
-    FOREIGN KEY (user_id)
+    FOREIGN KEY (user_id_creator)
     REFERENCES pauliceia_user (user_id)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,

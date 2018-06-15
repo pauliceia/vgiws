@@ -1561,54 +1561,95 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    # def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
-    #     # the id have to be a int
-    #     if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
-    #                                             user_id=user_id, open=open, closed=closed)
-    #
-    #     # CREATE THE QUERY AND EXECUTE IT
-    #     query_text = """
-    #         SELECT jsonb_build_object(
-    #             'type', 'FeatureCollection',
-    #             'features',   jsonb_agg(jsonb_build_object(
-    #                 'type',       'Changeset',
-    #                 'properties', json_build_object(
-    #                     'id',           id,
-    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'fk_layer_id',    fk_layer_id,
-    #                     'fk_user_id', fk_user_id
-    #                 ),
-    #                 'tags',       tags
-    #             ))
-    #         ) AS row_to_json
-    #         FROM
-    #         {0}
-    #     """.format(subquery)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     ######################################################################
-    #     # POST-PROCESSING
-    #     ######################################################################
-    #
-    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-    #     if "row_to_json" in results_of_query:
-    #         results_of_query = results_of_query["row_to_json"]
-    #
-    #     # if there is not feature
-    #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any resource.")
-    #
-    #     return results_of_query
-    #
+    def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
+        # the id have to be a int
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
+                                                user_id=user_id, open=open, closed=closed)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Changeset',
+                    'properties', json_build_object(
+                        'id',           id,
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'layer_id',     layer_id,
+                        'user_id',      user_id
+                    ),
+                    'tags',       tags
+                ))
+            ) AS row_to_json
+            FROM
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def add_changeset_in_db(self, properties):
+        p = properties
+
+        if p["parent_id"] is None:
+            p["parent_id"] = "NULL"
+
+        query_text = """
+            INSERT INTO keyword (name, parent_id, user_id_creator, created_at)
+            VALUES ('{0}', {1}, {2}, LOCALTIMESTAMP) RETURNING keyword_id;
+        """.format(p["name"], p["parent_id"], p["user_id_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def create_changeset(self, resource_json, user_id):
+        # pre-processing
+        validate_feature_json(resource_json)
+
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        try:
+            # add the reference in db and get the id of it
+            id_in_json = self.add_changeset_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+        return id_in_json
+
     # def add_changeset_in_db(self, layer_id, user_id, tags):
     #     """
     #     Add a changeset in DB
@@ -1631,7 +1672,7 @@ class PGSQLConnection:
     #     result = self.__PGSQL_CURSOR__.fetchone()
     #
     #     return result
-
+    #
     # def add_changeset_tag_in_db(self, k, v, feature_id):
     #     query_text = """
     #         INSERT INTO changeset_tag (k, v, fk_changeset_id)
@@ -1645,7 +1686,7 @@ class PGSQLConnection:
     #     # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
     #
     #     # return id_changeset_tag
-
+    #
     # def create_changeset(self, feature_json, user_id):
     #
     #     validate_feature_json(feature_json)
@@ -1657,25 +1698,25 @@ class PGSQLConnection:
     #     changeset_id_in_json = self.add_changeset_in_db(layer_id, user_id, feature_json["tags"])
     #
     #     return changeset_id_in_json
-    #
-    # def close_changeset(self, feature_id=None):
-    #     if is_a_invalid_id(feature_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     query_text = """
-    #         UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
-    #     """.format(feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #     self.commit()
-    #
-    #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any resource.")
-    #
+
+    def close_changeset(self, feature_id=None):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
+        """.format(feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        self.commit()
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
     # def delete_changeset_in_db(self, feature_id):
     #     if is_a_invalid_id(feature_id):
     #         raise HTTPError(400, "Invalid parameter.")

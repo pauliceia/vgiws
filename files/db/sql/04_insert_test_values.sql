@@ -111,28 +111,6 @@ INSERT INTO curator (user_id, keyword_id, region, created_at) VALUES (1006, 1021
 DELETE FROM layer_keyword;
 
 
-            
-
-/*
--- -----------------------------------------------------
--- Table changeset
--- -----------------------------------------------------
--- clean changeset table
-DELETE FROM changeset;
-
-
--- add changeset open
--- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1001, 'a changeset created', '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1002, 'changeset test', '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1003, 'a changeset created', '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1004, 'changeset test', '2017-01-20', 1002, 1002);
--- open changesets
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
-*/
-
-
 -- -----------------------------------------------------
 -- Table reference
 -- -----------------------------------------------------
@@ -150,6 +128,19 @@ INSERT INTO reference (reference_id, description, user_id_creator) VALUES (1053,
 -- -----------------------------------------------------
 -- clean table
 DELETE FROM changeset;
+
+
+/*
+-- add changeset open
+-- closed changesets (they will be closed in the final of file)
+INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1001, 'a changeset created', '2017-10-20', 1001, 1001);
+INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1002, 'changeset test', '2017-11-10', 1002, 1002);
+INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1003, 'a changeset created', '2017-11-15', 1001, 1001);
+INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1004, 'changeset test', '2017-01-20', 1002, 1002);
+-- open changesets
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
+INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
+*/
 
 
 -- -----------------------------------------------------
@@ -242,7 +233,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1001, 1002, '2017-01-03');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1001, '2017-01-05', 1001, 1001);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1001, 'Creating layer_1001', '2017-01-05', 1001, 1001);
 
 -- insert the data into the layer
 INSERT INTO layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
@@ -265,7 +256,7 @@ VALUES (1003,
 UPDATE changeset SET description='adding some addresses', closed_at='2017-01-05' WHERE changeset_id=1001;
 
 -- create a open changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1011, '2017-01-08', 1001, 1001);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1011, 'An open changeset', '2017-01-08', 1001, 1001);
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -336,7 +327,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1002, 1004, '2017-03-05');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1002, '2017-03-05', 1002, 1003);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1002, 'Creating layer_1002', '2017-03-05', 1002, 1003);
 
 -- insert the data into the layer
 INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
@@ -432,7 +423,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1006, '2017
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1007, '2017-04-11');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1003, '2017-04-12', 1003, 1005);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1003, 'Creating layer_1003', '2017-04-12', 1003, 1005);
 
 -- insert the data into the layer
 INSERT INTO layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
@@ -457,7 +448,7 @@ VALUES (1003,
 UPDATE changeset SET description='creating streets', closed_at='2017-04-12' WHERE changeset_id=1003;
 
 -- create a open changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1013, '2017-04-13', 1003, 1005);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1013, 'Creating an open changeset', '2017-04-13', 1003, 1005);
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -521,7 +512,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1007, '2017
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1008, '2017-06-27');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1004, '2017-06-28', 1004, 1005);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1004, 'Creating layer_1004', '2017-06-28', 1004, 1005);
 
 -- insert the data into the layer
 INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
@@ -608,7 +599,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1005 (
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1005, 1007, '2017-08-04', TRUE);
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1005, '2017-08-05', 1005, 1007);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1005, 'Creating layer_1005', '2017-08-05', 1005, 1007);
 
 -- insert the data into the layer
 INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) VALUES 
@@ -697,7 +688,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1006, 1008, '2017-09-10');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, created_at, layer_id, user_id) VALUES (1006, '2017-09-04', 1006, 1007);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1006, 'Creating layer_1006', '2017-09-04', 1006, 1007);
 
 -- insert the data into the layer
 INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) VALUES 
