@@ -119,7 +119,7 @@ class UtilTester:
         self.ut_self.assertIn("user_id", resulted)
         self.ut_self.assertNotEqual(resulted["user_id"], -1)
 
-        # put the id received in the original JSON of changeset
+        # put the id received in the original JSON
         feature_json["properties"]["user_id"] = resulted["user_id"]
 
         return feature_json
@@ -369,7 +369,7 @@ class UtilTester:
         self.ut_self.assertIn("layer_id", resulted)
         self.ut_self.assertNotEqual(resulted["layer_id"], -1)
 
-        # put the id received in the original JSON of changeset
+        # put the id received in the original JSON
         feature_json["properties"]["layer_id"] = resulted["layer_id"]
 
         return feature_json
@@ -595,7 +595,7 @@ class UtilTester:
         self.ut_self.assertIn("reference_id", resulted)
         self.ut_self.assertNotEqual(resulted["reference_id"], -1)
 
-        # put the id received in the original JSON of changeset
+        # put the id received in the original JSON
         resource_json["properties"]["reference_id"] = resulted["reference_id"]
 
         return resource_json
@@ -716,7 +716,7 @@ class UtilTester:
         self.ut_self.assertIn("keyword_id", resulted)
         self.ut_self.assertNotEqual(resulted["keyword_id"], -1)
 
-        # put the id received in the original JSON of changeset
+        # put the id received in the original JSON
         resource_json["properties"]["keyword_id"] = resulted["keyword_id"]
 
         return resource_json
@@ -831,7 +831,6 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-
     ##################################################
     # FEATURE TABLE
     ##################################################
@@ -871,7 +870,7 @@ class UtilTester:
         # self.ut_self.assertIn("id", resulted)
         # self.ut_self.assertNotEqual(resulted["id"], -1)
         #
-        # # post the id received in the original JSON of changeset
+        # # post the id received in the original JSON
         # feature_json["properties"]["id"] = resulted["id"]
         #
         # return feature_json
@@ -881,133 +880,135 @@ class UtilTester:
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
 
+    ##################################################
     # CHANGESET
+    ##################################################
 
-    # def api_changeset(self, expected, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-    #
-    #     # if expected_at_least is not None:
-    #     #     """
-    #     #     Test Case: Changesets can not be removed, because of this, the result of the returned
-    #     #     changesets may be larger than expected (because there are other tests that create
-    #     #     changesets). Because of this I pass a subset of minimum changesets that have to exist.
-    #     #     """
-    #     #
-    #     #     """ Explanation: Generator creating booleans by looping through list
-    #     #         'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
-    #     #         all() returns True if every item is truthy, else False.
-    #     #         https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
-    #     #     """
-    #     #     __set__ = resulted["features"]  # set returned
-    #     #     __subset__ = expected_at_least["features"]  # subset expected
-    #     #
-    #     #     # verify if the elements of a subset is in a set, if OK, return True, else False
-    #     #     resulted_bool = all(element in __set__ for element in __subset__)
-    #     #
-    #     #     self.ut_self.assertTrue(resulted_bool)
-    #
-    # def api_changeset_create(self, feature_json):
-    #     # do a GET call, sending a changeset to add in DB
-    #     response = self.session.post(self.URL + '/api/changeset/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertIn("id", resulted)
-    #     self.ut_self.assertNotEqual(resulted["id"], -1)
-    #
-    #     # post the id received in the original JSON of changeset
-    #     feature_json["properties"]["id"] = resulted["id"]
-    #
-    #     return feature_json
-    #
-    # def api_changeset_close(self, feature_id):
-    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-    #                                 headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # def api_changeset_delete(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    # # changeset errors - get
-    #
-    # def api_changeset_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_changeset_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # changeset errors - create
-    #
-    # def api_changeset_create_error_403_forbidden(self, feature_json):
-    #     # do a GET call, sending a changeset to add in DB
-    #     response = self.session.post(self.URL + '/api/changeset/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # # changeset errors - close
-    #
-    # def api_changeset_close_error_400_bad_request(self, feature_id):
-    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-    #                                 headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_changeset_close_error_403_forbidden(self, feature_id):
-    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-    #                                 headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_changeset_close_error_404_not_found(self, feature_id):
-    #     response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-    #                                 headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # changeset errors - delete
-    #
-    # def api_changeset_delete_error_400_bad_request(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_changeset_delete_error_403_forbidden(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_changeset_delete_error_404_not_found(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
+    def api_changeset(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+        # if expected_at_least is not None:
+        #     """
+        #     Test Case: Changesets can not be removed, because of this, the result of the returned
+        #     changesets may be larger than expected (because there are other tests that create
+        #     changesets). Because of this I pass a subset of minimum changesets that have to exist.
+        #     """
+        #
+        #     """ Explanation: Generator creating booleans by looping through list
+        #         'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
+        #         all() returns True if every item is truthy, else False.
+        #         https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
+        #     """
+        #     __set__ = resulted["features"]  # set returned
+        #     __subset__ = expected_at_least["features"]  # subset expected
+        #
+        #     # verify if the elements of a subset is in a set, if OK, return True, else False
+        #     resulted_bool = all(element in __set__ for element in __subset__)
+        #
+        #     self.ut_self.assertTrue(resulted_bool)
+
+    def api_changeset_create(self, feature_json):
+        # do a GET call, sending a changeset to add in DB
+        response = self.session.post(self.URL + '/api/changeset/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
+
+        # post the id received in the original JSON of changeset
+        feature_json["properties"]["id"] = resulted["id"]
+
+        return feature_json
+
+    def api_changeset_close(self, feature_id):
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_changeset_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # changeset errors - get
+
+    def api_changeset_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # changeset errors - create
+
+    def api_changeset_create_error_403_forbidden(self, feature_json):
+        # do a GET call, sending a changeset to add in DB
+        response = self.session.post(self.URL + '/api/changeset/create/',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # changeset errors - close
+
+    def api_changeset_close_error_400_bad_request(self, feature_id):
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_close_error_403_forbidden(self, feature_id):
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_changeset_close_error_404_not_found(self, feature_id):
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
+                                    headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # changeset errors - delete
+
+    def api_changeset_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_changeset_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # # NOTIFICATION
     #
     # def api_notification(self, expected, **arguments):

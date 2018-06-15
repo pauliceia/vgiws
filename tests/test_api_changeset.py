@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-from unittest import TestCase, skip
+
+from unittest import TestCase
 from util.tester import UtilTester
 
 
@@ -20,39 +20,49 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1001,
+                                   'closed_at': '2017-01-05 00:00:00', 'layer_id': 1001,
+                                   'description': 'Creating layer_1001'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
-                    'properties': {'id': 1002, 'created_at': '2017-11-10 00:00:00', 'fk_layer_id': 1002,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1003, 'changeset_id': 1002,
+                                   'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
+                                   'description': 'Creating layer_1002'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                                   'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
+                                   'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
-                    'properties': {'id': 1004, 'created_at': '2017-01-20 00:00:00', 'fk_layer_id': 1002,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-03-25 00:00:00', 'closed_at': None, 'fk_layer_id': 1003,
-                                   'fk_user_id': 1003, 'id': 1005},
+                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1005,
+                                   'closed_at': '2017-08-05 00:00:00', 'layer_id': 1005,
+                                   'description': 'Creating layer_1005'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-05-13 00:00:00', 'closed_at': None, 'fk_layer_id': 1004,
-                                   'fk_user_id': 1004, 'id': 1006},
+                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1006,
+                                   'closed_at': '2017-09-04 00:00:00', 'layer_id': 1006,
+                                   'description': 'Creating layer_1006'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                                   'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                                   'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 }
             ],
@@ -65,72 +75,69 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'type': 'Changeset',
-                    'properties': {'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001,
-                                   'created_at': '2017-10-20 00:00:00', 'id': 1001, 'fk_layer_id': 1001},
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'}
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                                   'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
+                                   'description': 'Creating layer_1003'},
+                    'type': 'Changeset'
                 }
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, changeset_id="1001")
+        self.tester.api_changeset(expected, changeset_id="1003")
 
     def test_get_api_changeset_return_changeset_by_layer_id(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'id': 1001, 'fk_user_id': 1001, 'created_at': '2017-10-20 00:00:00',
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1001},
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
-                {
-                    'properties': {'id': 1003, 'fk_user_id': 1001, 'created_at': '2017-11-15 00:00:00',
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1001},
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'type': 'Changeset'
-                }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, layer_id="1001")
+        self.tester.api_changeset(expected, layer_id="1004")
 
     def test_get_api_changeset_return_changeset_by_user_id(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Changeset',
-                    'properties': {'id': 1002, 'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1002,
-                                   'created_at': '2017-11-10 00:00:00', 'fk_user_id': 1002},
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'}
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                                   'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
+                                   'description': 'Creating layer_1003'},
+                    'type': 'Changeset'
                 },
                 {
-                    'type': 'Changeset',
-                    'properties': {'id': 1004, 'closed_at': '2017-12-01 00:00:00', 'fk_layer_id': 1002,
-                                   'created_at': '2017-01-20 00:00:00', 'fk_user_id': 1002},
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'}
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                                   'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
+                    'type': 'Changeset'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, user_id="1002")
+        self.tester.api_changeset(expected, user_id_creator="1005")
 
     def test_get_api_changeset_return_all_open_changesets(self):
         expected = {
             'features': [
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-03-25 00:00:00', 'closed_at': None,
-                                   'fk_user_id': 1003, 'id': 1005, 'fk_layer_id': 1003},
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                                   'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-05-13 00:00:00', 'closed_at': None,
-                                   'fk_user_id': 1004, 'id': 1006, 'fk_layer_id': 1004},
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                                   'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 }
             ],
@@ -143,27 +150,39 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1001,
+                                   'closed_at': '2017-01-05 00:00:00', 'layer_id': 1001,
+                                   'description': 'Creating layer_1001'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
-                    'properties': {'id': 1002, 'created_at': '2017-11-10 00:00:00', 'fk_layer_id': 1002,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1003, 'changeset_id': 1002,
+                                   'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
+                                   'description': 'Creating layer_1002'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                                   'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
+                                   'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'changeset test', 'created_by': 'test_postgresql'},
-                    'properties': {'id': 1004, 'created_at': '2017-01-20 00:00:00', 'fk_layer_id': 1002,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1002},
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1005,
+                                   'closed_at': '2017-08-05 00:00:00', 'layer_id': 1005,
+                                   'description': 'Creating layer_1005'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1006,
+                                   'closed_at': '2017-09-04 00:00:00', 'layer_id': 1006,
+                                   'description': 'Creating layer_1006'},
                     'type': 'Changeset'
                 },
             ],
@@ -176,9 +195,8 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-03-25 00:00:00', 'closed_at': None,
-                                   'fk_user_id': 1003, 'id': 1005, 'fk_layer_id': 1003},
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                                   'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 }
             ],
@@ -191,61 +209,54 @@ class TestAPIChangeset(TestCase):
         expected = {
             'features': [
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
-                {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
-                    'type': 'Changeset'
-                }
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, closed=True, layer_id="1001")
+        self.tester.api_changeset(expected, closed=True, layer_id="1004")
 
     def test_get_api_changeset_return_all_open_changesets_by_user_id(self):
         expected = {
             'features': [
                 {
-                    'tags': None,
-                    'properties': {'created_at': '2017-03-25 00:00:00', 'closed_at': None,
-                                   'fk_user_id': 1003, 'id': 1005, 'fk_layer_id': 1003},
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                                   'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
                     'type': 'Changeset'
-                }
+                },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, open=True, user_id="1003")
+        self.tester.api_changeset(expected, open=True, user_id_creator="1001")
 
     def test_get_api_changeset_return_all_closed_changesets_by_user_id(self):
         expected = {
             'features': [
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1001, 'created_at': '2017-10-20 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                                   'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
+                                   'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'tags': {'comment': 'a changeset created', 'created_by': 'pauliceia_portal'},
-                    'properties': {'id': 1003, 'created_at': '2017-11-15 00:00:00', 'fk_layer_id': 1001,
-                                   'closed_at': '2017-12-01 00:00:00', 'fk_user_id': 1001},
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                                   'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
+                                   'description': 'Creating layer_1004'},
                     'type': 'Changeset'
-                }
+                },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, closed=True, user_id="1001")
-
+        self.tester.api_changeset(expected, closed=True, user_id_creator="1005")
+    
     # changeset - create and delete
-
+    """
     def test_get_api_changeset_create_close_and_delete(self):
         # DO LOGIN
         self.tester.auth_login_fake()
@@ -268,6 +279,7 @@ class TestAPIChangeset(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    """
 
 
 class TestAPIChangesetErrors(TestCase):
@@ -287,7 +299,7 @@ class TestAPIChangesetErrors(TestCase):
     def test_get_api_changeset_error_404_not_found(self):
         self.tester.api_changeset_error_404_not_found(changeset_id="999")
         self.tester.api_changeset_error_404_not_found(changeset_id="998")
-
+    """
     # changeset errors - create
 
     def test_put_api_changeset_create_error_403_forbidden(self):
@@ -375,8 +387,7 @@ class TestAPIChangesetErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-"""
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

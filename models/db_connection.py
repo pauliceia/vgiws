@@ -1561,13 +1561,13 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    def get_changesets(self, changeset_id=None, user_id=None, layer_id=None, open=None, closed=None):
+    def get_changesets(self, changeset_id=None, layer_id=None, user_id_creator=None, open=None, closed=None):
         # the id have to be a int
-        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id):
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
         subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
-                                                user_id=user_id, open=open, closed=closed)
+                                                user_id_creator=user_id_creator, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -1576,13 +1576,13 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Changeset',
                     'properties', json_build_object(
-                        'id',           id,
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'closed_at',    to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'layer_id',     layer_id,
-                        'user_id',      user_id
-                    ),
-                    'tags',       tags
+                        'changeset_id',    changeset_id,
+                        'description',     description,
+                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'closed_at',       to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'layer_id',        layer_id,
+                        'user_id_creator', user_id_creator
+                    )
                 ))
             ) AS row_to_json
             FROM
@@ -1612,13 +1612,10 @@ class PGSQLConnection:
     def add_changeset_in_db(self, properties):
         p = properties
 
-        if p["parent_id"] is None:
-            p["parent_id"] = "NULL"
-
         query_text = """
-            INSERT INTO keyword (name, parent_id, user_id_creator, created_at)
-            VALUES ('{0}', {1}, {2}, LOCALTIMESTAMP) RETURNING keyword_id;
-        """.format(p["name"], p["parent_id"], p["user_id_creator"])
+            INSERT INTO changeset (description, created_at, layer_id, user_id_creator)
+    #         VALUES ({0}, LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
+        """.format(p["description"], p["layer_id"], p["user_id_creator"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1673,20 +1670,6 @@ class PGSQLConnection:
     #
     #     return result
     #
-    # def add_changeset_tag_in_db(self, k, v, feature_id):
-    #     query_text = """
-    #         INSERT INTO changeset_tag (k, v, fk_changeset_id)
-    #         VALUES ('{0}', '{1}', {2});
-    #     """.format(k, v, feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     # id_changeset_tag = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     # return id_changeset_tag
-    #
     # def create_changeset(self, feature_json, user_id):
     #
     #     validate_feature_json(feature_json)
@@ -1699,20 +1682,18 @@ class PGSQLConnection:
     #
     #     return changeset_id_in_json
 
-    def close_changeset(self, feature_id=None):
-        if is_a_invalid_id(feature_id):
+    def close_changeset(self, resource_id=None):
+        if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE id={0};
-        """.format(feature_id)
+            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
+        """.format(resource_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        self.commit()
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")

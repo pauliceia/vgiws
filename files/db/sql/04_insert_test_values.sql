@@ -253,7 +253,7 @@ VALUES (1003,
 	1001);
 
 -- close the changeset
-UPDATE changeset SET description='adding some addresses', closed_at='2017-01-05' WHERE changeset_id=1001;
+UPDATE changeset SET closed_at='2017-01-05' WHERE changeset_id=1001;
 
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1011, 'An open changeset', '2017-01-08', 1001, 1001);
@@ -349,7 +349,7 @@ VALUES (1009,
 	1002);
 
 -- close the changeset
-UPDATE changeset SET description='adding robberies', closed_at='2017-03-05' WHERE changeset_id=1002;
+UPDATE changeset SET closed_at='2017-03-05' WHERE changeset_id=1002;
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -445,7 +445,7 @@ VALUES (1003,
 	1003);
 
 -- close the changeset
-UPDATE changeset SET description='creating streets', closed_at='2017-04-12' WHERE changeset_id=1003;
+UPDATE changeset SET closed_at='2017-04-12' WHERE changeset_id=1003;
 
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1013, 'Creating an open changeset', '2017-04-13', 1003, 1005);
@@ -537,7 +537,7 @@ VALUES (1004,
 	1004);
 
 -- close the changeset
-UPDATE changeset SET description='adding streets', closed_at='2017-06-28' WHERE changeset_id=1004;
+UPDATE changeset SET closed_at='2017-06-28' WHERE changeset_id=1004;
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -616,7 +616,7 @@ VALUES (1002,
 	'Holy Mary''s Hospital', '1890', '1950', 1005);
 
 -- close the changeset
-UPDATE changeset SET description='adding some hospitals', closed_at='2017-08-05' WHERE changeset_id=1005;
+UPDATE changeset SET closed_at='2017-08-05' WHERE changeset_id=1005;
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -706,7 +706,7 @@ VALUES (1002,
 	'Joar''s cinema', '1900', '1940', 1006);
 
 -- close the changeset
-UPDATE changeset SET description='creating cinemas', closed_at='2017-09-04' WHERE changeset_id=1006;
+UPDATE changeset SET closed_at='2017-09-04' WHERE changeset_id=1006;
 
 -- verify if the layer has features and verify if the changeset was created
 /*
