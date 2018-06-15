@@ -58,10 +58,11 @@ This method create a new changeset described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response: a JSON that contain the id of the feature created. Example:
     ```javascript
-    {'id': 7}
+    {'changeset_id': 7}
     ```
 - Error codes:
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
@@ -77,6 +78,7 @@ This method close a changeset.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when close a feature. Please, contact the administrator.
 - Notes:
@@ -85,7 +87,7 @@ This method close a changeset.
 <!-- - PUT /api/changeset/update -->
 
 
-### DELETE /api/changeset/delete/?\<params>
+### DELETE /api/changeset/?\<params>
 
 This method delete one changeset.
 - Parameters:
@@ -98,6 +100,7 @@ This method delete one changeset.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The administrator is who can use this resource.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

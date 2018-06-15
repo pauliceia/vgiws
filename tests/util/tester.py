@@ -966,49 +966,74 @@ class UtilTester:
 
     # changeset errors - create
 
-    def api_changeset_create_error_403_forbidden(self, feature_json):
-        # do a GET call, sending a changeset to add in DB
+    def api_changeset_create_error_400_bad_request(self, feature_json):
         response = self.session.post(self.URL + '/api/changeset/create/',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    # changeset errors - close
-
-    def api_changeset_close_error_400_bad_request(self, feature_id):
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-                                    headers=self.headers)
+                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_changeset_close_error_403_forbidden(self, feature_id):
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-                                    headers=self.headers)
+    def api_changeset_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/changeset/create/',
+                                     data=dumps(feature_json), headers=self.headers)
 
-        self.ut_self.assertEqual(response.status_code, 403)
+        self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_changeset_close_error_404_not_found(self, feature_id):
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(feature_id),
-                                    headers=self.headers)
+    # changeset errors - close
+
+    def api_changeset_close_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
+                                     headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_changeset_close_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
+                                     headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_changeset_close_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
+                                     headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
     # changeset errors - delete
 
-    def api_changeset_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+    def api_changeset_delete_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_changeset_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+    def api_changeset_delete_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_changeset_delete_error_403_forbidden(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_changeset_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(feature_id),
+    def api_changeset_delete_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/changeset/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)

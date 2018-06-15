@@ -323,52 +323,66 @@ class TestAPIChangesetErrors(TestCase):
     def test_get_api_changeset_error_404_not_found(self):
         self.tester.api_changeset_error_404_not_found(changeset_id="999")
         self.tester.api_changeset_error_404_not_found(changeset_id="998")
-    
+
     # changeset errors - create
-    """
-    def test_put_api_changeset_create_error_403_forbidden(self):
-        feature = {
-            'tags': {'created_by': 'test_api', 'comment': 'testing create changeset'},
-            'properties': {'id': -1, "fk_layer_id": 1004},
+
+    def test_put_api_changeset_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # try to create a changeset (without description)
+        resource = {
+            'properties': {'layer_id': 1003},
             'type': 'Changeset'
         }
-        self.tester.api_changeset_create_error_403_forbidden(feature)
+        self.tester.api_changeset_create_error_400_bad_request(resource)
 
+        # try to create a changeset (without layer_id)
+        resource = {
+            'properties': {'description': 'Creating layer_1003'},
+            'type': 'Changeset'
+        }
+        self.tester.api_changeset_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_changeset_create_error_401_unauthorized(self):
+        resource = {
+            'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
+            'type': 'Changeset'
+        }
+        self.tester.api_changeset_create_error_401_unauthorized(resource)
+    
     # changeset errors - close
 
     def test_put_api_changeset_close_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        self.tester.api_changeset_close_error_400_bad_request("abc")
-        self.tester.api_changeset_close_error_400_bad_request(0)
-        self.tester.api_changeset_close_error_400_bad_request(-1)
-        self.tester.api_changeset_close_error_400_bad_request("-1")
-        self.tester.api_changeset_close_error_400_bad_request("0")
+        self.tester.api_changeset_close_error_400_bad_request(changeset_id="abc")
+        self.tester.api_changeset_close_error_400_bad_request(changeset_id=0)
+        self.tester.api_changeset_close_error_400_bad_request(changeset_id=-1)
+        self.tester.api_changeset_close_error_400_bad_request(changeset_id="-1")
+        self.tester.api_changeset_close_error_400_bad_request(changeset_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_put_api_changeset_close_error_403_forbidden(self):
-        self.tester.api_changeset_close_error_403_forbidden("abc")
-        self.tester.api_changeset_close_error_403_forbidden(0)
-        self.tester.api_changeset_close_error_403_forbidden(-1)
-        self.tester.api_changeset_close_error_403_forbidden("-1")
-        self.tester.api_changeset_close_error_403_forbidden("0")
-        self.tester.api_changeset_close_error_403_forbidden("1001")
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id="abc")
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id=0)
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id=-1)
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id="-1")
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id="0")
+        self.tester.api_changeset_close_error_401_unauthorized(changeset_id="1001")
 
     def test_put_api_changeset_close_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        self.tester.api_changeset_close_error_404_not_found("5000")
-        self.tester.api_changeset_close_error_404_not_found("5001")
+        self.tester.api_changeset_close_error_404_not_found(changeset_id="5000")
+        self.tester.api_changeset_close_error_404_not_found(changeset_id="5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -376,42 +390,49 @@ class TestAPIChangesetErrors(TestCase):
     # layer errors - delete
 
     def test_delete_api_changeset_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_changeset_delete_error_400_bad_request("abc")
-        self.tester.api_changeset_delete_error_400_bad_request(0)
-        self.tester.api_changeset_delete_error_400_bad_request(-1)
-        self.tester.api_changeset_delete_error_400_bad_request("-1")
-        self.tester.api_changeset_delete_error_400_bad_request("0")
+        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="abc")
+        self.tester.api_changeset_delete_error_400_bad_request(changeset_id=0)
+        self.tester.api_changeset_delete_error_400_bad_request(changeset_id=-1)
+        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="-1")
+        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_layer_error_403_forbidden(self):
-        self.tester.api_changeset_delete_error_403_forbidden("abc")
-        self.tester.api_changeset_delete_error_403_forbidden(0)
-        self.tester.api_changeset_delete_error_403_forbidden(-1)
-        self.tester.api_changeset_delete_error_403_forbidden("-1")
-        self.tester.api_changeset_delete_error_403_forbidden("0")
-        self.tester.api_changeset_delete_error_403_forbidden("1001")
+    def test_delete_api_changeset_error_401_unauthorized(self):
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="abc")
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id=0)
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id=-1)
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="-1")
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="0")
+        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="1001")
 
-    def test_delete_api_layer_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test_delete_api_changeset_error_403_forbidden_non_admin_user_tries_to_delete(self):
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        # DO LOGIN
-        self.tester.auth_login_fake()
-
-        self.tester.api_changeset_delete_error_404_not_found("5000")
-        self.tester.api_changeset_delete_error_404_not_found("5001")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="abc")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=0)
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=-1)
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="-1")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="0")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="1001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
+    def test_delete_api_changeset_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        self.tester.api_changeset_delete_error_404_not_found(changeset_id="5000")
+        self.tester.api_changeset_delete_error_404_not_found(changeset_id="5001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
