@@ -854,6 +854,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
     def import_shp(self):
         arguments = self.get_aguments()
 
+        if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
+            raise HTTPError(400, "It is necessary pass the f_table_name, file_name and the changeset_id.")
+
+        # get the binary file in body of the request
+        binary_file = self.request.body
+        if binary_file == "":
+            raise HTTPError(400, "It is necessary pass one binary zip file in the body of the request.")
+
         # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
         arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
@@ -875,8 +883,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
         SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
-        # get the binary file in body of the request
-        binary_file = self.request.body
         self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
@@ -887,8 +893,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, arguments["f_table_name"])
 
+        # arranging the feature table
         self.PGSQLConn.add_version_column_in_table(arguments["f_table_name"])
         self.PGSQLConn.add_changeset_id_column_in_table(arguments["f_table_name"])
+        self.PGSQLConn.update_feature_table_setting_in_all_records_a_changeset_id(arguments["f_table_name"], arguments["changeset_id"])
+        self.PGSQLConn.update_feature_table_setting_in_all_records_a_version(arguments["f_table_name"], 1)
+
+        # arranging the version feature table
         self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
         self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
 

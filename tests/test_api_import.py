@@ -25,13 +25,24 @@ class TestAPIImport(TestCase):
         ##################################################
         # create a new layer
         ##################################################
-        resource = {
+        layer = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Points',
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        resource = self.tester.api_layer_create(resource, is_to_create_feature_table=False)
+        layer = self.tester.api_layer_create(layer, is_to_create_feature_table=False)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create a new changeset
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
 
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -40,19 +51,23 @@ class TestAPIImport(TestCase):
         with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=f_table_name, file_name=file_name)
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=f_table_name,
+                                              file_name=file_name, changeset_id=changeset_id)
 
         ##################################################
         # remove the layer
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
+
+        # DELETE THE CHANGESET (the changeset is automatically removed when delete a layer)
+        # self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
+        self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -77,13 +92,24 @@ class TestAPIImportError(TestCase):
         ##################################################
         # create a new layer
         ##################################################
-        resource = {
+        layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        resource = self.tester.api_layer_create(resource, is_to_create_feature_table=False)
+        layer = self.tester.api_layer_create(layer, is_to_create_feature_table=False)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create a new changeset
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
 
         ##################################################
         # try to import the shapefile, but the zip doesn't have a shapefile
@@ -92,20 +118,23 @@ class TestAPIImportError(TestCase):
         with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
-            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name, 
-                                                                    file_name=file_name)
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
+                                                                    file_name=file_name, changeset_id=changeset_id)
 
         ##################################################
         # remove the layer
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
+
+        # DELETE THE CHANGESET (the changeset is automatically removed when delete a layer)
+        # self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
+        self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -119,13 +148,24 @@ class TestAPIImportError(TestCase):
         ##################################################
         # create a new layer
         ##################################################
-        resource = {
+        layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        resource = self.tester.api_layer_create(resource, is_to_create_feature_table=False)
+        layer = self.tester.api_layer_create(layer, is_to_create_feature_table=False)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create a new changeset
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
 
         ##################################################
         # try to import the shapefile, but the zip doesn't have a shapefile
@@ -135,19 +175,22 @@ class TestAPIImportError(TestCase):
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
-                                                                    file_name="folder_with_nothing")
+                                                                    file_name="folder_with_nothing", changeset_id=changeset_id)
 
         ##################################################
         # remove the layer
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
+
+        # DELETE THE CHANGESET (the changeset is automatically removed when delete a layer)
+        # self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
+        self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

@@ -740,6 +740,15 @@ class PGSQLConnection:
             # else:
             #   error 404 is expected, because when delete a layer, may exist a layer without reference
 
+        try:
+            # 4) delete all changesets from layer
+            self.delete_changeset(layer_id=layer_id)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            #   error 404 is expected, because when delete a layer, may exist a layer without reference
+
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=layer_id)
         f_table_name = layer["features"][0]["properties"]["f_table_name"]
@@ -1557,6 +1566,24 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+    def update_feature_table_setting_in_all_records_a_version(self, f_table_name, version):
+        # create the column
+        query_text = """
+            UPDATE {0} SET version = {1};
+        """.format(f_table_name, version)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_feature_table_setting_in_all_records_a_changeset_id(self, f_table_name, changeset_id):
+        # create the column
+        query_text = """
+            UPDATE {0} SET changeset_id = {1};
+        """.format(f_table_name, changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
     ################################################################################
     # CHANGESET
     ################################################################################
@@ -1674,14 +1701,22 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def delete_changeset(self, changeset_id):
-        if is_a_invalid_id(changeset_id):
+    def delete_changeset(self, changeset_id=None, layer_id=None):
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(layer_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        # delete the reference
-        query_text = """
-            DELETE FROM changeset WHERE changeset_id={0};
-        """.format(changeset_id)
+        if changeset_id is not None:
+            # delete the reference
+            query_text = """
+                DELETE FROM changeset WHERE changeset_id={0};
+            """.format(changeset_id)
+        elif layer_id is not None:
+            # delete the reference
+            query_text = """
+                DELETE FROM changeset WHERE layer_id={0};
+            """.format(layer_id)
+        else:
+            raise HTTPError(400, "Invalid parameter.")
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
