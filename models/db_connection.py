@@ -951,15 +951,12 @@ class PGSQLConnection:
     # TIME_COLUMNS
     ################################################################################
 
-    def get_time_columns(self, f_table_name=None, start_date_column_name=None, end_date_column_name=None,
-                         start_date=None, end_date=None):
+    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_time_columns_table(f_table_name=f_table_name,
-                                                   start_date_column_name=start_date_column_name, end_date_column_name=end_date_column_name,
-                                                   start_date=start_date, end_date=end_date)
+        subquery = get_subquery_time_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """

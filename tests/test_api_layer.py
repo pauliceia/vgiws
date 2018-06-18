@@ -143,15 +143,15 @@ class TestAPILayer(TestCase):
         # create layer time_columns record
         ##################################################
 
-        time_columns = {
-            'time_columns': {
-                'properties': {
-                    'f_table_name': f_table_name,
-                    'start_date_column_name': 'start_date', 'end_date_column_name': 'end_date',
-                    'start_date': '1900/01/01', 'end_date': '1930/12/31'
-                }
-            }
-        }
+        # time_columns = {
+        #     'time_columns': {
+        #         'properties': {
+        #             'f_table_name': f_table_name,
+        #             'start_date_column_name': 'start_date', 'end_date_column_name': 'end_date',
+        #             'start_date': '1900/01/01', 'end_date': '1930/12/31'
+        #         }
+        #     }
+        # }
 
         ##################################################
         # delete the layer

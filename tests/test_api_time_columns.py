@@ -8,64 +8,61 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-"""
-class TestAPICurator(TestCase):
+
+class TestAPITimeColumns(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # curator - get
+    # time_columns - get
     
-    def test_get_api_curator_return_all_curators(self):
+    def test_get_api_time_columns_return_all_time_columns(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'created_at': '2018-01-01 00:00:00', 'keyword_id': 1001,
-                                   'user_id': 1001, 'region': 'amaro'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1870-01-01', 'end_date': '1900-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1001',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1001, 'region': 'azure'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'belondres'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1003, 'region': 'jorge'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
-                                   'user_id': 1003, 'region': 'centro'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1920-01-01', 'end_date': '1930-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1005',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
-                                   'user_id': 1004, 'region': 'são francisco'},
-                    'type': 'Curator'
-                },
-                {
-                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1005, 'region': 'são bento'},
-                    'type': 'Curator'
-                },
-                {
-                    'properties': {'created_at': '2018-03-24 00:00:00', 'keyword_id': 1021,
-                                   'user_id': 1006, 'region': 'avenida rodônia'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1930-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1006',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_curator(expected)
+        self.tester.api_time_columns(expected)
 
+    """
     def test_get_api_curator_return_curator_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
@@ -173,9 +170,10 @@ class TestAPICurator(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    """
+
 """
-"""
-class TestAPIUserCuratorErrors(TestCase):
+class TestAPIUserTimeColumnsErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
