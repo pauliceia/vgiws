@@ -12,7 +12,7 @@ def get_subquery_curator_table(**kwargs):
         conditions_of_where.append("user_id = {0}".format(kwargs["user_id"]))
 
     if "keyword_id" in kwargs and kwargs["keyword_id"] is not None:
-        conditions_of_where.append("keyword_id = '{0}'".format(kwargs["keyword_id"]))
+        conditions_of_where.append("keyword_id = {0}".format(kwargs["keyword_id"]))
 
     if "region" in kwargs and kwargs["region"] is not None:
         conditions_of_where.append("unaccent(LOWER(region)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["region"]))

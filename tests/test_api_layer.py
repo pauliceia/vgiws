@@ -118,24 +118,40 @@ class TestAPILayer(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
+        f_table_name = 'addresses_1930'
+
         ##################################################
         # create a layer
         ##################################################
         resource = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {"type": "MultiPoint"}
-            }
+            },
         }
         resource = self.tester.api_layer_create(resource)
 
         ##################################################
         # update the layer
         ##################################################
+
+        ##################################################
+        # create layer time_columns record
+        ##################################################
+
+        time_columns = {
+            'time_columns': {
+                'properties': {
+                    'f_table_name': f_table_name,
+                    'start_date_column_name': 'start_date', 'end_date_column_name': 'end_date',
+                    'start_date': '1900/01/01', 'end_date': '1930/12/31'
+                }
+            }
+        }
 
         ##################################################
         # delete the layer
@@ -294,7 +310,7 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_delete_error_401_unauthorized("-1")
         self.tester.api_layer_delete_error_401_unauthorized("0")
         self.tester.api_layer_delete_error_401_unauthorized("1001")
-    
+
     def test_delete_api_layer_error_403_forbidden_user_forbidden_to_delete(self):
         ########################################
         # create a layer with user admin

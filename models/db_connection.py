@@ -948,6 +948,128 @@ class PGSQLConnection:
         self.unpublish_feature_table_in_geoserver(version_f_table_name)
 
     ################################################################################
+    # TIME_COLUMNS
+    ################################################################################
+
+    def get_time_columns(self, f_table_name=None, start_date_column_name=None, end_date_column_name=None,
+                         start_date=None, end_date=None):
+        # the id have to be a int
+        # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
+        #     raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_time_columns_table(f_table_name=f_table_name,
+                                                   start_date_column_name=start_date_column_name, end_date_column_name=end_date_column_name,
+                                                   start_date=start_date, end_date=end_date)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'TimeColumns',
+                    'properties', json_build_object(
+                        'f_table_name',            f_table_name,
+                        'start_date_column_name',  start_date_column_name,
+                        'end_date_column_name',    end_date_column_name,
+                        'start_date',              start_date,
+                        'end_date',                end_date
+                    )
+                ))
+            ) AS row_to_json
+            FROM
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def create_time_columns_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, 
+                                      start_date, end_date)
+            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}');
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
+                   p["start_date"], p["end_date"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def create_time_columns(self, resource_json, user_id):
+        try:
+            self.create_time_columns_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+    def update_time_columns_in_db(self, properties):
+        p = properties
+
+        query_text = """
+            UPDATE time_columns SET start_date_column_name = '{1}', end_date_column_name = '{2}', 
+                                    start_date = '{3}', end_date = '{4}'
+            WHERE f_table_name = {0};
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
+                   p["start_date"], p["end_date"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_time_columns(self, resource_json, user_id):
+        try:
+            self.update_time_columns_in_db(resource_json["properties"])
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+    def delete_time_columns(self, f_table_name):
+        # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
+        #     raise HTTPError(400, "Invalid parameter.")
+
+        # delete the time_columns
+        query_text = """
+            DELETE FROM time_columns WHERE f_table_name = {0};
+        """.format(f_table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
     # USER_LAYER
     ################################################################################
 
