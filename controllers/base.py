@@ -803,6 +803,21 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
     # POST - IMPORT
 
+    def do_validation(self, arguments, binary_file):
+        if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
+            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and the changeset_id in request.")
+
+        if binary_file == b'':
+            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
+
+        # if do not exist the temp folder, create it
+        if not exists(__TEMP_FOLDER__):
+            makedirs(__TEMP_FOLDER__)
+
+        # the file needs to be in a zip file
+        if not arguments["file_name"].endswith(".zip"):
+            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]) + ". It is necessary to be a zip.")
+
     def save_binary_file_in_folder(self, binary_file, folder_with_file_name):
         """
         :param binary_file: a file in binary
@@ -820,6 +835,8 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
         :return:
         """
+        remove_and_raise_exception = False
+
         # extract the zip in a folder
         with ZipFile(folder_with_file_name, "r") as zip_reference:
 
@@ -827,7 +844,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
             if exist_shapefile_inside_zip(zip_reference):
                 zip_reference.extractall(folder_to_extract_zip)
             else:
-                raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
+                remove_and_raise_exception = True
+
+        if remove_and_raise_exception:
+            # remove the created file after close the file (out of with ZipFile)
+            remove_file(folder_with_file_name)
+            raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
 
     def import_shp_file_into_postgis(self, f_table_name, shape_file_name, folder_to_extract_zip):
         """
@@ -852,29 +874,18 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
             raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
     def import_shp(self):
+        # get the arguments of the request
         arguments = self.get_aguments()
-
-        if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
-            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and the changeset_id in request.")
-
         # get the binary file in body of the request
         binary_file = self.request.body
-        if binary_file == b'':
-            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
+
+        self.do_validation(arguments, binary_file)
 
         # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
         arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
         # remove the extension of the file name (e.g. points)
         FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
-
-        # if do not exist the temp folder, create it
-        if not exists(__TEMP_FOLDER__):
-            makedirs(__TEMP_FOLDER__)
-
-        # the file needs to be in a zip file
-        if not arguments["file_name"].endswith(".zip"):
-            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]) + ". It is necessary to be a zip.")
 
         # file name of the zip (e.g. /tmp/vgiws/points.zip)
         ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
