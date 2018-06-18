@@ -89,7 +89,7 @@ class TestAPILayer(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_layer(expected, f_table_name="layer_1003")
+        self.tester.api_layer(expected, f_table_name="1003")
 
     def test_get_api_layer_return_layer_by_keyword_id(self):
         expected = {
