@@ -55,6 +55,14 @@ VALUES (1008, 'bea', 'bea@gmail.com', 'bea',
 
 
 -- -----------------------------------------------------
+-- Table time_columns
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM time_columns;
+
+
+
+-- -----------------------------------------------------
 -- Table keyword
 -- -----------------------------------------------------
 -- clean table
@@ -228,6 +236,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1001 (
     ON UPDATE CASCADE
 );
 
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1001', 'start_date', 'end_date', '1870/01/01', '1900/12/31');
+
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1001, 1001, '2017-01-02', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1001, 1002, '2017-01-03');
@@ -321,6 +332,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1002 (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1002', 'start_date', 'end_date', '1890/01/01', '1900/12/31');
 
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1002, 1001, '2017-03-05', TRUE);
@@ -416,6 +430,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
     ON UPDATE CASCADE
 );
 
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1003', 'start_date', 'end_date', '1900/01/01', '1920/12/31');
+
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1005, '2017-04-10', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1001, '2017-04-11');
@@ -506,6 +523,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
     ON UPDATE CASCADE
 );
 
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1004', 'start_date', 'end_date', '1910/01/01', '1920/12/31');
+
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1005, '2017-06-15', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1007, '2017-06-20');
@@ -595,6 +615,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1005 (
     ON UPDATE CASCADE
 );
 
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1005', 'start_date', 'end_date', '1920/01/01', '1930/12/31');
+
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1005, 1007, '2017-08-04', TRUE);
 
@@ -682,6 +705,9 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+-- add temporal metadata
+INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1006', 'start_date', 'end_date', '1900/01/01', '1930/12/31');
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1006, 1007, '2017-09-04', TRUE);
