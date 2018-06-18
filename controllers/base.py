@@ -855,12 +855,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         arguments = self.get_aguments()
 
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
-            raise HTTPError(400, "It is necessary pass the f_table_name, file_name and the changeset_id.")
+            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and the changeset_id in request.")
 
         # get the binary file in body of the request
         binary_file = self.request.body
-        if binary_file == "":
-            raise HTTPError(400, "It is necessary pass one binary zip file in the body of the request.")
+        if binary_file == b'':
+            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
 
         # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
         arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
