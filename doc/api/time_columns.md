@@ -5,8 +5,19 @@
 
 This method gets time columns from DB. If you doesn't put any parameter, so it will return all.
 - Parameters:
+    - f_table_name (optional) (text): the feature table name (e.g. 'layer_1003');
+    - start_date (optional) (text): the start date (e.g. '1890-01-01');
+    - end_date (optional) (text): the end_date (e.g. '1920-12-31');
+    - start_date_gte (optional) (text): it will search by greater than or equal the start date (e.g. '1890-01-01');
+    - end_date_lte (optional) (text): it will search by less than or equal the end date (e.g. '1920-12-31').
 - Examples:
      - Get all time columns: http://localhost:8888/api/time_columns/
+     - Get time columns by f_table_name: http://localhost:8888/api/time_columns/?f_table_name=layer_1003
+     - Get time columns by start_date: http://localhost:8888/api/time_columns/?start_date=1890-01-01
+     - Get time columns by end_date: http://localhost:8888/api/time_columns/?end_date=1920-12-31
+     - Get time columns by start_date_gte: http://localhost:8888/api/time_columns/?start_date_gte=1890-01-01
+     - Get time columns by end_date_lte: http://localhost:8888/api/time_columns/?end_date_lte=1920-12-31
+     - Get time columns by temporal bounding box with start_date_gte and end_date_lte: http://localhost:8888/api/time_columns/?start_date_gte=1890-01-01&end_date_lte=1920-12-31
 - Send (in Body):
 - Send (in Header):
 - Response: a JSON that contains the resources selected. Example:

@@ -102,7 +102,7 @@ class TestAPITimeColumns(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_time_columns(expected, start_date_gte="1890-01-01", end_date_lte="1920-12-31")
+        self.tester.api_time_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
 
     def test_get_api_time_columns_return_time_columns_by_start_date_greater_than_or_equal(self):
         expected = {
@@ -193,11 +193,10 @@ class TestAPITimeColumns(TestCase):
         }
 
         self.tester.api_time_columns(expected, end_date="1920-12-31")
-
-    """    
-    # curator - create, update and delete
-
-    def test_api_curator_create_update_and_delete(self):
+   
+    # time_columns - create, update and delete
+    """ 
+    def test_api_time_columns_create_update_and_delete(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -233,37 +232,22 @@ class TestAPITimeColumns(TestCase):
         self.tester.auth_logout()
     """
 
-"""
 class TestAPIUserTimeColumnsErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # curator errors - get
+    # time_columns errors - get
 
-    def test_get_api_curator_error_400_bad_request(self):
-        self.tester.api_curator_error_400_bad_request(keyword_id="abc")
-        self.tester.api_curator_error_400_bad_request(keyword_id=0)
-        self.tester.api_curator_error_400_bad_request(keyword_id=-1)
-        self.tester.api_curator_error_400_bad_request(keyword_id="-1")
-        self.tester.api_curator_error_400_bad_request(keyword_id="0")
-
-        self.tester.api_curator_error_400_bad_request(user_id="abc")
-        self.tester.api_curator_error_400_bad_request(user_id=0)
-        self.tester.api_curator_error_400_bad_request(user_id=-1)
-        self.tester.api_curator_error_400_bad_request(user_id="-1")
-        self.tester.api_curator_error_400_bad_request(user_id="0")
-
-    def test_get_api_curator_error_404_not_found(self):
-        self.tester.api_curator_error_404_not_found(keyword_id="999")
-        self.tester.api_curator_error_404_not_found(keyword_id="998")
-
-        self.tester.api_curator_error_404_not_found(user_id="999")
-        self.tester.api_curator_error_404_not_found(user_id="998")
+    def test_get_api_time_columns_error_400_bad_request_invalid_date_format(self):
+        self.tester.api_time_columns_error_400_bad_request(start_date="1910/01-01")
+        self.tester.api_time_columns_error_400_bad_request(end_date="1910-01/01")
+        self.tester.api_time_columns_error_400_bad_request(start_date_gte="1910/01=01")
+        self.tester.api_time_columns_error_400_bad_request(end_date_lte="1910-01)01")
     
-    # curator errors - create
-
+    # time_columns errors - create
+    """
     def test_post_api_curator_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -327,7 +311,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # curator errors - update
+    # time_columns errors - update
 
     def test_put_api_curator_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
@@ -378,7 +362,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # curator errors - delete
+    # time_columns errors - delete
 
     def test_delete_api_curator_error_400_bad_request(self):
         # create a tester passing the unittest self
@@ -424,7 +408,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

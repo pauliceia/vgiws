@@ -252,7 +252,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(400, str(error))
         except DataError as error:
             raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
-                                 "(error: " + str(error) + ").")
+                                 "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
@@ -296,7 +296,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
-                            "(error: " + str(error) + ").")
+                            "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
         self.write(json_encode(json_with_id))
 
@@ -316,7 +316,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
-                            "(error: " + str(error) + ").")
+                            "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _close_resource(self, current_user_id, **kwargs):
         raise NotImplementedError
@@ -348,7 +348,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
-                            "(error: " + str(error) + ").")
+                            "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
@@ -369,7 +369,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except DataError as error:
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
-                            "(error: " + str(error) + ").")
+                            "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         raise NotImplementedError

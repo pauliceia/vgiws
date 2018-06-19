@@ -356,7 +356,7 @@ class PGSQLConnection:
 
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error
 
@@ -388,7 +388,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -481,7 +481,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -506,7 +506,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -673,7 +673,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -951,7 +951,7 @@ class PGSQLConnection:
     # TIME_COLUMNS
     ################################################################################
 
-    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
+    def get_time_columns_in_db(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
@@ -998,6 +998,20 @@ class PGSQLConnection:
 
         return results_of_query
 
+    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
+
+        try:
+            results = self.get_time_columns_in_db(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
+                                                  start_date_gte=start_date_gte, end_date_lte=end_date_lte)
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "22007":  # 22007 - invalid_datetime_format
+                raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
+
+        return results
+
     def create_time_columns_in_db(self, properties):
         p = properties
 
@@ -1020,7 +1034,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1046,7 +1060,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1139,7 +1153,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -1250,7 +1264,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1283,7 +1297,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1376,7 +1390,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -1489,7 +1503,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1525,7 +1539,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
@@ -1618,7 +1632,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 # if is other error, so raise it up
                 raise error
@@ -1788,7 +1802,7 @@ class PGSQLConnection:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (" + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
 
