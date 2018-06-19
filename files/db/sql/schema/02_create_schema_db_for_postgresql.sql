@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Sex 15 Jun 2018 09:39:33 -03
+-- Ter 19 Jun 2018 10:01:20 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -347,8 +347,8 @@ CREATE TABLE IF NOT EXISTS time_columns (
   f_table_name TEXT NOT NULL UNIQUE,
   start_date_column_name TEXT NULL,
   end_date_column_name TEXT NULL,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date TIMESTAMP NULL,
+  end_date TIMESTAMP NULL,
   PRIMARY KEY (f_table_name)
 );
 

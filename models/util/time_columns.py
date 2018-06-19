@@ -12,10 +12,16 @@ def get_subquery_time_columns_table(**kwargs):
         conditions_of_where.append("unaccent(LOWER(f_table_name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["f_table_name"]))
 
     if "start_date" in kwargs and kwargs["start_date"] is not None:
-        conditions_of_where.append("start_date = '{0}'".format(kwargs["start_date"]))
+        conditions_of_where.append("start_date::date = '{0}'".format(kwargs["start_date"]))
 
     if "end_date" in kwargs and kwargs["end_date"] is not None:
-        conditions_of_where.append("end_date = '{0}'".format(kwargs["end_date"]))
+        conditions_of_where.append("end_date::date = '{0}'".format(kwargs["end_date"]))
+
+    if "start_date_gte" in kwargs and kwargs["start_date_gte"] is not None:
+        conditions_of_where.append("start_date::date >= '{0}'".format(kwargs["start_date_gte"]))
+
+    if "end_date_lte" in kwargs and kwargs["end_date_lte"] is not None:
+        conditions_of_where.append("end_date::date <= '{0}'".format(kwargs["end_date_lte"]))
 
     # default get all features, without where clause
     where_clause = ""

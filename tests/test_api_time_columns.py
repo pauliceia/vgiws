@@ -62,78 +62,139 @@ class TestAPITimeColumns(TestCase):
 
         self.tester.api_time_columns(expected)
 
-    """
-    def test_get_api_curator_return_curator_by_user_id(self):
+    def test_get_api_time_columns_return_time_columns_by_f_table_name(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1003, 'region': 'jorge'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_time_columns(expected, f_table_name="1003")
+
+    def test_get_api_time_columns_return_time_columns_by_temporal_bounding_box(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-01-15 00:00:00', 'keyword_id': 1020,
-                                   'user_id': 1003, 'region': 'centro'},
-                    'type': 'Curator'
-                }
-            ]
-        }
-
-        self.tester.api_curator(expected, user_id="1003")
-
-    def test_get_api_curator_return_curator_by_keyword_id(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1001, 'region': 'azure'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'belondres'},
-                    'type': 'Curator'
-                }
-            ]
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                },
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_curator(expected, keyword_id="1002")
+        self.tester.api_time_columns(expected, start_date_gte="1890-01-01", end_date_lte="1920-12-31")
 
-    def test_get_api_curator_return_curator_by_region(self):
+    def test_get_api_time_columns_return_time_columns_by_start_date_greater_than_or_equal(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'created_at': '2018-02-20 00:00:00', 'keyword_id': 1003,
-                                   'user_id': 1004, 'region': 'são francisco'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 },
                 {
-                    'properties': {'created_at': '2018-02-22 00:00:00', 'keyword_id': 1010,
-                                   'user_id': 1005, 'region': 'são bento'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1920-01-01', 'end_date': '1930-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1005',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_curator(expected, region="SÃo")
+        self.tester.api_time_columns(expected, start_date_gte="1910-01-01")
 
-    def test_get_api_curator_return_curator_by_user_id_and_keyword_id(self):
+    def test_get_api_time_columns_return_time_columns_by_end_date_less_than_or_equal(self):
         expected = {
-            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'created_at': '2018-01-10 00:00:00', 'keyword_id': 1002,
-                                   'user_id': 1002, 'region': 'belondres'},
-                    'type': 'Curator'
+                    'properties': {'start_date': '1870-01-01', 'end_date': '1900-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1001',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                },
+                {
+                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                },
+                {
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                },
+                {
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
                 }
-            ]
+            ],
+            'type': 'FeatureCollection'
         }
 
-        self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
-    
+        self.tester.api_time_columns(expected, end_date_lte="1920-12-31")
+
+    def test_get_api_time_columns_return_time_columns_by_start_date(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_time_columns(expected, start_date="1910-01-01")
+
+    def test_get_api_time_columns_return_time_columns_by_end_date(self):
+        expected = {
+            'features': [
+                {
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                },
+                {
+                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
+                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
+                                   'start_date_column_name': 'start_date'},
+                    'type': 'TimeColumns'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_time_columns(expected, end_date="1920-12-31")
+
+    """    
     # curator - create, update and delete
 
     def test_api_curator_create_update_and_delete(self):

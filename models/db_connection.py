@@ -951,12 +951,13 @@ class PGSQLConnection:
     # TIME_COLUMNS
     ################################################################################
 
-    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None):
+    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_time_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date)
+        subquery = get_subquery_time_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
+                                                   start_date_gte=start_date_gte, end_date_lte=end_date_lte)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -968,8 +969,8 @@ class PGSQLConnection:
                         'f_table_name',            f_table_name,
                         'start_date_column_name',  start_date_column_name,
                         'end_date_column_name',    end_date_column_name,
-                        'start_date',              start_date,
-                        'end_date',                end_date
+                        'start_date',              to_char(start_date, 'YYYY-MM-DD'),
+                        'end_date',                to_char(end_date, 'YYYY-MM-DD')
                     )
                 ))
             ) AS row_to_json
