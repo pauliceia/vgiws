@@ -862,8 +862,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
     # POST - IMPORT
 
     def do_validation(self, arguments, binary_file):
-        if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
-            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and the changeset_id in request.")
+        if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments) or\
+                ("epsg" not in arguments):
+            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name, changeset_id and the epsg in request.")
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
@@ -909,7 +910,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
             remove_file(folder_with_file_name)
             raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
 
-    def import_shp_file_into_postgis(self, f_table_name, shape_file_name, folder_to_extract_zip):
+    def import_shp_file_into_postgis(self, f_table_name, shapefile_name, folder_to_extract_zip, epsg):
         """
         :param f_table_name: name of the feature table that will be created
         :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
@@ -922,8 +923,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
                                 ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
         try:
             # FEATURE TABLE
-            command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shape_file_name + \
-                                                 ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
+            # command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shapefile_name + \
+            #                                      ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -a_srs EPSG:' + str(epsg)
+
+            command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
+                                                 shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(epsg) + \
+                                                 ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
@@ -949,14 +954,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
         # folder where will extract the zip (e.g. /tmp/vgiws/points)
         EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
-        # name of the SHP file in folder (e.g. /tmp/vgiws/points/points.shp)
+        # name of the SHP file (e.g. points.shp)
         SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
         self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME, arguments["epsg"])
 
         VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 

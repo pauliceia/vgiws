@@ -66,11 +66,12 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "points.zip"
+        epsg = 4618
         with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
-                                              file_name=file_name, changeset_id=self.changeset_id)
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
 
 
 class TestAPIImportError(TestCase):
@@ -85,6 +86,7 @@ class TestAPIImportError(TestCase):
         self.folder_name = "files/"
         self.f_table_name = "feature_table"
         self.changeset_id = 1005
+        self.epsg = 4618
 
     def tearDown(self):
         # DO LOGOUT AFTER THE TESTS
@@ -101,7 +103,8 @@ class TestAPIImportError(TestCase):
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
-                                                                    file_name=file_name, changeset_id=self.changeset_id)
+                                                                    file_name=file_name, changeset_id=self.changeset_id,
+                                                                    epsg=self.epsg)
 
     def test_post_import_shp_error_400_bad_request_file_name_is_not_zip(self):
         ##################################################
@@ -113,7 +116,7 @@ class TestAPIImportError(TestCase):
 
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name="folder_with_nothing",
-                                                                    changeset_id=self.changeset_id)
+                                                                    changeset_id=self.changeset_id, epsg=self.epsg)
 
     def test_post_import_shp_error_400_bad_request_argument_is_missing(self):
         ##################################################
@@ -124,16 +127,20 @@ class TestAPIImportError(TestCase):
             binary_file_content = file.read()
 
             # try to import without binary_file_content
-            self.tester.api_import_shp_create_error_400_bad_request("", f_table_name=self.f_table_name,
+            self.tester.api_import_shp_create_error_400_bad_request("", f_table_name=self.f_table_name, epsg=self.epsg,
                                                                     file_name=file_name, changeset_id=self.changeset_id)
 
             # try to import without f_table_name
-            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content,
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, epsg=self.epsg,
                                                                     file_name=file_name, changeset_id=self.changeset_id)
 
             # try to import without file_name
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
-                                                                    changeset_id=self.changeset_id)
+                                                                    changeset_id=self.changeset_id, epsg=self.epsg)
+
+            # try to import without changeset_id
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
+                                                                    file_name=file_name, epsg=self.epsg)
 
             # try to import without changeset_id
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
@@ -149,6 +156,7 @@ class TestAPIImportErrorWithoutLogin(TestCase):
         self.folder_name = "files/"
         self.f_table_name = "points"
         self.changeset_id = 1005
+        self.epsg = 4618
 
     # import - create error
 
@@ -161,7 +169,8 @@ class TestAPIImportErrorWithoutLogin(TestCase):
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_401_unauthorized(binary_file_content, f_table_name=self.f_table_name,
-                                                                     file_name=file_name, changeset_id=self.changeset_id)
+                                                                     file_name=file_name, changeset_id=self.changeset_id,
+                                                                     epsg=self.epsg)
 
 
 # It is not necessary to pyt the main() of unittest here,
