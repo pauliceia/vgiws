@@ -44,11 +44,11 @@ PUBLISH_LAYERS_IN_GEOSERVER = True
 __TEMP_FOLDER__ = "/tmp/vgiws/"
 
 # redirect uri google (production and debug)
-__REDIRECT_URI_GOOGLE__ = "http://localhost:8888/api/auth/google"
+__REDIRECT_URI_GOOGLE__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/auth/google"
 __REDIRECT_URI_GOOGLE_DEBUG__ = "http://localhost:8888/api/auth/google"
 
 # redirect uri facebook (production and debug)
-__REDIRECT_URI_FACEBOOK__ = "http://localhost:8888/api/auth/facebook"
+__REDIRECT_URI_FACEBOOK__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/auth/facebook"
 __REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"
 
 # after login with social login, redirect to... (production and debug)
