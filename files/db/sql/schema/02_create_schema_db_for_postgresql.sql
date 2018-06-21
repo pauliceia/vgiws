@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Ter 19 Jun 2018 10:01:20 -03
+-- Qui 21 Jun 2018 19:09:04 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS pauliceia_user (
   is_email_valid BOOLEAN NOT NULL DEFAULT FALSE,
   terms_agreed BOOLEAN NOT NULL DEFAULT FALSE,
   login_date TIMESTAMP NULL,
-  is_the_admin BOOLEAN NOT NULL  DEFAULT FALSE,
-  receive_notification_by_email BOOLEAN NOT NULL DEFAULT FALSE,
+  is_the_admin BOOLEAN NOT NULL DEFAULT FALSE ,
+  receive_notification_by_email BOOLEAN NOT NULL,
   PRIMARY KEY (user_id)
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS user_layer (
   user_id SERIAL ,
   layer_id INT NOT NULL,
   created_at TIMESTAMP NULL,
-  is_the_creator BOOLEAN NULL  DEFAULT FALSE,
+  is_the_creator BOOLEAN NULL DEFAULT FALSE ,
   PRIMARY KEY (user_id, layer_id),
   CONSTRAINT fk_project_subscriber_user1
     FOREIGN KEY (user_id)
@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS keyword CASCADE ;
 
 CREATE TABLE IF NOT EXISTS keyword (
   keyword_id SERIAL ,
-  name TEXT NULL UNIQUE,
+  name TEXT NOT NULL UNIQUE,
   created_at TIMESTAMP NULL,
   parent_id INT NULL,
   user_id_creator INT NOT NULL,
@@ -140,6 +140,7 @@ CREATE TABLE IF NOT EXISTS notification (
   description TEXT NOT NULL ,
   icon TEXT NULL,
   created_at TIMESTAMP NOT NULL,
+  is_denunciation BOOLEAN NOT NULL DEFAULT FALSE,
   user_id_creator INT NULL ,
   layer_id INT NULL ,
   keyword_id INT NULL ,
@@ -176,7 +177,7 @@ DROP TABLE IF EXISTS user_notification CASCADE ;
 CREATE TABLE IF NOT EXISTS user_notification (
   user_id SERIAL ,
   notification_id INT NOT NULL,
-  is_read BOOLEAN NULL DEFAULT FALSE,
+  is_read BOOLEAN NULL,
   PRIMARY KEY (user_id, notification_id),
   CONSTRAINT fk_user_notification_user_1
     FOREIGN KEY (user_id)
@@ -244,7 +245,7 @@ DROP TABLE IF EXISTS reference CASCADE ;
 
 CREATE TABLE IF NOT EXISTS reference (
   reference_id SERIAL ,
-  description TEXT NULL  UNIQUE,
+  description TEXT NOT NULL  UNIQUE,
   user_id_creator INT NOT NULL,
   PRIMARY KEY (reference_id),
   CONSTRAINT fk_reference_pauliceia_user1

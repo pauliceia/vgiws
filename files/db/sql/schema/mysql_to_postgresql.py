@@ -34,6 +34,8 @@ def replace_phrases(text):
     text = text.replace("mydb", "pauliceia")
     text = text.replace("`", "")
     text = text.replace("TINYINT(1)", "BOOLEAN")
+    text = text.replace("DEFAULT 0", "DEFAULT FALSE")
+    text = text.replace("DEFAULT 1", "DEFAULT TRUE")
     text = text.replace("ENGINE = InnoDB", "")
     #text = text.replace("ON DELETE NO ACTION", "ON DELETE CASCADE")
     text = text.replace("ON UPDATE NO ACTION", "ON UPDATE CASCADE")
@@ -96,36 +98,36 @@ def remove_bad_lines_and_put_default_values(text):
             lines[i] = lines[i].replace(";", "CASCADE ;")
 
         # put default values, but NOT in FKs
-        if "visible boolean" in line_lower and "fk" not in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
+        #if "visible boolean" in line_lower and "fk" not in line_lower:
+            #lines[i] = lines[i].replace(",", " DEFAULT TRUE,")
 
-        if "version int" in line_lower and "fk" not in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT 1,")
+        #if "version int" in line_lower and "fk" not in line_lower:
+            #lines[i] = lines[i].replace(",", " DEFAULT 1,")
 
         # default FALSE to "is_read" column, because is True, just if the user read the message
-        if "is_read boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+        #if "is_read boolean" in line_lower:
+            #lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         # USER
-        if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+        #if ("is_email_valid boolean" in line_lower) or ("terms_agreed boolean" in line_lower):
+            #lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         if ("email text" in line_lower) or ("username text" in line_lower):
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
-        if ("is_the_admin boolean" in line_lower) or ("can_add_layer boolean" in line_lower) or ("receive_notification_by_email boolean" in line_lower):            
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+        #if ("is_the_admin boolean" in line_lower) or ("can_add_layer boolean" in line_lower) or ("receive_notification_by_email boolean" in line_lower):            
+            #lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         # LAYER
         if "f_table_name text" in line_lower:
             lines[i] = lines[i].replace(",", " UNIQUE,")  # constraint UNIQUE
 
-        if "is_published boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+        #if "is_published boolean" in line_lower:
+            #lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         # USER_LAYER
-        if "is_the_creator boolean" in line_lower:
-            lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
+        #if "is_the_creator boolean" in line_lower:
+            #lines[i] = lines[i].replace(",", " DEFAULT FALSE,")
 
         # REFERENCE
         # just change the 'description' of the 'reference'

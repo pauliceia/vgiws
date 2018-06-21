@@ -13,6 +13,10 @@ from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile
 
+from smtplib import SMTP
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from psycopg2 import DataError
 
 from tornado.web import RequestHandler, HTTPError
@@ -21,11 +25,11 @@ from tornado.escape import json_encode
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
                                 __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
-
-from settings.settings import __TEMP_FOLDER__
+from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
+from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
-                            catch_generic_exception, auth_non_browser_based, just_run_on_debug_mode
+                            catch_generic_exception
 
 
 # BASE CLASS
@@ -41,10 +45,10 @@ class BaseHandler(RequestHandler):
 
     # __init__ for Tornado subclasses
     def initialize(self):
-        # get the database instances
+        # get the database instance
         self.PGSQLConn = self.application.PGSQLConn
-        # self.Neo4JConn = self.application.Neo4JConn
 
+        # get the mode of system (debug or not)
         self.DEBUG_MODE = self.application.DEBUG_MODE
 
         if self.DEBUG_MODE:
@@ -168,6 +172,43 @@ class BaseHandler(RequestHandler):
         current_user = self.get_current_user_()
 
         return current_user["properties"]["is_the_admin"]
+
+    # MAIL
+
+    def send_notification_to_email(self, to_email_address, subject="", body=""):
+        from_mail_address = __TO_MAIL_ADDRESS__
+
+        msg = MIMEMultipart()
+        msg['From'] = from_mail_address
+        msg['To'] = to_email_address
+        msg['Subject'] = subject
+
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = SMTP(__SMTP_ADDRESS__, __SMTP_PORT__)
+        server.starttls()
+        server.login(from_mail_address, __PASSWORD_MAIL_ADDRESS__)
+        server.sendmail(from_mail_address, to_email_address, msg.as_string())
+        server.quit()
+
+    def send_validation_email_to(self, to_email_address, user_id):
+        if self.DEBUG_MODE:
+            url_to_validate_email = __VALIDATE_EMAIL_DEBUG__
+        else:
+            url_to_validate_email = __VALIDATE_EMAIL__
+
+        email_token = generate_encoded_jwt_token({"user_id": user_id})
+
+        url_to_validate_email += "/" + email_token.decode("utf-8")   # convert bytes to str
+
+        subject = "Email Validation"
+        body = """
+            Please, not reply this message.
+
+            Please, click on under URL to validate your email:
+            {0}
+        """.format(url_to_validate_email)
+        self.send_notification_to_email(to_email_address, subject=subject, body=body)
 
     # URLS
 
@@ -387,7 +428,12 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_user(resource_json)
+        result = self.PGSQLConn.create_user(resource_json)
+
+        # if is alright about register a new user, so send to him/her an email
+        self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
+
+        return result
 
     # PUT
 

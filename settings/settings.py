@@ -54,3 +54,7 @@ __REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"
 # after login with social login, redirect to... (production and debug)
 __AFTER_LOGIN_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/social"
 __AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social"
+
+# URL to validate the email (production and debug)
+__VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/validate_email"
+__VALIDATE_EMAIL_DEBUG__ = "http://localhost:8888/api/validate_email"

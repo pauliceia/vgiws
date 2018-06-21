@@ -5,6 +5,8 @@
 from datetime import datetime
 from base64 import b64encode
 from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError
+from string import ascii_uppercase, digits
+from random import choice
 
 from psycopg2 import Error, ProgrammingError
 from tornado.web import HTTPError
@@ -140,4 +142,11 @@ def get_username_and_password_as_string_in_base64(username, password):
     string_in_base64 = (b64encode(username_and_password.encode('utf-8'))).decode('utf-8')
 
     return string_in_base64
+
+
+def generate_random_string(size=6, chars=ascii_uppercase + digits):
+    """
+    #Source: https://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+    """
+    return ''.join(choice(chars) for _ in range(size))
 
