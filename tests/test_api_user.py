@@ -280,7 +280,7 @@ class TestAPIUser(TestCase):
         resource_id = resource["properties"]["user_id"]
 
         # remove the created user
-        self.tester.api_user_delete(resource_id)
+        # self.tester.api_user_delete(resource_id)
 
         # logout
         self.tester.auth_logout()

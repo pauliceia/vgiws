@@ -27,6 +27,20 @@ This method return the current logged user.
 - Notes:
 
 
+### GET /api/validate_email/\<token>
+
+This method validate a email account by \<token>.
+- Parameters:
+- Examples:
+     - Validate email account: http://localhost:8888/api/validate_email/3XUE89Q98Q3E83HXH38D
+- Send (in Body):
+- Send (in Header):
+- Response:
+- Error codes:
+    - 400 (Bad Request): Invalid Token.
+- Notes:
+
+
 <!-- ### GET /api/capabilities/ -->
 
 <!-- This method return the capabilities of the server. -->

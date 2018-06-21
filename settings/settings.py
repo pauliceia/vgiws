@@ -43,6 +43,11 @@ PUBLISH_LAYERS_IN_GEOSERVER = True
 # temporary folder where will be save the import files temporarily
 __TEMP_FOLDER__ = "/tmp/vgiws/"
 
+
+####################################################################################################
+# SOCIAL LOGIN
+####################################################################################################
+
 # redirect uri google (production and debug)
 __REDIRECT_URI_GOOGLE__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/auth/google"
 __REDIRECT_URI_GOOGLE_DEBUG__ = "http://localhost:8888/api/auth/google"
@@ -55,6 +60,15 @@ __REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"
 __AFTER_LOGIN_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/social"
 __AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social"
 
+
+####################################################################################################
+# EMAIL
+####################################################################################################
+
 # URL to validate the email (production and debug)
 __VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/validate_email"
 __VALIDATE_EMAIL_DEBUG__ = "http://localhost:8888/api/validate_email"
+
+# After validated email, redirect to... (production and debug)
+__AFTER_VALIDATED_EMAIL_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal"
+__AFTER_VALIDATED_EMAIL_REDIRECT_TO_DEBUG__ = "http://localhost:8888"

@@ -362,6 +362,15 @@ class PGSQLConnection:
 
         return id_in_json
 
+    def update_user_email_is_valid(self, user_id):
+        query_text = """
+            UPDATE pauliceia_user SET is_email_valid = TRUE 
+            WHERE user_id={0};
+        """.format(user_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
     def update_user_in_db(self, properties):
         p = properties
 
