@@ -232,7 +232,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
         # try to create a curator (without keyword_id)
         resource = {
-            'properties': {'keyword_id': 1010, 'region': 'joana'},
+            'properties': {'user_id': 1003, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_create_error_400_bad_request(resource)
@@ -246,7 +246,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_curator_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
@@ -283,7 +283,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
         # try to create a curator (without keyword_id)
         resource = {
-            'properties': {'keyword_id': 1010, 'region': 'joana'},
+            'properties': {'user_id': 1003, 'region': 'joana'},
             'type': 'Curator'
         }
         self.tester.api_curator_update_error_400_bad_request(resource)

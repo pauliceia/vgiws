@@ -46,23 +46,6 @@ from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CO
 from .util import *
 
 
-# def if_neo4j_is_not_running_so_put_db_offline_and_raise_500_error_status(method):
-#
-#     def wrapper(self, *args, **kwargs):
-#
-#         try:
-#             result = method(self, *args, **kwargs)
-#         except exceptions.ConnectionError:
-#             # put DB status on offline
-#             self.set_connection_status(status=False)
-#
-#             raise HTTPError(500, "Neo4J is not running.")
-#
-#         return result
-#
-#     return wrapper
-
-
 def run_if_can_publish_layers_in_geoserver(method):
 
     def wrapper(self, *args, **kwargs):
@@ -347,18 +330,7 @@ class PGSQLConnection:
 
         validate_feature_json(feature_json)
 
-        try:
-            id_in_json = self.add_user_in_db(feature_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except IntegrityError as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error
+        id_in_json = self.add_user_in_db(feature_json["properties"])
 
         return id_in_json
 
@@ -388,18 +360,8 @@ class PGSQLConnection:
         # pre-processing
         validate_feature_json(resource_json)
 
-        try:
-            # update the user in db
-            self.update_user_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # update the user in db
+        self.update_user_in_db(resource_json["properties"])
 
     def delete_user(self, feature_id):
         if is_a_invalid_id(feature_id):
@@ -481,18 +443,8 @@ class PGSQLConnection:
         # pre-processing
         # validate_feature_json(resource_json)
 
-        try:
-            # add the curator in db
-            self.create_curator_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the curator in db
+        self.create_curator_in_db(resource_json["properties"])
 
     def update_curator_in_db(self, properties):
         p = properties
@@ -506,18 +458,8 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def update_curator(self, resource_json, user_id):
-        try:
-            # add the curator in db
-            self.update_curator_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the curator in db
+        self.update_curator_in_db(resource_json["properties"])
 
     def delete_curator(self, user_id=None, keyword_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
@@ -673,19 +615,8 @@ class PGSQLConnection:
         ##################################################
         # add the layer in db
         ##################################################
-        try:
-            # add the layer in db and get the id of it
-            id_in_json = self.add_layer_in_db(properties)
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                # if is other error, so raise it up
-                raise error
+        # add the layer in db and get the id of it
+        id_in_json = self.add_layer_in_db(properties)
 
         ##################################################
         # add the list of reference in layer
@@ -711,10 +642,7 @@ class PGSQLConnection:
         # create the feature table (if necessary)
         ##################################################
         if is_to_create_feature_table:
-            try:
-                self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
-            except KeyError as error:
-                raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
+            self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
 
         ##################################################
         # add the user as creator user
@@ -1013,15 +941,15 @@ class PGSQLConnection:
 
     def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
 
-        try:
-            results = self.get_time_columns_in_db(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
-                                                  start_date_gte=start_date_gte, end_date_lte=end_date_lte)
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "22007":  # 22007 - invalid_datetime_format
-                raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # try:
+        results = self.get_time_columns_in_db(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
+                                              start_date_gte=start_date_gte, end_date_lte=end_date_lte)
+        # except Error as error:
+        #     self.rollback()  # do a rollback to comeback in a safe state of DB
+        #     if error.pgcode == "22007":  # 22007 - invalid_datetime_format
+        #         raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
+        #     else:
+        #         raise error  # if is other error, so raise it up
 
         return results
 
@@ -1039,17 +967,7 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_time_columns(self, resource_json, user_id):
-        try:
-            self.create_time_columns_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        self.create_time_columns_in_db(resource_json["properties"])
 
     def update_time_columns_in_db(self, properties):
         p = properties
@@ -1065,17 +983,7 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def update_time_columns(self, resource_json, user_id):
-        try:
-            self.update_time_columns_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        self.update_time_columns_in_db(resource_json["properties"])
 
     def delete_time_columns(self, f_table_name):
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
@@ -1158,18 +1066,7 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_user_layer(self, resource_json):
-        try:
-            self.add_user_layer_in_db(resource_json)
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                # if is other error, so raise it up
-                raise error
+        self.add_user_layer_in_db(resource_json)
 
     def delete_user_layer(self, user_id=None, layer_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
@@ -1268,18 +1165,8 @@ class PGSQLConnection:
         # put the current user id as the creator of the reference
         resource_json["properties"]["user_id"] = user_id
 
-        try:
-            # add the reference in db and get the id of it
-            id_in_json = self.add_reference_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the reference in db and get the id of it
+        id_in_json = self.add_reference_in_db(resource_json["properties"])
 
         return id_in_json
 
@@ -1301,18 +1188,8 @@ class PGSQLConnection:
         # put the current user id as the creator of the keyword
         resource_json["properties"]["user_id_creator"] = user_id
 
-        try:
-            # add the reference in db and get the id of it
-            self.update_reference_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the reference in db and get the id of it
+        self.update_reference_in_db(resource_json["properties"])
 
     def delete_reference(self, resource_id):
         if is_a_invalid_id(resource_id):
@@ -1395,18 +1272,7 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_layer_reference(self, resource_json):
-        try:
-            self.add_layer_reference_in_db(resource_json)
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                # if is other error, so raise it up
-                raise error
+        self.add_layer_reference_in_db(resource_json)
 
     def delete_layer_reference(self, layer_id=None, reference_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
@@ -1507,18 +1373,8 @@ class PGSQLConnection:
         # put the current user id as the creator of the keyword
         resource_json["properties"]["user_id_creator"] = user_id
 
-        try:
-            # add the reference in db and get the id of it
-            id_in_json = self.add_keyword_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the reference in db and get the id of it
+        id_in_json = self.add_keyword_in_db(resource_json["properties"])
 
         return id_in_json
 
@@ -1543,18 +1399,8 @@ class PGSQLConnection:
         # put the current user id as the creator of the keyword
         resource_json["properties"]["user_id_creator"] = user_id
 
-        try:
-            # add the reference in db and get the id of it
-            self.update_keyword_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the reference in db and get the id of it
+        self.update_keyword_in_db(resource_json["properties"])
 
     def delete_keyword(self, resource_id):
         if is_a_invalid_id(resource_id):
@@ -1637,18 +1483,7 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def create_layer_keyword(self, resource_json):
-        try:
-            self.add_layer_keyword_in_db(resource_json)
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                # if is other error, so raise it up
-                raise error
+        self.add_layer_keyword_in_db(resource_json)
 
     def delete_layer_keyword(self, layer_id=None, keyword_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
@@ -1806,18 +1641,8 @@ class PGSQLConnection:
         # put the current user id as the creator of the keyword
         resource_json["properties"]["user_id_creator"] = user_id
 
-        try:
-            # add the reference in db and get the id of it
-            id_in_json = self.add_changeset_in_db(resource_json["properties"])
-        except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
-        except Error as error:
-            self.rollback()  # do a rollback to comeback in a safe state of DB
-            if error.pgcode == "23505":  # 23505 - unique_violation
-                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
-            else:
-                raise error  # if is other error, so raise it up
+        # add the reference in db and get the id of it
+        id_in_json = self.add_changeset_in_db(resource_json["properties"])
 
         return id_in_json
 

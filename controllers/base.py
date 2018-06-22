@@ -17,7 +17,7 @@ from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from psycopg2 import DataError
+from psycopg2 import DataError, Error
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
@@ -291,6 +291,12 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             result = self._get_resource(*args, **arguments)
         except TypeError as error:
             raise HTTPError(400, str(error))
+        except Error as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "22007":  # 22007 - invalid_datetime_format
+                raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
         except DataError as error:
             raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
                                  "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
@@ -313,9 +319,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         # args = args[1:]  # get the second argument and so on
 
         if param == "create":
-            self.put_method_api_resource_create()
+            self.post_method_api_resource_create()
         elif param == "close":
-            self.put_method_api_resource_close()
+            self.post_method_api_resource_close()
         # elif param == "request":
         #     self._request_resource(*args)
         # elif param == "accept":
@@ -324,7 +330,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(404, "Invalid URL.")
 
     # create
-    def put_method_api_resource_create(self):
+    def post_method_api_resource_create(self):
         # get the sent JSON, to add in DB
         resource_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
@@ -335,6 +341,16 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
             # do commit after create a resource
             self.PGSQLConn.commit()
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+                            str(error) + " is missing)")
+        except Error as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
         except DataError as error:
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
@@ -345,7 +361,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         raise NotImplementedError
 
     # close
-    def put_method_api_resource_close(self):
+    def post_method_api_resource_close(self):
         # get the sent JSON, to add in DB
         current_user_id = self.get_current_user_id()
         arguments = self.get_aguments()
@@ -387,8 +403,18 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
             # do commit after update a resource
             self.PGSQLConn.commit()
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+                            str(error) + " is missing)")
+        except Error as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "23505":  # 23505 - unique_violation
+                error = str(error).replace("\n", " ").split("DETAIL: ")[1]
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
         except DataError as error:
-            raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
+            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
@@ -438,9 +464,6 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        if "user_id" not in resource_json["properties"]:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: user_id)")
-
         self.can_current_user_update(current_user_id, resource_json)
 
         return self.PGSQLConn.update_user(resource_json, current_user_id, **kwargs)

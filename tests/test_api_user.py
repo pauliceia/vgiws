@@ -328,22 +328,31 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_error_create_400_bad_request(resource)
 
     def test_post_api_user_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # create a feature
-        feature = {
+        # try to create a user without username
+        resource = {
             'type': 'User',
             'properties': {'email': "new@email.com", 'password': 'roger', 'name': 'Roger',
-                            'receive_notification_by_email': False}
+                           'receive_notification_by_email': False}
         }
 
-        self.tester.api_user_error_create_400_bad_request(feature)
-    
-    # user errors - update
+        self.tester.api_user_error_create_400_bad_request(resource)
 
+        # try to create a user without username
+        resource = {
+            'type': 'User',
+            'properties': {'username': 'new', 'password': 'roger', 'name': 'Roger',
+                           'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_error_create_400_bad_request(resource)
+
+    # user errors - update
+    
     def test_put_api_user_error_400_bad_request_attribute_already_exist(self):
         # login with gabriel
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        # try to create a resource with email that already exist
+        # try to create a resource with email that already exists
         resource = {
             'type': 'User',
             'properties': {'user_id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
@@ -352,7 +361,7 @@ class TestAPIUserErrors(TestCase):
 
         self.tester.api_user_update_error_400_bad_request(resource)
 
-        # try to create a resource with username that already exist
+        # try to create a resource with username that already exists
         resource = {
             'type': 'User',
             'properties': {'user_id': 1005, 'username': 'admin', 'email': "gabriel@admin.com", 'name': 'Gabriel',
@@ -368,10 +377,29 @@ class TestAPIUserErrors(TestCase):
         # login with gabriel
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        # update a user
+        # try to update a user without user_id
         resource = {
             'type': 'User',
-            'properties': {'email': "gabriel@admin.com", 'name': 'Gabriel', 'receive_notification_by_email': False}
+            'properties': {'email': "gabriel@admin.com", 'name': 'Gabriel',
+                           'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_400_bad_request(resource)
+
+        # try to update a user without username
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 1005, 'email': "gabriel@admin.com", 'name': 'Gabriel',
+                           'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_400_bad_request(resource)
+
+        # try to update a user without email
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 1005, 'username': 'gabriel', 'name': 'Gabriel',
+                           'receive_notification_by_email': False}
         }
 
         self.tester.api_user_update_error_400_bad_request(resource)

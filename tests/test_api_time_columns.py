@@ -8,7 +8,6 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-
 class TestAPITimeColumns(TestCase):
 
     def setUp(self):
@@ -16,7 +15,7 @@ class TestAPITimeColumns(TestCase):
         self.tester = UtilTester(self)
 
     # time_columns - get
-    
+
     def test_get_api_time_columns_return_all_time_columns(self):
         expected = {
             'features': [
@@ -193,7 +192,7 @@ class TestAPITimeColumns(TestCase):
         }
 
         self.tester.api_time_columns(expected, end_date="1920-12-31")
-   
+
     # time_columns - create, update and delete
     """ 
     def test_api_time_columns_create_update_and_delete(self):
@@ -231,6 +230,7 @@ class TestAPITimeColumns(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     """
+
 
 class TestAPIUserTimeColumnsErrors(TestCase):
 
@@ -409,6 +409,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     """
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
