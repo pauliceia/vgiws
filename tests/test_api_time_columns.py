@@ -194,42 +194,69 @@ class TestAPITimeColumns(TestCase):
         self.tester.api_time_columns(expected, end_date="1920-12-31")
 
     # time_columns - create, update and delete
-    """ 
+
     def test_api_time_columns_create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        f_table_name = 'addresses_1930'
 
         ##################################################
-        # create curator
+        # create a layer
         ##################################################
-        resource = {
-            'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'jorge'},
-            'type': 'Curator'
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {
+                    "type": "MultiPoint",
+                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+                }
+            },
         }
-        self.tester.api_curator_create(resource)
+        layer = self.tester.api_layer_create(layer)
+
+        ####################################################################################################
 
         ##################################################
-        # update curator
+        # create the time columns for the layer above
         ##################################################
-        resource["properties"]["region"] = "cabral"
-        self.tester.api_curator_update(resource)
+        time_columns = {
+            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create(time_columns)
 
         ##################################################
-        # remove curator
+        # update the time columns
         ##################################################
-        # get the id of layer to REMOVE it
-        user_id = resource["properties"]["user_id"]
-        keyword_id = resource["properties"]["keyword_id"]
+        time_columns["properties"]["start_date"] = '1920-01-01'
+        self.tester.api_time_columns_update(time_columns)
 
-        # remove the user in layer
-        self.tester.api_curator_delete(user_id=user_id, keyword_id=keyword_id)
+        ##################################################
+        # the time columns is automatically removed when delete its layer
+        ##################################################
+
+        ####################################################################################################
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        # get the id of layer to SEARCH AND REMOVE it
+        layer_id = layer["properties"]["layer_id"]
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_curator_error_404_not_found(user_id=user_id, keyword_id=keyword_id)
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 
 class TestAPIUserTimeColumnsErrors(TestCase):

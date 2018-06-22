@@ -481,9 +481,7 @@ class UtilTester:
         self.ut_self.assertEqual(expected, resulted)
 
     def api_time_columns_create(self, resource_json, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/time_columns/create/{0}'.format(arguments),
+        response = self.session.post(self.URL + '/api/time_columns/create/',
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -494,13 +492,13 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def api_time_columns_delete(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/time_columns/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
+    # def api_time_columns_delete(self, **arguments):
+    #     arguments = get_url_arguments(**arguments)
+    #
+    #     response = self.session.delete(self.URL + '/api/time_columns/{0}'.format(arguments),
+    #                                    headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
 
     # time_columns errors - get
 
@@ -510,7 +508,7 @@ class UtilTester:
         response = self.session.get(self.URL + '/api/time_columns/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
-    #
+
     # def api_curator_error_404_not_found(self, **arguments):
     #     arguments = get_url_arguments(**arguments)
     #

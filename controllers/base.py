@@ -620,10 +620,10 @@ class BaseHandlerTimeColumns(BaseHandlerTemplateMethod):
 
     # DELETE
 
-    def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.can_current_user_create_update_or_delete_time_columns(current_user_id, kwargs["f_table_name"])
-
-        self.PGSQLConn.delete_time_columns(**kwargs)
+    # def _delete_resource(self, current_user_id, *args, **kwargs):
+    #     self.can_current_user_create_update_or_delete_time_columns(current_user_id, kwargs["f_table_name"])
+    #
+    #     self.PGSQLConn.delete_time_columns(**kwargs)
 
     # VALIDATION
 

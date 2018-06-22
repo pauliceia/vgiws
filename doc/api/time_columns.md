@@ -41,50 +41,56 @@ This method gets time columns from DB. If you doesn't put any parameter, so it w
 - Notes:
 
 
-<!--### POST /api/time_columns/create/?\<params>-->
+### POST /api/time_columns/create
 
-<!--This method creates a new time columns described in a JSON.-->
-<!--- Parameters:-->
-<!--- Examples:-->
-    <!--- Create a time columns: ```POST http://localhost:8888/api/time_columns/create```-->
-<!--- Send (in Body): a JSON describing the resource. Example:-->
-    <!--```javascript-->
-    <!--{-->
-        <!--'properties': {'user_id': 1004, 'keyword_id': 1003, 'region': 'São Francisco'},-->
-        <!--'type': 'time columns'-->
-    <!--}-->
-    <!--```-->
-<!--- Send (in Header):-->
-    <!--- Send an "Authorization" header with a valid Token.-->
-<!--- Response:-->
-<!--- Error codes:-->
-    <!--- 400 (Bad Request): Attribute already exists.-->
-    <!--- 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!-->
-    <!--- 401 (Unauthorized): It is necessary an Authorization header valid.-->
-    <!--- 403 (Forbidden): The administrator is who can create/update/delete a time columns.-->
-    <!--- 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.-->
-<!--- Notes:-->
-
-
-<!-- - PUT /api/time_columns/update -->
+This method creates a new record in time columns table described in a JSON.
+- Parameters:
+- Examples:
+    - Create a time columns: ```POST http://localhost:8888/api/time_columns/create```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'f_table_name': 'addresses', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                       'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+        'type': 'TimeColumns'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+    <!-- - 400 (Bad Request): Attribute already exists.
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The administrator is who can create/update/delete a time columns. -->
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
 
 
-<!--### DELETE /api/time_columns/?\<params>-->
+### PUT /api/time_columns
 
-<!--This method deletes one time columns.-->
-<!--- Parameters:-->
-    <!--- user_id (mandatory): the id of the user that is a positive integer not null (e.g. 1, 2, 3, ...).-->
-    <!--- keyword_id (mandatory): the id of the keyword that is a positive integer not null (e.g. 1, 2, 3, ...).-->
-<!--- Examples:-->
-     <!--- Delete a resource by id: ```DELETE http://localhost:8888/api/time_columns/?user_id=1001&keyword_id=1002```-->
-<!--- Send (in Body):-->
-<!--- Send (in Header):-->
-    <!--- Send an "Authorization" header with a valid Token.-->
-<!--- Response:-->
-<!--- Error codes:-->
-    <!--- 400 (Bad Request): Invalid parameter.-->
-    <!--- 401 (Unauthorized): It is necessary an Authorization header valid.-->
-    <!--- 403 (Forbidden): The administrator is who can create/update/delete a time columns.-->
-    <!--- 404 (Not Found): Not found any resource.-->
-    <!--- 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.-->
-<!--- Notes:-->
+This method updates a record in time columns table described in a JSON.
+- Parameters:
+- Examples:
+    - Create a time columns: ```PUT http://localhost:8888/api/time_columns```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'f_table_name': 'addresses', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                       'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+        'type': 'TimeColumns'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+    <!-- - 400 (Bad Request): Attribute already exists.
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The administrator is who can create/update/delete a time columns. -->
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
+
+
+

@@ -655,9 +655,10 @@ class PGSQLConnection:
 
         return id_in_json
 
-    def delete_layer(self, layer_id):
-        if is_a_invalid_id(layer_id):
-            raise HTTPError(400, "Invalid parameter.")
+    def delete_layer_dependencies(self, layer_id):
+        # get the layer information before to remove the layer
+        layer = self.get_layers(layer_id=layer_id)
+        f_table_name = layer["features"][0]["properties"]["f_table_name"]
 
         # 1) delete all users from layer
         self.delete_user_layer(layer_id=layer_id)
@@ -669,7 +670,7 @@ class PGSQLConnection:
             if error.status_code != 404:
                 raise error
             # else:
-            #   error 404 is expected, because when delete a layer, may exist a layer without keyword
+            # error 404 is expected, because when delete a layer, may exist a layer without keyword
 
         try:
             # 3) delete all references from layer
@@ -678,7 +679,7 @@ class PGSQLConnection:
             if error.status_code != 404:
                 raise error
             # else:
-            #   error 404 is expected, because when delete a layer, may exist a layer without reference
+            # error 404 is expected, because when delete a layer, may exist a layer without reference
 
         try:
             # 4) delete all changesets from layer
@@ -687,14 +688,27 @@ class PGSQLConnection:
             if error.status_code != 404:
                 raise error
             # else:
-            #   error 404 is expected, because when delete a layer, may exist a layer without reference
+            # error 404 is expected, because when delete a layer, may exist a layer without changeset
 
-        # get the layer information before to remove the layer
-        layer = self.get_layers(layer_id=layer_id)
-        f_table_name = layer["features"][0]["properties"]["f_table_name"]
+        try:
+            # 5) delete the temporal metadata
+            self.delete_time_columns(f_table_name)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            # error 404 is expected, because when delete a layer, may exist a layer without time columns
+
+        self.delete_feature_table(f_table_name)
+
+    def delete_layer(self, layer_id):
+        if is_a_invalid_id(layer_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete layer dependencies
+        self.delete_layer_dependencies(layer_id)
 
         # delete the layer
-
         query_text = """
             DELETE FROM layer WHERE layer_id={0};
         """.format(layer_id)
@@ -706,9 +720,6 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
-
-        # delete the feature table
-        self.delete_feature_table(f_table_name)
 
     ################################################################################
     # feature table
@@ -892,7 +903,7 @@ class PGSQLConnection:
     # TIME_COLUMNS
     ################################################################################
 
-    def get_time_columns_in_db(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
+    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
@@ -939,22 +950,8 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
-
-        # try:
-        results = self.get_time_columns_in_db(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
-                                              start_date_gte=start_date_gte, end_date_lte=end_date_lte)
-        # except Error as error:
-        #     self.rollback()  # do a rollback to comeback in a safe state of DB
-        #     if error.pgcode == "22007":  # 22007 - invalid_datetime_format
-        #         raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
-        #     else:
-        #         raise error  # if is other error, so raise it up
-
-        return results
-
-    def create_time_columns_in_db(self, properties):
-        p = properties
+    def create_time_columns(self, resource_json, user_id):
+        p = resource_json["properties"]
 
         query_text = """
             INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, 
@@ -966,24 +963,18 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_time_columns(self, resource_json, user_id):
-        self.create_time_columns_in_db(resource_json["properties"])
-
-    def update_time_columns_in_db(self, properties):
-        p = properties
+    def update_time_columns(self, resource_json, user_id):
+        p = resource_json["properties"]
 
         query_text = """
             UPDATE time_columns SET start_date_column_name = '{1}', end_date_column_name = '{2}', 
                                     start_date = '{3}', end_date = '{4}'
-            WHERE f_table_name = {0};
+            WHERE f_table_name = '{0}';
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
                    p["start_date"], p["end_date"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_time_columns(self, resource_json, user_id):
-        self.update_time_columns_in_db(resource_json["properties"])
 
     def delete_time_columns(self, f_table_name):
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
@@ -991,7 +982,7 @@ class PGSQLConnection:
 
         # delete the time_columns
         query_text = """
-            DELETE FROM time_columns WHERE f_table_name = {0};
+            DELETE FROM time_columns WHERE f_table_name = '{0}';
         """.format(f_table_name)
 
         # do the query in database

@@ -119,7 +119,6 @@ class TestAPILayer(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         f_table_name = 'addresses_1930'
-        EPSG = "EPSG:4326"
 
         ##################################################
         # create a layer
@@ -133,7 +132,7 @@ class TestAPILayer(TestCase):
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {
                     "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": EPSG}}
+                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
                 }
             },
         }
@@ -142,20 +141,6 @@ class TestAPILayer(TestCase):
         ##################################################
         # update the layer
         ##################################################
-
-        ##################################################
-        # create layer time_columns record
-        ##################################################
-
-        # time_columns = {
-        #     'time_columns': {
-        #         'properties': {
-        #             'f_table_name': f_table_name,
-        #             'start_date_column_name': 'start_date', 'end_date_column_name': 'end_date',
-        #             'start_date': '1900/01/01', 'end_date': '1930/12/31'
-        #         }
-        #     }
-        # }
 
         ##################################################
         # delete the layer
