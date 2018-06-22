@@ -5,22 +5,6 @@
 from unittest import TestCase
 from util.tester import UtilTester
 
-"""
-class TestAPICapabilities(TestCase):
-
-    def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-    def test_api_capabilities(self):
-        expected = {
-            "version": "0.0.4",
-            "status": {"postgresql": "online"}
-        }
-
-        self.tester.api_capabilities(expected)
-"""
-
 
 class TestAPICurrentUser(TestCase):
 
@@ -47,7 +31,61 @@ class TestAPICurrentUser(TestCase):
         # DO LOGOUT AFTER THE TEST
         self.tester.auth_logout()
 
+
+class TestAPIValidateEmail(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    def test_api_validate_email(self):
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAzfQ.IsLw6ZQja6EUg8mHb9h-UoPWEKc8CjtGfoT59mVj5q8'
+        user_id = 1003
+
+        # a user is with a invalidated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
+
+        # so the user validate his/her email
+        self.tester.api_validate_email(token)
+
+        # now the user is with the validated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
+
+        # change the is_email_valid to False again, for not break the tests
+        self.tester.api_is_email_valid(user_id=user_id, is_email_valid=False)
+
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
+
+    def test_api_validate_email_400_bad_request(self):
+        # try to validate the email
+        self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIVCJ9.eyJ1c2VyMDAzfQ.IsLw6ZQh-UoPWEKc8Cj5q8')
+
+        # try to validate the email
+        self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIVCJ91c2VyMDAzfQ.IsLw6ZQh-UoPWEKc8Cj5q8')
+
+        # try to validate the email
+        self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIc2VyMDAzw6ZQh-UoPWEKc8Cj5q8')
+
+
 """
+class TestAPICapabilities(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    def test_api_capabilities(self):
+        expected = {
+            "version": "0.0.4",
+            "status": {"postgresql": "online"}
+        }
+
+        self.tester.api_capabilities(expected)
+
+
 class TestAPICurrentUserError(TestCase):
 
     def setUp(self):

@@ -4,7 +4,7 @@
 
 from datetime import datetime
 from base64 import b64encode
-from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError
+from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError, InvalidAlgorithmError
 from string import ascii_uppercase, digits
 from random import choice
 
@@ -109,7 +109,9 @@ def get_decoded_jwt_token(token):
     try:
         return jwt_decode(token, __JWT_SECRET__, algorithms=[__JWT_ALGORITHM__])
     except DecodeError as error:
-        raise HTTPError(400, "Invalid Token.")  # 400 - Bad request
+        raise HTTPError(400, "Invalid Token. (error: " + str(error) + ")")  # 400 - Bad request
+    except InvalidAlgorithmError as error:
+        raise HTTPError(400, "Invalid Token. (error: " + str(error) + ")")  # 400 - Bad request
 
 
 # SHAPEFILE

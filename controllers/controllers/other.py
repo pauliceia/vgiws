@@ -8,7 +8,7 @@
 from tornado.escape import json_encode
 
 from ..base import BaseHandler
-from modules.common import auth_non_browser_based, get_decoded_jwt_token
+from modules.common import auth_non_browser_based, just_run_on_debug_mode, get_decoded_jwt_token
 from settings.settings import __AFTER_VALIDATED_EMAIL_REDIRECT_TO__, __AFTER_VALIDATED_EMAIL_REDIRECT_TO_DEBUG__
 
 # from settings import VERSION
@@ -45,6 +45,20 @@ class APIValidateEmailToken(BaseHandler):
             redirect_to = __AFTER_VALIDATED_EMAIL_REDIRECT_TO__
 
         super(BaseHandler, self).redirect(redirect_to)
+
+
+class APIUpdateUserIsEmailValid(BaseHandler):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/is_email_valid", r"/api/is_email_valid/"]
+
+    @just_run_on_debug_mode
+    def get(self):
+        arguments = self.get_aguments()
+
+        # change the status of is_email_valid of the user for FALSE
+        self.PGSQLConn.update_user_email_is_valid(arguments["user_id"], arguments["is_email_valid"])
+        self.PGSQLConn.commit()
 
 
 # class APICapabilities(BaseHandler):

@@ -102,6 +102,8 @@ class UtilTester:
         elif expected_at_least is not None:
             self.compare_sets(expected_at_least, resulted)
 
+        return resulted
+
     def api_user_create(self, feature_json):
         # create a copy to send to server (with the password encrypted)
         feature_json_copy = deepcopy(feature_json)
@@ -211,6 +213,27 @@ class UtilTester:
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
+    # VALIDATE EMAIL
+    ##################################################
+
+    def api_validate_email(self, token):
+        response = self.session.get(self.URL + '/api/validate_email/{0}'.format(token))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_validate_email_400_bad_request(self, token):
+        response = self.session.get(self.URL + '/api/validate_email/{0}'.format(token))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_is_email_valid(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/is_email_valid/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     ##################################################
     # CURATOR
