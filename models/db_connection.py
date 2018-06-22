@@ -711,7 +711,10 @@ class PGSQLConnection:
         # create the feature table (if necessary)
         ##################################################
         if is_to_create_feature_table:
-            self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
+            try:
+                self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
+            except KeyError as error:
+                raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
 
         ##################################################
         # add the user as creator user
@@ -860,7 +863,8 @@ class PGSQLConnection:
     def create_feature_table(self, f_table_name, feature_table):
 
         # get the geometry of the feature table
-        geometry = feature_table["geometry"]["type"]
+        geometry_type = feature_table["geometry"]["type"]
+        EPSG = feature_table["geometry"]["crs"]["properties"]["name"].split(":")[1]
 
         # get the attributes of the feature table
         properties = ""
@@ -873,8 +877,8 @@ class PGSQLConnection:
         query_text = """        
             CREATE TABLE {0} (
               id SERIAL,              
-              geom GEOMETRY({1}, 4326) NOT NULL,              
-              {2}              
+              geom GEOMETRY({1}, {2}) NOT NULL,              
+              {3}              
               version INT NOT NULL DEFAULT 1,
               changeset_id INT NOT NULL,
               PRIMARY KEY (id),
@@ -884,7 +888,7 @@ class PGSQLConnection:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
             );        
-        """.format(f_table_name, geometry, properties)
+        """.format(f_table_name, geometry_type, EPSG, properties)
 
         self.__PGSQL_CURSOR__.execute(query_text)
 
@@ -896,8 +900,8 @@ class PGSQLConnection:
         query_text = """        
             CREATE TABLE {0} (
               id SERIAL,              
-              geom GEOMETRY({1}, 4326) NOT NULL,              
-              {2}              
+              geom GEOMETRY({1}, {2}) NOT NULL,              
+              {3}              
               version INT NOT NULL DEFAULT 1,
               changeset_id INT NOT NULL,
               PRIMARY KEY (id),
@@ -907,7 +911,7 @@ class PGSQLConnection:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
             );        
-        """.format(version_f_table_name, geometry, properties)
+        """.format(version_f_table_name, geometry_type, EPSG, properties)
 
         self.__PGSQL_CURSOR__.execute(query_text)
 
@@ -1038,7 +1042,7 @@ class PGSQLConnection:
         try:
             self.create_time_columns_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1064,7 +1068,7 @@ class PGSQLConnection:
         try:
             self.update_time_columns_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1157,7 +1161,7 @@ class PGSQLConnection:
         try:
             self.add_user_layer_in_db(resource_json)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1268,7 +1272,7 @@ class PGSQLConnection:
             # add the reference in db and get the id of it
             id_in_json = self.add_reference_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1301,7 +1305,7 @@ class PGSQLConnection:
             # add the reference in db and get the id of it
             self.update_reference_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1394,7 +1398,7 @@ class PGSQLConnection:
         try:
             self.add_layer_reference_in_db(resource_json)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1507,7 +1511,7 @@ class PGSQLConnection:
             # add the reference in db and get the id of it
             id_in_json = self.add_keyword_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1543,7 +1547,7 @@ class PGSQLConnection:
             # add the reference in db and get the id of it
             self.update_keyword_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1636,7 +1640,7 @@ class PGSQLConnection:
         try:
             self.add_layer_keyword_in_db(resource_json)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -1806,7 +1810,7 @@ class PGSQLConnection:
             # add the reference in db and get the id of it
             id_in_json = self.add_changeset_in_db(resource_json["properties"])
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation!")
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " + str(error) + ")")
         except Error as error:
             self.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation

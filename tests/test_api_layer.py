@@ -119,6 +119,7 @@ class TestAPILayer(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         f_table_name = 'addresses_1930'
+        EPSG = "EPSG:4326"
 
         ##################################################
         # create a layer
@@ -130,7 +131,10 @@ class TestAPILayer(TestCase):
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
+                'geometry': {
+                    "type": "MultiPoint",
+                    "crs": {"type": "name", "properties": {"name": EPSG}}
+                }
             },
         }
         resource = self.tester.api_layer_create(resource)
@@ -202,7 +206,10 @@ class TestAPILayerErrors(TestCase):
                            'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
+                'geometry': {
+                    "type": "MultiPoint",
+                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+                }
             }
         }
         resource = self.tester.api_layer_create(resource)
@@ -318,9 +325,6 @@ class TestAPILayerErrors(TestCase):
 
         self.tester.auth_login("admin@admin.com", "admin")
 
-        # user_session = self.tester.get_session_user()
-        # user_id = user_session["user"]["properties"]["user_id"]
-
         # create a layer
         resource = {
             'type': 'Layer',
@@ -329,7 +333,10 @@ class TestAPILayerErrors(TestCase):
                            'reference': [], 'keyword': [1041]},
             'feature_table': {
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
+                'geometry': {
+                    "type": "MultiPoint",
+                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+                }
             }
         }
         resource = self.tester.api_layer_create(resource)

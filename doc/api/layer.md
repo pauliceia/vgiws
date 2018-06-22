@@ -56,10 +56,13 @@ This method creates a new layer described in a JSON.
         'type': 'Layer',
         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
                        'description': '', 'source_description': '',
-                       'reference': [1050, 1052], 'keyword': [1001, 1041]},
+                       'reference': [1001], 'keyword': [1041]},
         'feature_table': {
             'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-            'geometry': {"type": "MultiPoint"}
+            'geometry': {
+                "type": "MultiPoint",
+                "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+            }
         }
     }
     ```
