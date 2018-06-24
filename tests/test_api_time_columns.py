@@ -272,74 +272,103 @@ class TestAPIUserTimeColumnsErrors(TestCase):
         self.tester.api_time_columns_error_400_bad_request(end_date="1910-01/01")
         self.tester.api_time_columns_error_400_bad_request(start_date_gte="1910/01=01")
         self.tester.api_time_columns_error_400_bad_request(end_date_lte="1910-01)01")
+
+    def test_get_api_time_columns_error_404_not_found(self):
+        self.tester.api_time_columns_error_404_not_found(f_table_name="layer_x")
+        self.tester.api_time_columns_error_404_not_found(start_date="1800-01-01")
+        self.tester.api_time_columns_error_404_not_found(end_date="2000-01-01")
+        self.tester.api_time_columns_error_404_not_found(start_date_gte="2000-01-01")
+        self.tester.api_time_columns_error_404_not_found(end_date_lte="1800-01-01")
     
     # time_columns errors - create
-    """
-    def test_post_api_curator_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to insert a curator with user_id and keyword_id that already exist
-        resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-    
-    def test_post_api_curator_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to create a curator (without user_id)
-        resource = {
-            'properties': {'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_create_error_400_bad_request(resource)
-
-        # try to create a curator (without keyword_id)
-        resource = {
-            'properties': {'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_create_error_400_bad_request(resource)
-
-        # try to create a curator (without region)
-        resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-    
-    def test_post_api_curator_create_error_401_unauthorized_without_authorization_header(self):
-        resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
-        }
-        self.tester.api_curator_create_error_401_unauthorized(resource)
-
-    def test_post_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+    def test_post_api_time_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("gabriel@admin.com", "gabriel")
 
-        # add a user in a layer
+        # try to insert a curator with user_id and keyword_id that already exist
         resource = {
-            'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
-            'type': 'Curator'
+            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
         }
-        self.tester.api_curator_create_error_403_forbidden(resource)
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+    
+    def test_post_api_time_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # try to create a curator (without f_table_name)
+        resource = {
+            'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # try to create a curator (without start_date)
+        resource = {
+            'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # try to create a curator (without end_date)
+        resource = {
+            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # try to create a curator (without end_date_column_name)
+        resource = {
+            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # try to create a curator (without start_date_column_name)
+        resource = {
+            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_curator_create_error_401_unauthorized_without_authorization_header(self):
+        resource = {
+            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_401_unauthorized(resource)
+    
+    def test_post_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_time_columns(self):
+        # DO LOGIN
+        self.tester.auth_login("gabriel@admin.com", "gabriel")
+
+        # try to insert a curator with user_id and keyword_id that already exist
+        resource = {
+            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+            'type': 'TimeColumns'
+        }
+        self.tester.api_time_columns_create_error_403_forbidden(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     # time_columns errors - update
-
+    """
     def test_put_api_curator_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
