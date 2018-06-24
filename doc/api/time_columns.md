@@ -35,8 +35,8 @@ This method gets time columns from DB. If you doesn't put any parameter, so it w
     }
     ```
 - Error codes:
-    <!--- 400 (Bad Request): Invalid parameter.-->
-    <!--- 404 (Not Found): Not found any resource.-->
+    - 400 (Bad Request): Invalid date format.
+    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
@@ -59,10 +59,10 @@ This method creates a new record in time columns table described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    <!-- - 400 (Bad Request): Attribute already exists.
+    - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The administrator is who can create/update/delete a time columns. -->
+    - 403 (Forbidden): Just the owner of layer or administrator can create/update a time columns.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 
@@ -85,10 +85,9 @@ This method updates a record in time columns table described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    <!-- - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The administrator is who can create/update/delete a time columns. -->
+    - 403 (Forbidden): Just the owner of layer or administrator can create/update a time columns.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 

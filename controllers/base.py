@@ -650,7 +650,7 @@ class BaseHandlerTimeColumns(BaseHandlerTemplateMethod):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of layer or administrator can create/update/delete a time_columns")
+        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a time_columns")
 
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
