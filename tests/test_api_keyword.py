@@ -271,7 +271,7 @@ class TestAPIKeyword(TestCase):
 
     def test_api_keyword_create_but_update_and_delete_with_admin_user(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a keyword with user gabriel
@@ -450,7 +450,7 @@ class TestAPIKeywordErrors(TestCase):
 
     def test_put_api_keyword_error_403_forbidden_user_forbidden_to_update(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # gabriel tries to update one keyword that doesn't belong to him
@@ -506,7 +506,7 @@ class TestAPIKeywordErrors(TestCase):
 
         # logout with admin and login with gabriel
         self.tester.auth_logout()
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the keyword with user gabriel

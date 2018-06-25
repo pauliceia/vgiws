@@ -43,8 +43,7 @@ class UtilTester:
 
     # login and logout
 
-    def auth_login(self, email, password):
-
+    def prepare_header(self, email, password):
         password = get_string_in_hash_sha512(password)
 
         email_and_password_in_base64 = get_email_and_password_as_string_in_base64(email, password)
@@ -53,12 +52,26 @@ class UtilTester:
 
         headers["Authorization"] = "Basic " + email_and_password_in_base64
 
+        return headers
+
+    def auth_login(self, email, password):
+        headers = self.prepare_header(email, password)
+
         response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
 
         # Save the JWT token of the server in Authorization header
         self.headers["Authorization"] = response.headers["Authorization"]
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    # auth_login error
+
+    def auth_login_409_conflict(self, email, password):
+        headers = self.prepare_header(email, password)
+
+        response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
 
     # def auth_login_fake(self):
     #     response = self.session.get(self.URL + '/api/auth/login/fake/')

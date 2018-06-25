@@ -125,7 +125,7 @@ class TestAPIReference(TestCase):
 
     def test_api_reference_create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a reference
@@ -159,7 +159,7 @@ class TestAPIReference(TestCase):
 
     def test_api_reference_create_but_update_and_delete_with_admin_user(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a reference
@@ -311,7 +311,7 @@ class TestAPIReferenceErrors(TestCase):
 
     def test_put_api_reference_error_403_forbidden(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # gabriel tries to update one reference that doesn't belong to him
@@ -367,7 +367,7 @@ class TestAPIReferenceErrors(TestCase):
 
         # logout with admin and login with gabriel
         self.tester.auth_logout()
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the reference with user gabriel

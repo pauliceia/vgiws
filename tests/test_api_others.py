@@ -39,8 +39,8 @@ class TestAPIValidateEmail(TestCase):
         self.tester = UtilTester(self)
 
     def test_api_validate_email(self):
-        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMDAzfQ.IsLw6ZQja6EUg8mHb9h-UoPWEKc8CjtGfoT59mVj5q8'
-        user_id = 1003
+        token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDA1fQ.XbibygDhgaF0x3w50wI8UWfK8u1I2vrMlfPBa5y-Z4o'
+        user_id = 1005
 
         # a user is with a invalidated email
         user = self.tester.api_user_get(user_id=user_id)

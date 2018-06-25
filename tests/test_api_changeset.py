@@ -259,7 +259,7 @@ class TestAPIChangeset(TestCase):
 
     def test_get_api_changeset_create_and_close_but_delete_with_admin(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         resource = {
             'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
@@ -329,7 +329,7 @@ class TestAPIChangesetErrors(TestCase):
 
     def test_put_api_changeset_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to create a changeset (without description)
         resource = {
@@ -359,7 +359,7 @@ class TestAPIChangesetErrors(TestCase):
 
     def test_put_api_changeset_close_error_400_bad_request(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.tester.api_changeset_close_error_400_bad_request(changeset_id="abc")
         self.tester.api_changeset_close_error_400_bad_request(changeset_id=0)
@@ -370,7 +370,7 @@ class TestAPIChangesetErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_changeset_close_error_403_forbidden(self):
+    def test_put_api_changeset_close_error_401_unauthorized(self):
         self.tester.api_changeset_close_error_401_unauthorized(changeset_id="abc")
         self.tester.api_changeset_close_error_401_unauthorized(changeset_id=0)
         self.tester.api_changeset_close_error_401_unauthorized(changeset_id=-1)
@@ -380,7 +380,7 @@ class TestAPIChangesetErrors(TestCase):
 
     def test_put_api_changeset_close_error_404_not_found(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.tester.api_changeset_close_error_404_not_found(changeset_id="5000")
         self.tester.api_changeset_close_error_404_not_found(changeset_id="5001")
@@ -399,7 +399,7 @@ class TestAPIChangesetErrors(TestCase):
 
     def test_put_api_changeset_close_error_409_conflict_user_didnt_create_the_changeset(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.tester.api_changeset_close_error_409_conflict(changeset_id="1011")
 
@@ -430,7 +430,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="1001")
 
     def test_delete_api_changeset_error_403_forbidden_non_admin_user_tries_to_delete(self):
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.tester.api_changeset_delete_error_403_forbidden(changeset_id="abc")
         self.tester.api_changeset_delete_error_403_forbidden(changeset_id=0)

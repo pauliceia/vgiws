@@ -21,7 +21,7 @@ VALUES (1002, 'rodrigo', 'rodrigo@admin.com', '3ad7e557497e106756c44b7f3f401fd3f
 -- password - miguel
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
 VALUES (1003, 'miguel', 'miguel@admin.com', 'e1fc7a4313def98ae5303b0448c89d9a5126f3239608950859f3ea6fdeb8b19f6f7c103ecf97700be851cfbf8cda756c0929498021c675c643809eeeb4ebcbda', 
-'Miguel', '2017-05-08', FALSE, TRUE, '2017-05-08', TRUE, FALSE);
+'Miguel', '2017-05-08', TRUE, TRUE, '2017-05-08', FALSE, FALSE);
 
 -- password - rafael
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
@@ -434,7 +434,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
 INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1003', 'start_date', 'end_date', '1900-01-01', '1920-12-31');
 
 -- add users in layers
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1005, '2017-04-10', TRUE);
+INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1003, '2017-04-10', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1001, '2017-04-11');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1006, '2017-04-11');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1007, '2017-04-11');
@@ -527,7 +527,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
 INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1004', 'start_date', 'end_date', '1910-01-01', '1920-12-31');
 
 -- add users in layers
-INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1005, '2017-06-15', TRUE);
+INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1003, '2017-06-15', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1007, '2017-06-20');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1008, '2017-06-27');
 

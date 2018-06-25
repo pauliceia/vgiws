@@ -13,7 +13,7 @@ class TestAPIImport(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
         self.f_table_name = "points"
@@ -81,7 +81,7 @@ class TestAPIImportError(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
         self.f_table_name = "feature_table"

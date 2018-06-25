@@ -197,7 +197,7 @@ class TestAPITimeColumns(TestCase):
 
     def test_api_time_columns_create_and_update(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -260,7 +260,7 @@ class TestAPITimeColumns(TestCase):
 
     def test_api_time_columns_create_and_update_with_admin(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -307,7 +307,7 @@ class TestAPITimeColumns(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # the time columns is automatically removed when delete its layer
@@ -331,7 +331,7 @@ class TestAPITimeColumns(TestCase):
         self.tester.auth_logout()
 
 
-class TestAPIUserTimeColumnsErrors(TestCase):
+class TestAPITimeColumnsErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -356,7 +356,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
 
     def test_post_api_time_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
@@ -385,7 +385,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
     
     def test_post_api_time_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to create a curator (without f_table_name)
         resource = {
@@ -445,7 +445,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
     
     def test_post_api_time_columns_create_error_403_forbidden_invalid_user_tries_to_create_a_time_columns(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
@@ -462,7 +462,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
 
     def test_put_api_time_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to create a curator (without f_table_name)
         resource = {
@@ -522,7 +522,7 @@ class TestAPIUserTimeColumnsErrors(TestCase):
 
     def test_put_api_time_columns_error_403_forbidden_invalid_user_tries_to_create_a_time_columns(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {

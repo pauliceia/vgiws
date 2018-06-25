@@ -117,6 +117,9 @@ class BaseHandler(RequestHandler):
     def auth_login(self, email, password):
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
+        if not user_in_db["features"][0]["properties"]["is_email_valid"]:
+            raise HTTPError(409, "The email is not validated.")
+
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
         return encoded_jwt_token
@@ -199,7 +202,7 @@ class BaseHandler(RequestHandler):
 
         email_token = generate_encoded_jwt_token({"user_id": user_id})
 
-        url_to_validate_email += "/" + email_token.decode("utf-8")   # convert bytes to str
+        url_to_validate_email += "/" + email_token   # convert bytes to str
 
         subject = "Email Validation"
         body = """

@@ -28,32 +28,16 @@ class TestAPIAuthLogin(TestCase):
         self.tester.auth_login("rafael@admin.com", "rafael")
         self.tester.auth_logout()
 
-    def test_get_api_auth_login_gabriel(self):
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
-        self.tester.auth_logout()
 
-"""
-@skip(">>>")
-class TestAPIAuthLoginErrors(TestCase):
+class TestAPIAuthLoginError(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # user errors - get
+    def test_get_api_auth_login_409_conflict(self):
+        self.tester.auth_login_409_conflict("gabriel@admin.com", "gabriel")
 
-    def test_get_api_user_error_400_bad_request(self):
-        self.tester.api_user_error_400_bad_request(user_id="abc")
-        self.tester.api_user_error_400_bad_request(user_id=0)
-        self.tester.api_user_error_400_bad_request(user_id=-1)
-        self.tester.api_user_error_400_bad_request(user_id="-1")
-        self.tester.api_user_error_400_bad_request(user_id="0")
-
-    def test_get_api_user_error_404_not_found(self):
-        self.tester.api_user_error_404_not_found(user_id="999")
-        self.tester.api_user_error_404_not_found(user_id="998")
-
-"""
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

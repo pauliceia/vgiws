@@ -46,7 +46,7 @@ class TestAPIUserLayer(TestCase):
                     'type': 'UserLayer'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
                                    'created_at': '2017-04-10 00:00:00'},
                     'type': 'UserLayer'
                 },
@@ -61,7 +61,7 @@ class TestAPIUserLayer(TestCase):
                     'type': 'UserLayer'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1004,
                                    'created_at': '2017-06-15 00:00:00'},
                     'type': 'UserLayer'
                 },
@@ -119,12 +119,12 @@ class TestAPIUserLayer(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
                                    'created_at': '2017-04-10 00:00:00'},
                     'type': 'UserLayer'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1004,
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1004,
                                    'created_at': '2017-06-15 00:00:00'},
                     'type': 'UserLayer'
                 }
@@ -132,13 +132,13 @@ class TestAPIUserLayer(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected, user_id="1005")
+        self.tester.api_user_layer(expected, user_id="1003")
 
     def test_get_api_user_layer_return_user_layer_by_user_id_and_layer_id(self):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1005, 'layer_id': 1003,
+                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
                                    'created_at': '2017-04-10 00:00:00'},
                     'type': 'UserLayer'
                 }
@@ -146,7 +146,7 @@ class TestAPIUserLayer(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected, user_id="1005", layer_id="1003")
+        self.tester.api_user_layer(expected, user_id="1003", layer_id="1003")
 
     def test_get_api_user_layer_return_all_user_layer_by_user_id_and_is_the_creator(self):
         expected = {
@@ -184,7 +184,7 @@ class TestAPIUserLayer(TestCase):
 
     def test_api_user_layer_create_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         user_layer = {
@@ -208,7 +208,7 @@ class TestAPIUserLayer(TestCase):
 
     def test_api_user_layer_create_but_delete_with_admin(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         user_layer = {
@@ -272,7 +272,7 @@ class TestAPIUserLayerErrors(TestCase):
 
     def test_post_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         user_layer = {
@@ -287,7 +287,7 @@ class TestAPIUserLayerErrors(TestCase):
 
     def test_post_api_user_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to add a user in a layer (without is_the_creator)
         user_layer = {
@@ -326,7 +326,7 @@ class TestAPIUserLayerErrors(TestCase):
     def test_post_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
         # DO LOGIN
         # login with gabriel and he tries to add a user in the layer of admin
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         user_layer = {
@@ -366,7 +366,7 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGIN
 
         # login with other user (admin) and he tries to delete a user from a layer of rodrigo
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to remove the user in layer
         self.tester.api_user_layer_delete_error_403_forbidden(user_id=1004, layer_id=1002)

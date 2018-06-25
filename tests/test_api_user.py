@@ -6,6 +6,7 @@ from unittest import TestCase
 from util.tester import UtilTester
 
 from modules import generate_random_string
+from modules.common import generate_encoded_jwt_token
 
 
 class TestAPIUser(TestCase):
@@ -40,9 +41,9 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True,
+                                   'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
-                                   'is_email_valid': False}
+                                   'is_email_valid': True}
                 },
                 {
                     'type': 'User',
@@ -111,9 +112,9 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True,
+                                   'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
-                                   'is_email_valid': False}
+                                   'is_email_valid': True}
                 },
                 {
                     'type': 'User',
@@ -161,9 +162,9 @@ class TestAPIUser(TestCase):
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
-                                   'name': 'Miguel', 'is_the_admin': True,
+                                   'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
-                                   'is_email_valid': False}
+                                   'is_email_valid': True}
                 }
             ]
         }
@@ -186,12 +187,31 @@ class TestAPIUser(TestCase):
         }
         resource = self.tester.api_user_create(resource)
 
+        ####################################################################################################
+        # validate the email
+        ####################################################################################################
+
+        user_id = resource["properties"]["user_id"]
+        token = generate_encoded_jwt_token({'user_id': user_id})
+
+        # a user is with a invalidated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
+
+        # so the user validate his/her email
+        self.tester.api_validate_email(token)
+
+        # now the user is with the validated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
+
+        ####################################################################################################
+
         ##################################################
         # login with the created user
         ##################################################
         email = resource["properties"]["email"]
         password = resource["properties"]["password"]
-        # login
         self.tester.auth_login(email, password)
 
         ##################################################
@@ -350,7 +370,7 @@ class TestAPIUserErrors(TestCase):
     
     def test_put_api_user_error_400_bad_request_attribute_already_exist(self):
         # login with gabriel
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("admin@admin.com", "admin")
 
         # try to create a resource with email that already exists
         resource = {
@@ -375,7 +395,7 @@ class TestAPIUserErrors(TestCase):
 
     def test_put_api_user_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # login with gabriel
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("admin@admin.com", "admin")
 
         # try to update a user without user_id
         resource = {
@@ -460,22 +480,44 @@ class TestAPIUserErrors(TestCase):
         email = generate_random_string() + "@roger.com"
 
         # create a feature
-        feature = {
+        resource = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
 
-        feature = self.tester.api_user_create(feature)
+        resource = self.tester.api_user_create(resource)
 
-        email = feature["properties"]["email"]
-        password = feature["properties"]["password"]
+        ####################################################################################################
+        # validate the email
+        ####################################################################################################
 
-        # login with the user created
+        user_id = resource["properties"]["user_id"]
+        token = generate_encoded_jwt_token({'user_id': user_id})
+
+        # a user is with a invalidated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
+
+        # so the user validate his/her email
+        self.tester.api_validate_email(token)
+
+        # now the user is with the validated email
+        user = self.tester.api_user_get(user_id=user_id)
+        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
+
+        ####################################################################################################
+
+        ##################################################
+        # login with the created user
+        ##################################################
+        email = resource["properties"]["email"]
+        password = resource["properties"]["password"]
         self.tester.auth_login(email, password)
 
+        # try to remove the user himself/herself
         # get the id of feature to REMOVE it
-        feature_id = feature["properties"]["user_id"]
+        feature_id = resource["properties"]["user_id"]
 
         # try to remove the user created, but get a 403, because just admin can delete users
         self.tester.api_user_delete_error_403_forbidden(feature_id)

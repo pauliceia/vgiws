@@ -256,7 +256,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
     def test_post_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         resource = {
@@ -307,7 +307,7 @@ class TestAPIUserCuratorErrors(TestCase):
 
     def test_put_api_curator_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
         # DO LOGIN
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         resource = {
@@ -345,7 +345,7 @@ class TestAPIUserCuratorErrors(TestCase):
     
     def test_delete_api_curator_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
         # login with user who is not an admin
-        self.tester.auth_login("gabriel@admin.com", "gabriel")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to remove the user in layer
         self.tester.api_curator_delete_error_403_forbidden(user_id=1001, keyword_id=1001)
