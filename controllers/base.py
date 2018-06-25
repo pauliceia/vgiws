@@ -29,7 +29,7 @@ from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EM
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
-                            catch_generic_exception
+                            get_shapefile_name_inside_zip, catch_generic_exception
 
 
 # BASE CLASS
@@ -1005,6 +1005,16 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
 
+    def get_shapefile_name(self, folder_with_file_name):
+        """
+        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :return:
+        """
+        # open the zip
+        with ZipFile(folder_with_file_name, "r") as zip_reference:
+            # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
+            return get_shapefile_name_inside_zip(zip_reference)
+
     def import_shp(self):
         # get the arguments of the request
         arguments = self.get_aguments()
@@ -1023,10 +1033,11 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
         # folder where will extract the zip (e.g. /tmp/vgiws/points)
         EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
-        # name of the SHP file (e.g. points.shp)
-        SHP_FILE_NAME = FILE_NAME_WITHOUT_EXTENSION + ".shp"
 
         self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
+
+        # name of the SHP file (e.g. points.shp)
+        SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
 
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
