@@ -997,7 +997,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
                                                  shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(epsg) + \
-                                                 ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom'
+                                                 ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
