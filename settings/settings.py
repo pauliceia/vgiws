@@ -70,5 +70,6 @@ __VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/validate_emai
 __VALIDATE_EMAIL_DEBUG__ = "http://localhost:8888/api/validate_email"
 
 # After validated email, redirect to... (production and debug)
-__AFTER_VALIDATED_EMAIL_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal"
-__AFTER_VALIDATED_EMAIL_REDIRECT_TO_DEBUG__ = "http://localhost:8888"
+__AFTER_VALIDATED_EMAIL_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal/login"
+__AFTER_VALIDATED_EMAIL_REDIRECT_TO_DEBUG__ = "http://localhost:8080/portal/login"
+
