@@ -33,6 +33,7 @@ This method do a social login using a Google account.
 - Response: a page to do a social login.
 - Error codes:
     - 400 (Bad Request): Invalid token.
+    - 403 (Forbidden): Forbidden request.
     - 409 (Conflict): It is necessary to pass a 'token' in front of URL.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:

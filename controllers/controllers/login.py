@@ -6,7 +6,7 @@
 """
 
 from apiclient import discovery
-import httplib2
+from httplib2 import Http
 from oauth2client import client
 from oauth2client.client import FlowExchangeError
 
@@ -100,8 +100,8 @@ class GoogleLoginHandler(BaseHandlerSocialLogin):
 
         # print("\n\nself.request.headers: ", self.request.headers, "\n\n")
         # If this request does not have `X-Requested-With` header, this could be a CSRF
-        # if "X-Requested-With" not in self.request.headers:
-        #     raise HTTPError(403, "Abort")  # 403 - Forbidden
+        if "X-Requested-With" not in self.request.headers:
+            raise HTTPError(403, "Forbidden request.")  # 403 - Forbidden
         # if not request.headers.get('X-Requested-With'):
         #     abort(403)
 
@@ -115,7 +115,7 @@ class GoogleLoginHandler(BaseHandlerSocialLogin):
             raise HTTPError(400, "Invalid token.")  # 400 - Bad Request
 
         # Call Google API
-        http_auth = credentials.authorize(httplib2.Http())
+        http_auth = credentials.authorize(Http())
         drive_service = discovery.build('oauth2', 'v2', http=http_auth, cache_discovery=False)
 
         # Get profile info from ID token

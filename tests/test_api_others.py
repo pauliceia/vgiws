@@ -53,7 +53,7 @@ class TestAPIValidateEmail(TestCase):
         user = self.tester.api_user_get(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
 
-        # change the is_email_valid to False again, for not break the tests
+        # change the is_email_valid to False again, for it doesn't break the tests
         self.tester.api_is_email_valid(user_id=user_id, is_email_valid=False)
 
         user = self.tester.api_user_get(user_id=user_id)
