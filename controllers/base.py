@@ -266,15 +266,15 @@ class BaseHandlerSocialLogin(BaseHandler):
         user_json = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': user["email"], 'password': '',
-                           'username': user["email"], 'name': user['name'],
-                           'terms_agreed': True, 'can_add_layer': True, 'receive_notification_by_email': False}
+                           'username': user["email"], 'name': user['name'], 'is_email_valid': True,
+                           'terms_agreed': True, 'receive_notification_by_email': False}
         }
 
         encoded_jwt_token = self.login(user_json)
         self.set_header('Authorization', encoded_jwt_token)
 
         # put the Token in the URL that redirect
-        URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token.decode("utf-8")
+        URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token
 
         super(BaseHandler, self).redirect(URL_TO_REDIRECT)
 
@@ -1064,7 +1064,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
         self.PGSQLConn.commit()
         # publish the feature table/layer in geoserver
         self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
-        self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
+        # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
 
         # remove the temporary file and folder of the shapefile
         remove_file(ZIP_FILE_NAME)
