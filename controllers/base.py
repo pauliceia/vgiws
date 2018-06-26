@@ -271,12 +271,13 @@ class BaseHandlerSocialLogin(BaseHandler):
         }
 
         encoded_jwt_token = self.login(user_json)
-        self.set_header('Authorization', encoded_jwt_token)
 
+        # self.set_header('Authorization', encoded_jwt_token)
         # put the Token in the URL that redirect
-        URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token
+        # URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token
+        # super(BaseHandler, self).redirect(URL_TO_REDIRECT)
 
-        super(BaseHandler, self).redirect(URL_TO_REDIRECT)
+        self.write(json_encode({"token": encoded_jwt_token}))
 
 
 # TEMPLATE METHOD
