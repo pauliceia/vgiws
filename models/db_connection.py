@@ -307,8 +307,8 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_user_in_db(self, properties):
-        p = properties
+    def create_user(self, resource_json):
+        p = resource_json["properties"]
 
         query_text = """
             INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
@@ -326,14 +326,6 @@ class PGSQLConnection:
 
         return result
 
-    def create_user(self, feature_json):
-
-        validate_feature_json(feature_json)
-
-        id_in_json = self.add_user_in_db(feature_json["properties"])
-
-        return id_in_json
-
     def update_user_email_is_valid(self, user_id, is_email_valid=True):
         query_text = """
             UPDATE pauliceia_user SET is_email_valid = {1} 
@@ -343,8 +335,8 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def update_user_in_db(self, properties):
-        p = properties
+    def update_user(self, resource_json, user_id):
+        p = resource_json["properties"]
 
         query_text = """
             UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
@@ -355,13 +347,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_user(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
-        # update the user in db
-        self.update_user_in_db(resource_json["properties"])
 
     def delete_user(self, feature_id):
         if is_a_invalid_id(feature_id):
@@ -428,26 +413,19 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_curator_in_db(self, properties):
-        p = properties
+    def create_curator(self, resource_json, user_id):
+        p = resource_json["properties"]
 
         query_text = """
-            INSERT INTO curator (user_id, keyword_id, region, created_at)
-            VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
-        """.format(p["user_id"], p["keyword_id"], p["region"])
+                    INSERT INTO curator (user_id, keyword_id, region, created_at)
+                    VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
+                """.format(p["user_id"], p["keyword_id"], p["region"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def create_curator(self, resource_json, user_id):
-        # pre-processing
-        # validate_feature_json(resource_json)
-
-        # add the curator in db
-        self.create_curator_in_db(resource_json["properties"])
-
-    def update_curator_in_db(self, properties):
-        p = properties
+    def update_curator(self, resource_json, user_id):
+        p = resource_json["properties"]
 
         query_text = """
             UPDATE curator SET region = LOWER('{2}')
@@ -456,10 +434,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_curator(self, resource_json, user_id):
-        # add the curator in db
-        self.update_curator_in_db(resource_json["properties"])
 
     def delete_curator(self, user_id=None, keyword_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
@@ -1045,19 +1019,16 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_user_layer_in_db(self, resource_json):
+    def create_user_layer(self, resource_json):
         p = resource_json["properties"]
 
         query_text = """
-            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
-            VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
-        """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
+                    INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
+                    VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+                """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def create_user_layer(self, resource_json):
-        self.add_user_layer_in_db(resource_json)
 
     def delete_user_layer(self, user_id=None, layer_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
@@ -1133,8 +1104,11 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_reference_in_db(self, properties):
-        p = properties
+    def create_reference(self, resource_json, user_id):
+        # put the current user id as the creator of the reference
+        resource_json["properties"]["user_id"] = user_id
+
+        p = resource_json["properties"]
 
         query_text = """
             INSERT INTO reference (description, user_id_creator)
@@ -1149,20 +1123,11 @@ class PGSQLConnection:
 
         return result
 
-    def create_reference(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
+    def update_reference(self, resource_json, user_id):
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
 
-        # put the current user id as the creator of the reference
-        resource_json["properties"]["user_id"] = user_id
-
-        # add the reference in db and get the id of it
-        id_in_json = self.add_reference_in_db(resource_json["properties"])
-
-        return id_in_json
-
-    def update_reference_in_db(self, properties):
-        p = properties
+        p = resource_json["properties"]
 
         query_text = """
             UPDATE reference SET description = '{1}', user_id_creator = {2}
@@ -1171,16 +1136,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_reference(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
-        # put the current user id as the creator of the keyword
-        resource_json["properties"]["user_id_creator"] = user_id
-
-        # add the reference in db and get the id of it
-        self.update_reference_in_db(resource_json["properties"])
 
     def delete_reference(self, resource_id):
         if is_a_invalid_id(resource_id):
@@ -1251,7 +1206,7 @@ class PGSQLConnection:
     #
     #     return results_of_query
 
-    def add_layer_reference_in_db(self, resource_json):
+    def create_layer_reference(self, resource_json):
         p = resource_json["properties"]
 
         query_text = """
@@ -1261,9 +1216,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def create_layer_reference(self, resource_json):
-        self.add_layer_reference_in_db(resource_json)
 
     def delete_layer_reference(self, layer_id=None, reference_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
@@ -1338,8 +1290,11 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def add_keyword_in_db(self, properties):
-        p = properties
+    def create_keyword(self, resource_json, user_id):
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        p = resource_json["properties"]
 
         if p["parent_id"] is None:
             p["parent_id"] = "NULL"
@@ -1357,20 +1312,11 @@ class PGSQLConnection:
 
         return result
 
-    def create_keyword(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
+    def update_keyword(self, resource_json, user_id):
         # put the current user id as the creator of the keyword
         resource_json["properties"]["user_id_creator"] = user_id
 
-        # add the reference in db and get the id of it
-        id_in_json = self.add_keyword_in_db(resource_json["properties"])
-
-        return id_in_json
-
-    def update_keyword_in_db(self, properties):
-        p = properties
+        p = resource_json["properties"]
 
         if p["parent_id"] is None:
             p["parent_id"] = "NULL"
@@ -1382,16 +1328,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def update_keyword(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
-        # put the current user id as the creator of the keyword
-        resource_json["properties"]["user_id_creator"] = user_id
-
-        # add the reference in db and get the id of it
-        self.update_keyword_in_db(resource_json["properties"])
 
     def delete_keyword(self, resource_id):
         if is_a_invalid_id(resource_id):
@@ -1462,7 +1398,7 @@ class PGSQLConnection:
     #
     #     return results_of_query
 
-    def add_layer_keyword_in_db(self, resource_json):
+    def create_layer_keyword(self, resource_json):
         p = resource_json["properties"]
 
         query_text = """
@@ -1472,9 +1408,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    def create_layer_keyword(self, resource_json):
-        self.add_layer_keyword_in_db(resource_json)
 
     def delete_layer_keyword(self, layer_id=None, keyword_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
@@ -1488,6 +1421,131 @@ class PGSQLConnection:
             query_text = """
                 DELETE FROM layer_keyword WHERE layer_id={0} AND keyword_id={1};
             """.format(layer_id, keyword_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
+    # CHANGESET
+    ################################################################################
+
+    def get_changesets(self, changeset_id=None, layer_id=None, user_id_creator=None, open=None, closed=None):
+        # the id have to be a int
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id_creator):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
+                                                user_id_creator=user_id_creator, open=open, closed=closed)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Changeset',
+                    'properties', json_build_object(
+                        'changeset_id',    changeset_id,
+                        'description',     description,
+                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'closed_at',       to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'layer_id',        layer_id,
+                        'user_id_creator', user_id_creator
+                    )
+                ))
+            ) AS row_to_json
+            FROM
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def create_changeset(self, resource_json, user_id):
+        # put the current user id as the creator of the keyword
+        resource_json["properties"]["user_id_creator"] = user_id
+
+        p = resource_json["properties"]
+
+        query_text = """
+            INSERT INTO changeset (description, created_at, layer_id, user_id_creator)
+            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
+        """.format(p["description"], p["layer_id"], p["user_id_creator"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def close_changeset(self, current_user_id, changeset_id):
+        if is_a_invalid_id(changeset_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # verify if the changeset is closed or not, if it is closed, raise 409 exception
+        list_changesets = self.get_changesets(changeset_id=changeset_id)
+        closed_at = list_changesets['features'][0]['properties']['closed_at']
+        if closed_at is not None:
+            raise HTTPError(409,
+                            "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
+
+        # verify if the user created the changeset
+        user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
+        if user_id_creator != current_user_id:
+            raise HTTPError(409,
+                            "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
+
+        query_text = """
+            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
+        """.format(changeset_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    def delete_changeset(self, changeset_id=None, layer_id=None):
+        if is_a_invalid_id(changeset_id) or is_a_invalid_id(layer_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        if changeset_id is not None:
+            # delete the reference
+            query_text = """
+                DELETE FROM changeset WHERE changeset_id={0};
+            """.format(changeset_id)
+        elif layer_id is not None:
+            # delete the reference
+            query_text = """
+                DELETE FROM changeset WHERE layer_id={0};
+            """.format(layer_id)
+        else:
+            raise HTTPError(400, "Invalid parameter.")
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1556,138 +1614,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-    ################################################################################
-    # CHANGESET
-    ################################################################################
-
-    def get_changesets(self, changeset_id=None, layer_id=None, user_id_creator=None, open=None, closed=None):
-        # the id have to be a int
-        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id_creator):
-            raise HTTPError(400, "Invalid parameter.")
-
-        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
-                                                user_id_creator=user_id_creator, open=open, closed=closed)
-
-        # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
-            SELECT jsonb_build_object(
-                'type', 'FeatureCollection',
-                'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'Changeset',
-                    'properties', json_build_object(
-                        'changeset_id',    changeset_id,
-                        'description',     description,
-                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'closed_at',       to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'layer_id',        layer_id,
-                        'user_id_creator', user_id_creator
-                    )
-                ))
-            ) AS row_to_json
-            FROM
-            {0}
-        """.format(subquery)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
-        ######################################################################
-        # POST-PROCESSING
-        ######################################################################
-
-        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        if "row_to_json" in results_of_query:
-            results_of_query = results_of_query["row_to_json"]
-
-        # if there is not feature
-        if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
-
-        return results_of_query
-
-    def add_changeset_in_db(self, properties):
-        p = properties
-
-        query_text = """
-            INSERT INTO changeset (description, created_at, layer_id, user_id_creator)
-            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
-        """.format(p["description"], p["layer_id"], p["user_id_creator"])
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
-
-    def create_changeset(self, resource_json, user_id):
-        # pre-processing
-        validate_feature_json(resource_json)
-
-        # put the current user id as the creator of the keyword
-        resource_json["properties"]["user_id_creator"] = user_id
-
-        # add the reference in db and get the id of it
-        id_in_json = self.add_changeset_in_db(resource_json["properties"])
-
-        return id_in_json
-
-    def close_changeset(self, current_user_id, changeset_id):
-        if is_a_invalid_id(changeset_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        # verify if the changeset is closed or not, if it is closed, raise 409 exception
-        list_changesets = self.get_changesets(changeset_id=changeset_id)
-        closed_at = list_changesets['features'][0]['properties']['closed_at']
-        if closed_at is not None:
-            raise HTTPError(409, "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
-
-        # verify if the user created the changeset
-        user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
-        if user_id_creator != current_user_id:
-            raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
-
-        query_text = """
-            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
-        """.format(changeset_id)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any resource.")
-
-    def delete_changeset(self, changeset_id=None, layer_id=None):
-        if is_a_invalid_id(changeset_id) or is_a_invalid_id(layer_id):
-            raise HTTPError(400, "Invalid parameter.")
-
-        if changeset_id is not None:
-            # delete the reference
-            query_text = """
-                DELETE FROM changeset WHERE changeset_id={0};
-            """.format(changeset_id)
-        elif layer_id is not None:
-            # delete the reference
-            query_text = """
-                DELETE FROM changeset WHERE layer_id={0};
-            """.format(layer_id)
-        else:
-            raise HTTPError(400, "Invalid parameter.")
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # notification
