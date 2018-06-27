@@ -887,6 +887,49 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The administrator is who can delete the changeset.")
 
 
+class BaseHandlerNotification(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_notification(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_create_update_or_delete_notification()
+
+        return self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
+
+    # PUT
+
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_create_update_or_delete_notification()
+
+        return self.PGSQLConn.update_notification(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        self.can_current_user_create_update_or_delete_notification()
+
+        self.PGSQLConn.delete_notification(**kwargs)
+
+    # VALIDATION
+
+    def can_current_user_create_update_or_delete_notification(self):
+        """
+        Verify if the current user is an administrator to create, update or delete a notification
+        :return:
+        """
+
+        # if currente user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The administrator is who can create/update/delete a curator")
+
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
 #     def _get_resource(self, *args, **kwargs):

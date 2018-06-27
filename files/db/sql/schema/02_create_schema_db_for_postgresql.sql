@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qui 21 Jun 2018 19:09:04 -03
+-- Qua 27 Jun 2018 16:40:47 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -136,12 +136,10 @@ DROP TABLE IF EXISTS notification CASCADE ;
 
 CREATE TABLE IF NOT EXISTS notification (
   notification_id SERIAL ,
-  name TEXT NOT NULL,
   description TEXT NOT NULL ,
-  icon TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   is_denunciation BOOLEAN NOT NULL DEFAULT FALSE,
-  user_id_creator INT NULL ,
+  user_id_creator INT NOT NULL ,
   layer_id INT NULL ,
   keyword_id INT NULL ,
   notification_id_parent INT NULL,

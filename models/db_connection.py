@@ -1124,15 +1124,12 @@ class PGSQLConnection:
         return result
 
     def update_reference(self, resource_json, user_id):
-        # put the current user id as the creator of the keyword
-        resource_json["properties"]["user_id_creator"] = user_id
-
         p = resource_json["properties"]
 
         query_text = """
-            UPDATE reference SET description = '{1}', user_id_creator = {2}
+            UPDATE reference SET description = '{1}'
             WHERE reference_id={0};
-        """.format(p["reference_id"], p["description"], p["user_id_creator"])
+        """.format(p["reference_id"], p["description"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1313,18 +1310,15 @@ class PGSQLConnection:
         return result
 
     def update_keyword(self, resource_json, user_id):
-        # put the current user id as the creator of the keyword
-        resource_json["properties"]["user_id_creator"] = user_id
-
         p = resource_json["properties"]
 
         if p["parent_id"] is None:
             p["parent_id"] = "NULL"
 
         query_text = """
-            UPDATE keyword SET name = '{1}', parent_id = {2}, user_id_creator = {3}
+            UPDATE keyword SET name = '{1}', parent_id = {2}
             WHERE keyword_id={0};
-        """.format(p["keyword_id"], p["name"], p["parent_id"], p["user_id_creator"])
+        """.format(p["keyword_id"], p["name"], p["parent_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1554,6 +1548,131 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
+    # NOTIFICATION
+    ################################################################################
+
+    def get_notification(self, notification_id=None, is_denunciation=None, user_id_creator=None,
+                         layer_id=None, keyword_id=None, notification_id_parent=None):
+        # the id have to be a int
+        if is_a_invalid_id(notification_id) or is_a_invalid_id(user_id_creator) or is_a_invalid_id(layer_id) or \
+                is_a_invalid_id(keyword_id) or is_a_invalid_id(notification_id_parent):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_notification_table(notification_id=notification_id, is_denunciation=is_denunciation,
+                                                   user_id_creator=user_id_creator, layer_id=layer_id,
+                                                   keyword_id=keyword_id, notification_id_parent=notification_id_parent)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Notification',
+                    'properties', json_build_object(
+                        'notification_id',     notification_id,
+                        'description',      description,
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_denunciation',  is_denunciation,
+                        'user_id_creator',     user_id_creator,
+                        'layer_id',      layer_id,
+                        'keyword_id',  keyword_id,
+                        'notification_id_parent',  notification_id_parent
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def create_notification(self, resource_json, user_id):
+        p = resource_json["properties"]
+
+        # put the current user id as the creator of the reference
+        p["user_id_creator"] = user_id
+
+        if p["layer_id"] is None:
+            p["layer_id"] = "NULL"
+
+        if p["keyword_id"] is None:
+            p["keyword_id"] = "NULL"
+
+        if p["notification_id_parent"] is None:
+            p["notification_id_parent"] = "NULL"
+
+        query_text = """
+            INSERT INTO notification (description, created_at, is_denunciation, user_id_creator, 
+                                      layer_id, keyword_id. notification_id_parent)
+            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}. {3}, {4}, {5}) RETURNING notification_id;
+        """.format(p["description"], p["is_denunciation"], p["user_id_creator"], p["layer_id"],
+                   p["keyword_id"], p["notification_id_parent"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def update_notification(self, resource_json, user_id):
+        p = resource_json["properties"]
+
+        if p["layer_id"] is None:
+            p["layer_id"] = "NULL"
+
+        if p["keyword_id"] is None:
+            p["keyword_id"] = "NULL"
+
+        if p["notification_id_parent"] is None:
+            p["notification_id_parent"] = "NULL"
+
+        query_text = """
+            UPDATE notification SET description = '{1}', layer_id = {2}, keyword_id = '{1}', notification_id_parent = {2}
+            WHERE notification_id={0};
+        """.format(p["notification_id"], p["description"], p["layer_id"], p["keyword_id"], p["notification_id_parent"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def delete_notification(self, resource_id):
+        if is_a_invalid_id(resource_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        # delete the reference
+        query_text = """
+            DELETE FROM notification WHERE notification_id={0};
+        """.format(resource_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
 
     ################################################################################
     # IMPORT

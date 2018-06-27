@@ -4,25 +4,27 @@
 
 def get_subquery_notification_table(**kwargs):
     # DEFAULT WHERE
-    # by default, get all results that are visible (that exist)
-    conditions_of_where = ["visible=TRUE"]
+    # by default, get all results
+    conditions_of_where = []
 
     # conditions of WHERE CLAUSE
     if "notification_id" in kwargs and kwargs["notification_id"] is not None:
+        conditions_of_where.append("notification_id = {0}".format(kwargs["notification_id"]))
+
+    if "is_denunciation" in kwargs and kwargs["is_denunciation"] is not None:
+        conditions_of_where.append("is_denunciation = {0}".format(kwargs["is_denunciation"]))
+
+    if "notification_id" in kwargs and kwargs["notification_id"] is not None:
         conditions_of_where.append("id = {0}".format(kwargs["notification_id"]))
 
-    elif "user_id" in kwargs and kwargs["user_id"] is not None:
-        conditions_of_where.append("fk_user_id = {0}".format(kwargs["user_id"]))
+    if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
+        conditions_of_where.append("user_id_creator = {0}".format(kwargs["user_id_creator"]))
 
-    else:
-        # default get all features, without where clause
-        pass
+    if "keyword_id" in kwargs and kwargs["keyword_id"] is not None:
+        conditions_of_where.append("keyword_id = {0}".format(kwargs["keyword_id"]))
 
-    # extra condition
-    if "is_read" in kwargs and kwargs["is_read"] is not None:
-        condition = "TRUE" if kwargs["is_read"] == "True" else "FALSE"
-
-        conditions_of_where.append("is_read = {0}".format(condition))
+    if "notification_id_parent" in kwargs and kwargs["notification_id_parent"] is not None:
+        conditions_of_where.append("notification_id_parent = {0}".format(kwargs["notification_id_parent"]))
 
     # default get all features, without where clause
     where_clause = ""
@@ -34,7 +36,7 @@ def get_subquery_notification_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT * FROM notification {0} ORDER BY id
+            SELECT * FROM notification {0} ORDER BY notification_id
         ) AS notification
     """.format(where_clause)
 

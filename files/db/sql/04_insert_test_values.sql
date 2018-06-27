@@ -743,18 +743,6 @@ SELECT * FROM changeset WHERE id=1006;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*
 -- -----------------------------------------------------
 -- Table notification
 -- -----------------------------------------------------
@@ -762,179 +750,25 @@ SELECT * FROM changeset WHERE id=1006;
 DELETE FROM notification;
 
 -- add notification
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1001, '2017-01-01', 1001,
-'{"body": "Happy Birthday", "url": "", "type": "birthday"}');
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1002, '2017-03-25', 1001,
-'{"body": "You was added in a group called X", "url": "", "type": "group"}');
-INSERT INTO notification (id, created_at, fk_user_id, is_read, tags) VALUES (1003, '2017-12-25', 1001, TRUE,
-'{"body": "Created a new project in group X", "url": "", "type": "project"}');
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1004, '2017-05-13', 1002,
-'{"body": "Created a new layer in project Y", "url": "", "type": "layer"}');
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1005, '2017-12-25', 1002,
-'{"body": "A new review was made in layer Z", "url": "", "type": "review"}');
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1006, '2017-05-13', 1003,
-'{"body": "You gained a new trophy", "url": "", "type": "award"}');
-INSERT INTO notification (id, created_at, removed_at, fk_user_id, is_read, visible, tags) VALUES (1007, '2017-08-15', '2017-10-25', 1003, TRUE, FALSE,
-'{"body": "Created a new project in group X", "url": "", "type": "project"}');
-INSERT INTO notification (id, created_at, fk_user_id, tags) VALUES (1008, '2017-12-25', 1004,
-'{"body": "You gained more points", "url": "", "type": "point"}');
-INSERT INTO notification (id, created_at, removed_at, fk_user_id, visible, tags) VALUES (1009, '2017-06-24', '2017-12-25', 1005, FALSE,
-'{"body": "A new review was made in layer Z", "url": "", "type": "review"}');
-INSERT INTO notification (id, created_at, fk_user_id, is_read, tags) VALUES (1010, '2017-05-13', 1005, TRUE,
-'{"body": "You gained more points", "url": "", "type": "point"}');
-*/
+-- general
+INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+(1001, 'Congresso X acontecerá em 2018/03/25', '2017-01-01', 1001, NULL, NULL, NULL);
+INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+(1005, 'Evento Y no dia 24/06/2018', '2017-02-01', 1002, NULL, NULL, NULL);
+	INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+	(1006, 'Muito bom', '2017-02-01', 1003, NULL, NULL, 1005);
+-- layer
+INSERT INTO notification (notification_id, description, is_denunciation, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+(1010, 'A camada contêm dados inapropriados.', TRUE, '2017-03-01', 1005, 1004, NULL, NULL);
+	-- reply
+	INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+	(1011, 'Obrigado pelo aviso.', '2017-03-01', 1003, NULL, NULL, 1010);
+	INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+	(1012, 'Ações estão sendo tomadas.', '2017-03-01', 1001, NULL, NULL, 1010);
+INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+(1015, 'Muito boa camada. Parabéns.', '2017-04-05', 1002, 1002, NULL, NULL);
+-- keyword
+INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
+(1020, 'Uma keyword genérica', '2017-01-01', 1001, NULL, 1001, NULL);
 
 
-/*
--- -----------------------------------------------------
--- Table current_point
--- -----------------------------------------------------
--- clean current_point table
-DELETE FROM current_point;
-
--- add node
-INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 1001, 
-'{"address": "R. São José", "start_date": "1869", "end_date": "1869"}');
-INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 1002,
-'{"address": "R. Marechal Deodoro", "start_date": "1878", "end_date": "1910"}');
-INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1003, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 1003,
-'{"address": "R. 11 de Junho, 9 = D. José de Barros", "start_date": "1886", "end_date": "1916"}');
-INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1004, ST_GeomFromText('MULTIPOINT((-23.547951 -46.634215))', 4326), 1004,
-'{"address": "R. 15 de Novembro, 17A", "start_date": "1890", "end_date": "1911"}');
-INSERT INTO current_point (id, geom, fk_changeset_id, tags) VALUES (1005, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 1001,
-'{"address": "R. Barra Funda, 74", "start_date": "1897", "end_date": "1897"}');
--- add node as GeoJSON
-INSERT INTO current_point (id, geom, fk_changeset_id) 
-VALUES (1006, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiPoint",
-		    "coordinates":[[-54, 33]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1003);
-INSERT INTO current_point (id, geom, fk_changeset_id) 
-VALUES (1007, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiPoint",
-		    "coordinates":[[-21, 42]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1002);
-
-
-
--- -----------------------------------------------------
--- Operations with current_node
--- -----------------------------------------------------
-
--- "remove" some nodes
-UPDATE current_point SET visible = FALSE WHERE id>=1003 AND id<=1005;
-
-
-
--- -----------------------------------------------------
--- Table current_line
--- -----------------------------------------------------
--- clean current_line table
-DELETE FROM current_line;
-
--- add way
-INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 1001,
-'{"name": "rua boa vista", "start_date": "1930", "end_date": "1930"}');
-INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326), 1002,
-'{"name": "rua tres de dezembro", "start_date": "1930", "end_date": "1930"}');
-INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1003, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 1003,
-'{"name": "rua joao briccola", "start_date": "1930", "end_date": "1930"}');
-INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1004, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 1004,
-'{"name": "ladeira porto geral", "start_date": "1930", "end_date": "1930"}');
-INSERT INTO current_line (id, geom, fk_changeset_id, tags) VALUES (1005, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 1002,
-'{"name": "travessa porto geral", "start_date": "1930", "end_date": "1930"}');
--- add way as GeoJSON
-INSERT INTO current_line (id, geom, fk_changeset_id) 
-VALUES (1006, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiLineString",
-		    "coordinates":[[[-54, 33], [-32, 31], [-36, 89]]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1002);
-INSERT INTO current_line (id, geom, fk_changeset_id) 
-VALUES (1007, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiLineString",
-		    "coordinates":[[[-21, 56], [-32, 31], [-23, 74]]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1003);
-
-
-
--- -----------------------------------------------------
--- Operations with current_way
--- -----------------------------------------------------
-
--- "remove" some lines
-UPDATE current_line SET visible = FALSE WHERE id>=1003 AND id<=1007;
-
-
-
--- -----------------------------------------------------
--- Table current_polygon
--- -----------------------------------------------------
--- clean current_polygon table
-DELETE FROM current_polygon;
-
--- add area
-INSERT INTO current_polygon (id, geom, fk_changeset_id, tags) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 1001,
-'{"building": "hotel", "start_date": "1870", "end_date": "1900"}');
-INSERT INTO current_polygon (id, geom, fk_changeset_id, tags) VALUES (1002, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 1002,
-'{"building": "theater", "start_date": "1920", "end_date": "1930"}');
--- add area as GeoJSON 
-INSERT INTO current_polygon (id, geom, fk_changeset_id) 
-VALUES (1006, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiPolygon",
-		    "coordinates":[[[[-54, 33], [-32, 31], [-36, 89], [-54, 33]]]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1003);
-INSERT INTO current_polygon (id, geom, fk_changeset_id) 
-VALUES (1007, 
-	ST_GeomFromGeoJSON(
-		'{
-		    "type":"MultiPolygon",
-		    "coordinates":[[[[-12, 32], [-21, 56], [-32, 31], [-23, 74], [-12, 32]]]],
-		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
-		}'
-	), 
-	1004);
-
-
-
-
--- -----------------------------------------------------
--- Operations with current_area
--- -----------------------------------------------------
-
--- "remove" some areas
-UPDATE current_polygon SET visible = FALSE WHERE id>=1006 AND id<=1007;
-
-
-
--- -----------------------------------------------------
--- Final operations
--- -----------------------------------------------------
--- close the changesets
-UPDATE changeset SET closed_at = '2017-12-01' WHERE id>=1001 AND id<=1004;
-
-*/
