@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
+
 from unittest import TestCase
 from util.tester import UtilTester
 
@@ -16,57 +16,62 @@ class TestAPINotification(TestCase):
 
     def test_get_api_notification_return_all_notifications(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
+                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Congresso X acontecerá em 2018/03/25',
+                                   'created_at': '2017-01-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
-                                   'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
+                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Evento Y no dia 24/06/2018',
+                                   'created_at': '2017-02-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
+                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
+                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
+                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
+                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
+                                   'description': 'A camada contêm dados inapropriados.',
+                                   'created_at': '2017-03-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
+                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1006,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1003},
                     'type': 'Notification',
-                    'tags': {'body': 'You gained a new trophy', 'type': 'award', 'url': ''}
+                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Ações estão sendo tomadas.',
+                                   'created_at': '2017-03-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1008,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1004},
                     'type': 'Notification',
-                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+                    'properties': {'notification_id': 1015, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': 1002,
+                                   'description': 'Muito boa camada. Parabéns.',
+                                   'created_at': '2017-04-05 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1010,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1005},
                     'type': 'Notification',
-                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_notification(expected)
@@ -76,163 +81,92 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
-                                   'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
+                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Evento Y no dia 24/06/2018',
+                                   'created_at': '2017-02-01 00:00:00'}
                 }
-            ],
+            ]
         }
 
-        self.tester.api_notification(expected, notification_id="1002")
+        self.tester.api_notification(expected, notification_id="1005")
 
-    def test_get_api_notification_return_notification_by_user_id(self):
+    def test_get_api_notification_return_notification_by_user_id_creator(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
+                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
+                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
-                                   'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
-                    'type': 'Notification',
-                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
+                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
                 }
-            ],
+            ]
         }
 
-        self.tester.api_notification(expected, user_id="1001")
+        self.tester.api_notification(expected, user_id_creator="1003")
 
-    def test_get_api_notification_return_notification_by_is_read_true(self):
+    def test_get_api_notification_return_notification_by_layer_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1010,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1005},
-                    'type': 'Notification',
-                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
+                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
+                                   'description': 'A camada contêm dados inapropriados.',
+                                   'created_at': '2017-03-01 00:00:00'}
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_notification(expected, is_read=True)
+        self.tester.api_notification(expected, layer_id="1004")
 
-    def test_get_api_notification_return_notification_by_is_read_false(self):
+    def test_get_api_notification_return_notification_by_keyword_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Happy Birthday', 'type': 'birthday', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1002,
-                                   'created_at': '2017-03-25 00:00:00', 'fk_user_id': 1001},
-                    'type': 'Notification',
-                    'tags': {'body': 'You was added in a group called X', 'type': 'group', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
-                    'type': 'Notification',
-                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
-                    'type': 'Notification',
-                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1006,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1003},
-                    'type': 'Notification',
-                    'tags': {'body': 'You gained a new trophy', 'type': 'award', 'url': ''}
-                },
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1008,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1004},
-                    'type': 'Notification',
-                    'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_notification(expected, is_read=False)
+        self.tester.api_notification(expected, keyword_id="1001")
 
-    def test_get_api_notification_return_notification_by_user_id_and_is_read_true(self):
+    def test_get_api_notification_return_notification_by_notification_id_parent(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'is_read': True, 'removed_at': None, 'visible': True, 'id': 1003,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1001},
                     'type': 'Notification',
-                    'tags': {'body': 'Created a new project in group X', 'type': 'project', 'url': ''}
-                },
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        # e2 = {
-        #     'features': [
-        #         {
-        #             'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-01-01 00:00:00',
-        #                            'id': 1001, 'is_read': False, 'fk_user_id': 1001},
-        #             'tags': [{'body': 'Happy Birthday'},
-        #                      {'type': 'birthday'},
-        #                      {'url': ''}],
-        #             'type': 'Notification'
-        #         },
-        #         {'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-03-25 00:00:00',
-        #                         'id': 1002, 'is_read': False, 'fk_user_id': 1001},
-        #          'tags': [{'body': 'You was added in a group called X'},
-        #                   {'type': 'group'},
-        #                   {'url': ''}], 'type': 'Notification'
-        #          },
-        #         {'properties': {'removed_at': None, 'visible': True, 'created_at': '2017-12-25 00:00:00', 'id': 1003, 'is_read': True, 'fk_user_id': 1001}, 'tags': [{'body': 'Created a new project in group X'}, {'type': 'project'}, {'url': ''}], 'type': 'Notification'}], 'type': 'FeatureCollection'}
-
-        self.tester.api_notification(expected, user_id="1001", is_read=True)
-
-    def test_get_api_notification_return_notification_by_user_id_and_is_read_false(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1004,
-                                   'created_at': '2017-05-13 00:00:00', 'fk_user_id': 1002},
-                    'type': 'Notification',
-                    'tags': {'body': 'Created a new layer in project Y', 'type': 'layer', 'url': ''}
+                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
                 },
                 {
-                    'properties': {'is_read': False, 'removed_at': None, 'visible': True, 'id': 1005,
-                                   'created_at': '2017-12-25 00:00:00', 'fk_user_id': 1002},
                     'type': 'Notification',
-                    'tags': {'body': 'A new review was made in layer Z', 'type': 'review', 'url': ''}
+                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Ações estão sendo tomadas.',
+                                   'created_at': '2017-03-01 00:00:00'}
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_notification(expected, user_id="1002", is_read=False)
+        self.tester.api_notification(expected, notification_id_parent="1010")
 
+    """
     # notification - create and delete
 
     def test_get_api_notification_create_and_delete(self):
@@ -256,8 +190,8 @@ class TestAPINotification(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-
+    """
+"""
 class TestAPINotificationErrors(TestCase):
 
     def setUp(self):
@@ -326,7 +260,7 @@ class TestAPINotificationErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
 """
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
