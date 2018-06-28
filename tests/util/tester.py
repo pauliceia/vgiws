@@ -1232,17 +1232,17 @@ class UtilTester:
 
     def api_notification_create(self, feature_json):
         response = self.session.post(self.URL + '/api/notification/create/',
-                                    data=dumps(feature_json), headers=self.headers)
+                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("id", resulted)
-        self.ut_self.assertNotEqual(resulted["id"], -1)
+        self.ut_self.assertIn("notification_id", resulted)
+        self.ut_self.assertNotEqual(resulted["notification_id"], -1)
 
-        # put the id received in the original JSON of changeset
-        feature_json["properties"]["id"] = resulted["id"]
+        # put the id received in the original JSON
+        feature_json["properties"]["notification_id"] = resulted["notification_id"]
 
         return feature_json
 

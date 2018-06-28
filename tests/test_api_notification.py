@@ -166,6 +166,28 @@ class TestAPINotification(TestCase):
 
         self.tester.api_notification(expected, notification_id_parent="1010")
 
+    def test_get_api_notification_return_notification_that_are_general(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Congresso X acontecerá em 2018/03/25',
+                                   'created_at': '2017-01-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Evento Y no dia 24/06/2018',
+                                   'created_at': '2017-02-01 00:00:00'}
+                }
+            ]
+        }
+
+        self.tester.api_notification(expected, layer_id="NULL", keyword_id="NULL", notification_id_parent="NULL")
     """
     # notification - create and delete
 
