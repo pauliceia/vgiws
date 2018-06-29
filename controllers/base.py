@@ -587,16 +587,20 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         :return:
         """
 
-        layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
 
-        for layer in layers["features"]:
-            if layer["properties"]['is_the_creator'] and \
-                    layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
-                return
+        user_layer = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+
+        properties = user_layer["features"][0]["properties"]
+
+        if properties['is_the_creator'] and properties['user_id'] == current_user_id:
+            # if the current_user_id is the creator of the layer, so ok...
+            return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the layer is the unique who can delete the layer.")
+        raise HTTPError(403, "The owner of layer or administrator are who can delete a layer.")
 
 
 class BaseHandlerTimeColumns(BaseHandlerTemplateMethod):
