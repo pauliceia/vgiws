@@ -933,7 +933,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of notification or administrator is who can update/delete a notification")
+        raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #

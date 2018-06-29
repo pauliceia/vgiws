@@ -1312,26 +1312,34 @@ class UtilTester:
 
     # notification errors - delete
 
-    def api_notification_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+    def api_notification_delete_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_notification_delete_error_401_unauthorized(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+    def api_notification_delete_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_notification_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+    def api_notification_delete_error_403_forbidden(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_notification_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+    def api_notification_delete_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)

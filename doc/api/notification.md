@@ -39,49 +39,75 @@ This method gets notifications from DB. If you doesn't put any parameter, so wil
     - 500 (Internal Server Error): Problem when get a feature. Please, contact the administrator.
 - Notes:
 
-<!--
-### POST /api/notification/create
 
-This method create a new notification described in a JSON.
+### POST /api/notification/create/
+
+This method creates a new notification described in a JSON.
 - Parameters:
 - Examples:
-     - Create a feature: ```POST http://localhost:8888/api/notification/create```
-- Send: a JSON describing the feature. Example:
+    - Create a notification: ```POST http://localhost:8888/api/notification/create```
+- Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
-        'properties': {'id': -1, 'fk_user_id': 1002},
         'type': 'Notification',
-        'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+        'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                       'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
     }
     ```
-- Response: a JSON that contain the id of the feature created. Example:
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response: a JSON that contains the id of the resource created. Example:
     ```javascript
-    {'id': 10}
+    {'notification_id': 10}
     ```
 - Error codes:
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
-    - Follow the rules of Notification's attributes in its section in [Dynamic Attribute](dynamic_attribute.md) page.
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!- - PUT /api/notification/update - ->
+### PUT /api/notification
 
-
-### DELETE /api/notification/delete/#id
-
-This method delete one notification by id = #id.
+This method updates a notification described in a JSON.
 - Parameters:
-    - #id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a feature by id: ```DELETE http://localhost:8888/api/notification/7```
-- Send:
+    - Update a notification: ```PUT http://localhost:8888/api/notification```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'type': 'Notification',
+        'properties': {'notification_id': 10, 'keyword_id': None,
+                       'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    - 400 (Bad Request): Invalid parameter.
-    - 403 (Forbidden): It is necessary a user logged in to access this URL.
-    - 404 (Not Found): Not found any feature.
-    - 500 (Internal Server Error): Problem when delete a feature. Please, contact the administrator.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): The owner of notification or administrator are who can update/delete a notification.
+     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
--->
+
+
+### DELETE /api/notification/?\<params>
+
+This method deletes one notification by id = #id.
+- Parameters:
+    - notification_id (mandatory) (int): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
+- Examples:
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/notification/notification_id=10```
+- Send (in Body):
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Invalid parameter.
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): The owner of notification or administrator are who can update/delete a notification.
+     - 404 (Not Found): Not found any resource.
+     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
+- Notes:

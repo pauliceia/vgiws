@@ -445,71 +445,38 @@ class TestAPINotificationErrors(TestCase):
         self.tester.auth_logout()
 
     # notification errors - delete
-    """
+
     def test_delete_api_notification_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
-        self.tester.api_notification_delete_error_400_bad_request("abc")
-        self.tester.api_notification_delete_error_400_bad_request(0)
-        self.tester.api_notification_delete_error_400_bad_request(-1)
-        self.tester.api_notification_delete_error_400_bad_request("-1")
-        self.tester.api_notification_delete_error_400_bad_request("0")
+        self.tester.api_notification_delete_error_400_bad_request(notification_id="abc")
+        self.tester.api_notification_delete_error_400_bad_request(notification_id=0)
+        self.tester.api_notification_delete_error_400_bad_request(notification_id=-1)
+        self.tester.api_notification_delete_error_400_bad_request(notification_id="-1")
+        self.tester.api_notification_delete_error_400_bad_request(notification_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_delete_api_notification_error_401_unauthorized_user_without_login(self):
-        self.tester.api_notification_delete_error_401_unauthorized("abc")
-        self.tester.api_notification_delete_error_401_unauthorized(0)
-        self.tester.api_notification_delete_error_401_unauthorized(-1)
-        self.tester.api_notification_delete_error_401_unauthorized("-1")
-        self.tester.api_notification_delete_error_401_unauthorized("0")
-        self.tester.api_notification_delete_error_401_unauthorized("1001")
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id="abc")
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id=0)
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id=-1)
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id="-1")
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id="0")
+        self.tester.api_notification_delete_error_401_unauthorized(notification_id="1001")
 
     def test_delete_api_notification_error_403_forbidden_user_forbidden_to_delete(self):
-        ########################################
-        # create a notification with user admin
-        ########################################
-
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # create a layer
-        resource = {
-            'type': 'notification',
-            'properties': {'description': 'ArticleA'}
-        }
-        resource = self.tester.api_notification_create(resource)
-
-        # logout with admin and login with gabriel
-        self.tester.auth_logout()
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the notification with user gabriel
         ########################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["notification_id"]
-
-        # TRY TO REMOVE THE LAYER
-        self.tester.api_notification_delete_error_403_forbidden(resource_id)
-
-        # logout with user rodrigo
-        self.tester.auth_logout()
-
-        ########################################
-        # really delete the layer with user admin
-        ########################################
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # delete the layer
-        self.tester.api_notification_delete(resource_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=resource_id)
+        self.tester.api_notification_delete_error_403_forbidden(notification_id="1001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -521,12 +488,12 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_notification_delete_error_404_not_found("5000")
-        self.tester.api_notification_delete_error_404_not_found("5001")
+        self.tester.api_notification_delete_error_404_not_found(notification_id="5000")
+        self.tester.api_notification_delete_error_404_not_found(notification_id="5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
