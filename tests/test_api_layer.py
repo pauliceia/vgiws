@@ -116,7 +116,7 @@ class TestAPILayer(TestCase):
 
     def test_api_layer_create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -137,6 +137,53 @@ class TestAPILayer(TestCase):
             },
         }
         resource = self.tester.api_layer_create(resource)
+
+        ##################################################
+        # update the layer
+        ##################################################
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        # get the id of layer to SEARCH AND REMOVE it
+        resource_id = resource["properties"]["layer_id"]
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(resource_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_api_layer_create_but_update_and_delete_with_admin(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'addresses_1930'
+
+        ##################################################
+        # create a layer
+        ##################################################
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
+            'feature_table': {
+                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+                'geometry': {
+                    "type": "MultiPoint",
+                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+                }
+            },
+        }
+        resource = self.tester.api_layer_create(resource)
+
+        # update and delete with admin user
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
         # update the layer
