@@ -1231,7 +1231,7 @@ class UtilTester:
         self.ut_self.assertEqual(expected, resulted)
 
     def api_notification_create(self, resource_json):
-        response = self.session.post(self.URL + '/api/notification/create/',
+        response = self.session.post(self.URL + '/api/notification/create',
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -1278,31 +1278,63 @@ class UtilTester:
 
     # notification errors - create
 
-    # def api_notification_create_error_403_forbidden(self, feature_json):
-    #     response = self.session.post(self.URL + '/api/notification/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # # notification errors - delete
-    #
-    # def api_notification_delete_error_400_bad_request(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_notification_delete_error_403_forbidden(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_notification_delete_error_404_not_found(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
+    def api_notification_create_error_400_bad_request(self, resource_json):
+        response = self.session.post(self.URL + '/api/notification/create',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_notification_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/notification/create',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    # notification errors - update
+
+    def api_notification_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/notification',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_notification_update_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/notification',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_notification_update_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/notification',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # notification errors - delete
+
+    def api_notification_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_notification_delete_error_401_unauthorized(self, feature_id):
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_notification_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_notification_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     # FEATURE TABLE
 

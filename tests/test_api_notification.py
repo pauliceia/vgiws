@@ -313,15 +313,107 @@ class TestAPINotificationErrors(TestCase):
         self.tester.api_notification_error_404_not_found(notification_id_parent="999")
 
     # notification errors - create
-    """
-    def test_put_api_notification_create_error_403_forbidden(self):
-        feature = {
-            'properties': {'id': -1, 'fk_user_id': 1003},
-            'type': 'Notification',
-            'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
-        }
 
-        self.tester.api_notification_create_error_403_forbidden(feature)
+    def test_post_api_notification_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a notification (without description)
+        resource = {
+            'type': 'Notification',
+            'properties': {'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None}
+        }
+        self.tester.api_notification_create_error_400_bad_request(resource)
+
+        # try to create a notification (without is_denunciation)
+        resource = {
+            'type': 'Notification',
+            'properties': {'description': 'Muito bom', 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None}
+        }
+        self.tester.api_notification_create_error_400_bad_request(resource)
+
+        # try to create a notification (without keyword_id)
+        resource = {
+            'type': 'Notification',
+            'properties': {'description': 'Muito bom', 'is_denunciation': False,
+                           'notification_id_parent': 1005, 'layer_id': None}
+        }
+        self.tester.api_notification_create_error_400_bad_request(resource)
+
+        # try to create a notification (without notification_id_parent)
+        resource = {
+            'type': 'Notification',
+            'properties': {'description': 'Muito bom', 'is_denunciation': False, 'keyword_id': None,
+                           'layer_id': None}
+        }
+        self.tester.api_notification_create_error_400_bad_request(resource)
+
+        # try to create a notification (without layer_id)
+        resource = {
+            'type': 'Notification',
+            'properties': {'description': 'Muito bom', 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005}
+        }
+        self.tester.api_notification_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_notification_create_error_401_unauthorized(self):
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
+        }
+        self.tester.api_notification_create_error_401_unauthorized(resource)
+
+    # notification errors - update
+    """
+    def test_put_api_notification_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to update a layer (without notification_id)
+        resource = {
+            'type': 'notification',
+            'properties': {'description': 'BookA'}
+        }
+        self.tester.api_notification_update_error_400_bad_request(resource)
+
+        # try to update a layer (without description)
+        resource = {
+            'type': 'notification',
+            'properties': {'notification_id': 1001}
+        }
+        self.tester.api_notification_update_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_notification_error_401_unauthorized(self):
+        feature = {
+            'properties': {'notification_id': 1001, 'description': 'BookA'},
+            'type': 'notification'
+        }
+        self.tester.api_notification_update_error_401_unauthorized(feature)
+
+    def test_put_api_notification_error_403_forbidden(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # gabriel tries to update one notification that doesn't belong to him
+        ##################################################
+        resource = {
+            'type': 'notification',
+            'properties': {'notification_id': 1051, 'description': 'SomeArticleB'}
+        }
+        self.tester.api_notification_update_error_403_forbidden(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
 
     # notification errors - delete
 
@@ -330,7 +422,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         self.tester.api_notification_delete_error_400_bad_request("abc")
         self.tester.api_notification_delete_error_400_bad_request(0)
@@ -341,20 +433,64 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_notification_error_403_forbidden(self):
-        self.tester.api_notification_delete_error_403_forbidden("abc")
-        self.tester.api_notification_delete_error_403_forbidden(0)
-        self.tester.api_notification_delete_error_403_forbidden(-1)
-        self.tester.api_notification_delete_error_403_forbidden("-1")
-        self.tester.api_notification_delete_error_403_forbidden("0")
-        self.tester.api_notification_delete_error_403_forbidden("1001")
+    def test_delete_api_notification_error_401_unauthorized_user_without_login(self):
+        self.tester.api_notification_delete_error_401_unauthorized("abc")
+        self.tester.api_notification_delete_error_401_unauthorized(0)
+        self.tester.api_notification_delete_error_401_unauthorized(-1)
+        self.tester.api_notification_delete_error_401_unauthorized("-1")
+        self.tester.api_notification_delete_error_401_unauthorized("0")
+        self.tester.api_notification_delete_error_401_unauthorized("1001")
+
+    def test_delete_api_notification_error_403_forbidden_user_forbidden_to_delete(self):
+        ########################################
+        # create a notification with user admin
+        ########################################
+
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # create a layer
+        resource = {
+            'type': 'notification',
+            'properties': {'description': 'ArticleA'}
+        }
+        resource = self.tester.api_notification_create(resource)
+
+        # logout with admin and login with gabriel
+        self.tester.auth_logout()
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ########################################
+        # try to delete the notification with user gabriel
+        ########################################
+        # get the id of layer to REMOVE it
+        resource_id = resource["properties"]["notification_id"]
+
+        # TRY TO REMOVE THE LAYER
+        self.tester.api_notification_delete_error_403_forbidden(resource_id)
+
+        # logout with user rodrigo
+        self.tester.auth_logout()
+
+        ########################################
+        # really delete the layer with user admin
+        ########################################
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # delete the layer
+        self.tester.api_notification_delete(resource_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_notification_error_404_not_found(notification_id=resource_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     def test_delete_api_notification_error_404_not_found(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         self.tester.api_notification_delete_error_404_not_found("5000")
         self.tester.api_notification_delete_error_404_not_found("5001")
