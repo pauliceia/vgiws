@@ -352,45 +352,12 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_delete_error_401_unauthorized("1001")
 
     def test_delete_api_reference_error_403_forbidden_user_forbidden_to_delete(self):
-        ########################################
-        # create a reference with user admin
-        ########################################
-
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # create a layer
-        resource = {
-            'type': 'Reference',
-            'properties': {'description': 'ArticleA'}
-        }
-        resource = self.tester.api_reference_create(resource)
-
-        # logout with admin and login with gabriel
-        self.tester.auth_logout()
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
-        # try to delete the reference with user gabriel
+        # try to delete the reference with user miguel
         ########################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
-        # TRY TO REMOVE THE LAYER
-        self.tester.api_reference_delete_error_403_forbidden(resource_id)
-
-        # logout with user rodrigo
-        self.tester.auth_logout()
-
-        ########################################
-        # really delete the layer with user admin
-        ########################################
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # delete the layer
-        self.tester.api_reference_delete(resource_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+        self.tester.api_reference_delete_error_403_forbidden(1001)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
