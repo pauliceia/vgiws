@@ -476,62 +476,10 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_delete_error_401_unauthorized("1001")
 
     def test_delete_api_user_error_403_forbidden_user_cannot_delete_other_user(self):
-        # create a fake email to avoid the error when exist the same email in DB
-        email = generate_random_string() + "@roger.com"
-
-        # create a feature
-        resource = {
-            'type': 'User',
-            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'receive_notification_by_email': False}
-        }
-
-        resource = self.tester.api_user_create(resource)
-
-        ####################################################################################################
-        # validate the email
-        ####################################################################################################
-
-        user_id = resource["properties"]["user_id"]
-        token = generate_encoded_jwt_token({'user_id': user_id})
-
-        # a user is with a invalidated email
-        user = self.tester.api_user_get(user_id=user_id)
-        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
-
-        # so the user validate his/her email
-        self.tester.api_validate_email(token)
-
-        # now the user is with the validated email
-        user = self.tester.api_user_get(user_id=user_id)
-        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
-
-        ####################################################################################################
-
-        ##################################################
-        # login with the created user
-        ##################################################
-        email = resource["properties"]["email"]
-        password = resource["properties"]["password"]
-        self.tester.auth_login(email, password)
-
-        # try to remove the user himself/herself
-        # get the id of feature to REMOVE it
-        feature_id = resource["properties"]["user_id"]
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to remove the user created, but get a 403, because just admin can delete users
-        self.tester.api_user_delete_error_403_forbidden(feature_id)
-
-        # logout
-        self.tester.auth_logout()
-
-        ##################################################
-        # log in with a admin user (who can delete an user)
-        ##################################################
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # remove the user created
-        self.tester.api_user_delete(feature_id)
+        self.tester.api_user_delete_error_403_forbidden(1001)
 
         # logout
         self.tester.auth_logout()
