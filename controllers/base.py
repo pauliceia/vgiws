@@ -117,8 +117,8 @@ class BaseHandler(RequestHandler):
     def auth_login(self, email, password):
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
-        # if not user_in_db["features"][0]["properties"]["is_email_valid"]:
-        #     raise HTTPError(409, "The email is not validated.")
+        if not user_in_db["features"][0]["properties"]["is_email_valid"]:
+            raise HTTPError(409, "The email is not validated.")
 
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
@@ -461,7 +461,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         result = self.PGSQLConn.create_user(resource_json)
 
         # if is alright about register a new user, so send to him/her an email
-        # self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
+        self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
 
         return result
 

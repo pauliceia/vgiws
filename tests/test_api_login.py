@@ -28,7 +28,7 @@ class TestAPIAuthLogin(TestCase):
         self.tester.auth_login("rafael@admin.com", "rafael")
         self.tester.auth_logout()
 
-"""
+
 class TestAPIAuthLoginError(TestCase):
 
     def setUp(self):
@@ -37,7 +37,7 @@ class TestAPIAuthLoginError(TestCase):
 
     def test_get_api_auth_login_409_conflict(self):
         self.tester.auth_login_409_conflict("gabriel@admin.com", "gabriel")
-"""
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
