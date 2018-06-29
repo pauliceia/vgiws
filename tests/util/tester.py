@@ -1230,9 +1230,9 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    def api_notification_create(self, feature_json):
+    def api_notification_create(self, resource_json):
         response = self.session.post(self.URL + '/api/notification/create/',
-                                     data=dumps(feature_json), headers=self.headers)
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -1242,12 +1242,20 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["notification_id"], -1)
 
         # put the id received in the original JSON
-        feature_json["properties"]["notification_id"] = resulted["notification_id"]
+        resource_json["properties"]["notification_id"] = resulted["notification_id"]
 
-        return feature_json
+        return resource_json
 
-    def api_notification_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/notification/{0}'.format(feature_id),
+    def api_notification_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/notification/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_notification_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)

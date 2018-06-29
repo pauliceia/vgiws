@@ -188,31 +188,82 @@ class TestAPINotification(TestCase):
         }
 
         self.tester.api_notification(expected, layer_id="NULL", keyword_id="NULL", notification_id_parent="NULL")
-    """
-    # notification - create and delete
 
-    def test_get_api_notification_create_and_delete(self):
+    # notification - create update and delete
+
+    def test_api_notification_create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login_fake()
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # create a notification
-        feature = {
-            'properties': {'id': -1, 'fk_user_id': 1002},
+        ##################################################
+        # create notification
+        ##################################################
+        resource = {
             'type': 'Notification',
-            'tags': {'body': 'You gained more points', 'type': 'point', 'url': ''}
+            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
         }
+        resource = self.tester.api_notification_create(resource)
 
-        feature = self.tester.api_notification_create(feature)
+        ##################################################
+        # update notification
+        ##################################################
+        resource["properties"]["description"] = "Muito legal"
+        self.tester.api_notification_update(resource)
 
-        # get the id of feature to REMOVE it
-        feature_id = feature["properties"]["id"]
+        ##################################################
+        # remove notification
+        ##################################################
+        # get the id of layer to REMOVE it
+        notification_id = resource["properties"]["notification_id"]
 
-        # REMOVE THE notification AFTER THE TESTS
-        self.tester.api_notification_delete(feature_id)
+        # remove the user in layer
+        self.tester.api_notification_delete(notification_id=notification_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
+    def test_api_notification_create_but_update_and_delete_with_admin(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # create notification
+        ##################################################
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
+        }
+        resource = self.tester.api_notification_create(resource)
+
+        # login with admin
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        ##################################################
+        # update notification
+        ##################################################
+        resource["properties"]["description"] = "Muito legal"
+        self.tester.api_notification_update(resource)
+
+        ##################################################
+        # remove notification
+        ##################################################
+        # get the id of layer to REMOVE it
+        notification_id = resource["properties"]["notification_id"]
+
+        # remove the user in layer
+        self.tester.api_notification_delete(notification_id=notification_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 class TestAPINotificationErrors(TestCase):

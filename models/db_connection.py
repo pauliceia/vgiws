@@ -1623,8 +1623,8 @@ class PGSQLConnection:
 
         query_text = """
             INSERT INTO notification (description, created_at, is_denunciation, user_id_creator, 
-                                      layer_id, keyword_id. notification_id_parent)
-            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}. {3}, {4}, {5}) RETURNING notification_id;
+                                      layer_id, keyword_id, notification_id_parent)
+            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}, {3}, {4}, {5}) RETURNING notification_id;
         """.format(p["description"], p["is_denunciation"], p["user_id_creator"], p["layer_id"],
                    p["keyword_id"], p["notification_id_parent"])
 
@@ -1649,21 +1649,21 @@ class PGSQLConnection:
             p["notification_id_parent"] = "NULL"
 
         query_text = """
-            UPDATE notification SET description = '{1}', layer_id = {2}, keyword_id = '{1}', notification_id_parent = {2}
+            UPDATE notification SET description = '{1}', layer_id = {2}, keyword_id = {3}, notification_id_parent = {4}
             WHERE notification_id={0};
         """.format(p["notification_id"], p["description"], p["layer_id"], p["keyword_id"], p["notification_id_parent"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def delete_notification(self, resource_id):
-        if is_a_invalid_id(resource_id):
+    def delete_notification(self, notification_id):
+        if is_a_invalid_id(notification_id):
             raise HTTPError(400, "Invalid parameter.")
 
         # delete the reference
         query_text = """
             DELETE FROM notification WHERE notification_id={0};
-        """.format(resource_id)
+        """.format(notification_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

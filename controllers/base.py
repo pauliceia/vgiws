@@ -897,29 +897,28 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_create_update_or_delete_notification()
-
         return self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_create_update_or_delete_notification()
+        notification_id = resource_json["properties"]["notification_id"]
+        self.can_current_user_update_or_delete_notification(current_user_id, notification_id)
 
         return self.PGSQLConn.update_notification(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.can_current_user_create_update_or_delete_notification()
+        self.can_current_user_update_or_delete_notification(current_user_id, **kwargs)
 
         self.PGSQLConn.delete_notification(**kwargs)
 
     # VALIDATION
 
-    def can_current_user_create_update_or_delete_notification(self):
+    def can_current_user_update_or_delete_notification(self, current_user_id, notification_id):
         """
-        Verify if the current user is an administrator to create, update or delete a notification
+        Verify if the current user can update or delete a notification
         :return:
         """
 
@@ -927,8 +926,14 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         if self.is_current_user_an_administrator():
             return
 
+        notification = self.PGSQLConn.get_notification(notification_id=notification_id)
+
+        # if the current_user_id is the creator of the notification, so ok...
+        if notification["features"][0]["properties"]['user_id_creator'] == current_user_id:
+            return
+
         # ... else, raise an exception.
-        raise HTTPError(403, "The administrator is who can create/update/delete a curator")
+        raise HTTPError(403, "The owner of notification or administrator is who can update/delete a notification")
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
