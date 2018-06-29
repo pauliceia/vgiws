@@ -1252,24 +1252,24 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # # notification errors - get
-    #
-    # def api_notification_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/notification/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_notification_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/notification/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
-    #
-    # # notification errors - create
-    #
+    # notification errors - get
+
+    def api_notification_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/notification/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_notification_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/notification/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # notification errors - create
+
     # def api_notification_create_error_403_forbidden(self, feature_json):
     #     response = self.session.post(self.URL + '/api/notification/create/',
     #                                 data=dumps(feature_json), headers=self.headers)

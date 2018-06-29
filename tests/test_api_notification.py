@@ -213,7 +213,8 @@ class TestAPINotification(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     """
-"""
+
+
 class TestAPINotificationErrors(TestCase):
 
     def setUp(self):
@@ -229,12 +230,39 @@ class TestAPINotificationErrors(TestCase):
         self.tester.api_notification_error_400_bad_request(notification_id="-1")
         self.tester.api_notification_error_400_bad_request(notification_id="0")
 
+        self.tester.api_notification_error_400_bad_request(user_id_creator="abc")
+        self.tester.api_notification_error_400_bad_request(user_id_creator=0)
+        self.tester.api_notification_error_400_bad_request(user_id_creator=-1)
+        self.tester.api_notification_error_400_bad_request(user_id_creator="-1")
+        self.tester.api_notification_error_400_bad_request(user_id_creator="0")
+
+        self.tester.api_notification_error_400_bad_request(layer_id="abc")
+        self.tester.api_notification_error_400_bad_request(layer_id=0)
+        self.tester.api_notification_error_400_bad_request(layer_id=-1)
+        self.tester.api_notification_error_400_bad_request(layer_id="-1")
+        self.tester.api_notification_error_400_bad_request(layer_id="0")
+
+        self.tester.api_notification_error_400_bad_request(keyword_id="abc")
+        self.tester.api_notification_error_400_bad_request(keyword_id=0)
+        self.tester.api_notification_error_400_bad_request(keyword_id=-1)
+        self.tester.api_notification_error_400_bad_request(keyword_id="-1")
+        self.tester.api_notification_error_400_bad_request(keyword_id="0")
+
+        self.tester.api_notification_error_400_bad_request(notification_id_parent="abc")
+        self.tester.api_notification_error_400_bad_request(notification_id_parent=0)
+        self.tester.api_notification_error_400_bad_request(notification_id_parent=-1)
+        self.tester.api_notification_error_400_bad_request(notification_id_parent="-1")
+        self.tester.api_notification_error_400_bad_request(notification_id_parent="0")
+
     def test_get_api_notification_error_404_not_found(self):
         self.tester.api_notification_error_404_not_found(notification_id="999")
-        self.tester.api_notification_error_404_not_found(notification_id="998")
+        self.tester.api_notification_error_404_not_found(user_id_creator="998")
+        self.tester.api_notification_error_404_not_found(layer_id="999")
+        self.tester.api_notification_error_404_not_found(keyword_id="998")
+        self.tester.api_notification_error_404_not_found(notification_id_parent="999")
 
     # notification errors - create
-
+    """
     def test_put_api_notification_create_error_403_forbidden(self):
         feature = {
             'properties': {'id': -1, 'fk_user_id': 1003},
@@ -282,7 +310,7 @@ class TestAPINotificationErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
