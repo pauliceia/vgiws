@@ -370,22 +370,48 @@ class TestAPINotificationErrors(TestCase):
         self.tester.api_notification_create_error_401_unauthorized(resource)
 
     # notification errors - update
-    """
+
     def test_put_api_notification_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to update a layer (without notification_id)
+        # try to update a notification (without notification_id)
         resource = {
-            'type': 'notification',
-            'properties': {'description': 'BookA'}
+            'type': 'Notification',
+            'properties': {'is_denunciation': False, 'keyword_id': None, 'description': 'Muito bom',
+                           'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
 
-        # try to update a layer (without description)
+        # try to update a notification (without description)
         resource = {
-            'type': 'notification',
-            'properties': {'notification_id': 1001}
+            'type': 'Notification',
+            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                           'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None}
+        }
+        self.tester.api_notification_update_error_400_bad_request(resource)
+
+        # try to update a notification (without keyword_id)
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': 1006, 'is_denunciation': False, 'description': 'Muito bom',
+                           'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None}
+        }
+        self.tester.api_notification_update_error_400_bad_request(resource)
+
+        # try to update a notification (without notification_id_parent)
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                           'user_id_creator': 1003, 'layer_id': None, 'description': 'Muito bom'}
+        }
+        self.tester.api_notification_update_error_400_bad_request(resource)
+
+        # try to update a notification (without layer_id)
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                           'user_id_creator': 1003, 'notification_id_parent': 1005, 'description': 'Muito bom'}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
 
@@ -393,22 +419,25 @@ class TestAPINotificationErrors(TestCase):
         self.tester.auth_logout()
 
     def test_put_api_notification_error_401_unauthorized(self):
-        feature = {
-            'properties': {'notification_id': 1001, 'description': 'BookA'},
-            'type': 'notification'
+        resource = {
+            'type': 'Notification',
+            'properties': {'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
         }
-        self.tester.api_notification_update_error_401_unauthorized(feature)
+        self.tester.api_notification_update_error_401_unauthorized(resource)
 
     def test_put_api_notification_error_403_forbidden(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
-        # gabriel tries to update one notification that doesn't belong to him
+        # miguel tries to update one notification that doesn't belong to him
         ##################################################
         resource = {
-            'type': 'notification',
-            'properties': {'notification_id': 1051, 'description': 'SomeArticleB'}
+            'type': 'Notification',
+            'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
+                           'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                           'description': 'Congresso Z 2018/03/25'}
         }
         self.tester.api_notification_update_error_403_forbidden(resource)
 
@@ -416,7 +445,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester.auth_logout()
 
     # notification errors - delete
-
+    """
     def test_delete_api_notification_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
