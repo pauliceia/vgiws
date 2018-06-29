@@ -842,7 +842,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         #     return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The administrator are who can update/delete the keyword.")
+        raise HTTPError(403, "The administrator is who can update/delete the keyword.")
 
 
 class BaseHandlerChangeset(BaseHandlerTemplateMethod):
