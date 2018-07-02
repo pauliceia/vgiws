@@ -23,7 +23,8 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
-                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__
+                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__
 
@@ -53,9 +54,11 @@ class BaseHandler(RequestHandler):
         if self.DEBUG_MODE:
             self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE_DEBUG__
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK_DEBUG__
+            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO_DEBUG__
         else:
             self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE__
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK__
+            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO__
 
     # HEADERS
 
@@ -276,7 +279,9 @@ class BaseHandlerSocialLogin(BaseHandler):
 
         encoded_jwt_token = self.login(user_json, verified_social_login_email=user["verified_email"])
 
-        self.write(json_encode({"token": encoded_jwt_token}))
+        #self.write(json_encode({"token": encoded_jwt_token}))
+        URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token
+        super(BaseHandler, self).redirect(URL_TO_REDIRECT)
 
 
 # TEMPLATE METHOD
