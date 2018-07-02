@@ -125,7 +125,7 @@ class BaseHandler(RequestHandler):
         return encoded_jwt_token
 
     @catch_generic_exception
-    def login(self, user_json):
+    def login(self, user_json, verified_social_login_email=False):
         # looking for a user in db, if not exist user, so create a new one
         try:
             user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])
@@ -134,7 +134,8 @@ class BaseHandler(RequestHandler):
             if error.status_code != 404:
                 raise HTTPError(500, str(error))
             # ... because I expected a 404 to create a new user
-            id_in_json = self.PGSQLConn.create_user(user_json)
+            id_in_json = self.PGSQLConn.create_user(user_json, verified_social_login_email=verified_social_login_email)
+            self.PGSQLConn.commit()  # save the user in DB
             user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
@@ -263,6 +264,10 @@ class BaseHandler(RequestHandler):
 class BaseHandlerSocialLogin(BaseHandler):
 
     def social_login(self, user):
+        # print("\nuser: ", user, "\n")
+        # for key in user:
+        #     print(key, ": ", user[key])
+
         user_json = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': user["email"], 'password': '',
@@ -270,12 +275,10 @@ class BaseHandlerSocialLogin(BaseHandler):
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
 
-        encoded_jwt_token = self.login(user_json)
+        if "verified_email" not in user:  # login with facebook doesn't have "verified_email", but google has, so put it
+            user["verified_email"] = True
 
-        # self.set_header('Authorization', encoded_jwt_token)
-        # put the Token in the URL that redirect
-        # URL_TO_REDIRECT = self.__AFTER_LOGIN_REDIRECT_TO__ + "/" + encoded_jwt_token
-        # super(BaseHandler, self).redirect(URL_TO_REDIRECT)
+        encoded_jwt_token = self.login(user_json, verified_social_login_email=user["verified_email"])
 
         self.write(json_encode({"token": encoded_jwt_token}))
 

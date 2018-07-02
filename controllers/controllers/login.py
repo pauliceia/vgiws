@@ -82,56 +82,56 @@ class AuthLoginHandler(BaseHandler):
         self.write(json_encode({}))
 
 
-class GoogleLoginHandler(BaseHandlerSocialLogin):
-    """
-    https://developers.google.com/identity/sign-in/web/server-side-flow
-    """
-
-    urls = [r"/api/auth/google/(.*)"]
-
-    # Set path to the Web application client_secret_*.json file you downloaded from the
-    # Google API Console: https://console.developers.google.com/apis/credentials
-    CLIENT_SECRET_FILE = PROJECT_PATH + "/settings/client_secret_542969957780-f97gr8l92maeoq7vmapb2auufsp4phaq.apps.googleusercontent.com.json"
-
-    def get(self, auth_code):
-
-        if auth_code == "":
-            raise HTTPError(409, "It is necessary to pass a 'token' in front of URL.")  # 400 - Conflict
-
-        # print("\n\nself.request.headers: ", self.request.headers, "\n\n")
-        # If this request does not have `X-Requested-With` header, this could be a CSRF
-        if "X-Requested-With" not in self.request.headers:
-            raise HTTPError(403, "Forbidden request.")  # 403 - Forbidden
-        # if not request.headers.get('X-Requested-With'):
-        #     abort(403)
-
-        try:
-            # Exchange auth code for access token, refresh token, and ID token
-            credentials = client.credentials_from_clientsecrets_and_code(
-                self.CLIENT_SECRET_FILE,
-                ['https://www.googleapis.com/auth/userinfo.profile', 'profile', 'email'],
-                auth_code)
-        except FlowExchangeError as error:
-            raise HTTPError(400, "Invalid token.")  # 400 - Bad Request
-
-        # Call Google API
-        http_auth = credentials.authorize(Http())
-        drive_service = discovery.build('oauth2', 'v2', http=http_auth, cache_discovery=False)
-
-        # Get profile info from ID token
-        # user_id = credentials.id_token['sub']
-        # email = credentials.id_token['email']
-
-        # Get user information
-        user = drive_service.userinfo().get().execute()
-
-        # print("\n\n")
-        # print("id: ", user["id"])
-        # print("name: ", user["name"])
-        # print("email: ", user["email"])
-        # print("user_info: ", user)
-
-        self.social_login(user)
+# class GoogleLoginHandler(BaseHandlerSocialLogin):
+#     """
+#     https://developers.google.com/identity/sign-in/web/server-side-flow
+#     """
+#
+#     urls = [r"/api/auth/google/(.*)"]
+#
+#     # Set path to the Web application client_secret_*.json file you downloaded from the
+#     # Google API Console: https://console.developers.google.com/apis/credentials
+#     CLIENT_SECRET_FILE = PROJECT_PATH + "/settings/client_secret_542969957780-f97gr8l92maeoq7vmapb2auufsp4phaq.apps.googleusercontent.com.json"
+#
+#     def get(self, auth_code):
+#
+#         if auth_code == "":
+#             raise HTTPError(409, "It is necessary to pass a 'token' in front of URL.")  # 400 - Conflict
+#
+#         # print("\n\nself.request.headers: ", self.request.headers, "\n\n")
+#         # If this request does not have `X-Requested-With` header, this could be a CSRF
+#         if "X-Requested-With" not in self.request.headers:
+#             raise HTTPError(403, "Forbidden request.")  # 403 - Forbidden
+#         # if not request.headers.get('X-Requested-With'):
+#         #     abort(403)
+#
+#         try:
+#             # Exchange auth code for access token, refresh token, and ID token
+#             credentials = client.credentials_from_clientsecrets_and_code(
+#                 self.CLIENT_SECRET_FILE,
+#                 ['https://www.googleapis.com/auth/userinfo.profile', 'profile', 'email'],
+#                 auth_code)
+#         except FlowExchangeError as error:
+#             raise HTTPError(400, "Invalid token.")  # 400 - Bad Request
+#
+#         # Call Google API
+#         http_auth = credentials.authorize(Http())
+#         drive_service = discovery.build('oauth2', 'v2', http=http_auth, cache_discovery=False)
+#
+#         # Get profile info from ID token
+#         # user_id = credentials.id_token['sub']
+#         # email = credentials.id_token['email']
+#
+#         # Get user information
+#         user = drive_service.userinfo().get().execute()
+#
+#         # print("\n\n")
+#         # print("id: ", user["id"])
+#         # print("name: ", user["name"])
+#         # print("email: ", user["email"])
+#         # print("user_info: ", user)
+#
+#         self.social_login(user)
 
 
 class FacebookLoginHandler(BaseHandlerSocialLogin, FacebookGraphMixin):
@@ -169,10 +169,6 @@ class FacebookLoginHandler(BaseHandlerSocialLogin, FacebookGraphMixin):
                     extra_fields=['email']
             )
 
-            # print("\nuser: ", user, "\n")
-            # for key in user:
-            #     print(key, ": ", user[key])
-
             self.social_login(user)
 
         else:
@@ -183,39 +179,35 @@ class FacebookLoginHandler(BaseHandlerSocialLogin, FacebookGraphMixin):
             )
 
 
-# class GoogleLoginHandler(BaseHandlerSocialLogin, GoogleOAuth2Mixin):
-#     """
-#         Tornado Auth:
-#         http://www.tornadoweb.org/en/stable/auth.html
-#     """
-#
-#     urls = [r"/api/auth/google/", r"/api/auth/google"]
-#
-#     @coroutine
-#     def get(self):
-#         redirect_uri = self.__REDIRECT_URI_GOOGLE__
-#
-#         self.application.settings['google_oauth'] = __GOOGLE_SETTINGS__['google_oauth']
-#
-#         if self.get_argument('code', False):
-#             access = yield self.get_authenticated_user(
-#                             redirect_uri=redirect_uri,
-#                             code=self.get_argument('code'))
-#             user = yield self.oauth2_request(
-#                             "https://www.googleapis.com/oauth2/v1/userinfo",
-#                             access_token=access["access_token"])
-#
-#             # print("\nuser: ", user, "\n")
-#             # for key in user:
-#             #     print(key, ": ", user[key])
-#
-#             self.social_login(user)
-#
-#         else:
-#             yield self.authorize_redirect(
-#                 redirect_uri=redirect_uri,
-#                 client_id=self.settings['google_oauth']['key'],
-#                 scope=['profile', 'email'],
-#                 response_type='code',
-#                 extra_params={'approval_prompt': 'auto'}
-#             )
+class GoogleLoginHandler(BaseHandlerSocialLogin, GoogleOAuth2Mixin):
+    """
+        Tornado Auth:
+        http://www.tornadoweb.org/en/stable/auth.html
+    """
+
+    urls = [r"/api/auth/google/", r"/api/auth/google"]
+
+    @coroutine
+    def get(self):
+        redirect_uri = self.__REDIRECT_URI_GOOGLE__
+
+        self.application.settings['google_oauth'] = __GOOGLE_SETTINGS__['google_oauth']
+
+        if self.get_argument('code', False):
+            access = yield self.get_authenticated_user(
+                            redirect_uri=redirect_uri,
+                            code=self.get_argument('code'))
+            user = yield self.oauth2_request(
+                            "https://www.googleapis.com/oauth2/v1/userinfo",
+                            access_token=access["access_token"])
+
+            self.social_login(user)
+
+        else:
+            yield self.authorize_redirect(
+                redirect_uri=redirect_uri,
+                client_id=self.settings['google_oauth']['key'],
+                scope=['profile', 'email'],
+                response_type='code',
+                extra_params={'approval_prompt': 'auto'}
+            )

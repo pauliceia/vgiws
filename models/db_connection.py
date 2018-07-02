@@ -307,16 +307,21 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_user(self, resource_json):
+    def create_user(self, resource_json, verified_social_login_email=False):
         p = resource_json["properties"]
+
+        if verified_social_login_email:
+            p["is_email_valid"] = True
+        else:
+            p["is_email_valid"] = False
 
         query_text = """
             INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
-                                        receive_notification_by_email) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5})
+                                        receive_notification_by_email, is_email_valid) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
             RETURNING user_id;
         """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
-                   p["receive_notification_by_email"])
+                   p["receive_notification_by_email"], p["is_email_valid"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
