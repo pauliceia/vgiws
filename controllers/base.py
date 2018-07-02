@@ -23,8 +23,7 @@ from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
-                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
-                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__
 
@@ -54,11 +53,9 @@ class BaseHandler(RequestHandler):
         if self.DEBUG_MODE:
             self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE_DEBUG__
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK_DEBUG__
-            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO_DEBUG__
         else:
             self.__REDIRECT_URI_GOOGLE__ = __REDIRECT_URI_GOOGLE__
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK__
-            self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO__
 
     # HEADERS
 
@@ -270,9 +267,8 @@ class BaseHandlerSocialLogin(BaseHandler):
 
         user_json = {
             'type': 'User',
-            'properties': {'user_id': -1, 'email': user["email"], 'password': '',
-                           'username': user["email"], 'name': user['name'], 'is_email_valid': True,
-                           'terms_agreed': True, 'receive_notification_by_email': False}
+            'properties': {'user_id': -1, 'email': user["email"], 'password': '', 'username': user["email"],
+                           'name': user['name'], 'terms_agreed': True, 'receive_notification_by_email': False}
         }
 
         if "verified_email" not in user:  # login with facebook doesn't have "verified_email", but google has, so put it
