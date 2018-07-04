@@ -1,4 +1,4 @@
-
+﻿
 -- delete all tables in public schema, with exception of the spatial_ref_sys
 -- SOURCE: https://stackoverflow.com/questions/3327312/drop-all-tables-in-postgresql
 DO $$ DECLARE
@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qua 27 Jun 2018 16:40:47 -03
+-- Ter 03 Jul 2018 18:42:23 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -338,17 +338,43 @@ CREATE TABLE IF NOT EXISTS file (
 
 
 -- -----------------------------------------------------
--- Table time_columns
+-- Table mask
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS time_columns CASCADE ;
+DROP TABLE IF EXISTS mask CASCADE ;
 
-CREATE TABLE IF NOT EXISTS time_columns (
+CREATE TABLE IF NOT EXISTS mask (
+  mask_id SERIAL ,
+  mask TEXT NULL,
+  PRIMARY KEY (mask_id)
+);
+
+
+-- -----------------------------------------------------
+-- Table temporal_columns
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS temporal_columns CASCADE ;
+
+CREATE TABLE IF NOT EXISTS temporal_columns (
   f_table_name TEXT NOT NULL UNIQUE,
   start_date_column_name TEXT NULL,
   end_date_column_name TEXT NULL,
+  start_date_type TEXT NULL,
+  end_date_type TEXT NULL,
   start_date TIMESTAMP NULL,
   end_date TIMESTAMP NULL,
-  PRIMARY KEY (f_table_name)
+  start_date_mask_id INT NOT NULL,
+  end_date_mask_id INT NOT NULL,
+  PRIMARY KEY (f_table_name),
+  CONSTRAINT fk_temporal_columns_mask1
+    FOREIGN KEY (start_date_mask_id)
+    REFERENCES mask (mask_id)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_temporal_columns_mask2
+    FOREIGN KEY (end_date_mask_id)
+    REFERENCES mask (mask_id)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE
 );
 
 

@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-class TestAPITimeColumns(TestCase):
+class TestAPITemporalColumns(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -18,183 +18,195 @@ class TestAPITimeColumns(TestCase):
 
     def test_get_api_time_columns_return_all_time_columns(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1870-01-01', 'end_date': '1900-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1001',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
+                        'end_date_type': 'timestamp', 'start_date': '1869-01-01', 'end_date_mask_id': 1001,
+                        'f_table_name': 'layer_1001', 'start_date_column_name': 'start_date',
+                        'start_date_type': 'timestamp', 'end_date': '1975-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
+                        'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'timestamp',
+                        'end_date': '1890-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
+                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
+                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
+                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1920-01-01', 'end_date': '1930-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1005',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1940-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1930-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1006',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
+                        'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'int', 'end_date': '1930-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_time_columns(expected)
 
     def test_get_api_time_columns_return_time_columns_by_f_table_name(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
+                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
+                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
+                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_time_columns(expected, f_table_name="1003")
 
     def test_get_api_time_columns_return_time_columns_by_temporal_bounding_box(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-                {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-                {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-            ],
-            'type': 'FeatureCollection'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                    }
+                }
+            ]
         }
 
         self.tester.api_time_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
 
     def test_get_api_time_columns_return_time_columns_by_start_date_greater_than_or_equal(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
+                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
+                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
+                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1920-01-01', 'end_date': '1930-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1005',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                    }
+                },
+                {
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1940-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_time_columns(expected, start_date_gte="1910-01-01")
 
     def test_get_api_time_columns_return_time_columns_by_end_date_less_than_or_equal(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1870-01-01', 'end_date': '1900-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1001',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
+                        'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'timestamp',
+                        'end_date': '1890-12-31'
+                    }
                 },
                 {
-                    'properties': {'start_date': '1890-01-01', 'end_date': '1900-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1002',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-                {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-                {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_time_columns(expected, end_date_lte="1920-12-31")
 
     def test_get_api_time_columns_return_time_columns_by_start_date(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
+                        'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'int', 'end_date': '1930-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_time_columns(expected, start_date="1910-01-01")
+        self.tester.api_time_columns(expected, start_date="1900-01-01")
 
     def test_get_api_time_columns_return_time_columns_by_end_date(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1003',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
-                },
-                {
-                    'properties': {'start_date': '1910-01-01', 'end_date': '1920-12-31',
-                                   'end_date_column_name': 'end_date', 'f_table_name': 'layer_1004',
-                                   'start_date_column_name': 'start_date'},
-                    'type': 'TimeColumns'
+                    'type': 'TimeColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
+                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.tester.api_time_columns(expected, end_date="1920-12-31")
 
     # time_columns - create and update
-
+    """
     def test_api_time_columns_create_and_update(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -329,9 +341,10 @@ class TestAPITimeColumns(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    """
 
 
-class TestAPITimeColumnsErrors(TestCase):
+class TestAPITemporalColumnsErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -353,7 +366,7 @@ class TestAPITimeColumnsErrors(TestCase):
         self.tester.api_time_columns_error_404_not_found(end_date_lte="1800-01-01")
     
     # time_columns errors - create
-
+    """
     def test_post_api_time_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -534,7 +547,7 @@ class TestAPITimeColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

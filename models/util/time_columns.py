@@ -33,8 +33,8 @@ def get_subquery_time_columns_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT * FROM time_columns {0} ORDER BY f_table_name
-        ) AS time_columns
+            SELECT * FROM temporal_columns {0} ORDER BY f_table_name
+        ) AS temporal_columns
     """.format(where_clause)
 
     return subquery_table

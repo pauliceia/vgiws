@@ -55,10 +55,22 @@ VALUES (1008, 'bea', 'bea@gmail.com', 'bea',
 
 
 -- -----------------------------------------------------
--- Table time_columns
+-- Table temporal_columns
 -- -----------------------------------------------------
 -- clean table
-DELETE FROM time_columns;
+DELETE FROM mask;
+
+INSERT INTO mask (mask_id, mask) VALUES (1001, 'YYYY-MM-DD');
+INSERT INTO mask (mask_id, mask) VALUES (1002, 'YYYY-MM');
+INSERT INTO mask (mask_id, mask) VALUES (1003, 'YYYY');
+
+
+
+-- -----------------------------------------------------
+-- Table temporal_columns
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM temporal_columns;
 
 
 
@@ -207,8 +219,8 @@ CREATE TABLE IF NOT EXISTS layer_1001 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
-  start_date TEXT,
-  end_date TEXT,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -224,8 +236,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1001 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
-  start_date TEXT,
-  end_date TEXT,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -237,7 +249,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1001 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1001', 'start_date', 'end_date', '1870-01-01', '1900-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1001', 'start_date', 'end_date', 'timestamp', 'timestamp', '1869-01-01', '1975-12-31', 1001, 1001);
 
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1001, 1001, '2017-01-02', TRUE);
@@ -248,20 +261,20 @@ INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_
 
 -- insert the data into the layer
 INSERT INTO layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
-(1001, ST_GeomFromText('MULTIPOINT((-23.546421 -46.635722))', 4326), 'R. São José', '1869', '1869', 1001);
+(1001, ST_GeomFromText('MULTIPOINT((-46.6375790530164 -23.5290461960682))', 4326), 'R. São José', '1869-01-01', '1869-12-31', 1001);
 INSERT INTO layer_1001 (id, geom, address, start_date, end_date, changeset_id) VALUES 
-(1002, ST_GeomFromText('MULTIPOINT((-23.55045 -46.634272))', 4326), 'R. Marechal Deodoro', '1869', '1869', 1001);
+(1002, ST_GeomFromText('MULTIPOINT((-46.6498716962487 -23.5482894062877))', 4326), 'R. Marechal Deodoro', '1869-01-01', '1869-12-31', 1001);
 -- add data as GeoJSON
-INSERT INTO layer_1001 (id, geom, changeset_id) 
+INSERT INTO layer_1001 (id, geom, start_date, end_date, changeset_id) 
 VALUES (1003, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiPoint",
-		    "coordinates":[[-54, 33]],
+		    "coordinates":[[-46.6468896156385, -23.5494865576549]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1001);
+	'1875-01-01', '1875-12-31', 1001);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-01-05' WHERE changeset_id=1001;
@@ -303,7 +316,7 @@ CREATE TABLE IF NOT EXISTS layer_1002 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
-  start_date TEXT,
+  start_date TIMESTAMP,
   end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
@@ -321,7 +334,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1002 (
   id SERIAL,
   geom GEOMETRY(MULTIPOINT, 4326) NOT NULL,
   address TEXT,
-  start_date TEXT,
+  start_date TIMESTAMP,
   end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
@@ -334,7 +347,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1002 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1002', 'start_date', 'end_date', '1890-01-01', '1900-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1002', 'start_date', 'end_date', 'timestamp', 'text', '1886-01-01', '1890-12-31', 1001, 1001);
 
 -- add users in layers (the main user is added when the layer is created)
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1002, 1001, '2017-03-05', TRUE);
@@ -345,22 +359,22 @@ INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_
 
 -- insert the data into the layer
 INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
-(1006, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 'R. 11 de Junho, 9 = D. José de Barros', '1886', '', 1002);
+(1006, ST_GeomFromText('MULTIPOINT((-46.6484982955712 -23.5492054322931))', 4326), 'R. 11 de Junho, 9 = D. José de Barros', '1886-02-03', '', 1002);
 INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
-(1007, ST_GeomFromText('MULTIPOINT((-23.542626 -46.638684))', 4326), 'R. 15 de Novembro, 17A', '1890', '', 1002);
+(1007, ST_GeomFromText('MULTIPOINT((-46.6526581134833 -23.5401195274321))', 4326), 'R. 15 de Novembro, 17A', '1890-03-04', '', 1002);
 INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 
-(1008, ST_GeomFromText('MULTIPOINT((-23.530159 -46.654885))', 4326), 'R. Barra Funda, 74', '1897', '', 1002);
+(1008, ST_GeomFromText('MULTIPOINT((-46.6466156443949 -23.5289798845685))', 4326), 'R. Barra Funda, 74', '1897-02-05', '', 1002);
 -- add data as GeoJSON
-INSERT INTO layer_1002 (id, geom, changeset_id) 
+INSERT INTO layer_1002 (id, geom, start_date, end_date, changeset_id) 
 VALUES (1009, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiPoint",
-		    "coordinates":[[-21, 42]],
+		    "coordinates":[[-46.6531421851224, -23.5427759121502]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1002);
+	'1897-12-10', '', 1002);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-03-05' WHERE changeset_id=1002;
@@ -400,8 +414,8 @@ CREATE TABLE IF NOT EXISTS layer_1003 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT,
-  end_date TEXT,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -418,8 +432,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT,
-  end_date TEXT,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -431,7 +445,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1003', 'start_date', 'end_date', '1900-01-01', '1920-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1003', 'start_date', 'end_date', 'timestamp', 'timestamp', '1920-01-01', '1930-12-31', 1001, 1001);
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1003, 1003, '2017-04-10', TRUE);
@@ -444,22 +459,22 @@ INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_
 
 -- insert the data into the layer
 INSERT INTO layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1001, ST_GeomFromText('MULTILINESTRING((333188.261004703 7395284.32488995,333205.817689791 7395247.71277836,333247.996555184 7395172.56160195,333261.133400433 7395102.3470075,333270.981533908 7395034.48052247,333277.885095545 7394986.25678192))', 4326), 
-'rua boa vista', '1930', '1930', 1003);
+(1001, ST_GeomFromText('MULTILINESTRING((-46.6237603488114 -23.5533938154249,-46.6235408108831 -23.5522660084575,-46.6233933273529 -23.5516456142714,-46.623209681096 -23.5507601376416,-46.622973981047 -23.5496552515087,-46.6236497790913 -23.5484119132552))', 4326), 
+'rua boa vista', '1930-01-01', '1940-12-31', 1003);
 INSERT INTO layer_1003 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1002, ST_GeomFromText('MULTILINESTRING((333270.653184563 7395036.74327773,333244.47769325 7395033.35326418,333204.141105934 7395028.41654752,333182.467715735 7395026.2492085))', 4326),
- 'rua tres de dezembro', '1930', '1930', 1003);
+(1002, ST_GeomFromText('MULTILINESTRING((-46.6353540826681 -23.5450950669741,-46.63471434053 -23.5454695514008,-46.6343109517528 -23.5458044203441))', 4326),
+ 'rua tres de dezembro', '1920-01-01', '1930-12-31', 1003);
 -- add data as GeoJSON
-INSERT INTO layer_1003 (id, geom, changeset_id) 
+INSERT INTO layer_1003 (id, geom, start_date, end_date, changeset_id) 
 VALUES (1003, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiLineString",
-		    "coordinates":[[[-21, 56], [-32, 31], [-23, 74]]],
+		    "coordinates":[[[-46.6289810574309, -23.542735394758], [-46.6267724837701, -23.5427585091922]]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1003);
+	'1930-01-01', '1930-12-31', 1003);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-04-12' WHERE changeset_id=1003;
@@ -524,7 +539,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1004', 'start_date', 'end_date', '1910-01-01', '1920-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1004', 'start_date', 'end_date', 'text', 'text', '1920-01-01', '1920-12-31', 1002, 1002);
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1004, 1003, '2017-06-15', TRUE);
@@ -536,25 +552,25 @@ INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_
 
 -- insert the data into the layer
 INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1001, ST_GeomFromText('MULTILINESTRING((333175.973956142 7395098.49130924,333188.494819187 7395102.10309665,333248.637266893 7395169.13708777))', 4326), 
-'rua joao briccola', '1920', '1920', 1004);
+(1001, ST_GeomFromText('MULTILINESTRING((-46.6223558499333 -23.5443575867494,-46.6223480680011 -23.5444468399204,-46.6218546998225 -23.545979136579))', 4326), 
+'rua joao briccola', '1920-01', '1920-05', 1004);
 INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1002, ST_GeomFromText('MULTILINESTRING((333247.996555184 7395172.56160195,333255.762310051 7395178.46616912,333307.926051785 7395235.76603312,333354.472159794 7395273.32392717))', 4326), 
-'ladeira porto geral', '1920', '1920', 1004);
+(1002, ST_GeomFromText('MULTILINESTRING((-46.6387972549339 -23.5460415609173,-46.6405962944433 -23.544623903425,-46.6417670426616 -23.5436951087793))', 4326), 
+'ladeira porto geral', '1920-03', '1920-04', 1004);
 INSERT INTO layer_1004 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1003, ST_GeomFromText('MULTILINESTRING((333266.034554577 7395292.9053933,333308.06080675 7395235.87476644))', 4326), 
-'travessa porto geral', '1920', '1920', 1004);
+(1003, ST_GeomFromText('MULTILINESTRING((-46.6369959853997 -23.549500474191,-46.6367956743584 -23.5489343848123))', 4326), 
+'travessa porto geral', '1920-01', '1920-12', 1004);
 -- add data as GeoJSON
-INSERT INTO layer_1004 (id, geom, changeset_id) 
+INSERT INTO layer_1004 (id, geom, start_date, end_date, changeset_id) 
 VALUES (1004, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiLineString",
-		    "coordinates":[[[-54, 33], [-32, 31], [-36, 89]]],
+		    "coordinates":[[[-46.6489360910738, -23.5471391154918], [-46.6479270334404, -23.5471656463165]]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	1004);
+	'1920-01', '1920-12', 1004);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-06-28' WHERE changeset_id=1004;
@@ -616,7 +632,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1005 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1005', 'start_date', 'end_date', '1920-01-01', '1930-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1005', 'start_date', 'end_date', 'text', 'text', '1920-01-01', '1940-12-31', 1002, 1002);
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1005, 1007, '2017-08-04', TRUE);
@@ -625,18 +642,18 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1005, 'Creating layer_1005', '2017-08-05', 1005, 1007);
 
 -- insert the data into the layer
-INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1001, ST_GeomFromText('MULTIPOLYGON(((0 0, 1 1, 2 2, 3 3, 0 0)))', 4326), 'Sant''Anna''s Hospital', '1870', '1940', 1005);
+INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((-46.6536941024203 -23.5446440934747, -46.6536987312376 -23.5446514885665, -46.6531421851224 -23.5427759121502, -46.6531368207044 -23.5426136385048, -46.6536941024203 -23.5446440934747)))', 4326), 
+'Sant''Anna''s Hospital', '1920-01', '1940-12', 1005);
 INSERT INTO layer_1005 (id, geom, name, start_date, end_date, changeset_id) 
 VALUES (1002, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiPolygon",
-		    "coordinates":[[[[-12, 32], [-21, 56], [-32, 31], [-23, 74], [-12, 32]]]],
+		    "coordinates":[[[[-46.6531368207044, -23.5426136385048], [-46.6526581134833, -23.5401195274321], [-46.6526581134833, -23.5401195274321], [-46.6535666865397, -23.5322186250535], [-46.6531368207044, -23.5426136385048]]]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	'Holy Mary''s Hospital', '1890', '1950', 1005);
+	'Holy Mary''s Hospital', '1920-01', '1940-12', 1005);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-08-05' WHERE changeset_id=1005;
@@ -676,8 +693,8 @@ CREATE TABLE IF NOT EXISTS layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date INT NULL,
+  end_date INT NULL,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -694,8 +711,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date INT NULL,
+  end_date INT NULL,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -707,7 +724,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
 );
 
 -- add temporal metadata
-INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date) VALUES ('layer_1006', 'start_date', 'end_date', '1900-01-01', '1930-12-31');
+INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date_type, end_date_type, start_date, end_date, start_date_mask_id, end_date_mask_id) VALUES 
+('layer_1006', 'start_date', 'end_date', 'int', 'int', '1900-01-01', '1930-12-31', 1003, 1003);
 
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1006, 1007, '2017-09-04', TRUE);
@@ -717,19 +735,19 @@ INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1006, 1008, '2017
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1006, 'Creating layer_1006', '2017-09-04', 1006, 1007);
 
 -- insert the data into the layer
-INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) VALUES 
-(1001, ST_GeomFromText('MULTIPOLYGON(((2 2, 3 3, 4 4, 5 5, 2 2)))', 4326), 'Cinema Roger', '1910', '1930', 1006);
+INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) VALUES (1001, ST_GeomFromText('MULTIPOLYGON(((-46.6488116440144 -23.5426404452948, -46.6531396058257 -23.5465662154437, -46.6517036612052 -23.5456926854228, -46.6442476807888 -23.5477173437452, -46.6488116440144 -23.5426404452948)))', 4326), 
+'Cinema Roger', 1910, 1930, 1006);
 -- add area as GeoJSON 
 INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) 
 VALUES (1002, 
 	ST_GeomFromGeoJSON(
 		'{
 		    "type":"MultiPolygon",
-		    "coordinates":[[[[-54, 33], [-32, 31], [-36, 89], [-54, 33]]]],
+		    "coordinates":[[[[-46.6323318652266, -23.5316246866608], [-46.6316800884359, -23.5296637586354], [-46.6221419360542, -23.5384048923064], [-46.6375790530164, -23.5290461960682], [-46.6323318652266, -23.5316246866608]]]],
 		    "crs":{"type":"name","properties":{"name":"EPSG:4326"}}
 		}'
 	), 
-	'Joar''s cinema', '1900', '1940', 1006);
+	'Joar''s cinema', 1900, 1940, 1006);
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-09-04' WHERE changeset_id=1006;

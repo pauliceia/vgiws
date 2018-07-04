@@ -899,9 +899,13 @@ class PGSQLConnection:
                     'properties', json_build_object(
                         'f_table_name',            f_table_name,
                         'start_date_column_name',  start_date_column_name,
-                        'end_date_column_name',    end_date_column_name,
+                        'end_date_column_name',    end_date_column_name,                        
+                        'start_date_type',         start_date_type,
+                        'end_date_type',           end_date_type,                        
                         'start_date',              to_char(start_date, 'YYYY-MM-DD'),
-                        'end_date',                to_char(end_date, 'YYYY-MM-DD')
+                        'end_date',                to_char(end_date, 'YYYY-MM-DD'),                        
+                        'start_date_mask_id',      start_date_mask_id,
+                        'end_date_mask_id',        end_date_mask_id
                     )
                 ))
             ) AS row_to_json
@@ -933,7 +937,7 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-            INSERT INTO time_columns (f_table_name, start_date_column_name, end_date_column_name, 
+            INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, 
                                       start_date, end_date)
             VALUES ('{0}', '{1}', '{2}', '{3}', '{4}');
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
@@ -946,7 +950,7 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-            UPDATE time_columns SET start_date_column_name = '{1}', end_date_column_name = '{2}', 
+            UPDATE temporal_columns SET start_date_column_name = '{1}', end_date_column_name = '{2}', 
                                     start_date = '{3}', end_date = '{4}'
             WHERE f_table_name = '{0}';
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
@@ -961,7 +965,7 @@ class PGSQLConnection:
 
         # delete the time_columns
         query_text = """
-            DELETE FROM time_columns WHERE f_table_name = '{0}';
+            DELETE FROM temporal_columns WHERE f_table_name = '{0}';
         """.format(f_table_name)
 
         # do the query in database
