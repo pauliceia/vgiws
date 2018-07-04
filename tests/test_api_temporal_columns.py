@@ -21,7 +21,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
                         'end_date_type': 'timestamp', 'start_date': '1869-01-01', 'end_date_mask_id': 1001,
@@ -30,7 +30,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
                         'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
@@ -39,7 +39,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
                         'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
@@ -48,7 +48,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
@@ -56,7 +56,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
@@ -64,7 +64,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
                         'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
@@ -81,7 +81,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
                         'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
@@ -99,7 +99,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
@@ -116,7 +116,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
                         'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
@@ -125,7 +125,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
@@ -133,7 +133,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
@@ -150,7 +150,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
                         'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
@@ -159,7 +159,7 @@ class TestAPITemporalColumns(TestCase):
                     }
                 },
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
@@ -176,7 +176,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
                         'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
@@ -193,7 +193,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'TimeColumns',
+                    'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
@@ -241,7 +241,7 @@ class TestAPITemporalColumns(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
 
         self.tester.api_temporal_columns_create(temporal_columns)
@@ -311,7 +311,7 @@ class TestAPITemporalColumns(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create(temporal_columns)
 
@@ -381,7 +381,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -398,7 +398,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -408,7 +408,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -418,7 +418,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -428,7 +428,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -443,7 +443,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
@@ -456,7 +456,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
     
@@ -470,7 +470,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_403_forbidden(resource)
 
@@ -489,7 +489,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
@@ -499,7 +499,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
@@ -509,7 +509,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
@@ -519,7 +519,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
@@ -534,7 +534,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
@@ -547,7 +547,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
 
@@ -561,7 +561,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TimeColumns'
+            'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_403_forbidden(resource)
 

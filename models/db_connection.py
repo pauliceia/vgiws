@@ -895,7 +895,7 @@ class PGSQLConnection:
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'TimeColumns',
+                    'type',       'TemporalColumns',
                     'properties', json_build_object(
                         'f_table_name',            f_table_name,
                         'start_date_column_name',  start_date_column_name,
