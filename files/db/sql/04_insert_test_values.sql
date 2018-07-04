@@ -150,18 +150,6 @@ INSERT INTO reference (reference_id, description, user_id_creator) VALUES (1053,
 DELETE FROM changeset;
 
 
-/*
--- add changeset open
--- closed changesets (they will be closed in the final of file)
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1001, 'a changeset created', '2017-10-20', 1001, 1001);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1002, 'changeset test', '2017-11-10', 1002, 1002);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1003, 'a changeset created', '2017-11-15', 1001, 1001);
-INSERT INTO changeset (id, description, created_at, fk_layer_id, fk_user_id) VALUES (1004, 'changeset test', '2017-01-20', 1002, 1002);
--- open changesets
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1005, '2017-03-25', 1003, 1003);
-INSERT INTO changeset (id, created_at, fk_layer_id, fk_user_id) VALUES (1006, '2017-05-13', 1004, 1004);
-*/
-
 
 -- -----------------------------------------------------
 -- Table user_layer
@@ -508,8 +496,8 @@ CREATE TABLE IF NOT EXISTS layer_1004 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date TEXT,
+  end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -526,8 +514,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
   id SERIAL,
   geom GEOMETRY(MULTILINESTRING, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date TEXT,
+  end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -601,8 +589,8 @@ CREATE TABLE IF NOT EXISTS layer_1005 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date TEXT,
+  end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -619,8 +607,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1005 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date TEXT NULL,
-  end_date TEXT NULL,
+  start_date TEXT,
+  end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -693,8 +681,8 @@ CREATE TABLE IF NOT EXISTS layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date INT NULL,
-  end_date INT NULL,
+  start_date INT,
+  end_date INT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id),
@@ -711,8 +699,8 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
   id SERIAL,
   geom GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
   name TEXT,
-  start_date INT NULL,
-  end_date INT NULL,
+  start_date INT,
+  end_date INT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
@@ -788,5 +776,3 @@ INSERT INTO notification (notification_id, description, created_at, user_id_crea
 -- keyword
 INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
 (1020, 'Uma keyword genérica', '2017-01-01', 1001, NULL, 1001, NULL);
-
-
