@@ -482,10 +482,10 @@ class UtilTester:
     # TIME COLUMNS
     ##################################################
 
-    def api_time_columns(self, expected, **arguments):
+    def api_temporal_columns(self, expected, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get(self.URL + '/api/time_columns/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/temporal_columns/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -493,83 +493,83 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    def api_time_columns_create(self, resource_json, **arguments):
-        response = self.session.post(self.URL + '/api/time_columns/create/',
+    def api_temporal_columns_create(self, resource_json, **arguments):
+        response = self.session.post(self.URL + '/api/temporal_columns/create/',
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def api_time_columns_update(self, resource_json):
-        response = self.session.put(self.URL + '/api/time_columns/',
+    def api_temporal_columns_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/temporal_columns/',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # def api_time_columns_delete(self, **arguments):
+    # def api_temporal_columns_delete(self, **arguments):
     #     arguments = get_url_arguments(**arguments)
     #
-    #     response = self.session.delete(self.URL + '/api/time_columns/{0}'.format(arguments),
+    #     response = self.session.delete(self.URL + '/api/temporal_columns/{0}'.format(arguments),
     #                                    headers=self.headers)
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
 
-    # time_columns errors - get
+    # temporal_columns errors - get
 
-    def api_time_columns_error_400_bad_request(self, **arguments):
+    def api_temporal_columns_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get(self.URL + '/api/time_columns/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/temporal_columns/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_time_columns_error_404_not_found(self, **arguments):
+    def api_temporal_columns_error_404_not_found(self, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get(self.URL + '/api/time_columns/{0}'.format(arguments))
+        response = self.session.get(self.URL + '/api/temporal_columns/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # time_columns errors - create
+    # temporal_columns errors - create
 
-    def api_time_columns_create_error_400_bad_request(self, feature_json):
-        response = self.session.post(self.URL + '/api/time_columns/create/',
+    def api_temporal_columns_create_error_400_bad_request(self, feature_json):
+        response = self.session.post(self.URL + '/api/temporal_columns/create/',
                                      data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_time_columns_create_error_401_unauthorized(self, feature_json):
-        response = self.session.post(self.URL + '/api/time_columns/create/',
+    def api_temporal_columns_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/temporal_columns/create/',
                                      data=dumps(feature_json))
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_time_columns_create_error_403_forbidden(self, feature_json):
-        response = self.session.post(self.URL + '/api/time_columns/create/',
+    def api_temporal_columns_create_error_403_forbidden(self, feature_json):
+        response = self.session.post(self.URL + '/api/temporal_columns/create/',
                                      data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    # time_columns errors - update
+    # temporal_columns errors - update
 
-    def api_time_columns_update_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/time_columns',
+    def api_temporal_columns_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/temporal_columns',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_time_columns_update_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/time_columns',
+    def api_temporal_columns_update_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/temporal_columns',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_time_columns_update_error_403_forbidden(self, feature_json):
-        response = self.session.put(self.URL + '/api/time_columns',
+    def api_temporal_columns_update_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/temporal_columns',
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    # time_columns errors - delete
+    # temporal_columns errors - delete
 
     # def api_curator_delete_error_400_bad_request(self, **arguments):
     #     arguments = get_url_arguments(**arguments)

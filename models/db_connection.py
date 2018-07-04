@@ -671,7 +671,7 @@ class PGSQLConnection:
 
         try:
             # 5) delete the temporal metadata
-            self.delete_time_columns(f_table_name)
+            self.delete_temporal_columns(f_table_name)
         except HTTPError as error:
             if error.status_code != 404:
                 raise error
@@ -879,15 +879,15 @@ class PGSQLConnection:
         self.unpublish_feature_table_in_geoserver(version_f_table_name)
 
     ################################################################################
-    # TIME_COLUMNS
+    # temporal_columns
     ################################################################################
 
-    def get_time_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
+    def get_temporal_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_time_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
+        subquery = get_subquery_temporal_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
                                                    start_date_gte=start_date_gte, end_date_lte=end_date_lte)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -933,7 +933,7 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_time_columns(self, resource_json, user_id):
+    def create_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
 
         query_text = """
@@ -946,7 +946,7 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def update_time_columns(self, resource_json, user_id):
+    def update_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
 
         query_text = """
@@ -959,11 +959,11 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def delete_time_columns(self, f_table_name):
+    def delete_temporal_columns(self, f_table_name):
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
 
-        # delete the time_columns
+        # delete the temporal_columns
         query_text = """
             DELETE FROM temporal_columns WHERE f_table_name = '{0}';
         """.format(f_table_name)

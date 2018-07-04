@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-def get_subquery_time_columns_table(**kwargs):
+def get_subquery_temporal_columns_table(**kwargs):
     # DEFAULT WHERE
     # by default, get all results
     conditions_of_where = []

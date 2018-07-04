@@ -607,39 +607,39 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The owner of layer or administrator are who can delete a layer.")
 
 
-class BaseHandlerTimeColumns(BaseHandlerTemplateMethod):
+class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod):
 
     # GET
 
     def _get_resource(self, *args, **kwargs):
-        return self.PGSQLConn.get_time_columns(**kwargs)
+        return self.PGSQLConn.get_temporal_columns(**kwargs)
 
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
-        self.can_current_user_create_update_or_delete_time_columns(current_user_id, f_table_name)
+        self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, f_table_name)
 
-        return self.PGSQLConn.create_time_columns(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_temporal_columns(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
-        self.can_current_user_create_update_or_delete_time_columns(current_user_id, f_table_name)
+        self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, f_table_name)
 
-        return self.PGSQLConn.update_time_columns(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.update_temporal_columns(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
     # def _delete_resource(self, current_user_id, *args, **kwargs):
-    #     self.can_current_user_create_update_or_delete_time_columns(current_user_id, kwargs["f_table_name"])
+    #     self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, kwargs["f_table_name"])
     #
-    #     self.PGSQLConn.delete_time_columns(**kwargs)
+    #     self.PGSQLConn.delete_temporal_columns(**kwargs)
 
     # VALIDATION
 
-    def can_current_user_create_update_or_delete_time_columns(self, current_user_id, f_table_name):
+    def can_current_user_create_update_or_delete_temporal_columns(self, current_user_id, f_table_name):
         """
         Verify if the current user is an administrator to create, update or delete a curator user
         :return:
@@ -662,7 +662,7 @@ class BaseHandlerTimeColumns(BaseHandlerTemplateMethod):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a time_columns")
+        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a temporal_columns")
 
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):

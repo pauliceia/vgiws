@@ -7,7 +7,7 @@ from .login import *
 from .user import *
 from .curator import *
 from .layer import *
-from .time_columns import *
+from .temporal_columns import *
 from .reference import *
 from .import_ import *
 from .keyword import *

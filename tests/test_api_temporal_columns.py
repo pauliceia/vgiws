@@ -14,9 +14,9 @@ class TestAPITemporalColumns(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # time_columns - get
+    # temporal_columns - get
     
-    def test_get_api_time_columns_return_all_time_columns(self):
+    def test_get_api_temporal_columns_return_all_temporal_columns(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -74,9 +74,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected)
+        self.tester.api_temporal_columns(expected)
 
-    def test_get_api_time_columns_return_time_columns_by_f_table_name(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_f_table_name(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -92,9 +92,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, f_table_name="1003")
+        self.tester.api_temporal_columns(expected, f_table_name="1003")
 
-    def test_get_api_time_columns_return_time_columns_by_temporal_bounding_box(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_temporal_bounding_box(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -109,9 +109,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
+        self.tester.api_temporal_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
 
-    def test_get_api_time_columns_return_time_columns_by_start_date_greater_than_or_equal(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_start_date_greater_than_or_equal(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -143,9 +143,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, start_date_gte="1910-01-01")
+        self.tester.api_temporal_columns(expected, start_date_gte="1910-01-01")
 
-    def test_get_api_time_columns_return_time_columns_by_end_date_less_than_or_equal(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_end_date_less_than_or_equal(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -169,9 +169,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, end_date_lte="1920-12-31")
+        self.tester.api_temporal_columns(expected, end_date_lte="1920-12-31")
 
-    def test_get_api_time_columns_return_time_columns_by_start_date(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_start_date(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -186,9 +186,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, start_date="1900-01-01")
+        self.tester.api_temporal_columns(expected, start_date="1900-01-01")
 
-    def test_get_api_time_columns_return_time_columns_by_end_date(self):
+    def test_get_api_temporal_columns_return_temporal_columns_by_end_date(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -203,11 +203,11 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_time_columns(expected, end_date="1920-12-31")
+        self.tester.api_temporal_columns(expected, end_date="1920-12-31")
     
-    # time_columns - create and update
+    # temporal_columns - create and update
 
-    def test_api_time_columns_create_and_update(self):
+    def test_api_temporal_columns_create_and_update(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -236,7 +236,7 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # create the time columns for the layer above
         ##################################################
-        time_columns = {
+        temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
@@ -244,13 +244,13 @@ class TestAPITemporalColumns(TestCase):
             'type': 'TimeColumns'
         }
 
-        self.tester.api_time_columns_create(time_columns)
+        self.tester.api_temporal_columns_create(temporal_columns)
 
         ##################################################
         # update the time columns
         ##################################################
-        time_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_time_columns_update(time_columns)
+        temporal_columns["properties"]["start_date"] = '1920-01-01'
+        self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
         # the time columns is automatically removed when delete its layer
@@ -273,7 +273,7 @@ class TestAPITemporalColumns(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_api_time_columns_create_and_update_with_admin(self):
+    def test_api_temporal_columns_create_and_update_with_admin(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -306,20 +306,20 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # create the time columns for the layer above
         ##################################################
-        time_columns = {
+        temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create(time_columns)
+        self.tester.api_temporal_columns_create(temporal_columns)
 
         ##################################################
         # update the time columns
         ##################################################
-        time_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_time_columns_update(time_columns)
+        temporal_columns["properties"]["start_date"] = '1920-01-01'
+        self.tester.api_temporal_columns_update(temporal_columns)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -354,24 +354,24 @@ class TestAPITemporalColumnsErrors(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # time_columns errors - get
+    # temporal_columns errors - get
 
-    def test_get_api_time_columns_error_400_bad_request_invalid_date_format(self):
-        self.tester.api_time_columns_error_400_bad_request(start_date="1910/01-01")
-        self.tester.api_time_columns_error_400_bad_request(end_date="1910-01/01")
-        self.tester.api_time_columns_error_400_bad_request(start_date_gte="1910/01=01")
-        self.tester.api_time_columns_error_400_bad_request(end_date_lte="1910-01)01")
+    def test_get_api_temporal_columns_error_400_bad_request_invalid_date_format(self):
+        self.tester.api_temporal_columns_error_400_bad_request(start_date="1910/01-01")
+        self.tester.api_temporal_columns_error_400_bad_request(end_date="1910-01/01")
+        self.tester.api_temporal_columns_error_400_bad_request(start_date_gte="1910/01=01")
+        self.tester.api_temporal_columns_error_400_bad_request(end_date_lte="1910-01)01")
 
-    def test_get_api_time_columns_error_404_not_found(self):
-        self.tester.api_time_columns_error_404_not_found(f_table_name="layer_x")
-        self.tester.api_time_columns_error_404_not_found(start_date="1800-01-01")
-        self.tester.api_time_columns_error_404_not_found(end_date="2000-01-01")
-        self.tester.api_time_columns_error_404_not_found(start_date_gte="2000-01-01")
-        self.tester.api_time_columns_error_404_not_found(end_date_lte="1800-01-01")
+    def test_get_api_temporal_columns_error_404_not_found(self):
+        self.tester.api_temporal_columns_error_404_not_found(f_table_name="layer_x")
+        self.tester.api_temporal_columns_error_404_not_found(start_date="1800-01-01")
+        self.tester.api_temporal_columns_error_404_not_found(end_date="2000-01-01")
+        self.tester.api_temporal_columns_error_404_not_found(start_date_gte="2000-01-01")
+        self.tester.api_temporal_columns_error_404_not_found(end_date_lte="1800-01-01")
     
-    # time_columns errors - create
+    # temporal_columns errors - create
 
-    def test_post_api_time_columns_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -383,12 +383,12 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     
-    def test_post_api_time_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -400,7 +400,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # try to create a temporal_columns (without start_date)
         resource = {
@@ -410,7 +410,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # try to create a temporal_columns (without end_date)
         resource = {
@@ -420,7 +420,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # try to create a temporal_columns (without end_date_column_name)
         resource = {
@@ -430,7 +430,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -445,12 +445,12 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_time_columns_create_error_401_unauthorized_without_authorization_header(self):
+    def test_post_api_temporal_columns_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
@@ -458,9 +458,9 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_401_unauthorized(resource)
+        self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
     
-    def test_post_api_time_columns_create_error_403_forbidden_invalid_user_tries_to_create_a_time_columns(self):
+    def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -472,14 +472,14 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_create_error_403_forbidden(resource)
+        self.tester.api_temporal_columns_create_error_403_forbidden(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # time_columns errors - update
+    # temporal_columns errors - update
     
-    def test_put_api_time_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -491,7 +491,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
         # try to update a temporal_columns (without start_date)
         resource = {
@@ -501,7 +501,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
         # try to update a temporal_columns (without end_date)
         resource = {
@@ -511,7 +511,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
         # try to update a temporal_columns (without end_date_column_name)
         resource = {
@@ -521,7 +521,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -536,12 +536,12 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_400_bad_request(resource)
+        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_time_columns_error_401_unauthorized_without_authorization_header(self):
+    def test_put_api_temporal_columns_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
@@ -549,9 +549,9 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_401_unauthorized(resource)
+        self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
 
-    def test_put_api_time_columns_error_403_forbidden_invalid_user_tries_to_create_a_time_columns(self):
+    def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -563,7 +563,7 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
-        self.tester.api_time_columns_update_error_403_forbidden(resource)
+        self.tester.api_temporal_columns_update_error_403_forbidden(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
