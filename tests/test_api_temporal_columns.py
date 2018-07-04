@@ -15,7 +15,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester = UtilTester(self)
 
     # time_columns - get
-
+    
     def test_get_api_time_columns_return_all_time_columns(self):
         expected = {
             'type': 'FeatureCollection',
@@ -204,9 +204,9 @@ class TestAPITemporalColumns(TestCase):
         }
 
         self.tester.api_time_columns(expected, end_date="1920-12-31")
-
+    
     # time_columns - create and update
-    """
+
     def test_api_time_columns_create_and_update(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -238,9 +238,12 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         time_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
+
         self.tester.api_time_columns_create(time_columns)
 
         ##################################################
@@ -305,7 +308,9 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         time_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create(time_columns)
@@ -341,7 +346,6 @@ class TestAPITemporalColumns(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
 
 
 class TestAPITemporalColumnsErrors(TestCase):
@@ -366,29 +370,17 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.api_time_columns_error_404_not_found(end_date_lte="1800-01-01")
     
     # time_columns errors - create
-    """
+
     def test_post_api_time_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a curator with user_id and keyword_id that already exist
+        # try to insert a temporal_columns with a f_table_name that already exist
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
-            'type': 'TimeColumns'
-        }
-        self.tester.api_time_columns_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-        # try the same test with an admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to insert a curator with user_id and keyword_id that already exist
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
@@ -400,34 +392,42 @@ class TestAPITemporalColumnsErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a curator (without f_table_name)
+        # try to create a temporal_columns (without f_table_name)
         resource = {
             'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
 
-        # try to create a curator (without start_date)
+        # try to create a temporal_columns (without start_date)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
 
-        # try to create a curator (without end_date)
+        # try to create a temporal_columns (without end_date)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
 
-        # try to create a curator (without end_date_column_name)
+        # try to create a temporal_columns (without end_date_column_name)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date'},
+                           'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
@@ -437,10 +437,12 @@ class TestAPITemporalColumnsErrors(TestCase):
         # try to do the test with a admin
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a curator (without start_date_column_name)
+        # try to create a temporal_columns (without start_date_column_name)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date'},
+                           'end_date_column_name': 'end_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_400_bad_request(resource)
@@ -451,7 +453,9 @@ class TestAPITemporalColumnsErrors(TestCase):
     def test_post_api_time_columns_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_401_unauthorized(resource)
@@ -463,7 +467,9 @@ class TestAPITemporalColumnsErrors(TestCase):
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_create_error_403_forbidden(resource)
@@ -472,39 +478,47 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.auth_logout()
 
     # time_columns errors - update
-
+    
     def test_put_api_time_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a curator (without f_table_name)
+        # try to update a temporal_columns (without f_table_name)
         resource = {
             'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_400_bad_request(resource)
 
-        # try to create a curator (without start_date)
+        # try to update a temporal_columns (without start_date)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_400_bad_request(resource)
 
-        # try to create a curator (without end_date)
+        # try to update a temporal_columns (without end_date)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_400_bad_request(resource)
 
-        # try to create a curator (without end_date_column_name)
+        # try to update a temporal_columns (without end_date_column_name)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date'},
+                           'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_400_bad_request(resource)
@@ -514,10 +528,12 @@ class TestAPITemporalColumnsErrors(TestCase):
         # try to do the test with an admin
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a curator (without start_date_column_name)
+        # try to update a temporal_columns (without start_date_column_name)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date'},
+                           'end_date_column_name': 'end_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_400_bad_request(resource)
@@ -528,7 +544,9 @@ class TestAPITemporalColumnsErrors(TestCase):
     def test_put_api_time_columns_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_401_unauthorized(resource)
@@ -537,17 +555,19 @@ class TestAPITemporalColumnsErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a curator with user_id and keyword_id that already exist
+        # try to update a temporal_columns with an invalid user
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date'},
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TimeColumns'
         }
         self.tester.api_time_columns_update_error_403_forbidden(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

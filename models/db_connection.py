@@ -937,11 +937,11 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-            INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, 
-                                      start_date, end_date)
-            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}');
-        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
-                   p["start_date"], p["end_date"])
+            INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date,
+                                          start_date_type, end_date_type, start_date_mask_id, end_date_mask_id)
+            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', {7}, {8});
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
+                   p["start_date_type"], p["end_date_type"], p["start_date_mask_id"], p["end_date_mask_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -950,11 +950,11 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-            UPDATE temporal_columns SET start_date_column_name = '{1}', end_date_column_name = '{2}', 
-                                    start_date = '{3}', end_date = '{4}'
+            UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
+                                        start_date_type='{5}', end_date_type='{6}', start_date_mask_id={7}, end_date_mask_id={8}                                    
             WHERE f_table_name = '{0}';
-        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
-                   p["start_date"], p["end_date"])
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
+                   p["start_date_type"], p["end_date_type"], p["start_date_mask_id"], p["end_date_mask_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
