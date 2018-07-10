@@ -11,7 +11,8 @@ def get_subquery_feature_table(**kwargs):
     #     conditions_of_where.append("table_name = {0}".format(kwargs["f_table_name"]))
 
     if "f_table_name" in kwargs and kwargs["f_table_name"] is not None:
-        conditions_of_where.append("unaccent(LOWER(table_name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["f_table_name"]))
+        # "unaccent(LOWER(table_name)) NOT LIKE '%version%'" remove the version feature tables
+        conditions_of_where.append("unaccent(LOWER(table_name)) LIKE '%' || unaccent(LOWER('{0}')) || '%' AND unaccent(LOWER(table_name)) NOT LIKE '%version%'".format(kwargs["f_table_name"]))
 
     # default get all resources, without where clause
     where_clause = "WHERE " + " AND ".join(conditions_of_where)

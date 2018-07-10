@@ -789,9 +789,12 @@ SELECT jsonb_build_object(
 		'type',        'FeatureTable',
 		'properties',   dict,
 		'f_table_name', f_table_name,
-		'crs',  json_build_object(
-			'type',      'name', 
-			'properties', json_build_object('name', 'EPSG:' || srid)
+		'geometry',  json_build_object(
+			'type',      type, 
+			'crs',  json_build_object(
+				'type',      'name', 
+				'properties', json_build_object('name', 'EPSG:' || srid)
+			)
 		)
 	))
 ) AS row_to_json
@@ -803,11 +806,23 @@ FROM
 		-- (1) get the columns name of the feature table as JSON 
 		SELECT table_name, JSON_OBJECT(ARRAY_AGG(column_name::TEXT), ARRAY_AGG(udt_name::regtype::TEXT)) as dict
 		FROM information_schema.columns
-		WHERE table_schema = 'public' AND table_name = 'layer_1001'
+		WHERE table_schema = 'public' AND unaccent(LOWER(table_name)) LIKE '%' || unaccent(LOWER('layer_1003')) || '%' AND unaccent(LOWER(table_name)) NOT LIKE '%version%'
 		GROUP BY table_name
 	) isc 
 	INNER JOIN geometry_columns gc
 	ON gc.f_table_name = isc.table_name
+	ORDER BY isc.table_name
 ) AS feature_table 
+
+
+
+
+SELECT *
+FROM information_schema.columns
+WHERE table_schema = 'public' AND table_name = 'layer_1003'
+ORDER BY ordinal_position
+
 */
+
+
 

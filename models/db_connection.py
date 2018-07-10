@@ -715,9 +715,12 @@ class PGSQLConnection:
                     'type',        'FeatureTable',
                     'properties',   dict,
                     'f_table_name', f_table_name,
-                    'crs',  json_build_object(
-                        'type',      'name', 
-                        'properties', json_build_object('name', 'EPSG:' || srid)
+                    'geometry',  json_build_object(
+                        'type',      type, 
+                        'crs',  json_build_object(
+                            'type',      'name', 
+                            'properties', json_build_object('name', 'EPSG:' || srid)
+                        )
                     )
                 ))
             ) AS row_to_json

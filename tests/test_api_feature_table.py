@@ -17,242 +17,99 @@ class TestAPIFeatureTable(TestCase):
 
     # feature table - get
 
-    def test_get_api_feature_table_return_all_feature_tables(self):
-        expected = {
-            'features': [
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1001',
-                    'properties': {'id': 'integer', 'end_date': 'timestamp without time zone', 'geom': 'geometry',
-                                   'address': 'text', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1002',
-                    'properties': {'id': 'integer', 'end_date': 'text', 'geom': 'geometry', 'address': 'text',
-                                   'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1003',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1004',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1005',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1006',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'integer', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'integer'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1001',
-                    'properties': {'id': 'integer', 'end_date': 'timestamp without time zone', 'geom': 'geometry',
-                                   'address': 'text', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1002',
-                    'properties': {'id': 'integer', 'end_date': 'text', 'geom': 'geometry', 'address': 'text',
-                                   'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1003',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1004',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1005',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1006',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'integer', 'geom': 'geometry',
-                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'integer'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
+    # def test_get_api_feature_table_return_all_feature_tables(self):
+    #     expected = {
+    #         'features': [
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1001',
+    #                 'properties': {'id': 'integer', 'end_date': 'timestamp without time zone', 'geom': 'geometry',
+    #                                'address': 'text', 'version': 'integer', 'changeset_id': 'integer',
+    #                                'start_date': 'timestamp without time zone'},
+    #                 'geometry': {
+    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTIPOINT'
+    #                 }
+    #             },
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1002',
+    #                 'properties': {'id': 'integer', 'end_date': 'text', 'geom': 'geometry', 'address': 'text',
+    #                                'version': 'integer', 'changeset_id': 'integer',
+    #                                'start_date': 'timestamp without time zone'},
+    #                 'geometry': {
+    #                     'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTIPOINT'
+    #                 }
+    #             },
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1003',
+    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
+    #                                'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+    #                                'start_date': 'timestamp without time zone'},
+    #                 'geometry': {
+    #                     'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTILINESTRING'
+    #                 }
+    #             },
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1004',
+    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
+    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
+    #                 'geometry': {
+    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTILINESTRING'
+    #                 }
+    #             },
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1005',
+    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
+    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
+    #                 'geometry': {
+    #                     'crs': {'type': 'name', 'properties':{'name': 'EPSG:4326'}},
+    #                     'type': 'MULTIPOLYGON'
+    #                 }
+    #             },
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1006',
+    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'integer', 'geom': 'geometry',
+    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'integer'},
+    #                 'geometry': {
+    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTIPOLYGON'
+    #                 }
+    #             }
+    #         ],
+    #         'type': 'FeatureCollection'
+    #     }
+    #
+    #     self.tester.api_feature_table(expected)
 
-        self.tester.api_feature_table(expected)
+    # def test_get_api_feature_table_return_feature_table_by_f_table_name(self):
+    #     expected = {
+    #         'features': [
+    #             {
+    #                 'type': 'FeatureTable',
+    #                 'f_table_name': 'layer_1003',
+    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
+    #                                'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+    #                                'start_date': 'timestamp without time zone'},
+    #                 'geometry': {
+    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+    #                     'type': 'MULTILINESTRING'
+    #                 }
+    #             }
+    #         ],
+    #         'type': 'FeatureCollection'
+    #     }
+    #
+    #     self.tester.api_feature_table(expected, f_table_name="1003")
 
-    def test_get_api_feature_table_return_feature_table_by_f_table_name(self):
-        expected = {
-            'features': [
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'layer_1003',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                },
-                {
-                    'type': 'FeatureTable',
-                    'f_table_name': 'version_layer_1003',
-                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                                   'start_date': 'timestamp without time zone'},
-                    'crs': {'properties': {'name': 'EPSG:4326'}, 'type': 'name'}
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_feature_table(expected, f_table_name="1003")
-
-    """
-    def test_get_api_temporal_columns_return_temporal_columns_by_temporal_bounding_box(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
-                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
-                    }
-                }
-            ]
-        }
-
-        self.tester.api_temporal_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
-
-    def test_get_api_temporal_columns_return_temporal_columns_by_start_date_greater_than_or_equal(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
-                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
-                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
-                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
-                    }
-                },
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
-                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
-                    }
-                },
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
-                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1940-12-31'
-                    }
-                }
-            ]
-        }
-
-        self.tester.api_temporal_columns(expected, start_date_gte="1910-01-01")
-
-    def test_get_api_temporal_columns_return_temporal_columns_by_end_date_less_than_or_equal(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
-                        'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'timestamp',
-                        'end_date': '1890-12-31'
-                    }
-                },
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
-                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
-                    }
-                }
-            ]
-        }
-
-        self.tester.api_temporal_columns(expected, end_date_lte="1920-12-31")
-
-    def test_get_api_temporal_columns_return_temporal_columns_by_start_date(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
-                        'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'int', 'end_date': '1930-12-31'
-                    }
-                }
-            ]
-        }
-
-        self.tester.api_temporal_columns(expected, start_date="1900-01-01")
-
-    def test_get_api_temporal_columns_return_temporal_columns_by_end_date(self):
-        expected = {
-            'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
-                        'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
-                    }
-                }
-            ]
-        }
-
-        self.tester.api_temporal_columns(expected, end_date="1920-12-31")
-    
+    """    
     # feature table - create and update
 
     def test_api_temporal_columns_create_and_update(self):
