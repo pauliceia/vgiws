@@ -776,3 +776,38 @@ INSERT INTO notification (notification_id, description, created_at, user_id_crea
 -- keyword
 INSERT INTO notification (notification_id, description, created_at, user_id_creator, layer_id, keyword_id, notification_id_parent) VALUES 
 (1020, 'Uma keyword genérica', '2017-01-01', 1001, NULL, 1001, NULL);
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+/*
+SELECT jsonb_build_object(
+	'type', 'FeatureCollection',
+	'features',   jsonb_agg(jsonb_build_object(
+		'type',        'FeatureTable',
+		'properties',   dict,
+		'f_table_name', f_table_name,
+		'crs',  json_build_object(
+			'type',      'name', 
+			'properties', json_build_object('name', 'EPSG:' || srid)
+		)
+	))
+) AS row_to_json
+FROM 
+(
+	-- (2) do a JOIN with geometry_columns to get the SRID of the feature table
+	SELECT isc.table_name as f_table_name, gc.srid as srid, gc.type as type, isc.dict as dict
+	FROM (
+		-- (1) get the columns name of the feature table as JSON 
+		SELECT table_name, JSON_OBJECT(ARRAY_AGG(column_name::TEXT), ARRAY_AGG(udt_name::regtype::TEXT)) as dict
+		FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'layer_1001'
+		GROUP BY table_name
+	) isc 
+	INNER JOIN geometry_columns gc
+	ON gc.f_table_name = isc.table_name
+) AS feature_table 
+*/
+

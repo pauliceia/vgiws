@@ -13,6 +13,6 @@ from .import_ import *
 from .keyword import *
 from .notification import *
 from .changeset import *
-from .feature import *
+from .feature_table import *
 from .element import *
 from .other import *

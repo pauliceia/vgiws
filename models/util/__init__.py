@@ -6,6 +6,7 @@ from .current_element import get_subquery_current_element_table
 from .user import get_subquery_user_table
 from .curator import get_subquery_curator_table
 from .layer import get_subquery_layer_table
+from .feature_table import get_subquery_feature_table
 from .temporal_columns import get_subquery_temporal_columns_table
 from .user_layer import get_subquery_user_layer_table
 from .reference import get_subquery_reference_table

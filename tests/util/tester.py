@@ -604,6 +604,57 @@ class UtilTester:
     #     self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
+    # FEATURE TABLE
+    ##################################################
+
+    def api_feature_table(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    # def api_feature_table_create(self, resource_json, **arguments):
+    #     response = self.session.post(self.URL + '/api/feature_table/create/',
+    #                                  data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+    #
+    # def api_feature_table_update(self, resource_json):
+    #     response = self.session.put(self.URL + '/api/feature_table/',
+    #                                 data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+
+    # def api_feature_table_delete(self, **arguments):
+    #     arguments = get_url_arguments(**arguments)
+    #
+    #     response = self.session.delete(self.URL + '/api/feature_table/{0}'.format(arguments),
+    #                                    headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+
+    # temporal_columns errors - get
+
+    def api_feature_table_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_table_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
     # USER LAYER
     ##################################################
 

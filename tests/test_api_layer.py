@@ -129,6 +129,7 @@ class TestAPILayer(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
             'feature_table': {
+                'type': 'FeatureTable',
                 'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
                 'geometry': {
                     "type": "MultiPoint",

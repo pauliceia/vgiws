@@ -701,82 +701,49 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
-    # feature table
+    # FEATURE TABLE
     ################################################################################
 
-    # def get_layers(self, layer_id=None, user_id=None):
-    #     # the id have to be a int
-    #     if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     subquery = get_subquery_layer_table(layer_id=layer_id, user_id=user_id)
-    #
-    #     # CREATE THE QUERY AND EXECUTE IT
-    #     query_text = """
-    #         SELECT jsonb_build_object(
-    #             'type', 'FeatureCollection',
-    #             'features',   jsonb_agg(jsonb_build_object(
-    #                 'type',       'Layer',
-    #                 'properties', json_build_object(
-    #                     'id',           id,
-    #                     'table_name',   table_name,
-    #                     'name',         name,
-    #                     'description',  description,
-    #                     'source',       source,
-    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'fk_user_id',   fk_user_id,
-    #                     'fk_keyword_id',  fk_keyword_id
-    #                 )
-    #             ))
-    #         ) AS row_to_json
-    #         FROM
-    #         {0}
-    #     """.format(subquery)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     ######################################################################
-    #     # POST-PROCESSING
-    #     ######################################################################
-    #
-    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-    #     if "row_to_json" in results_of_query:
-    #         results_of_query = results_of_query["row_to_json"]
-    #
-    #     # if there is not feature
-    #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any resource.")
-    #
-    #     return results_of_query
-    #
-    # def add_layer_in_db(self, properties, user_id):
-    #     # tags = dumps(tags)  # convert python dict to json to save in db
-    #
-    #     # get the fields to add in DB
-    #     table_name = properties["table_name"]
-    #     name = properties["name"]
-    #     description = properties["description"]
-    #     source = properties["source"]
-    #     # fk_user_id = properties["fk_user_id"]
-    #     fk_keyword_id = properties["fk_keyword_id"]
-    #
-    #     query_text = """
-    #         INSERT INTO layer (table_name, name, description, source, fk_user_id, fk_keyword_id, created_at)
-    #         VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, LOCALTIMESTAMP) RETURNING id;
-    #     """.format(table_name, name, description, source, user_id, fk_keyword_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     result = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     return result
+    def get_feature_table(self, f_table_name=None):
+        subquery = get_subquery_feature_table(f_table_name=f_table_name)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',        'FeatureTable',
+                    'properties',   dict,
+                    'f_table_name', f_table_name,
+                    'crs',  json_build_object(
+                        'type',      'name', 
+                        'properties', json_build_object('name', 'EPSG:' || srid)
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
 
     def create_feature_table(self, f_table_name, feature_table):
 
@@ -1682,7 +1649,6 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-
     ################################################################################
     # IMPORT
     ################################################################################
@@ -1761,8 +1727,8 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Mask',
                     'properties',  json_build_object(
-                        'mask_id',   mask_id,
-                        'mask',      mask,
+                        'mask_id',          mask_id,
+                        'mask',             mask,
                         'user_id_creator',  user_id_creator
                     )
                 ))
@@ -1790,7 +1756,6 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
         return results_of_query
-
 
     ################################################################################
     # ELEMENT
