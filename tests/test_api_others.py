@@ -70,6 +70,69 @@ class TestAPIValidateEmail(TestCase):
         self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIc2VyMDAzw6ZQh-UoPWEKc8Cj5q8')
 
 
+class TestAPIMask(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    # mask - get
+
+    def test_get_api_mask_return_all_masks(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                    'type': 'Mask'
+                },
+                {
+                    'properties': {'mask_id': 1002, 'user_id_creator': 1001, 'mask': 'YYYY-MM'},
+                    'type': 'Mask'
+                },
+                {
+                    'properties': {'mask_id': 1003, 'user_id_creator': 1001, 'mask': 'YYYY'},
+                    'type': 'Mask'
+                }
+            ]
+        }
+
+        self.tester.api_mask(expected)
+
+    def test_get_api_mask_return_mask_by_mask_id(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                    'type': 'Mask'
+                },
+            ]
+        }
+
+        self.tester.api_mask(expected, mask_id="1001")
+
+
+class TestAPIMaskErrors(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    # mask errors - get
+
+    def test_get_api_mask_error_400_bad_request(self):
+        self.tester.api_mask_error_400_bad_request(mask_id="abc")
+        self.tester.api_mask_error_400_bad_request(mask_id=0)
+        self.tester.api_mask_error_400_bad_request(mask_id=-1)
+        self.tester.api_mask_error_400_bad_request(mask_id="-1")
+        self.tester.api_mask_error_400_bad_request(mask_id="0")
+
+    def test_get_api_mask_error_404_not_found(self):
+        self.tester.api_mask_error_404_not_found(mask_id="999")
+        self.tester.api_mask_error_404_not_found(mask_id="998")
+
+
 """
 class TestAPICapabilities(TestCase):
 

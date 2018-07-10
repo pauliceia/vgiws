@@ -41,6 +41,35 @@ This method validate a email account by \<token>.
 - Notes:
 
 
+### GET /api/mask/?\<params>
+
+This method gets masks from DB. If you doesn't put any parameter, so it will return all.
+- Parameters:
+    - mask_id (optional) (int): the id of a reference that is a positive integer not null (e.g. 1, 2, 3, ...).
+- Examples:
+     - Get all masks: http://localhost:8888/api/mask/
+     - Get one mask by id: http://localhost:8888/api/mask/?mask_id=1001
+- Send (in Body):
+- Send (in Header):
+- Response: a JSON that contains the resources selected. Example:
+    ```javascript
+    {
+        'type': 'FeatureCollection',
+        'features': [
+            {
+                'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                'type': 'Mask'
+            },
+        ]
+    }
+    ```
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
+- Notes:
+
+
 <!-- ### GET /api/capabilities/ -->
 
 <!-- This method return the capabilities of the server. -->

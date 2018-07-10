@@ -1,4 +1,4 @@
-﻿
+
 -- delete all tables in public schema, with exception of the spatial_ref_sys
 -- SOURCE: https://stackoverflow.com/questions/3327312/drop-all-tables-in-postgresql
 DO $$ DECLARE
@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Ter 03 Jul 2018 18:42:23 -03
+-- Ter 10 Jul 2018 10:34:35 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -345,7 +345,13 @@ DROP TABLE IF EXISTS mask CASCADE ;
 CREATE TABLE IF NOT EXISTS mask (
   mask_id SERIAL ,
   mask TEXT NULL,
-  PRIMARY KEY (mask_id)
+  user_id_creator INT NOT NULL,
+  PRIMARY KEY (mask_id),
+  CONSTRAINT fk_mask_pauliceia_user1
+    FOREIGN KEY (user_id_creator)
+    REFERENCES pauliceia_user (user_id)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE
 );
 
 

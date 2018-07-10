@@ -943,6 +943,62 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         # ... else, raise an exception.
         raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
 
+
+class BaseHandlerMask(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_mask(**kwargs)
+
+    # POST
+
+    # def _create_resource(self, resource_json, current_user_id, **kwargs):
+    #     return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
+
+    # PUT
+
+    # def _put_resource(self, resource_json, current_user_id, **kwargs):
+    #     if "reference_id" not in resource_json["properties"]:
+    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference_id)")
+    #
+    #     reference_id = resource_json["properties"]["reference_id"]
+    #     self.can_current_user_update_or_delete(current_user_id, reference_id)
+    #
+    #     return self.PGSQLConn.update_reference(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    # def _delete_resource(self, current_user_id, *args, **kwargs):
+    #     reference_id = args[0]
+    #     self.can_current_user_update_or_delete(current_user_id, reference_id)
+    #
+    #     self.PGSQLConn.delete_reference(*args)
+
+    # VALIDATION
+
+    # def can_current_user_update_or_delete(self, current_user_id, reference_id):
+    #     """
+    #     Verify if the user has permission of deleting a reference
+    #     :param current_user_id: current user id
+    #     :param reference_id: reference id
+    #     :return:
+    #     """
+    #
+    #     # if the current user is admin, so ok...
+    #     if self.is_current_user_an_administrator():
+    #         return
+    #
+    #     references = self.PGSQLConn.get_references(reference_id=reference_id)
+    #
+    #     # if the current_user_id is the creator of the reference, so ok...
+    #     if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
+    #         return
+    #
+    #     # ... else, raise an exception.
+    #     raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
+
+
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
 #     def _get_resource(self, *args, **kwargs):

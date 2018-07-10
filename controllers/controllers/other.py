@@ -7,7 +7,7 @@
 
 from tornado.escape import json_encode
 
-from ..base import BaseHandler
+from ..base import BaseHandler, BaseHandlerMask
 from modules.common import auth_non_browser_based, just_run_on_debug_mode, get_decoded_jwt_token
 
 # from settings import VERSION
@@ -50,6 +50,29 @@ class APIUpdateUserIsEmailValid(BaseHandler):
         # change the status of is_email_valid of the user for FALSE
         self.PGSQLConn.update_user_email_is_valid(arguments["user_id"], arguments["is_email_valid"])
         self.PGSQLConn.commit()
+
+
+# MASK
+
+class APIMask(BaseHandlerMask):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/mask", r"/api/mask/"]
+
+    def get(self, param=None):
+        self.get_method_api_resource()
+
+    # @auth_non_browser_based
+    # def post(self, param=None):
+    #     self.post_method_api_resource(param)
+    #
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     self.put_method_api_resource(param)
+    #
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     self.delete_method_api_resource(param)
 
 
 # class APICapabilities(BaseHandler):

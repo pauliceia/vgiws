@@ -60,9 +60,9 @@ VALUES (1008, 'bea', 'bea@gmail.com', 'bea',
 -- clean table
 DELETE FROM mask;
 
-INSERT INTO mask (mask_id, mask) VALUES (1001, 'YYYY-MM-DD');
-INSERT INTO mask (mask_id, mask) VALUES (1002, 'YYYY-MM');
-INSERT INTO mask (mask_id, mask) VALUES (1003, 'YYYY');
+INSERT INTO mask (mask_id, mask, user_id_creator) VALUES (1001, 'YYYY-MM-DD', 1001);
+INSERT INTO mask (mask_id, mask, user_id_creator) VALUES (1002, 'YYYY-MM', 1001);
+INSERT INTO mask (mask_id, mask, user_id_creator) VALUES (1003, 'YYYY', 1001);
 
 
 

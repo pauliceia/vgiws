@@ -1744,140 +1744,53 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     ################################################################################
-    # notification
+    # MASK
     ################################################################################
 
-    # def get_notification(self, notification_id=None, user_id=None, is_read=None):
-    #     # the id have to be a int
-    #     if is_a_invalid_id(notification_id) or is_a_invalid_id(user_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     subquery = get_subquery_notification_table(notification_id=notification_id, user_id=user_id,
-    #                                                is_read=is_read)
-    #
-    #     # CREATE THE QUERY AND EXECUTE IT
-    #     query_text = """
-    #         SELECT jsonb_build_object(
-    #             'type', 'FeatureCollection',
-    #             'features',   jsonb_agg(jsonb_build_object(
-    #                 'type',       'Notification',
-    #                 'properties', json_build_object(
-    #                     'id',           id,
-    #                     'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'is_read',      is_read,
-    #                     'visible',      visible,
-    #                     'fk_user_id',   fk_user_id
-    #                 ),
-    #                 'tags',       tags
-    #             ))
-    #         ) AS row_to_json
-    #         FROM
-    #         {0}
-    #     """.format(subquery)
-    #
-    #     # query_text = """
-    #     #             SELECT jsonb_build_object(
-    #     #                 'type', 'FeatureCollection',
-    #     #                 'features',   jsonb_agg(jsonb_build_object(
-    #     #                     'type',       'Notification',
-    #     #                     'properties', json_build_object(
-    #     #                         'id',           id,
-    #     #                         'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #     #                         'removed_at',   to_char(removed_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #     #                         'is_read',      is_read,
-    #     #                         'visible',      visible,
-    #     #                         'fk_user_id',   fk_user_id
-    #     #                     ),
-    #     #                     'tags',       tags.jsontags
-    #     #                 ))
-    #     #             ) AS row_to_json
-    #     #             FROM
-    #     #             {0}
-    #     #             CROSS JOIN LATERAL (
-    #     #                 -- (3) get the tags of some feature on JSON format
-    #     #                 SELECT json_agg(json_build_object('k', k, 'v', v)) AS jsontags
-    #     #                 FROM
-    #     #                 (
-    #     #                     -- (2) get the tags of some feature
-    #     #                     SELECT k, v
-    #     #                     FROM notification_tag
-    #     #                     WHERE fk_notification_id = notification.id
-    #     #                     ORDER BY k, v ASC
-    #     #                 ) subquery
-    #     #             ) AS tags
-    #     #         """.format(subquery)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     ######################################################################
-    #     # POST-PROCESSING
-    #     ######################################################################
-    #
-    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-    #     if "row_to_json" in results_of_query:
-    #         results_of_query = results_of_query["row_to_json"]
-    #
-    #     # if there is not feature
-    #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any resource.")
-    #
-    #     return results_of_query
-    #
-    # def add_notification_in_db(self, user_id, tags):
-    #     tags = dumps(tags)  # convert python dict to json to save in db
-    #
-    #     query_text = """
-    #         INSERT INTO notification (created_at, fk_user_id, tags)
-    #         VALUES (LOCALTIMESTAMP, {0}, '{1}') RETURNING id;
-    #     """.format(user_id, tags)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     result = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     return result
+    def get_mask(self, mask_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(mask_id):
+            raise HTTPError(400, "Invalid parameter.")
 
-    # def add_notification_tag_in_db(self, k, v, feature_id):
-    #     query_text = """
-    #         INSERT INTO notification_tag (k, v, fk_notification_id)
-    #         VALUES ('{0}', '{1}', {2});
-    #     """.format(k, v, feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
+        subquery = get_subquery_mask_table(mask_id=mask_id)
 
-    # def create_notification(self, feature_json, user_id):
-    #
-    #     validate_feature_json(feature_json)
-    #
-    #     # add the layer in db and get the id of it
-    #     id_in_json = self.add_notification_in_db(user_id, feature_json["tags"])
-    #
-    #     return id_in_json
-    #
-    # def delete_notification_in_db(self, feature_id):
-    #     if is_a_invalid_id(feature_id):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     query_text = """
-    #         UPDATE notification SET visible = FALSE, removed_at = LOCALTIMESTAMP
-    #         WHERE id={0};
-    #     """.format(feature_id)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any resource.")
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Mask',
+                    'properties',  json_build_object(
+                        'mask_id',   mask_id,
+                        'mask',      mask,
+                        'user_id_creator',  user_id_creator
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
 
     ################################################################################
     # ELEMENT
