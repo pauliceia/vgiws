@@ -171,6 +171,73 @@ class TestAPIFeatureTable(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_api_feature_table_create_and_update_with_admin(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'addresses_1930'
+
+        ##################################################
+        # create a layer
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+
+        ####################################################################################################
+
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        ##################################################
+        # create the feature_table for the layer above
+        ##################################################
+        feature_table = {
+            'type': 'FeatureTable',
+            'f_table_name': f_table_name,
+            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
+        }
+
+        self.tester.api_feature_table_create(feature_table)
+
+        ##################################################
+        # update the feature_table
+        ##################################################
+
+        ##################################################
+        # the feature_table is automatically removed when delete its layer
+        ##################################################
+
+        self.tester.auth_logout()
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ####################################################################################################
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        # get the id of layer to SEARCH AND REMOVE it
+        layer_id = layer["properties"]["layer_id"]
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
 
 class TestAPIFeatureTableErrors(TestCase):
 
@@ -185,115 +252,134 @@ class TestAPIFeatureTableErrors(TestCase):
         self.tester.api_feature_table_error_404_not_found(f_table_name="998")
 
     # feature_table errors - create
-    """
-    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a temporal_columns with a f_table_name that already exist
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-    
-    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_feature_table_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to create a temporal_columns (without f_table_name)
         resource = {
-            'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
 
-        # try to create a temporal_columns (without start_date)
+        # try to create a temporal_columns (without geometry)
         resource = {
-            'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1003',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'}
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
 
-        # try to create a temporal_columns (without end_date)
+        # try to create a temporal_columns (without name)
         resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1003',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {}},
+                'type': 'MULTIPOINT'
+            }
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
 
-        # try to create a temporal_columns (without end_date_column_name)
+        # try to create a temporal_columns (without type)
         resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1003',
+            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+            }
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
         # try to do the test with a admin
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a temporal_columns (without start_date_column_name)
+        # try to create a temporal_columns (without crs)
         resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1003',
+            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_401_unauthorized_without_authorization_header(self):
+    def test_post_api_feature_table_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
-            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1003',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
         }
-        self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
-    
-    def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
+        self.tester.api_feature_table_create_error_401_unauthorized(resource)
+
+    def test_post_api_feature_table_create_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
-            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+            'type': 'FeatureTable',
+            'f_table_name': 'layer_1002',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
         }
-        self.tester.api_temporal_columns_create_error_403_forbidden(resource)
+        self.tester.api_feature_table_create_error_403_forbidden(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_feature_table_create_error_404_not_found_f_table_name_doesnt_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to insert a temporal_columns with a f_table_name that already exist
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': 'address',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_404_not_found(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     # feature table errors - update
-    
+    """
     def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")

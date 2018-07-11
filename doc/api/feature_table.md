@@ -59,9 +59,10 @@ This method creates a new feature table described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     <!--- 400 (Bad Request): Attribute already exists.-->
-     <!--- 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!-->
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): Just the owner of layer or administrator can create/update a feature table.
+     - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 

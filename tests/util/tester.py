@@ -654,6 +654,52 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    # temporal_columns errors - create
+
+    def api_feature_table_create_error_400_bad_request(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_table_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(feature_json))
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_feature_table_create_error_403_forbidden(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_feature_table_create_error_404_not_found(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # temporal_columns errors - update
+
+    def api_feature_table_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature_table',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_table_update_error_401_unauthorized(self, feature_json):
+        response = self.session.put(self.URL + '/api/feature_table',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_feature_table_update_error_403_forbidden(self, feature_json):
+        response = self.session.put(self.URL + '/api/feature_table',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
     ##################################################
     # USER LAYER
     ##################################################
