@@ -18,6 +18,8 @@ This method imports a ShapeFile as feature table of a layer.
      - 400 (Bad Request): Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.
      - 400 (Bad Request): It is necessary to pass the f_table_name, file_name, changeset_id and the epsg in request.
      - 400 (Bad Request): It is necessary to pass one binary zip file in the body of the request.
+     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a feature table or do a import.
+     - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
 - Notes:
     - It is necessary create a new layer without a feature table before to import the ShapeFile.

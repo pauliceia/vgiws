@@ -84,7 +84,7 @@ class TestAPIImportError(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
-        self.f_table_name = "feature_table"
+        self.f_table_name = "layer_1003"
         self.changeset_id = 1005
         self.epsg = 4618
 
@@ -145,6 +145,30 @@ class TestAPIImportError(TestCase):
             # try to import without changeset_id
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name=file_name)
+
+    def test_post_import_shp_error_403_forbidden_invalid_user_tries_to_create_a_feature_table(self):
+        self.f_table_name = "layer_1002"
+
+        file_name = "points.zip"
+        epsg = 4618
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_403_forbidden(binary_file_content, f_table_name=self.f_table_name,
+                                                                  file_name=file_name,changeset_id=self.changeset_id,
+                                                                  epsg=epsg)
+
+    def test_post_import_shp_error_404_not_found_layer_doesnt_exist(self):
+        self.f_table_name = "address"
+
+        file_name = "points.zip"
+        epsg = 4618
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
+                                                                  file_name=file_name, changeset_id=self.changeset_id,
+                                                                  epsg=epsg)
 
 
 class TestAPIImportErrorWithoutLogin(TestCase):

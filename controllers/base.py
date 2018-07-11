@@ -607,7 +607,31 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The owner of layer or administrator are who can delete a layer.")
 
 
-class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
+class FeatureTableValidator(BaseHandler):
+
+    def can_current_user_create_update_or_delete(self, current_user_id, f_table_name):
+
+        # if current user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # search layers by feature table name and use the layer_id to search the creator of the layer
+        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+        layer_id = layers["features"][0]["properties"]["layer_id"]
+
+        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+        for layer in layers["features"]:
+            if layer["properties"]['is_the_creator'] and \
+                    layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a feature table or do a import")
+
+
+class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
 
     # GET
 
@@ -639,26 +663,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
 
     # VALIDATION
 
-    def can_current_user_create_update_or_delete(self, current_user_id, f_table_name):
-
-        # if current user is an administrator, so ok ...
-        if self.is_current_user_an_administrator():
-            return
-
-        # search layers by feature table name and use the layer_id to search the creator of the layer
-        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
-        layer_id = layers["features"][0]["properties"]["layer_id"]
-
-        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
-
-        for layer in layers["features"]:
-            if layer["properties"]['is_the_creator'] and \
-                    layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
-                return
-
-        # ... else, raise an exception.
-        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a feature table.")
+    # It is in FeatureTableValidator
 
 
 class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod):
@@ -1076,27 +1081,11 @@ class BaseHandlerMask(BaseHandlerTemplateMethod):
 
 # IMPORT
 
-class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
+class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidator):
 
-    # GET
+    # VALIDATION
 
-    def _get_resource(self, *args, **kwargs):
-        raise NotImplementedError
-
-    # POST
-
-    def _create_resource(self, resource_json, current_user_id, **kwargs):
-        raise NotImplementedError
-
-    # PUT
-
-    def _update_resource(self, *args, **kwargs):
-        raise NotImplementedError
-
-    # DELETE
-
-    def _delete_resource(self, current_user_id, *args, **kwargs):
-        raise NotImplementedError
+    # It is in FeatureTableValidator
 
     # POST - IMPORT
 
@@ -1195,6 +1184,10 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod):
 
         # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
         arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
+
+        # verify if the user has permission to import the shapefile (same permissions than the feature table)
+        current_user_id = self.get_current_user_id()
+        self.can_current_user_create_update_or_delete(current_user_id, arguments["f_table_name"])
 
         # remove the extension of the file name (e.g. points)
         FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")

@@ -338,7 +338,7 @@ class TestAPIFeatureTableErrors(TestCase):
         }
         self.tester.api_feature_table_create_error_401_unauthorized(resource)
 
-    def test_post_api_feature_table_create_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
+    def test_post_api_feature_table_create_error_403_forbidden_invalid_user_tries_to_create_a_feature_table(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 

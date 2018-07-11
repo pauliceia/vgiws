@@ -1068,85 +1068,6 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
-    # IMPORT
-    ##################################################
-
-    def api_import_shp_create(self, binary_file, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
-                                     data=binary_file, headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    # import errors - create
-
-    def api_import_shp_create_error_400_bad_request(self, binary_file, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
-                                     data=binary_file, headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_import_shp_create_error_401_unauthorized(self, binary_file, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
-                                     data=binary_file, headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    ##################################################
-    # FEATURE TABLE
-    ##################################################
-
-    # def api_feature_table(self, expected, **arguments):
-    #     # get the arguments of the URL
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     # do a GET call with default format (GeoJSON)
-    #     response = self.session.get(self.URL + '/api/feature_table/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-
-    # def api_layer(self, expected, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.get(self.URL + '/api/layer/{0}'.format(arguments))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-    #
-    #     resulted = loads(response.text)  # convert string to dict/JSON
-    #
-    #     self.ut_self.assertEqual(expected, resulted)
-
-    # def api_feature_table_create(self, feature_json):
-    #     response = self.session.post(self.URL + '/api/feature_table/create/',
-    #                                 data=dumps(feature_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-
-        # resulted = loads(response.text)  # convert string to dict/JSON
-        #
-        # self.ut_self.assertIn("id", resulted)
-        # self.ut_self.assertNotEqual(resulted["id"], -1)
-        #
-        # # post the id received in the original JSON
-        # feature_json["properties"]["id"] = resulted["id"]
-        #
-        # return feature_json
-
-    # def api_feature_table_delete(self, feature_id):
-    #     response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id))
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-
-    ##################################################
     # CHANGESET
     ##################################################
 
@@ -1438,6 +1359,52 @@ class UtilTester:
 
         response = self.session.delete(self.URL + '/api/notification/{0}'.format(arguments),
                                        headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
+    # IMPORT
+    ##################################################
+
+    def api_import_shp_create(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # import errors - create
+
+    def api_import_shp_create_error_400_bad_request(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_import_shp_create_error_401_unauthorized(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_import_shp_create_error_403_forbidden(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_import_shp_create_error_404_not_found(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
