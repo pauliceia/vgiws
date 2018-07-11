@@ -616,53 +616,49 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
 
     # POST
 
-    # def _create_resource(self, resource_json, current_user_id, **kwargs):
-    #     f_table_name = resource_json["properties"]["f_table_name"]
-    #     self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, f_table_name)
-    #
-    #     return self.PGSQLConn.create_temporal_columns(resource_json, current_user_id, **kwargs)
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        f_table_name = resource_json["f_table_name"]
+        self.can_current_user_create_update_or_delete(current_user_id, f_table_name)
+
+        return self.PGSQLConn.create_feature_table(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     # def _put_resource(self, resource_json, current_user_id, **kwargs):
     #     f_table_name = resource_json["properties"]["f_table_name"]
-    #     self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, f_table_name)
+    #     self.can_current_user_create_update_or_delete(current_user_id, f_table_name)
     #
     #     return self.PGSQLConn.update_temporal_columns(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
     # def _delete_resource(self, current_user_id, *args, **kwargs):
-    #     self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, kwargs["f_table_name"])
+    #     self.can_current_user_create_update_or_delete(current_user_id, kwargs["f_table_name"])
     #
     #     self.PGSQLConn.delete_temporal_columns(**kwargs)
 
     # VALIDATION
 
-    # def can_current_user_create_update_or_delete_temporal_columns(self, current_user_id, f_table_name):
-    #     """
-    #     Verify if the current user is an administrator to create, update or delete a curator user
-    #     :return:
-    #     """
-    #
-    #     # if currente user is an administrator, so ok ...
-    #     if self.is_current_user_an_administrator():
-    #         return
-    #
-    #     # search layers by feature table name and use the layer_id to search the creator of the layer
-    #     layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
-    #     layer_id = layers["features"][0]["properties"]["layer_id"]
-    #
-    #     layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
-    #
-    #     for layer in layers["features"]:
-    #         if layer["properties"]['is_the_creator'] and \
-    #                 layer["properties"]['user_id'] == current_user_id:
-    #             # if the current_user_id is the creator of the layer, so ok...
-    #             return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "Just the owner of the layer or administrator can create/update a temporal_columns")
+    def can_current_user_create_update_or_delete(self, current_user_id, f_table_name):
+
+        # if current user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # search layers by feature table name and use the layer_id to search the creator of the layer
+        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+        layer_id = layers["features"][0]["properties"]["layer_id"]
+
+        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+        for layer in layers["features"]:
+            if layer["properties"]['is_the_creator'] and \
+                    layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "Just the owner of the layer or administrator can create/update a feature table.")
 
 
 class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod):

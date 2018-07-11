@@ -91,3 +91,8 @@ This method updates a record in time columns table described in a JSON.
     - 403 (Forbidden): Just the owner of layer or administrator can create/update a time columns.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
+
+
+### DELETE
+
+A temporal columns is automatically removed when a layer is deleted.

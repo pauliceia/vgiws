@@ -8,7 +8,6 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-
 class TestAPIFeatureTable(TestCase):
 
     def setUp(self):
@@ -109,10 +108,9 @@ class TestAPIFeatureTable(TestCase):
 
         self.tester.api_feature_table(expected, f_table_name="1003")
 
-    """    
     # feature table - create and update
 
-    def test_api_temporal_columns_create_and_update(self):
+    def test_api_feature_table_create_and_update(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -125,40 +123,35 @@ class TestAPIFeatureTable(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
         layer = self.tester.api_layer_create(layer)
 
         ####################################################################################################
 
         ##################################################
-        # create the time columns for the layer above
+        # create the feature_table for the layer above
         ##################################################
-        temporal_columns = {
-            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
+        feature_table = {
+            'type': 'FeatureTable',
+            'f_table_name': f_table_name,
+            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
         }
 
-        self.tester.api_temporal_columns_create(temporal_columns)
+        self.tester.api_feature_table_create(feature_table)
 
         ##################################################
-        # update the time columns
+        # update the feature_table
         ##################################################
-        temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
-        # the time columns is automatically removed when delete its layer
+        # the feature_table is automatically removed when delete its layer
         ##################################################
 
         ####################################################################################################
@@ -177,81 +170,6 @@ class TestAPIFeatureTable(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-    def test_api_temporal_columns_create_and_update_with_admin(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        f_table_name = 'addresses_1930'
-
-        ##################################################
-        # create a layer
-        ##################################################
-        layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
-        }
-        layer = self.tester.api_layer_create(layer)
-
-        ####################################################################################################
-
-        # create the time columns with an admin user
-        self.tester.auth_logout()
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # create the time columns for the layer above
-        ##################################################
-        temporal_columns = {
-            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create(temporal_columns)
-
-        ##################################################
-        # update the time columns
-        ##################################################
-        temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        ##################################################
-        # the time columns is automatically removed when delete its layer
-        ##################################################
-
-        ####################################################################################################
-
-        ##################################################
-        # delete the layer
-        ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
-        layer_id = layer["properties"]["layer_id"]
-
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(layer_id)
-
-        # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-    """
 
 
 class TestAPIFeatureTableErrors(TestCase):
@@ -265,7 +183,7 @@ class TestAPIFeatureTableErrors(TestCase):
     def test_get_api_feature_table_error_404_not_found(self):
         self.tester.api_feature_table_error_404_not_found(f_table_name="999")
         self.tester.api_feature_table_error_404_not_found(f_table_name="998")
-    
+
     # feature_table errors - create
     """
     def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
@@ -465,6 +383,7 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     """
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

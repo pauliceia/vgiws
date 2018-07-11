@@ -71,7 +71,7 @@ This method creates a new layer described in a JSON.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - After create the layer, it is necessary to create the feature table.
-    There are two ways to create do it: (1) creating manually the feature table and (2) importing a shapefile.
+    There are two ways to create do it: (1) creating manually the feature table [(see here)](feature_table.md) and (2) importing a shapefile [(see here)](import.md).
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 

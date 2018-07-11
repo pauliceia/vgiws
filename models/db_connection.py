@@ -71,6 +71,22 @@ def format_the_table_name_to_standard(table_name, user_id):
     return "_" + str(user_id) + "_" + table_name
 
 
+def remove_unnecessary_properties(properties):
+    if "id" in properties:
+        del properties["id"]
+
+    if "geom" in properties:
+        del properties["geom"]
+
+    if "version" in properties:
+        del properties["version"]
+
+    if "changeset_id" in properties:
+        del properties["changeset_id"]
+
+    return properties
+
+
 class BaseDBConnection(metaclass=ABCMeta):
 
     def __init__(self):
@@ -741,18 +757,18 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_feature_table(self, f_table_name, feature_table):
+    def create_feature_table(self,  resource_json, user_id):
+        f_table_name = resource_json["f_table_name"]
+        geometry_type = resource_json["geometry"]["type"]
+        EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
+        properties = resource_json["properties"]
 
-        # get the geometry of the feature table
-        geometry_type = feature_table["geometry"]["type"]
-        EPSG = feature_table["geometry"]["crs"]["properties"]["name"].split(":")[1]
+        properties = remove_unnecessary_properties(properties)
 
         # get the attributes of the feature table
-        properties = ""
-        for property in feature_table["properties"]:
-            properties += property + " " + feature_table["properties"][property] + ", \n"
-
-        # create the feature table in __feature__ schema and create the version feature table in __version__ schema
+        properties_string = ""
+        for property in properties:
+            properties_string += property + " " + properties[property] + ", \n"
 
         # build the query to create a new feature table
         query_text = """        
@@ -769,7 +785,7 @@ class PGSQLConnection:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
             );        
-        """.format(f_table_name, geometry_type, EPSG, properties)
+        """.format(f_table_name, geometry_type, EPSG, properties_string)
 
         self.__PGSQL_CURSOR__.execute(query_text)
 
@@ -792,7 +808,7 @@ class PGSQLConnection:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
             );        
-        """.format(version_f_table_name, geometry_type, EPSG, properties)
+        """.format(version_f_table_name, geometry_type, EPSG, properties_string)
 
         self.__PGSQL_CURSOR__.execute(query_text)
 
@@ -800,7 +816,6 @@ class PGSQLConnection:
         self.commit()
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name)
-        self.publish_feature_table_in_geoserver(version_f_table_name)
 
     def delete_feature_table(self, f_table_name):
         tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]
@@ -814,8 +829,8 @@ class PGSQLConnection:
 
             self.__PGSQL_CURSOR__.execute(query_text)
 
-            # unpublish the features table in geoserver
-            self.unpublish_feature_table_in_geoserver(table_to_drop)
+        # unpublish the features table in geoserver
+        self.unpublish_feature_table_in_geoserver(f_table_name)
 
         self.commit()
 

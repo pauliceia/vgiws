@@ -618,11 +618,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(expected, resulted)
 
-    # def api_feature_table_create(self, resource_json, **arguments):
-    #     response = self.session.post(self.URL + '/api/feature_table/create/',
-    #                                  data=dumps(resource_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
+    def api_feature_table_create(self, resource_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
     #
     # def api_feature_table_update(self, resource_json):
     #     response = self.session.put(self.URL + '/api/feature_table/',
