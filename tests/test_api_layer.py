@@ -118,26 +118,25 @@ class TestAPILayer(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        f_table_name = 'addresses_1930'
-
         ##################################################
         # create a layer
         ##################################################
-        resource = {
+        layer = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'type': 'FeatureTable',
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        resource = self.tester.api_layer_create(resource)
+        layer = self.tester.api_layer_create(layer)
+
+        # 'feature_table': {
+        #     'type': 'FeatureTable',
+        #     'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+        #     'geometry': {
+        #         "type": "MultiPoint",
+        #         "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+        #     }
+        # },
 
         ##################################################
         # update the layer
@@ -147,13 +146,13 @@ class TestAPILayer(TestCase):
         # delete the layer
         ##################################################
         # get the id of layer to SEARCH AND REMOVE it
-        resource_id = resource["properties"]["layer_id"]
+        layer_id = layer["properties"]["layer_id"]
 
         # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(resource_id)
+        self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -171,16 +170,17 @@ class TestAPILayer(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
         resource = self.tester.api_layer_create(resource)
+
+        # 'feature_table': {
+        #     'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
+        #     'geometry': {
+        #         "type": "MultiPoint",
+        #         "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
+        #     }
+        # },
 
         # update and delete with admin user
         self.tester.auth_logout()
@@ -292,13 +292,13 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_create_error_400_bad_request(resource)
 
         # try to create a layer (without feature_table)
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]}
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
+        # resource = {
+        #     'type': 'Layer',
+        #     'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+        #                    'description': '', 'source_description': '',
+        #                    'reference': [], 'keyword': [1041]}
+        # }
+        # self.tester.api_layer_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

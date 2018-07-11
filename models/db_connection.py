@@ -33,8 +33,7 @@ from copy import deepcopy
 from tornado.web import HTTPError
 from tornado.escape import json_encode
 
-from psycopg2 import connect, DatabaseError, IntegrityError, ProgrammingError, Error
-from psycopg2._psycopg import ProgrammingError
+from psycopg2 import connect, DatabaseError, ProgrammingError, IntegrityError, Error
 from psycopg2.extras import RealDictCursor
 
 from modules.design_pattern import Singleton
@@ -572,7 +571,7 @@ class PGSQLConnection:
 
         return result
 
-    def create_layer(self, resource_json, user_id, is_to_create_feature_table=True):
+    def create_layer(self, resource_json, user_id):
 
         ##################################################
         # pre-processing
@@ -584,9 +583,6 @@ class PGSQLConnection:
         if ("reference" not in properties) or ("keyword" not in properties) or ("f_table_name" not in properties):
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference, keyword or f_table_name)")
 
-        if is_to_create_feature_table and ("feature_table" not in resource_json):
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: feature_table)")
-
         # just can add reference/keyword that is a list
         if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
@@ -594,7 +590,6 @@ class PGSQLConnection:
         ##################################################
         # add the layer in db
         ##################################################
-        # add the layer in db and get the id of it
         id_in_json = self.add_layer_in_db(properties)
 
         ##################################################
@@ -616,12 +611,6 @@ class PGSQLConnection:
                 'type': 'LayerKeyword'
             }
             self.create_layer_keyword(layer_keyword_json)
-
-        ##################################################
-        # create the feature table (if necessary)
-        ##################################################
-        if is_to_create_feature_table:
-            self.create_feature_table(properties["f_table_name"], resource_json["feature_table"])
 
         ##################################################
         # add the user as creator user
@@ -678,7 +667,11 @@ class PGSQLConnection:
             # else:
             # error 404 is expected, because when delete a layer, may exist a layer without time columns
 
-        self.delete_feature_table(f_table_name)
+        try:
+            self.delete_feature_table(f_table_name)
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, str(error))
 
     def delete_layer(self, layer_id):
         if is_a_invalid_id(layer_id):
@@ -810,46 +803,24 @@ class PGSQLConnection:
         self.publish_feature_table_in_geoserver(version_f_table_name)
 
     def delete_feature_table(self, f_table_name):
+        tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]
 
-        # table_name = format_the_table_name_to_standard(table_name, user_id)
+        for table_to_drop in tables_to_drop:
 
-        # create the feature table in __feature__ schema and create the version feature table in __version__ schema
-        # for schema in ["__feature__", "__version__"]:
+            # delete the feature table
+            query_text = """        
+                DROP TABLE IF EXISTS {0} CASCADE ;
+            """.format(table_to_drop)
 
-        # build the query to create a new feature table
-        query_text = """        
-            DROP TABLE IF EXISTS {0} CASCADE ;
-        """.format(f_table_name)
-
-        try:
             self.__PGSQL_CURSOR__.execute(query_text)
-        except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(400, str(error))
 
-        # version
+            # unpublish the features table in geoserver
+            self.unpublish_feature_table_in_geoserver(table_to_drop)
 
-        version_f_table_name = "version_{0}".format(f_table_name)
-
-        # build the query to create a new feature table
-        query_text = """        
-            DROP TABLE IF EXISTS {0} CASCADE ;
-        """.format(version_f_table_name)
-
-        try:
-            self.__PGSQL_CURSOR__.execute(query_text)
-        except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-            raise HTTPError(400, str(error))
-
-        # remove the feature tables in database
         self.commit()
-        # unpublish the features tables/layers in geoserver
-        self.unpublish_feature_table_in_geoserver(f_table_name)
-        self.unpublish_feature_table_in_geoserver(version_f_table_name)
 
     ################################################################################
-    # temporal_columns
+    # TEMPORAL COLUMNS
     ################################################################################
 
     def get_temporal_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):

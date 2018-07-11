@@ -24,13 +24,11 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
     {
         'features': [
             {
-                'properties': {'user_id_published_by': 1003, 'is_published': True, 'description': '',
-                               'name': 'Robberies between 1880 to 1900',
-                               'reference': [{'reference_id': 1005, 'bibtex': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}],
-                               'layer_id': 1002, 'f_table_name': 'layer_1002', 'source_description': '',
-                               'created_at': '2017-03-05 00:00:00'},
+                'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                               'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
+                               'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
                 'type': 'Layer'
-            },
+            }
         ],
         'type': 'FeatureCollection'
     }
@@ -57,13 +55,6 @@ This method creates a new layer described in a JSON.
         'properties': {'layer_id': -1, 'f_table_name': 'new_layer', 'name': 'Addresses in 1930',
                        'description': '', 'source_description': '',
                        'reference': [1001], 'keyword': [1041]},
-        'feature_table': {
-            'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-            'geometry': {
-                "type": "MultiPoint",
-                "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-            }
-        }
     }
     ```
 - Send (in Header):
@@ -79,7 +70,8 @@ This method creates a new layer described in a JSON.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
-    - The parameter "is_to_create_feature_table" is usually used when is not necessary to create a feature table for the layer (e.g. when import a ShapeFile, it will be the feature table).
+    - After create the layer, it is necessary to create the feature table.
+    There are two ways to create do it: (1) creating manually the feature table and (2) importing a shapefile.
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
@@ -108,7 +100,7 @@ This method deletes one layer by id = #id.
 
 ## User_Layer
 
-Users who is part of a layer.
+Users who are part of a layer.
 
 
 ### GET /api/user_layer/?\<params>
