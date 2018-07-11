@@ -2,10 +2,11 @@
 
 - [Miscellaneous](miscellaneous.md)
 - [Login](login.md)
-- [Import](import.md)
 - [Changeset](changeset.md)
 - [Layer](layer.md)
+- [Feature Table](feature_table.md)
 - [Temporal Columns](temporal_columns.md)
+- [Import](import.md)
 - [Reference](reference.md)
 - [Keyword](keyword.md)
 - [User](user.md)

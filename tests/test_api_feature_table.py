@@ -15,99 +15,99 @@ class TestAPIFeatureTable(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # feature table - get
+    # feature_table - get
 
-    # def test_get_api_feature_table_return_all_feature_tables(self):
-    #     expected = {
-    #         'features': [
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1001',
-    #                 'properties': {'id': 'integer', 'end_date': 'timestamp without time zone', 'geom': 'geometry',
-    #                                'address': 'text', 'version': 'integer', 'changeset_id': 'integer',
-    #                                'start_date': 'timestamp without time zone'},
-    #                 'geometry': {
-    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTIPOINT'
-    #                 }
-    #             },
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1002',
-    #                 'properties': {'id': 'integer', 'end_date': 'text', 'geom': 'geometry', 'address': 'text',
-    #                                'version': 'integer', 'changeset_id': 'integer',
-    #                                'start_date': 'timestamp without time zone'},
-    #                 'geometry': {
-    #                     'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTIPOINT'
-    #                 }
-    #             },
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1003',
-    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-    #                                'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-    #                                'start_date': 'timestamp without time zone'},
-    #                 'geometry': {
-    #                     'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTILINESTRING'
-    #                 }
-    #             },
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1004',
-    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-    #                 'geometry': {
-    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTILINESTRING'
-    #                 }
-    #             },
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1005',
-    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
-    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
-    #                 'geometry': {
-    #                     'crs': {'type': 'name', 'properties':{'name': 'EPSG:4326'}},
-    #                     'type': 'MULTIPOLYGON'
-    #                 }
-    #             },
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1006',
-    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'integer', 'geom': 'geometry',
-    #                                'version': 'integer', 'changeset_id': 'integer', 'start_date': 'integer'},
-    #                 'geometry': {
-    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTIPOLYGON'
-    #                 }
-    #             }
-    #         ],
-    #         'type': 'FeatureCollection'
-    #     }
-    #
-    #     self.tester.api_feature_table(expected)
+    def test_get_api_feature_table_return_all_feature_tables(self):
+        expected = {
+            'features': [
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1001',
+                    'properties': {'id': 'integer', 'end_date': 'timestamp without time zone', 'geom': 'geometry',
+                                   'address': 'text', 'version': 'integer', 'changeset_id': 'integer',
+                                   'start_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1002',
+                    'properties': {'id': 'integer', 'end_date': 'text', 'geom': 'geometry', 'address': 'text',
+                                   'version': 'integer', 'changeset_id': 'integer',
+                                   'start_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
+                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                                   'start_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'crs': {'type':'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTILINESTRING'
+                    }
+                },
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1004',
+                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
+                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTILINESTRING'
+                    }
+                },
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1005',
+                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'text', 'geom': 'geometry',
+                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'text'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties':{'name': 'EPSG:4326'}},
+                        'type': 'MULTIPOLYGON'
+                    }
+                },
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1006',
+                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'integer', 'geom': 'geometry',
+                                   'version': 'integer', 'changeset_id': 'integer', 'start_date': 'integer'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTIPOLYGON'
+                    }
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
 
-    # def test_get_api_feature_table_return_feature_table_by_f_table_name(self):
-    #     expected = {
-    #         'features': [
-    #             {
-    #                 'type': 'FeatureTable',
-    #                 'f_table_name': 'layer_1003',
-    #                 'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
-    #                                'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-    #                                'start_date': 'timestamp without time zone'},
-    #                 'geometry': {
-    #                     'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-    #                     'type': 'MULTILINESTRING'
-    #                 }
-    #             }
-    #         ],
-    #         'type': 'FeatureCollection'
-    #     }
-    #
-    #     self.tester.api_feature_table(expected, f_table_name="1003")
+        self.tester.api_feature_table(expected)
+
+    def test_get_api_feature_table_return_feature_table_by_f_table_name(self):
+        expected = {
+            'features': [
+                {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'properties': {'name': 'text', 'id': 'integer', 'end_date': 'timestamp without time zone',
+                                   'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                                   'start_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTILINESTRING'
+                    }
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+
+        self.tester.api_feature_table(expected, f_table_name="1003")
 
     """    
     # feature table - create and update
@@ -252,30 +252,22 @@ class TestAPIFeatureTable(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
     """
-"""
+
+
 class TestAPIFeatureTableErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # feature table errors - get
+    # feature_table errors - get
 
-    def test_get_api_temporal_columns_error_400_bad_request_invalid_date_format(self):
-        self.tester.api_temporal_columns_error_400_bad_request(start_date="1910/01-01")
-        self.tester.api_temporal_columns_error_400_bad_request(end_date="1910-01/01")
-        self.tester.api_temporal_columns_error_400_bad_request(start_date_gte="1910/01=01")
-        self.tester.api_temporal_columns_error_400_bad_request(end_date_lte="1910-01)01")
-
-    def test_get_api_temporal_columns_error_404_not_found(self):
-        self.tester.api_temporal_columns_error_404_not_found(f_table_name="layer_x")
-        self.tester.api_temporal_columns_error_404_not_found(start_date="1800-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(end_date="2000-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(start_date_gte="2000-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(end_date_lte="1800-01-01")
+    def test_get_api_feature_table_error_404_not_found(self):
+        self.tester.api_feature_table_error_404_not_found(f_table_name="999")
+        self.tester.api_feature_table_error_404_not_found(f_table_name="998")
     
-    # feature table errors - create
-
+    # feature_table errors - create
+    """
     def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -472,7 +464,7 @@ class TestAPIFeatureTableErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
