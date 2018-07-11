@@ -27,7 +27,7 @@ class TestAPIImport(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        layer = self.tester.api_layer_create(layer, is_to_create_feature_table=False)
+        layer = self.tester.api_layer_create(layer)
         self.layer_id = layer["properties"]["layer_id"]
 
         ##################################################
