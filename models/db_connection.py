@@ -770,47 +770,27 @@ class PGSQLConnection:
         for property in properties:
             properties_string += property + " " + properties[property] + ", \n"
 
-        # build the query to create a new feature table
-        query_text = """        
-            CREATE TABLE {0} (
-              id SERIAL,              
-              geom GEOMETRY({1}, {2}) NOT NULL,              
-              {3}              
-              version INT NOT NULL DEFAULT 1,
-              changeset_id INT NOT NULL,
-              PRIMARY KEY (id),
-              CONSTRAINT constraint_changeset_id
-                FOREIGN KEY (changeset_id)
-                REFERENCES changeset (changeset_id)
-                ON DELETE CASCADE
-                ON UPDATE CASCADE
-            );        
-        """.format(f_table_name, geometry_type, EPSG, properties_string)
+        tables_to_create = [f_table_name, "version_{0}".format(f_table_name)]
 
-        self.__PGSQL_CURSOR__.execute(query_text)
+        for table_to_create in tables_to_create:
+            # create the feature table
+            query_text = """        
+                CREATE TABLE {0} (
+                  id SERIAL,              
+                  geom GEOMETRY({1}, {2}) NOT NULL,              
+                  {3}              
+                  version INT NOT NULL DEFAULT 1,
+                  changeset_id INT NOT NULL,
+                  PRIMARY KEY (id),
+                  CONSTRAINT constraint_changeset_id
+                    FOREIGN KEY (changeset_id)
+                    REFERENCES changeset (changeset_id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );        
+            """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-        # version
-
-        version_f_table_name = "version_{0}".format(f_table_name)
-
-        # build the query to create a new feature table
-        query_text = """        
-            CREATE TABLE {0} (
-              id SERIAL,              
-              geom GEOMETRY({1}, {2}) NOT NULL,              
-              {3}              
-              version INT NOT NULL DEFAULT 1,
-              changeset_id INT NOT NULL,
-              PRIMARY KEY (id),
-              CONSTRAINT constraint_changeset_id
-                FOREIGN KEY (changeset_id)
-                REFERENCES changeset (changeset_id)
-                ON DELETE CASCADE
-                ON UPDATE CASCADE
-            );        
-        """.format(version_f_table_name, geometry_type, EPSG, properties_string)
-
-        self.__PGSQL_CURSOR__.execute(query_text)
+            self.__PGSQL_CURSOR__.execute(query_text)
 
         # put the feature tables in database
         self.commit()
@@ -821,7 +801,6 @@ class PGSQLConnection:
         tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]
 
         for table_to_drop in tables_to_drop:
-
             # delete the feature table
             query_text = """        
                 DROP TABLE IF EXISTS {0} CASCADE ;
@@ -831,7 +810,7 @@ class PGSQLConnection:
 
         # unpublish the features table in geoserver
         self.unpublish_feature_table_in_geoserver(f_table_name)
-
+        # remove the feature table from database
         self.commit()
 
     ################################################################################

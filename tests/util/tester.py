@@ -623,7 +623,7 @@ class UtilTester:
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
-    #
+
     # def api_feature_table_update(self, resource_json):
     #     response = self.session.put(self.URL + '/api/feature_table/',
     #                                 data=dumps(resource_json), headers=self.headers)
@@ -638,7 +638,7 @@ class UtilTester:
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
 
-    # temporal_columns errors - get
+    # feature_table errors - get
 
     def api_feature_table_error_400_bad_request(self, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -654,7 +654,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # temporal_columns errors - create
+    # feature_table errors - create
 
     def api_feature_table_create_error_400_bad_request(self, feature_json):
         response = self.session.post(self.URL + '/api/feature_table/create/',
@@ -680,7 +680,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    # temporal_columns errors - update
+    # feature_table errors - update
 
     def api_feature_table_update_error_400_bad_request(self, resource_json):
         response = self.session.put(self.URL + '/api/feature_table',
