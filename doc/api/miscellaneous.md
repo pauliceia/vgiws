@@ -38,6 +38,7 @@ This method validate a email account by \<token>.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid Token.
+    - 404 (Not Found): Not found any resource.
 - Notes:
 
 

@@ -69,6 +69,13 @@ class TestAPIValidateEmail(TestCase):
         # try to validate the email
         self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIc2VyMDAzw6ZQh-UoPWEKc8Cj5q8')
 
+    def test_api_validate_email_404_not_found(self):
+        # try to validate the email with user 999
+        self.tester.api_validate_email_404_not_found('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTl9.fJh2x9cThRhYytoz7vrzkgCe8nHjk2_4NhgtV-PJpgU')
+
+        # try to validate the email with user 999
+        self.tester.api_validate_email_404_not_found('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5OTB9.VR66H2KA0V2gpZQdu6UbfM4koRmSUx7yCVvfQe6IOCk')
+
 
 class TestAPIMask(TestCase):
 
@@ -131,6 +138,14 @@ class TestAPIMaskErrors(TestCase):
     def test_get_api_mask_error_404_not_found(self):
         self.tester.api_mask_error_404_not_found(mask_id="999")
         self.tester.api_mask_error_404_not_found(mask_id="998")
+
+
+
+
+
+
+
+
 
 
 """
