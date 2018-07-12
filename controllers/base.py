@@ -17,7 +17,8 @@ from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from psycopg2 import DataError, Error
+from psycopg2 import Error
+from psycopg2._psycopg import DataError
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
