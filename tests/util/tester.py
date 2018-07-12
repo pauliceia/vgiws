@@ -201,6 +201,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_user_update_error_404_not_found(self, resource_json):
+        response = self.session.put(self.URL + '/api/user',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # user errors - delete
 
     def api_user_delete_error_400_bad_request(self, feature_id):

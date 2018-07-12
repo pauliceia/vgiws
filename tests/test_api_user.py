@@ -248,64 +248,6 @@ class TestAPIUser(TestCase):
         # logout
         self.tester.auth_logout()
 
-    """
-    def test_get_api_user_create_update_and_delete_with_valid_email(self):
-        # create a fake email to avoid the error when exist the same email in DB
-        email = "alexielgrace@gmail.com"
-
-        ##################################################
-        # create a user
-        ##################################################
-        resource = {
-            'type': 'User',
-            'properties': {'user_id': -1, 'email': email, 'password': 'roger', 'username': 'roger', 'name': 'Roger',
-                           'terms_agreed': True, 'receive_notification_by_email': False}
-        }
-        resource = self.tester.api_user_create(resource)
-
-        ##################################################
-        # login with the created user
-        ##################################################
-        email = resource["properties"]["email"]
-        password = resource["properties"]["password"]
-        # login
-        self.tester.auth_login(email, password)
-
-        ##################################################
-        # update the user with himself/herself
-        ##################################################
-        resource["properties"]["name"] = "Roger Jose"
-        resource["properties"]["receive_notification_by_email"] = True
-        self.tester.api_user_update(resource)
-
-        # logout with the created user
-        self.tester.auth_logout()
-
-        ##################################################
-        # log in with a admin user (who can update/delete a user)
-        ##################################################
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        ##################################################
-        # update the user with a admin
-        ##################################################
-        resource["properties"]["name"] = "Roger"
-        resource["properties"]["receive_notification_by_email"] = False
-        self.tester.api_user_update(resource)
-
-        ##################################################
-        # delete the user with an administrator
-        ##################################################
-        # get the id of feature to REMOVE it
-        resource_id = resource["properties"]["user_id"]
-
-        # remove the created user
-        # self.tester.api_user_delete(resource_id)
-
-        # logout
-        self.tester.auth_logout()
-    """
-
 
 class TestAPIUserErrors(TestCase):
 
@@ -448,6 +390,22 @@ class TestAPIUserErrors(TestCase):
         }
 
         self.tester.api_user_update_error_403_forbidden(resource)
+
+        # logout
+        self.tester.auth_logout()
+
+    def test_put_api_user_error_404_not_found(self):
+        # login with gabriel
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # try to create a resource with email that already exist
+        resource = {
+            'type': 'User',
+            'properties': {'user_id': 999, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+                           'terms_agreed': True, 'receive_notification_by_email': False}
+        }
+
+        self.tester.api_user_update_error_404_not_found(resource)
 
         # logout
         self.tester.auth_logout()
