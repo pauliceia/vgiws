@@ -158,7 +158,7 @@ class TestAPIImportError(TestCase):
                                                                   file_name=file_name,changeset_id=self.changeset_id,
                                                                   epsg=epsg)
 
-    def test_post_import_shp_error_404_not_found_layer_doesnt_exist(self):
+    def test_post_import_shp_error_404_not_found_f_table_name_doesnt_exist(self):
         self.f_table_name = "address"
 
         file_name = "points.zip"

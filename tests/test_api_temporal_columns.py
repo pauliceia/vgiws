@@ -477,6 +477,23 @@ class TestAPITemporalColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_temporal_columns_create_error_404_not_found_f_table_name_doesnt_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to insert a curator with user_id and keyword_id that already exist
+        resource = {
+            'properties': {'f_table_name': 'address', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+            'type': 'TemporalColumns'
+        }
+        self.tester.api_temporal_columns_create_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # temporal_columns errors - update
     
     def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
@@ -564,6 +581,23 @@ class TestAPITemporalColumnsErrors(TestCase):
             'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_update_error_403_forbidden(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_temporal_columns_error_404_not_found_f_table_name_doesnt_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to update a temporal_columns with an invalid user
+        resource = {
+            'properties': {'f_table_name': 'address', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+            'type': 'TemporalColumns'
+        }
+        self.tester.api_temporal_columns_update_error_404_not_found(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

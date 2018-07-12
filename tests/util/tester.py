@@ -549,6 +549,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_temporal_columns_create_error_404_not_found(self, feature_json):
+        response = self.session.post(self.URL + '/api/temporal_columns/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # temporal_columns errors - update
 
     def api_temporal_columns_update_error_400_bad_request(self, resource_json):
@@ -568,6 +574,12 @@ class UtilTester:
                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_temporal_columns_update_error_404_not_found(self, feature_json):
+        response = self.session.put(self.URL + '/api/temporal_columns',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     # temporal_columns errors - delete
 
