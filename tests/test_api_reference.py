@@ -364,7 +364,7 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_delete_error_401_unauthorized("0")
         self.tester.api_reference_delete_error_401_unauthorized("1001")
 
-    def test_delete_api_reference_error_403_forbidden_user_forbidden_to_delete(self):
+    def test_delete_api_reference_error_403_forbidden_invalid_user_tries_to_manage(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################

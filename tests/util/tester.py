@@ -1076,6 +1076,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_keyword_update_error_404_not_found(self, feature_json):
+        response = self.session.put(self.URL + '/api/keyword',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # keyword errors - delete
 
     def api_keyword_delete_error_400_bad_request(self, feature_id):

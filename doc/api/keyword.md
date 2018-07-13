@@ -86,6 +86,7 @@ This method updates a keyword described in a JSON.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The administrator is who can update/delete the keyword.
+     - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
 

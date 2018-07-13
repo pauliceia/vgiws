@@ -382,7 +382,7 @@ class TestAPIKeywordErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_keyword_create_error_401_unauthorized(self):
+    def test_post_api_keyword_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
             'type': 'Keyword'
@@ -441,14 +441,14 @@ class TestAPIKeywordErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_keyword_error_401_unauthorized(self):
+    def test_put_api_keyword_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'keyword_id': 1001, 'name': 'newkeyword', 'parent_id': 1003},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_401_unauthorized(resource)
 
-    def test_put_api_keyword_error_403_forbidden_user_forbidden_to_update(self):
+    def test_put_api_keyword_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -460,6 +460,19 @@ class TestAPIKeywordErrors(TestCase):
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_403_forbidden(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
+
+    def test_put_api_keyword_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        resource = {
+            'properties': {'keyword_id': 999, 'name': 'street', 'parent_id': 1002},
+            'type': 'Keyword'
+        }
+        self.tester.api_keyword_update_error_404_not_found(resource)
 
         # DO LOGOUT
         self.tester.auth_logout()
@@ -482,7 +495,7 @@ class TestAPIKeywordErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_keyword_error_401_unauthorized_user_without_login(self):
+    def test_delete_api_keyword_error_401_unauthorized_user_is_not_logged(self):
         self.tester.api_keyword_delete_error_401_unauthorized("abc")
         self.tester.api_keyword_delete_error_401_unauthorized(0)
         self.tester.api_keyword_delete_error_401_unauthorized(-1)
@@ -490,7 +503,7 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.api_keyword_delete_error_401_unauthorized("0")
         self.tester.api_keyword_delete_error_401_unauthorized("1001")
 
-    def test_delete_api_keyword_error_403_forbidden_user_forbidden_to_delete(self):
+    def test_delete_api_keyword_error_403_forbidden_invalid_user_tries_to_manage(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
