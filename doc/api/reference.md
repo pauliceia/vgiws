@@ -83,6 +83,7 @@ This method updates a reference described in a JSON.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
+     - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
 

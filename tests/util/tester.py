@@ -949,6 +949,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_reference_update_error_404_not_found(self, resource_json):
+        response = self.session.put(self.URL + '/api/reference',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # reference errors - delete
 
     def api_reference_delete_error_400_bad_request(self, feature_id):

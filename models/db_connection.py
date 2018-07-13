@@ -1087,6 +1087,11 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
     def delete_reference(self, resource_id):
         if is_a_invalid_id(resource_id):
             raise HTTPError(400, "Invalid parameter.")

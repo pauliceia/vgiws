@@ -256,7 +256,7 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_reference_create_error_401_unauthorized(self):
+    def test_post_api_reference_create_error_401_unauthorized_user_is_not_logged(self):
         feature = {
             'properties': {'description': 'BookA'},
             'type': 'Reference'
@@ -302,14 +302,14 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_reference_error_401_unauthorized(self):
+    def test_put_api_reference_error_401_unauthorized_user_is_not_logged(self):
         feature = {
             'properties': {'reference_id': 1001, 'description': 'BookA'},
             'type': 'Reference'
         }
         self.tester.api_reference_update_error_401_unauthorized(feature)
 
-    def test_put_api_reference_error_403_forbidden(self):
+    def test_put_api_reference_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -321,6 +321,19 @@ class TestAPIReferenceErrors(TestCase):
             'properties': {'reference_id': 1051, 'description': 'SomeArticleB'}
         }
         self.tester.api_reference_update_error_403_forbidden(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
+
+    def test_put_api_reference_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        resource = {
+            'type': 'Reference',
+            'properties': {'reference_id': 999, 'description': 'SomeArticleB'}
+        }
+        self.tester.api_reference_update_error_404_not_found(resource)
 
         # DO LOGOUT
         self.tester.auth_logout()

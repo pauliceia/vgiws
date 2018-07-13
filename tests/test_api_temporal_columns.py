@@ -436,7 +436,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_401_unauthorized_without_authorization_header(self):
+    def test_post_api_temporal_columns_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
@@ -445,7 +445,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         }
         self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
     
-    def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
+    def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -536,7 +536,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_temporal_columns_error_401_unauthorized_without_authorization_header(self):
+    def test_put_api_temporal_columns_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
@@ -545,7 +545,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         }
         self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
 
-    def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
+    def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
