@@ -645,6 +645,63 @@ class PGSQLConnection:
 
         return id_in_json
 
+    def update_layer_in_db(self, properties):
+        p = properties
+
+        query_text = """
+                    UPDATE layer SET f_table_name = '{1}', name = '{2}', description = '{3}', source_description = '{4}'
+                    WHERE layer_id = {0};
+                """.format(p["layer_id"], p["f_table_name"], p["name"], p["description"], p["source_description"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    def update_layer(self, resource_json, user_id):
+        ##################################################
+        # pre-processing
+        ##################################################
+        properties = resource_json["properties"]
+
+        # just can add reference/keyword that is a list
+        if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
+            raise HTTPError(400, "The parameters reference and keyword need to be a list.")
+
+        ##################################################
+        # update the layer in db
+        ##################################################
+        self.update_layer_in_db(properties)
+
+        ##################################################
+        # remove the references and keywords from layer
+        ##################################################
+        self.delete_layer_reference(layer_id=properties["layer_id"])
+        self.delete_layer_keyword(layer_id=properties["layer_id"])
+
+        ##################################################
+        # add the list of references in layer
+        ##################################################
+        for reference_id in properties["reference"]:
+            layer_keyword_json = {
+                "properties": {"layer_id": properties["layer_id"], "reference_id": reference_id},
+                'type': 'LayerReference'
+            }
+            self.create_layer_reference(layer_keyword_json)
+
+        ##################################################
+        # add the list of keywords in layer
+        ##################################################
+        for keyword_id in properties["keyword"]:
+            layer_keyword_json = {
+                "properties": {"layer_id": properties["layer_id"], "keyword_id": keyword_id},
+                'type': 'LayerKeyword'
+            }
+            self.create_layer_keyword(layer_keyword_json)
+
     def delete_layer_dependencies(self, layer_id):
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=layer_id)

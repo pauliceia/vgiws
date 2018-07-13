@@ -571,22 +571,24 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
     # PUT
 
-    def _put_resource(self, *args, **kwargs):
-        raise NotImplementedError
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
+
+        return self.PGSQLConn.update_layer(resource_json, current_user_id)
 
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         layer_id = args[0]
-        self.can_current_user_delete_a_layer(current_user_id, layer_id)
+        self.can_current_user_manage(current_user_id, layer_id)
 
         self.PGSQLConn.delete_layer(*args)
 
     # VALIDATION
 
-    def can_current_user_delete_a_layer(self, current_user_id, layer_id):
+    def can_current_user_manage(self, current_user_id, layer_id):
         """
-        Verify if the user has permission of deleting a layer
+        Verify if the user has permission of managing a layer
         :param current_user_id: current user id
         :param layer_id: layer id
         :return:
@@ -600,12 +602,12 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
 
         properties = user_layer["features"][0]["properties"]
 
+        # if the current_user_id is the creator of the layer, so ok...
         if properties['is_the_creator'] and properties['user_id'] == current_user_id:
-            # if the current_user_id is the creator of the layer, so ok...
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of layer or administrator are who can delete a layer.")
+        raise HTTPError(403, "The owner of layer or administrator are who can manage a layer.")
 
 
 class FeatureTableValidator(BaseHandler):

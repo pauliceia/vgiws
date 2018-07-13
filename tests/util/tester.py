@@ -469,6 +469,32 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 401)
 
+    # layer errors - update
+
+    def api_layer_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_update_error_401_unauthorized(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_layer_update_error_403_forbidden(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_layer_update_error_404_not_found(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # layer errors - delete
 
     def api_layer_delete_error_400_bad_request(self, feature_id):

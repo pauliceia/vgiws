@@ -75,7 +75,32 @@ This method creates a new layer described in a JSON.
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-<!-- - PUT /api/layer/update -->
+### PUT /api/layer
+
+This method updated a reference described in a JSON.
+- Parameters:
+- Examples:
+    - Update a reference: ```PUT http://localhost:8888/api/layer```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                       'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
+                       'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
+        'type': 'Layer'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Attribute already exists.
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): The owner of layer or administrator are who can manage a layer.
+     - 404 (Not Found): Not found any resource.
+     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
+- Notes:
 
 
 ### DELETE /api/layer/#id

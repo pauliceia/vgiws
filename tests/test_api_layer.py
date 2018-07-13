@@ -132,6 +132,9 @@ class TestAPILayer(TestCase):
         ##################################################
         # update the layer
         ##################################################
+        resource["properties"]["name"] = "Some addresses"
+        resource["properties"]["description"] = "Addresses"
+        self.tester.api_layer_update(resource)
 
         ##################################################
         # delete the layer
@@ -172,6 +175,9 @@ class TestAPILayer(TestCase):
         ##################################################
         # update the layer
         ##################################################
+        resource["properties"]["name"] = "Some addresses"
+        resource["properties"]["description"] = "Addresses"
+        self.tester.api_layer_update(resource)
 
         ##################################################
         # delete the layer
@@ -284,6 +290,133 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_401_unauthorized(feature)
+
+    # layer errors - update
+
+    def test_put_api_layer_error_400_bad_request_attribute_already_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1006',  'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+    
+    def test_put_api_layer_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to update a layer (without layer_id)
+        resource = {
+            'properties': {'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without f_table_name)
+        resource = {
+            'properties': {'layer_id': 1003, 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without name)
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1003',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without description)
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
+                           'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without source_description)
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
+                           'description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without reference)
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # try to update a layer (without keyword)
+        resource = {
+            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+    
+    def test_put_api_layer_error_401_unauthorized_user_is_not_logged(self):
+        feature = {
+            'properties': {'reference_id': 1001, 'description': 'BookA'},
+            'type': 'Reference'
+        }
+        self.tester.api_layer_update_error_401_unauthorized(feature)
+
+    def test_put_api_layer_error_403_forbidden_invalid_user_tries_to_manage(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # gabriel tries to update one reference that doesn't belong to him
+        ##################################################
+        resource = {
+            'properties': {'layer_id': 1001, 'f_table_name': 'layer_1001', 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_403_forbidden(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
+
+    def test_put_api_layer_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        resource = {
+            'properties': {'layer_id': 999, 'f_table_name': 'layer_1006', 'name': 'Streets in 1930',
+                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
+                           'reference': [1010], 'keyword': [1001, 1040]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_update_error_404_not_found(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
 
     # layer errors - delete
 
