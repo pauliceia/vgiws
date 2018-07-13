@@ -113,8 +113,7 @@ class UtilTester:
             self.ut_self.assertEqual(expected, resulted)
 
         elif expected_at_least is not None:
-            self.compare_sets(expected_at_least, resulted)
-            # self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
         return resulted
 
@@ -409,7 +408,7 @@ class UtilTester:
         if expected is not None:
             self.ut_self.assertEqual(expected, resulted)
 
-        if expected_at_least is not None:
+        elif expected_at_least is not None:
             self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
     def api_layer_create(self, feature_json, **arguments):

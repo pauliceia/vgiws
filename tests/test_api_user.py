@@ -224,8 +224,10 @@ class TestAPIUser(TestCase):
         ##################################################
         # verify if the resource was modified
         ##################################################
-        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        # self.tester.api_user(expected_at_least=expected_resource, user_id=resource["properties"]["user_id"])
+        del resource["properties"]["password"]  # remove the password, because it is not needed to compare
+
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_user(expected_at_least=expected_resource, user_id=resource["properties"]["user_id"])
 
         # logout with the created user
         self.tester.auth_logout()
