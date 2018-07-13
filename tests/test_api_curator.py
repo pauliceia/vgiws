@@ -319,19 +319,33 @@ class TestAPIUserCuratorErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # def test_put_api_curator_error_404_not_found(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("admin@admin.com", "admin")
-    #
-    #     # add a user in a layer
-    #     resource = {
-    #         'properties': {'user_id': 999, 'keyword_id': 1010, 'region': 'joana'},
-    #         'type': 'Curator'
-    #     }
-    #     self.tester.api_curator_update_error_403_forbidden(resource)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_put_api_curator_error_404_not_found_user_or_keyword(self):
+        # DO LOGIN
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # not found a user
+        resource = {
+            'properties': {'user_id': 999, 'keyword_id': 1010, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_update_error_404_not_found(resource)
+
+        # not found a keyword
+        resource = {
+            'properties': {'user_id': 1003, 'keyword_id': 999, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_update_error_404_not_found(resource)
+
+        # not found a user or keyword
+        resource = {
+            'properties': {'user_id': 999, 'keyword_id': 999, 'region': 'joana'},
+            'type': 'Curator'
+        }
+        self.tester.api_curator_update_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     # curator errors - delete
 

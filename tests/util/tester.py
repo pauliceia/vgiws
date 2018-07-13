@@ -352,6 +352,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_curator_update_error_404_not_found(self, feature_json):
+        response = self.session.put(self.URL + '/api/curator',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # curator errors - delete
 
     def api_curator_delete_error_400_bad_request(self, **arguments):

@@ -60,7 +60,29 @@ This method creates a new curator described in a JSON.
 - Notes:
 
 
-<!-- - PUT /api/curator/update -->
+###  PUT /api/curator
+
+This method updates a new curator described in a JSON.
+- Parameters:
+- Examples:
+    - Create a curator: ```PUT http://localhost:8888/api/curator```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'user_id': 1004, 'keyword_id': 1003, 'region': 'São Francisco'},
+        'type': 'Curator'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
+- Notes:
 
 
 ### DELETE /api/curator/?\<params>
