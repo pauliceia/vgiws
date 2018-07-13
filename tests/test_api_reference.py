@@ -237,7 +237,7 @@ class TestAPIReferenceErrors(TestCase):
 
         self.tester.api_reference_error_404_not_found(user_id_creator="999")
         self.tester.api_reference_error_404_not_found(user_id_creator="998")
-
+    
     # reference errors - create
 
     def test_post_api_reference_create_error_400_bad_request_attribute_already_exist(self):
