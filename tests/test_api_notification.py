@@ -361,7 +361,7 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_notification_create_error_401_unauthorized(self):
+    def test_post_api_notification_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'type': 'Notification',
             'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
@@ -418,7 +418,7 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_notification_error_401_unauthorized(self):
+    def test_put_api_notification_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'type': 'Notification',
             'properties': {'is_denunciation': False, 'keyword_id': None,
@@ -426,7 +426,7 @@ class TestAPINotificationErrors(TestCase):
         }
         self.tester.api_notification_update_error_401_unauthorized(resource)
 
-    def test_put_api_notification_error_403_forbidden(self):
+    def test_put_api_notification_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -440,6 +440,21 @@ class TestAPINotificationErrors(TestCase):
                            'description': 'Congresso Z 2018/03/25'}
         }
         self.tester.api_notification_update_error_403_forbidden(resource)
+
+        # DO LOGOUT
+        self.tester.auth_logout()
+
+    def test_put_api_notification_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        resource = {
+            'type': 'Notification',
+            'properties': {'notification_id': 999, 'is_denunciation': False, 'keyword_id': None,
+                           'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                           'description': 'Congresso Z 2018/03/25'}
+        }
+        self.tester.api_notification_update_error_404_not_found(resource)
 
         # DO LOGOUT
         self.tester.auth_logout()
@@ -462,7 +477,7 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_notification_error_401_unauthorized_user_without_login(self):
+    def test_delete_api_notification_error_401_unauthorized_user_is_not_logged(self):
         self.tester.api_notification_delete_error_401_unauthorized(notification_id="abc")
         self.tester.api_notification_delete_error_401_unauthorized(notification_id=0)
         self.tester.api_notification_delete_error_401_unauthorized(notification_id=-1)
@@ -470,7 +485,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester.api_notification_delete_error_401_unauthorized(notification_id="0")
         self.tester.api_notification_delete_error_401_unauthorized(notification_id="1001")
 
-    def test_delete_api_notification_error_403_forbidden_user_forbidden_to_delete(self):
+    def test_delete_api_notification_error_403_forbidden_invalid_user_tries_to_manage(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################

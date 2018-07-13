@@ -1369,6 +1369,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_notification_update_error_404_not_found(self, feature_json):
+        response = self.session.put(self.URL + '/api/notification',
+                                    data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # notification errors - delete
 
     def api_notification_delete_error_400_bad_request(self, **arguments):

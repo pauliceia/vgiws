@@ -89,6 +89,7 @@ This method updates a notification described in a JSON.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The owner of notification or administrator are who can update/delete a notification.
+     - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
 
