@@ -88,7 +88,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user_get(expected_at_least=expected_at_least)
+        self.tester.api_user(expected_at_least=expected_at_least)
 
     def test_get_api_user_return_user_by_user_id(self):
         expected = {
@@ -102,7 +102,7 @@ class TestAPIUser(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_get(expected, user_id="1002")
+        self.tester.api_user(expected, user_id="1002")
 
     def test_get_api_user_return_users_by_name(self):
         expected = {
@@ -135,7 +135,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user_get(expected, name="êL")
+        self.tester.api_user(expected, name="êL")
 
     def test_get_api_user_return_users_by_email(self):
         expected = {
@@ -152,7 +152,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user_get(expected, email="rafael@admin.com")
+        self.tester.api_user(expected, email="rafael@admin.com")
 
     def test_get_api_user_return_users_by_username(self):
         expected = {
@@ -169,7 +169,7 @@ class TestAPIUser(TestCase):
             ]
         }
 
-        self.tester.api_user_get(expected, username="miguel")
+        self.tester.api_user(expected, username="miguel")
 
     # user - create, update and delete
 
@@ -195,14 +195,14 @@ class TestAPIUser(TestCase):
         token = generate_encoded_jwt_token({'user_id': user_id})
 
         # a user is with a invalidated email
-        user = self.tester.api_user_get(user_id=user_id)
+        user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
         # so the user validate his/her email
         self.tester.api_validate_email(token)
 
         # now the user is with the validated email
-        user = self.tester.api_user_get(user_id=user_id)
+        user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
 
         ####################################################################################################
@@ -220,6 +220,12 @@ class TestAPIUser(TestCase):
         resource["properties"]["name"] = "Roger Jose"
         resource["properties"]["receive_notification_by_email"] = True
         self.tester.api_user_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        # self.tester.api_user(expected_at_least=expected_resource, user_id=resource["properties"]["user_id"])
 
         # logout with the created user
         self.tester.auth_logout()

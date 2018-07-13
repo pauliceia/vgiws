@@ -138,6 +138,12 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_update(resource)
 
         ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
+
+        ##################################################
         # delete the layer
         ##################################################
         # get the id of layer to SEARCH AND REMOVE it
@@ -179,6 +185,12 @@ class TestAPILayer(TestCase):
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
 
         ##################################################
         # delete the layer

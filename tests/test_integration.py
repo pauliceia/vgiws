@@ -15,7 +15,7 @@ class TestAPIIntegration(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    def test_api_layer_create_update_and_delete(self):
+    def test_api_integration(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 

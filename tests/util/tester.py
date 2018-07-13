@@ -100,7 +100,7 @@ class UtilTester:
     # USER
     ##################################################
 
-    def api_user_get(self, expected=None, expected_at_least=None, **arguments):
+    def api_user(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
@@ -114,6 +114,7 @@ class UtilTester:
 
         elif expected_at_least is not None:
             self.compare_sets(expected_at_least, resulted)
+            # self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
         return resulted
 

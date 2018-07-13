@@ -43,20 +43,20 @@ class TestAPIValidateEmail(TestCase):
         user_id = 1005
 
         # a user is with a invalidated email
-        user = self.tester.api_user_get(user_id=user_id)
+        user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
         # so the user validate his/her email
         self.tester.api_validate_email(token)
 
         # now the user is with the validated email
-        user = self.tester.api_user_get(user_id=user_id)
+        user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
 
         # change the is_email_valid to False again, for it doesn't break the tests
         self.tester.api_is_email_valid(user_id=user_id, is_email_valid=False)
 
-        user = self.tester.api_user_get(user_id=user_id)
+        user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
     def test_api_validate_email_400_bad_request(self):
