@@ -717,9 +717,6 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        if "layer_id" not in resource_json["properties"]:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: layer_id)")
-
         self.can_current_user_add_user_in_layer(current_user_id, resource_json["properties"]["layer_id"])
 
         return self.PGSQLConn.create_user_layer(resource_json, **kwargs)
@@ -851,9 +848,6 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        if "keyword_id" not in resource_json["properties"]:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: keyword_id)")
-
         keyword_id = resource_json["properties"]["keyword_id"]
         self.can_current_user_update_or_delete(current_user_id, keyword_id)
 
@@ -948,8 +942,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        notification_id = resource_json["properties"]["notification_id"]
-        self.can_current_user_update_or_delete_notification(current_user_id, notification_id)
+        self.can_current_user_update_or_delete_notification(current_user_id, resource_json["properties"]["notification_id"])
 
         return self.PGSQLConn.update_notification(resource_json, current_user_id, **kwargs)
 
