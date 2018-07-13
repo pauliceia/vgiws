@@ -651,18 +651,16 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        f_table_name = resource_json["f_table_name"]
-        self.can_current_user_manage(current_user_id, f_table_name)
+        self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
 
         return self.PGSQLConn.create_feature_table(resource_json, current_user_id, **kwargs)
 
     # PUT
 
-    # def _put_resource(self, resource_json, current_user_id, **kwargs):
-    #     f_table_name = resource_json["properties"]["f_table_name"]
-    #     self.can_current_user_create_update_or_delete(current_user_id, f_table_name)
-    #
-    #     return self.PGSQLConn.update_temporal_columns(resource_json, current_user_id, **kwargs)
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
+
+        return self.PGSQLConn.update_feature_table(resource_json, current_user_id, **kwargs)
 
     # DELETE
 

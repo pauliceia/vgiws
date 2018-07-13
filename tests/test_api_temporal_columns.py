@@ -214,14 +214,7 @@ class TestAPITemporalColumns(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
         layer = self.tester.api_layer_create(layer)
 
@@ -280,13 +273,6 @@ class TestAPITemporalColumns(TestCase):
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            },
         }
         layer = self.tester.api_layer_create(layer)
 

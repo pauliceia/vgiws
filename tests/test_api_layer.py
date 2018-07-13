@@ -132,6 +132,7 @@ class TestAPILayer(TestCase):
         ##################################################
         # update the layer
         ##################################################
+        resource["properties"]["f_table_name"] = "addresses_30"
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)

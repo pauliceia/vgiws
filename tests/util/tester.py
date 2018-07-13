@@ -405,9 +405,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        # resulted = self.code_windows_to_ubuntu(resulted)
+        if expected is not None:
+            self.ut_self.assertEqual(expected, resulted)
 
-        self.ut_self.assertEqual(expected, resulted)
+        if expected_at_least is not None:
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
     def api_layer_create(self, feature_json, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -679,11 +681,11 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    # def api_feature_table_update(self, resource_json):
-    #     response = self.session.put(self.URL + '/api/feature_table/',
-    #                                 data=dumps(resource_json), headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
+    def api_feature_table_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature_table/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
 
     # def api_feature_table_delete(self, **arguments):
     #     arguments = get_url_arguments(**arguments)
@@ -1696,6 +1698,12 @@ class UtilTester:
     ##################################################
     # METHODS
     ##################################################
+
+    def compare_expected_at_least_with_resulted(self, expected_at_least, resulted):
+        for feature_at_least, feature_resulted in zip(expected_at_least["features"], resulted["features"]):
+            for key in feature_at_least["properties"]:
+                self.ut_self.assertEqual(feature_resulted["properties"][key], feature_at_least["properties"][key])
+            self.ut_self.assertEqual(resulted["type"], expected_at_least["type"])
 
     def compare_sets(self, expected_at_least, resulted):
         """

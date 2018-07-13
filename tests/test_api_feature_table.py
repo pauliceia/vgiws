@@ -149,6 +149,10 @@ class TestAPIFeatureTable(TestCase):
         ##################################################
         # update the feature_table
         ##################################################
+        # feature_table["properties"]["address"] = "integer"
+        # del feature_table["properties"]["start_date"]
+        #
+        # self.tester.api_feature_table_update(feature_table)
 
         ##################################################
         # the feature_table is automatically removed when delete its layer

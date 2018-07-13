@@ -645,6 +645,15 @@ class PGSQLConnection:
 
         return id_in_json
 
+    def update_table_name(self, old_table_name, new_table_name):
+        query_text = """
+            ALTER TABLE IF EXISTS {0}
+            RENAME TO {1};
+        """.format(old_table_name, new_table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
     def update_layer_in_db(self, properties):
         p = properties
 
@@ -665,29 +674,32 @@ class PGSQLConnection:
         ##################################################
         # pre-processing
         ##################################################
-        properties = resource_json["properties"]
+        new_layer_properties = resource_json["properties"]
 
         # just can add reference/keyword that is a list
-        if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
+        if (not isinstance(new_layer_properties["reference"], list)) or (not isinstance(new_layer_properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
+
+        # get the old layer properties
+        old_layer_properties = self.get_layers(layer_id=new_layer_properties["layer_id"])["features"][0]["properties"]
 
         ##################################################
         # update the layer in db
         ##################################################
-        self.update_layer_in_db(properties)
+        self.update_layer_in_db(new_layer_properties)
 
         ##################################################
         # remove the references and keywords from layer
         ##################################################
-        self.delete_layer_reference(layer_id=properties["layer_id"])
-        self.delete_layer_keyword(layer_id=properties["layer_id"])
+        self.delete_layer_reference(layer_id=new_layer_properties["layer_id"])
+        self.delete_layer_keyword(layer_id=new_layer_properties["layer_id"])
 
         ##################################################
         # add the list of references in layer
         ##################################################
-        for reference_id in properties["reference"]:
+        for reference_id in new_layer_properties["reference"]:
             layer_keyword_json = {
-                "properties": {"layer_id": properties["layer_id"], "reference_id": reference_id},
+                "properties": {"layer_id": new_layer_properties["layer_id"], "reference_id": reference_id},
                 'type': 'LayerReference'
             }
             self.create_layer_reference(layer_keyword_json)
@@ -695,12 +707,23 @@ class PGSQLConnection:
         ##################################################
         # add the list of keywords in layer
         ##################################################
-        for keyword_id in properties["keyword"]:
+        for keyword_id in new_layer_properties["keyword"]:
             layer_keyword_json = {
-                "properties": {"layer_id": properties["layer_id"], "keyword_id": keyword_id},
+                "properties": {"layer_id": new_layer_properties["layer_id"], "keyword_id": keyword_id},
                 'type': 'LayerKeyword'
             }
             self.create_layer_keyword(layer_keyword_json)
+
+        ##################################################
+        # if the table_name was changed, so update the feature table name, version the f_table_name of temporal columns
+        ##################################################
+        if old_layer_properties["f_table_name"] != new_layer_properties["f_table_name"]:
+            # update the feature table
+            self.update_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
+            # update the version feature table
+            self.update_table_name("version_" + old_layer_properties["f_table_name"], "version_" + new_layer_properties["f_table_name"])
+            # update the temporal columns
+            self.update_temporal_columns_f_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
 
     def delete_layer_dependencies(self, layer_id):
         # get the layer information before to remove the layer
@@ -860,6 +883,46 @@ class PGSQLConnection:
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name)
 
+    def update_feature_table(self,  resource_json, user_id):
+        f_table_name = resource_json["f_table_name"]
+        geometry_type = resource_json["geometry"]["type"]
+        EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
+        properties = resource_json["properties"]
+
+        properties = remove_unnecessary_properties(properties)
+
+        # get the attributes of the feature table
+        properties_string = ""
+        for property in properties:
+            properties_string += property + " " + properties[property] + ", \n"
+
+        tables_to_create = [f_table_name, "version_{0}".format(f_table_name)]
+
+        for table_to_create in tables_to_create:
+            # create the feature table
+            query_text = """        
+                CREATE TABLE {0} (
+                  id SERIAL,              
+                  geom GEOMETRY({1}, {2}) NOT NULL,              
+                  {3}              
+                  version INT NOT NULL DEFAULT 1,
+                  changeset_id INT NOT NULL,
+                  PRIMARY KEY (id),
+                  CONSTRAINT constraint_changeset_id
+                    FOREIGN KEY (changeset_id)
+                    REFERENCES changeset (changeset_id)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                );        
+            """.format(table_to_create, geometry_type, EPSG, properties_string)
+
+            self.__PGSQL_CURSOR__.execute(query_text)
+
+        # put the feature tables in database
+        self.commit()
+        # publish the features tables/layers in geoserver
+        self.publish_feature_table_in_geoserver(f_table_name)
+
     def delete_feature_table(self, f_table_name):
         tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]
 
@@ -938,6 +1001,15 @@ class PGSQLConnection:
             VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6});
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
                    p["start_date_mask_id"], p["end_date_mask_id"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def update_temporal_columns_f_table_name(self, old_f_table_name, new_f_table_name):
+        query_text = """
+            UPDATE temporal_columns SET f_table_name='{1}'                                
+            WHERE f_table_name = '{0}';
+        """.format(old_f_table_name, new_f_table_name)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
