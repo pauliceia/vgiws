@@ -8,26 +8,6 @@
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-
-# class TestAPIFeatureTable(TestCase):
-#
-#     def setUp(self):
-#         # create a tester passing the unittest self
-#         self.tester = UtilTester(self)
-#
-#     # feature table - get
-#
-#     def test_get_api_feature_table(self):
-#         expected = {}
-#
-#         self.tester.api_element(expected, f_table_name="layer_1001")
-
-
-
-
-
-
-
 """
 class TestAPIElement(TestCase):
 

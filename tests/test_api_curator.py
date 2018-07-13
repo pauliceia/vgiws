@@ -159,6 +159,13 @@ class TestAPICurator(TestCase):
         self.tester.api_curator_update(resource)
 
         ##################################################
+        # verify if the resource was modified
+        ##################################################
+        p = resource["properties"]
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_curator(expected_at_least=expected_resource, user_id=p["user_id"], keyword_id=p["keyword_id"])
+
+        ##################################################
         # remove curator
         ##################################################
         # get the id of layer to REMOVE it

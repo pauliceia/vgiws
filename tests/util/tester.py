@@ -263,7 +263,7 @@ class UtilTester:
     # CURATOR
     ##################################################
 
-    def api_curator(self, expected, **arguments):
+    def api_curator(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
@@ -272,7 +272,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertEqual(expected, resulted)
+        if expected is not None:
+            self.ut_self.assertEqual(expected, resulted)
+
+        elif expected_at_least is not None:
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
     def api_curator_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
@@ -1704,25 +1708,6 @@ class UtilTester:
             for key in feature_at_least["properties"]:
                 self.ut_self.assertEqual(feature_resulted["properties"][key], feature_at_least["properties"][key])
             self.ut_self.assertEqual(resulted["type"], expected_at_least["type"])
-
-    def compare_sets(self, expected_at_least, resulted):
-        """
-        Test Case: When log with a fake login, a new user is created, because of this,
-        the result returned may be larger than the expected.
-        """
-
-        """ Explanation: Generator creating booleans by looping through list
-            'expected_at_least["features"]', checking if that item is in list 'resulted["features"]'.
-            all() returns True if every item is truthy, else False.
-            https://stackoverflow.com/questions/16579085/python-verifying-if-one-list-is-a-subset-of-the-other
-        """
-        __set__ = resulted["features"]  # set returned
-        __subset__ = expected_at_least["features"]  # subset expected
-
-        # verify if the elements of a subset is in a set, if OK, return True, else False
-        resulted_bool = all(element in __set__ for element in __subset__)
-
-        self.ut_self.assertTrue(resulted_bool)
 
     def get_session_user(self):
         response = self.session.get(self.URL + '/api/session/user')
