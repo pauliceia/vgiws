@@ -898,6 +898,11 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
     def delete_temporal_columns(self, f_table_name):
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
