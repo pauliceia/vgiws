@@ -15,25 +15,16 @@
         "PORT": 5432
     }
 
-    __LIST_TABLES_INFORMATION__ = [
-        {"table_name": "TABLE_NAME"},
-        {"table_name": "TABLE_NAME"},
-        ...
-    ]
-
     This __PGSQL_CONNECTION_SETTINGS__ dictionary is the connection with PostgreSQL
-    The __LIST_TABLES_INFORMATION__ is a list with all tables` name
 """
 
 from abc import ABCMeta
-from requests import exceptions, Session
-from json import loads, dumps
+from requests import Session
 from copy import deepcopy
 
 from tornado.web import HTTPError
-from tornado.escape import json_encode
 
-from psycopg2 import connect, DatabaseError, ProgrammingError, IntegrityError, Error
+from psycopg2 import connect, DatabaseError, ProgrammingError
 from psycopg2.extras import RealDictCursor
 
 from modules.design_pattern import Singleton
