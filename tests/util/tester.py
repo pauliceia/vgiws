@@ -1314,7 +1314,7 @@ class UtilTester:
     # NOTIFICATION
     ##################################################
 
-    def api_notification(self, expected, **arguments):
+    def api_notification(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/notification/{0}'.format(arguments))
@@ -1323,7 +1323,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertEqual(expected, resulted)
+        if expected is not None:
+            self.ut_self.assertEqual(expected, resulted)
+
+        elif expected_at_least is not None:
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
     def api_notification_create(self, resource_json):
         response = self.session.post(self.URL + '/api/notification/create',

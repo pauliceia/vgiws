@@ -212,6 +212,13 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_notification(expected_at_least=expected_resource,
+                                     notification_id=resource["properties"]["notification_id"])
+
+        ##################################################
         # remove notification
         ##################################################
         # get the id of layer to REMOVE it
@@ -249,6 +256,13 @@ class TestAPINotification(TestCase):
         ##################################################
         resource["properties"]["description"] = "Muito legal"
         self.tester.api_notification_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_notification(expected_at_least=expected_resource,
+                                     notification_id=resource["properties"]["notification_id"])
 
         ##################################################
         # remove notification
