@@ -143,6 +143,13 @@ class TestAPIReference(TestCase):
         self.tester.api_reference_update(resource)
 
         ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_reference(expected_at_least=expected_resource,
+                                  reference_id=resource["properties"]["reference_id"])
+
+        ##################################################
         # remove the reference
         ##################################################
         # get the id of layer to REMOVE it
@@ -179,6 +186,13 @@ class TestAPIReference(TestCase):
         ##################################################
         resource["properties"]["description"] = 'SomeArticleB'
         self.tester.api_reference_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        self.tester.api_reference(expected_at_least=expected_resource,
+                                  reference_id=resource["properties"]["reference_id"])
 
         ##################################################
         # remove the reference

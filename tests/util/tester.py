@@ -888,7 +888,7 @@ class UtilTester:
     # REFERENCE
     ##################################################
 
-    def api_reference(self, expected, **arguments):
+    def api_reference(self, expected=None, expected_at_least=None, **arguments):
         arguments = get_url_arguments(**arguments)
 
         response = self.session.get(self.URL + '/api/reference/{0}'.format(arguments))
@@ -897,9 +897,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        # resulted = self.code_windows_to_ubuntu(resulted)
+        if expected is not None:
+            self.ut_self.assertEqual(expected, resulted)
 
-        self.ut_self.assertEqual(expected, resulted)
+        elif expected_at_least is not None:
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
     def api_reference_create(self, resource_json, **arguments):
         arguments = get_url_arguments(**arguments)
