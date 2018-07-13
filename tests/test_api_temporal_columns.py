@@ -239,6 +239,12 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
+        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+
+        ##################################################
         # the time columns is automatically removed when delete its layer
         ##################################################
 
@@ -298,6 +304,12 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         temporal_columns["properties"]["start_date"] = '1920-01-01'
         self.tester.api_temporal_columns_update(temporal_columns)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
+        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
