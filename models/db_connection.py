@@ -829,7 +829,7 @@ class PGSQLConnection:
         #     raise HTTPError(400, "Invalid parameter.")
 
         subquery = get_subquery_temporal_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
-                                                   start_date_gte=start_date_gte, end_date_lte=end_date_lte)
+                                                       start_date_gte=start_date_gte, end_date_lte=end_date_lte)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -840,9 +840,7 @@ class PGSQLConnection:
                     'properties', json_build_object(
                         'f_table_name',            f_table_name,
                         'start_date_column_name',  start_date_column_name,
-                        'end_date_column_name',    end_date_column_name,                        
-                        'start_date_type',         start_date_type,
-                        'end_date_type',           end_date_type,                        
+                        'end_date_column_name',    end_date_column_name,                      
                         'start_date',              to_char(start_date, 'YYYY-MM-DD'),
                         'end_date',                to_char(end_date, 'YYYY-MM-DD'),                        
                         'start_date_mask_id',      start_date_mask_id,
@@ -879,10 +877,10 @@ class PGSQLConnection:
 
         query_text = """
             INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date,
-                                          start_date_type, end_date_type, start_date_mask_id, end_date_mask_id)
-            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', {7}, {8});
+                                          start_date_mask_id, end_date_mask_id)
+            VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6});
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
-                   p["start_date_type"], p["end_date_type"], p["start_date_mask_id"], p["end_date_mask_id"])
+                   p["start_date_mask_id"], p["end_date_mask_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -892,10 +890,10 @@ class PGSQLConnection:
 
         query_text = """
             UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
-                                        start_date_type='{5}', end_date_type='{6}', start_date_mask_id={7}, end_date_mask_id={8}                                    
+                                        start_date_mask_id={5}, end_date_mask_id={6}                                    
             WHERE f_table_name = '{0}';
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
-                   p["start_date_type"], p["end_date_type"], p["start_date_mask_id"], p["end_date_mask_id"])
+                   p["start_date_mask_id"], p["end_date_mask_id"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

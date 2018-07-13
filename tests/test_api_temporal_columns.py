@@ -24,51 +24,48 @@ class TestAPITemporalColumns(TestCase):
                     'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
-                        'end_date_type': 'timestamp', 'start_date': '1869-01-01', 'end_date_mask_id': 1001,
-                        'f_table_name': 'layer_1001', 'start_date_column_name': 'start_date',
-                        'start_date_type': 'timestamp', 'end_date': '1975-12-31'
-                    }
-                },
-                {
-                    'type': 'TemporalColumns',
-                    'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
-                        'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'timestamp',
-                        'end_date': '1890-12-31'
+                        'start_date': '1869-01-01', 'end_date_mask_id': 1001, 'end_date': '1975-12-31',
+                        'f_table_name': 'layer_1001', 'start_date_column_name': 'start_date'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
-                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
+                        'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
+                        'start_date_column_name': 'start_date', 'end_date': '1890-12-31'
+                    }
+                },
+                {
+                    'type': 'TemporalColumns',
+                    'properties': {
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1001, 'end_date': '1930-12-31',
                         'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
-                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1920-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1940-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1940-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003,
                         'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'int', 'end_date': '1930-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1930-12-31'
                     }
                 }
             ]
@@ -84,9 +81,8 @@ class TestAPITemporalColumns(TestCase):
                     'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
-                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
-                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
-                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1001, 'end_date': '1930-12-31',
+                        'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date'
                     }
                 }
             ]
@@ -101,9 +97,9 @@ class TestAPITemporalColumns(TestCase):
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1920-12-31'
                     }
                 }
             ]
@@ -119,25 +115,24 @@ class TestAPITemporalColumns(TestCase):
                     'type': 'TemporalColumns',
                     'properties': {
                         'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
-                        'end_date_type': 'timestamp', 'start_date': '1920-01-01', 'end_date_mask_id': 1001,
+                        'start_date': '1920-01-01', 'end_date_mask_id': 1001, 'end_date': '1930-12-31',
                         'f_table_name': 'layer_1003', 'start_date_column_name': 'start_date',
-                        'start_date_type': 'timestamp', 'end_date': '1930-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1920-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1005',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1940-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1940-12-31'
                     }
                 }
             ]
@@ -152,18 +147,17 @@ class TestAPITemporalColumns(TestCase):
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1001,
                         'start_date': '1886-01-01', 'end_date_mask_id': 1001, 'f_table_name': 'layer_1002',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'timestamp',
-                        'end_date': '1890-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1890-12-31'
                     }
                 },
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1920-12-31'
                     }
                 }
             ]
@@ -178,9 +172,9 @@ class TestAPITemporalColumns(TestCase):
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003, 'end_date_type': 'int',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1003,
                         'start_date': '1900-01-01', 'end_date_mask_id': 1003, 'f_table_name': 'layer_1006',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'int', 'end_date': '1930-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1930-12-31'
                     }
                 }
             ]
@@ -195,9 +189,9 @@ class TestAPITemporalColumns(TestCase):
                 {
                     'type': 'TemporalColumns',
                     'properties': {
-                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002, 'end_date_type': 'text',
+                        'end_date_column_name': 'end_date', 'start_date_mask_id': 1002,
                         'start_date': '1920-01-01', 'end_date_mask_id': 1002, 'f_table_name': 'layer_1004',
-                        'start_date_column_name': 'start_date', 'start_date_type': 'text', 'end_date': '1920-12-31'
+                        'start_date_column_name': 'start_date', 'end_date': '1920-12-31'
                     }
                 }
             ]
@@ -239,7 +233,6 @@ class TestAPITemporalColumns(TestCase):
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -309,7 +302,6 @@ class TestAPITemporalColumns(TestCase):
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -379,7 +371,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -396,7 +387,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -406,7 +396,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -416,7 +405,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -426,7 +414,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -441,7 +428,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -454,7 +440,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -468,7 +453,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -485,7 +469,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'address', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -504,7 +487,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -514,7 +496,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -524,7 +505,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -534,7 +514,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -549,7 +528,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -562,7 +540,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -576,7 +553,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
@@ -593,7 +569,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         resource = {
             'properties': {'f_table_name': 'address', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }

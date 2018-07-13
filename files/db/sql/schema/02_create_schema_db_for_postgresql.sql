@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Ter 10 Jul 2018 10:34:35 -03
+-- Sex 13 Jul 2018 09:16:37 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -364,8 +364,6 @@ CREATE TABLE IF NOT EXISTS temporal_columns (
   f_table_name TEXT NOT NULL UNIQUE,
   start_date_column_name TEXT NULL,
   end_date_column_name TEXT NULL,
-  start_date_type TEXT NULL,
-  end_date_type TEXT NULL,
   start_date TIMESTAMP NULL,
   end_date TIMESTAMP NULL,
   start_date_mask_id INT NOT NULL,
