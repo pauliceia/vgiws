@@ -602,9 +602,6 @@ class PGSQLConnection:
 
         properties = resource_json["properties"]
 
-        if ("reference" not in properties) or ("keyword" not in properties) or ("f_table_name" not in properties):
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference, keyword or f_table_name)")
-
         # just can add reference/keyword that is a list
         if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")

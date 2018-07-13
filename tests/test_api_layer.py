@@ -238,14 +238,7 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': 'layer_1003', 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {
-                    "type": "MultiPoint",
-                    "crs": {"type": "name", "properties": {"name": "EPSG:4326"}}
-                }
-            }
+                           'reference': [], 'keyword': [1041]}
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 
@@ -256,40 +249,51 @@ class TestAPILayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a layer (without reference)
+        # try to create a layer (without f_table_name)
         resource = {
-            'type': 'Layer',
-            'properties': {'name': 'Addresses in 1869', 'table_name': 'addresses_1869', 'source': '',
-                           'description': '', 'fk_keyword_id': 1041},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                           'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 
-        # try to create a layer (without f_table_name)
+        # try to create a layer (without name)
         resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'name': 'Addresses in 1930', 'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'properties': {'description': '', 'reference': [1001, 1002],
+                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 
         # try to create a layer (without description)
         resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
-                           'source_description': '',
-                           'reference': [], 'keyword': [1041]},
-            'feature_table': {
-                'properties': {'name': 'text', 'start_date': 'text', 'end_date': 'text'},
-                'geometry': {"type": "MultiPoint"}
-            }
+            'properties': {'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without source_description)
+        resource = {
+            'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                           'f_table_name': 'layer_1001', 'keyword': [1001, 1041]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without reference)
+        resource = {
+            'properties': {'description': '', 'name': 'Addresses in 1869',
+                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # try to create a layer (without keyword)
+        resource = {
+            'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
+                           'f_table_name': 'layer_1001', 'source_description': ''},
+            'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
 
@@ -320,7 +324,7 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_put_api_layer_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -390,7 +394,7 @@ class TestAPILayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_put_api_layer_error_401_unauthorized_user_is_not_logged(self):
         feature = {
             'properties': {'reference_id': 1001, 'description': 'BookA'},
