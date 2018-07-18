@@ -762,6 +762,24 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 403)
 
     ##################################################
+    # FEATURE TABLE COLUMNS
+    ##################################################
+
+    def api_feature_table_column_create(self, resource_json):
+        response = self.session.post(self.URL + '/api/feature_table_column/create',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_feature_table_column_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/feature_table_column/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    ##################################################
     # USER LAYER
     ##################################################
 

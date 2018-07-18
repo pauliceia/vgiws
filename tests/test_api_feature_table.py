@@ -149,10 +149,14 @@ class TestAPIFeatureTable(TestCase):
         ##################################################
         # update the feature_table
         ##################################################
-        # feature_table["properties"]["address"] = "integer"
-        # del feature_table["properties"]["start_date"]
-        #
-        # self.tester.api_feature_table_update(feature_table)
+        feature_table_column = {
+            'f_table_name': f_table_name,
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create(feature_table_column)
+
+        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
 
         ##################################################
         # the feature_table is automatically removed when delete its layer
@@ -217,6 +221,14 @@ class TestAPIFeatureTable(TestCase):
         ##################################################
         # update the feature_table
         ##################################################
+        feature_table_column = {
+            'f_table_name': f_table_name,
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create(feature_table_column)
+
+        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
 
         ##################################################
         # the feature_table is automatically removed when delete its layer
@@ -383,96 +395,96 @@ class TestAPIFeatureTableErrors(TestCase):
         self.tester.auth_logout()
 
     # feature table errors - update
-    """
-    def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        # try to update a temporal_columns (without f_table_name)
-        resource = {
-            'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # try to update a temporal_columns (without start_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # try to update a temporal_columns (without end_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # try to update a temporal_columns (without end_date_column_name)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-        # try to do the test with an admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to update a temporal_columns (without start_date_column_name)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_put_api_temporal_columns_error_401_unauthorized_without_authorization_header(self):
-        resource = {
-            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
-
-    def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        # try to update a temporal_columns with an invalid user
-        resource = {
-            'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_403_forbidden(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-    """
+    
+    # def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("miguel@admin.com", "miguel")
+    # 
+    #     # try to update a temporal_columns (without f_table_name)
+    #     resource = {
+    #         'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+    # 
+    #     # try to update a temporal_columns (without start_date)
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
+    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+    # 
+    #     # try to update a temporal_columns (without end_date)
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
+    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+    # 
+    #     # try to update a temporal_columns (without end_date_column_name)
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+    #                        'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+    # 
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+    #     # try to do the test with an admin
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    # 
+    #     # try to update a temporal_columns (without start_date_column_name)
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+    #                        'end_date_column_name': 'end_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+    # 
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+    # 
+    # def test_put_api_temporal_columns_error_401_unauthorized_without_authorization_header(self):
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
+    # 
+    # def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("miguel@admin.com", "miguel")
+    # 
+    #     # try to update a temporal_columns with an invalid user
+    #     resource = {
+    #         'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
+    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+    #         'type': 'TemporalColumns'
+    #     }
+    #     self.tester.api_temporal_columns_update_error_403_forbidden(resource)
+    # 
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+    # 
 
 
 # It is not necessary to pyt the main() of unittest here,

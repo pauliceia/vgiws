@@ -937,6 +937,28 @@ class PGSQLConnection:
         self.commit()
 
     ################################################################################
+    # FEATURE TABLE COLUMN
+    ################################################################################
+
+    def create_feature_table_column(self, resource_json):
+
+        query_text = """
+            ALTER TABLE {0} 
+            ADD COLUMN {1} {2};   
+        """.format(resource_json["f_table_name"], resource_json["column_name"], resource_json["column_type"])
+
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    def delete_feature_table_column(self, f_table_name, column_name):
+
+        query_text = """
+            ALTER TABLE {0} 
+            DROP COLUMN {1} CASCADE;   
+        """.format(f_table_name, column_name)
+
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+    ################################################################################
     # TEMPORAL COLUMNS
     ################################################################################
 

@@ -674,6 +674,40 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
     # It is in FeatureTableValidator
 
 
+class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValidator):
+
+    # GET
+
+    # def _get_resource(self, *args, **kwargs):
+    #     return self.PGSQLConn.get_feature_table(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
+
+        return self.PGSQLConn.create_feature_table_column(resource_json)
+
+    # PUT
+
+    # def _put_resource(self, resource_json, current_user_id, **kwargs):
+    #     self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
+    #
+    #     return self.PGSQLConn.update_feature_table(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        self.can_current_user_manage(current_user_id, kwargs["f_table_name"])
+
+        self.PGSQLConn.delete_feature_table_column(**kwargs)
+
+    # VALIDATION
+
+    # It is in FeatureTableValidator
+
+
+
 class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidator):
 
     # GET
