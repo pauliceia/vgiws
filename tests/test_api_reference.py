@@ -237,24 +237,24 @@ class TestAPIReferenceErrors(TestCase):
 
         self.tester.api_reference_error_404_not_found(user_id_creator="999")
         self.tester.api_reference_error_404_not_found(user_id_creator="998")
-    
+
     # reference errors - create
 
-    def test_post_api_reference_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # try to insert one reference that already exist, raising the 400
-        ##################################################
-        resource = {
-            'type': 'Reference',
-            'properties': {'description': 'BookA'}
-        }
-        self.tester.api_reference_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    # def test_post_api_reference_create_error_400_bad_request_attribute_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     ##################################################
+    #     # try to insert one reference that already exist, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'type': 'Reference',
+    #         'properties': {'description': 'BookA'}
+    #     }
+    #     self.tester.api_reference_create_error_400_bad_request(resource)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     def test_post_api_reference_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
@@ -279,21 +279,21 @@ class TestAPIReferenceErrors(TestCase):
 
     # reference errors - update
 
-    def test_put_api_reference_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # try to update a reference with a description that already exist, raising the 400
-        ##################################################
-        resource = {
-            'type': 'Reference',
-            'properties': {'reference_id': 1051, 'description': 'ThesisC'}
-        }
-        self.tester.api_reference_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    # def test_put_api_reference_error_400_bad_request_attribute_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     ##################################################
+    #     # try to update a reference with a description that already exist, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'type': 'Reference',
+    #         'properties': {'reference_id': 1051, 'description': 'ThesisC'}
+    #     }
+    #     self.tester.api_reference_update_error_400_bad_request(resource)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     def test_put_api_reference_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN

@@ -243,7 +243,7 @@ DROP TABLE IF EXISTS reference CASCADE ;
 
 CREATE TABLE IF NOT EXISTS reference (
   reference_id SERIAL ,
-  description TEXT NOT NULL  UNIQUE,
+  description TEXT NOT NULL ,
   user_id_creator INT NOT NULL,
   PRIMARY KEY (reference_id),
   CONSTRAINT fk_reference_pauliceia_user1
