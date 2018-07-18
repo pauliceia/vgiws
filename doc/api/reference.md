@@ -54,7 +54,6 @@ This method creates a new reference described in a JSON.
     {'reference_id': 10}
     ```
 - Error codes:
-     - 400 (Bad Request): Attribute already exists.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -79,7 +78,6 @@ This method updates a reference described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Attribute already exists.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
