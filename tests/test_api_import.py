@@ -142,7 +142,7 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name=file_name, epsg=self.epsg)
 
-            # try to import without changeset_id
+            # try to import without epsg
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name=file_name)
 
@@ -169,6 +169,19 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
                                                                   file_name=file_name, changeset_id=self.changeset_id,
                                                                   epsg=epsg)
+
+    def test_post_import_shp_error_409_conflict_file_is_not_a_zip_file(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        wrong_file_name = "points.zip"
+        epsg = 4618
+        with open(self.folder_name + 'text.txt', mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
+                                                                 file_name=wrong_file_name, changeset_id=self.changeset_id,
+                                                                 epsg=epsg)
 
 
 class TestAPIImportErrorWithoutLogin(TestCase):

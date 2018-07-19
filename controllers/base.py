@@ -11,7 +11,7 @@ from os import makedirs, remove as remove_file
 from os.path import exists
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipFile
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -1181,10 +1181,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
         :return:
         """
-        # open the zip
-        with ZipFile(folder_with_file_name, "r") as zip_reference:
-            # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
-            return get_shapefile_name_inside_zip(zip_reference)
+        try:
+            # try to open the zip
+            with ZipFile(folder_with_file_name, "r") as zip_reference:
+                # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
+                return get_shapefile_name_inside_zip(zip_reference)
+        except BadZipFile as error:
+            raise HTTPError(409, "File is not a zip file.")
 
     def import_shp(self):
         # get the arguments of the request
