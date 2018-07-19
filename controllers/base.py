@@ -17,7 +17,7 @@ from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from psycopg2 import DataError, Error
+from psycopg2 import ProgrammingError, DataError, Error
 # from psycopg2._psycopg import DataError
 
 from tornado.web import RequestHandler, HTTPError
@@ -443,6 +443,13 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
             # do commit after delete the resource
             self.PGSQLConn.commit()
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "42703":  # 42703 - undefined_column
+                error = str(error).replace("\n", " ")
+                raise HTTPError(404, "Not found the specified column. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
         except DataError as error:
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
@@ -614,10 +621,6 @@ class FeatureTableValidator(BaseHandler):
 
     def can_current_user_manage(self, current_user_id, f_table_name):
 
-        # if current user is an administrator, so ok ...
-        if self.is_current_user_an_administrator():
-            return
-
         try:
             # search layers by feature table name and use the layer_id to search the creator of the layer
             layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
@@ -636,6 +639,10 @@ class FeatureTableValidator(BaseHandler):
                     layer["properties"]['user_id'] == current_user_id:
                 # if the current_user_id is the creator of the layer, so ok...
                 return
+
+        # if current user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
 
         # ... else, raise an exception.
         raise HTTPError(403, "Just the owner of the layer or administrator can manage a resource")

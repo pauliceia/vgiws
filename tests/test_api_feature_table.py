@@ -7,7 +7,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-"""
+
 class TestAPIFeatureTable(TestCase):
 
     def setUp(self):
@@ -253,7 +253,7 @@ class TestAPIFeatureTable(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+
 
 class TestAPIFeatureTableErrors(TestCase):
 
@@ -472,6 +472,37 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    # feature_table column errors - delete
+
+    def test_delete_api_feature_table_column_error_401_unauthorized_user_without_login(self):
+        self.tester.api_feature_table_column_delete_error_401_unauthorized(f_table_name='layer_1003',
+                                                                           column_name="start_date")
+
+    def test_delete_api_feature_table_column_error_403_forbidden_invalid_user_tries_to_manage(self):
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        self.tester.api_feature_table_column_delete_error_403_forbidden(f_table_name='layer_1002',
+                                                                        column_name="start_date")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_feature_table_column_error_404_not_found(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # invalid f_table_name
+        self.tester.api_feature_table_column_delete_error_404_not_found(f_table_name='addresses',
+                                                                        column_name="start_date")
+        # invalid column name
+        self.tester.api_feature_table_column_delete_error_404_not_found(f_table_name='layer_1002',
+                                                                        column_name="name")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
