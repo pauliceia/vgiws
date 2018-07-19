@@ -714,7 +714,6 @@ class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValid
     # It is in FeatureTableValidator
 
 
-
 class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidator):
 
     # GET

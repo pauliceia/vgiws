@@ -7,7 +7,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
+"""
 class TestAPIFeatureTable(TestCase):
 
     def setUp(self):
@@ -253,7 +253,7 @@ class TestAPIFeatureTable(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
+"""
 
 class TestAPIFeatureTableErrors(TestCase):
 
@@ -473,6 +473,21 @@ class TestAPIFeatureTableErrors(TestCase):
         self.tester.auth_logout()
 
     # feature_table column errors - delete
+
+    def test_delete_api_feature_table_column_error_400_bad_request_invalid_column_name(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='id')
+        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='geom')
+        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='changeset_id')
+        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='geom')
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     def test_delete_api_feature_table_column_error_401_unauthorized_user_without_login(self):
         self.tester.api_feature_table_column_delete_error_401_unauthorized(f_table_name='layer_1003',

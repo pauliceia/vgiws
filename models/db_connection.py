@@ -950,6 +950,8 @@ class PGSQLConnection:
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def delete_feature_table_column(self, f_table_name, column_name):
+        if column_name in ["id", "geom", "changeset_id", "version"]:
+            raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
             ALTER TABLE {0} 
