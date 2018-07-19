@@ -41,7 +41,7 @@ This method gets feature tables from DB. If you doesn't put any parameter, so it
 This method creates a new feature table described in a JSON.
 - Parameters:
 - Examples:
-    - Create a feature_table: ```POST http://localhost:8888/api/feature_table/create```
+    - Create a feature table: ```POST http://localhost:8888/api/feature_table/create```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
@@ -61,7 +61,7 @@ This method creates a new feature table described in a JSON.
 - Error codes:
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a feature table or do a import.
+     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a resource.
      - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -70,3 +70,30 @@ This method creates a new feature table described in a JSON.
 ### DELETE
 
 A feature table is automatically removed when a layer is deleted.
+
+
+### POST /api/feature_table_column/create/
+
+This method creates a new feature table described in a JSON.
+- Parameters:
+- Examples:
+    - Create a feature table: ```POST http://localhost:8888/api/feature_table_column/create```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'type': 'FeatureTableColumn',
+        'f_table_name': 'address',
+        'column_name': 'name',
+        'column_type': 'text',
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a resource.
+     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
+     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:

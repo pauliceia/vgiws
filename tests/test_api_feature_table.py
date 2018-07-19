@@ -7,7 +7,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
+"""
 class TestAPIFeatureTable(TestCase):
 
     def setUp(self):
@@ -253,7 +253,7 @@ class TestAPIFeatureTable(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
+"""
 
 class TestAPIFeatureTableErrors(TestCase):
 
@@ -394,97 +394,83 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    # feature table errors - update
+    # feature_table column errors - create
+
+    def test_post_api_feature_table_column_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a feature_table_column without f_table_name
+        feature_table_column = {
+            'type': 'FeatureTableColumn',
+            'column_name': 'name',
+            'column_type': 'text'
+        }
+        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+
+        # try to create a feature_table_column without column_name
+        feature_table_column = {
+            'type': 'FeatureTableColumn',
+            'f_table_name': 'layer_1003',
+            'column_type': 'text'
+        }
+        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+        # try to do the test with a admin
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a feature_table_column without column_type
+        feature_table_column = {
+            'type': 'FeatureTableColumn',
+            'f_table_name': 'layer_1003',
+            'column_name': 'name'
+        }
+        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
     
-    # def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("miguel@admin.com", "miguel")
-    # 
-    #     # try to update a temporal_columns (without f_table_name)
-    #     resource = {
-    #         'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-    # 
-    #     # try to update a temporal_columns (without start_date)
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-    # 
-    #     # try to update a temporal_columns (without end_date)
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-    # 
-    #     # try to update a temporal_columns (without end_date_column_name)
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-    #                        'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-    # 
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    #     # try to do the test with an admin
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    # 
-    #     # try to update a temporal_columns (without start_date_column_name)
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-    #                        'end_date_column_name': 'end_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-    # 
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    # 
-    # def test_put_api_temporal_columns_error_401_unauthorized_without_authorization_header(self):
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
-    # 
-    # def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_create_a_temporal_columns(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("miguel@admin.com", "miguel")
-    # 
-    #     # try to update a temporal_columns with an invalid user
-    #     resource = {
-    #         'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-    #                        'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-    #                        'start_date_type': 'timestamp', 'end_date_type': 'timestamp',
-    #                        'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-    #         'type': 'TemporalColumns'
-    #     }
-    #     self.tester.api_temporal_columns_update_error_403_forbidden(resource)
-    # 
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    # 
+    def test_post_api_feature_table_column_create_error_401_unauthorized_without_authorization_header(self):
+        resource = {
+            'type': 'FeatureTableColumn',
+            'f_table_name': 'layer_1003',
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create_error_401_unauthorized(resource)
+
+    def test_post_api_feature_table_column_create_error_403_forbidden_invalid_user_tries_to_create_a_resource(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        resource = {
+            'type': 'FeatureTableColumn',
+            'f_table_name': 'layer_1002',
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create_error_403_forbidden(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_feature_table_column_create_error_404_not_found_f_table_name_doesnt_exist(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to insert a temporal_columns with a f_table_name that already exist
+        resource = {
+            'type': 'FeatureTableColumn',
+            'f_table_name': 'address',
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
 
 # It is not necessary to pyt the main() of unittest here,
