@@ -52,3 +52,38 @@ $ python main.py
 $ python main.py --debug=True
 $ python main.py --debug=True --publish_layers_in_geoserver=False
 ```
+
+
+## Run the first version of production system
+
+On a console, get into the main folder, for example:
+
+```
+$ cd vgiws/
+```
+
+Turn on the environment:
+
+```
+$ workon pauliceia_webservice
+```
+
+Clean the production database:
+
+```
+$ python tests/util/clean_db.py
+```
+
+Run the application in production mode:
+
+```
+$ python main.py
+```
+
+On another console, activate the environment and after that run the code to upload the database:
+
+```
+$ cd vgiws/
+$ workon pauliceia_webservice
+$ python files/production/upload_old_db_in_new_db.py
+```
