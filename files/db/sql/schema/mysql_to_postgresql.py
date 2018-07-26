@@ -254,6 +254,6 @@ def main():
         file_output.truncate() # clear file
         file_output.write(text) # write the updated text before
 
-        print("All file was changed with sucess!")
+        print("All file was changed with success!")
        
 main()

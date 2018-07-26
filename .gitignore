@@ -3,6 +3,7 @@ venv/*
 ignore/*
 files/ignore/*
 0_old/*
+files/production/*
 
 # Ignore specific files
 settings/db_settings.py
