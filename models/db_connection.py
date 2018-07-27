@@ -606,6 +606,9 @@ class PGSQLConnection:
         if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
 
+        if properties["f_table_name"] in self.get_invalid_table_names():
+            raise HTTPError(409, "Conflict of feature table name, please rename it.")
+
         ##################################################
         # add the layer in db
         ##################################################
@@ -1896,6 +1899,32 @@ class PGSQLConnection:
         # if there is not feature
         if results_of_query["features"] is None:
             raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    ################################################################################
+    # METHODS
+    ################################################################################
+
+    def get_invalid_table_names(self):
+        query_text = """        
+            SELECT jsonb_agg(table_name) AS row_to_json
+            FROM information_schema.tables WHERE table_schema = 'public';
+        """
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
 
         return results_of_query
 

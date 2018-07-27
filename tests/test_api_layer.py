@@ -229,22 +229,6 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - create
 
-    def test_post_api_layer_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to create a layer with f_table_name that already exist
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'layer_1003', 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1041]}
-        }
-        self.tester.api_layer_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
     def test_post_api_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -260,7 +244,7 @@ class TestAPILayerErrors(TestCase):
         # try to create a layer (without name)
         resource = {
             'properties': {'description': '', 'reference': [1001, 1002],
-                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+                           'f_table_name': 'address', 'source_description': '', 'keyword': [1001, 1041]},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
@@ -268,7 +252,7 @@ class TestAPILayerErrors(TestCase):
         # try to create a layer (without description)
         resource = {
             'properties': {'name': 'Addresses in 1869', 'reference': [1001, 1002],
-                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+                           'f_table_name': 'address', 'source_description': '', 'keyword': [1001, 1041]},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
@@ -276,7 +260,7 @@ class TestAPILayerErrors(TestCase):
         # try to create a layer (without source_description)
         resource = {
             'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
-                           'f_table_name': 'layer_1001', 'keyword': [1001, 1041]},
+                           'f_table_name': 'address', 'keyword': [1001, 1041]},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
@@ -284,7 +268,7 @@ class TestAPILayerErrors(TestCase):
         # try to create a layer (without reference)
         resource = {
             'properties': {'description': '', 'name': 'Addresses in 1869',
-                           'f_table_name': 'layer_1001', 'source_description': '', 'keyword': [1001, 1041]},
+                           'f_table_name': 'address', 'source_description': '', 'keyword': [1001, 1041]},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
@@ -292,7 +276,7 @@ class TestAPILayerErrors(TestCase):
         # try to create a layer (without keyword)
         resource = {
             'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
-                           'f_table_name': 'layer_1001', 'source_description': ''},
+                           'f_table_name': 'address', 'source_description': ''},
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_400_bad_request(resource)
@@ -307,6 +291,40 @@ class TestAPILayerErrors(TestCase):
             'type': 'Layer'
         }
         self.tester.api_layer_create_error_401_unauthorized(feature)
+
+    def test_post_api_layer_create_error_409_unauthorized(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a layer with f_table_name of a table that already exist
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'reference', 'name': '',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': []}
+        }
+        self.tester.api_layer_create_error_409_conflict(resource)
+
+        # try to create a layer with f_table_name of a table that already exist
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'changeset', 'name': '',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': []}
+        }
+        self.tester.api_layer_create_error_409_conflict(resource)
+
+        # try to create a layer with f_table_name of a table that already exist
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'spatial_ref_sys', 'name': '',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': []}
+        }
+        self.tester.api_layer_create_error_409_conflict(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     # layer errors - update
 

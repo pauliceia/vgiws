@@ -64,10 +64,10 @@ This method creates a new layer described in a JSON.
     {'layer_id': 7}
     ```
 - Error codes:
-    - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): The parameters reference and keyword need to be a list.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 409 (Conflict): Conflict of feature table name, please rename it.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - After create the layer, it is necessary to create the feature table.

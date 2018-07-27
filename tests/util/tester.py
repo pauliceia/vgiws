@@ -465,15 +465,21 @@ class UtilTester:
 
     def api_layer_create_error_400_bad_request(self, resource_json):
         response = self.session.post(self.URL + '/api/layer/create/',
-                                    data=dumps(resource_json), headers=self.headers)
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_create_error_401_unauthorized(self, feature_json):
         response = self.session.post(self.URL + '/api/layer/create/',
-                                    data=dumps(feature_json), headers=self.headers)
+                                     data=dumps(feature_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_layer_create_error_409_conflict(self, resource_json):
+        response = self.session.post(self.URL + '/api/layer/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
 
     # layer errors - update
 
@@ -500,6 +506,12 @@ class UtilTester:
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    def api_layer_update_error_409_conflict(self, resource_json):
+        response = self.session.put(self.URL + '/api/layer',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
 
     # layer errors - delete
 
