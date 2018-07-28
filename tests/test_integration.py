@@ -64,17 +64,9 @@ class TestAPIIntegration(TestCase):
         ##################################################
         # update the layer
         ##################################################
-        layer["properties"]["f_table_name"] = "addresses_30"
         layer["properties"]["name"] = "Some addresses"
         layer["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(layer)
-
-        ##################################################
-        # update the f_table_name
-        ##################################################
-        f_table_name = layer["properties"]["f_table_name"]
-        feature_table["f_table_name"] = f_table_name
-        temporal_columns["properties"]["f_table_name"] = f_table_name
 
         ##################################################
         # verify if the layer, feature table and the temporal columns were modified

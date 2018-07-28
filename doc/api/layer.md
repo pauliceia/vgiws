@@ -85,7 +85,7 @@ This method updated a reference described in a JSON.
     ```javascript
     {
         'properties': {'description': '', 'name': 'Addresses in 1869', 'reference': [1001, 1002],
-                       'layer_id': 1001, 'f_table_name': 'layer_1001', 'source_description': '',
+                       'layer_id': 1001, 'source_description': '',
                        'created_at': '2017-01-01 00:00:00', 'keyword': [1001, 1041]},
         'type': 'Layer'
     }
@@ -94,13 +94,13 @@ This method updated a reference described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Attribute already exists.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The owner of layer or administrator are who can manage a layer.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
+    - The user can't update the "f_table_name" attribute.
 
 
 ### DELETE /api/layer/#id

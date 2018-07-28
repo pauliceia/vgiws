@@ -607,7 +607,7 @@ class PGSQLConnection:
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
 
         if properties["f_table_name"] in self.get_invalid_table_names():
-            raise HTTPError(409, "Conflict of feature table name, please rename it.")
+            raise HTTPError(409, "Conflict of feature table name, please rename it: " + str(properties["f_table_name"]))
 
         ##################################################
         # add the layer in db
@@ -658,9 +658,9 @@ class PGSQLConnection:
         p = properties
 
         query_text = """
-                    UPDATE layer SET f_table_name = '{1}', name = '{2}', description = '{3}', source_description = '{4}'
-                    WHERE layer_id = {0};
-                """.format(p["layer_id"], p["f_table_name"], p["name"], p["description"], p["source_description"])
+            UPDATE layer SET name = '{1}', description = '{2}', source_description = '{3}'
+            WHERE layer_id = {0};
+        """.format(p["layer_id"], p["name"], p["description"], p["source_description"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -717,13 +717,13 @@ class PGSQLConnection:
         ##################################################
         # if the table_name was changed, so update the feature table name, version the f_table_name of temporal columns
         ##################################################
-        if old_layer_properties["f_table_name"] != new_layer_properties["f_table_name"]:
-            # update the feature table
-            self.update_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
-            # update the version feature table
-            self.update_table_name("version_" + old_layer_properties["f_table_name"], "version_" + new_layer_properties["f_table_name"])
-            # update the temporal columns
-            self.update_temporal_columns_f_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
+        # if old_layer_properties["f_table_name"] != new_layer_properties["f_table_name"]:
+        #     # update the feature table
+        #     self.update_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
+        #     # update the version feature table
+        #     self.update_table_name("version_" + old_layer_properties["f_table_name"], "version_" + new_layer_properties["f_table_name"])
+        #     # update the temporal columns
+        #     self.update_temporal_columns_f_table_name(old_layer_properties["f_table_name"], new_layer_properties["f_table_name"])
 
     def delete_layer_dependencies(self, layer_id):
         # get the layer information before to remove the layer

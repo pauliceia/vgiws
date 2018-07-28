@@ -132,7 +132,6 @@ class TestAPILayer(TestCase):
         ##################################################
         # update the layer
         ##################################################
-        resource["properties"]["f_table_name"] = "addresses_30"
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)
@@ -328,21 +327,6 @@ class TestAPILayerErrors(TestCase):
 
     # layer errors - update
 
-    def test_put_api_layer_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        resource = {
-            'properties': {'layer_id': 1003, 'f_table_name': 'layer_1006',  'name': 'Streets in 1930',
-                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
-                           'reference': [1010], 'keyword': [1001, 1040]},
-            'type': 'Layer'
-        }
-        self.tester.api_layer_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
     def test_put_api_layer_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -350,15 +334,6 @@ class TestAPILayerErrors(TestCase):
         # try to update a layer (without layer_id)
         resource = {
             'properties': {'f_table_name': 'layer_1003', 'name': 'Streets in 1930',
-                           'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
-                           'reference': [1010], 'keyword': [1001, 1040]},
-            'type': 'Layer'
-        }
-        self.tester.api_layer_update_error_400_bad_request(resource)
-
-        # try to update a layer (without f_table_name)
-        resource = {
-            'properties': {'layer_id': 1003, 'name': 'Streets in 1930',
                            'description': '', 'source_description': '', 'created_at': '2017-04-10 00:00:00',
                            'reference': [1010], 'keyword': [1001, 1040]},
             'type': 'Layer'
