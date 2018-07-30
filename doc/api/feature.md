@@ -28,6 +28,7 @@ This method gets features from DB. If you doesn't put any parameter, so it will 
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
+    - 400 (Bad Request): Some attribute is missing. Look the documentation!
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:

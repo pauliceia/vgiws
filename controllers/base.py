@@ -299,7 +299,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             result = self._get_resource(*args, **arguments)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+            raise HTTPError(400, "Some attribute is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
             raise HTTPError(400, str(error))

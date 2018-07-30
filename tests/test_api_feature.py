@@ -107,8 +107,8 @@ class TestAPIFeature(TestCase):
         self.tester.auth_logout()
     """
 
-"""
-class TestAPIfeatureFeature(TestCase):
+
+class TestAPIFeatureFeature(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -117,36 +117,27 @@ class TestAPIfeatureFeature(TestCase):
     # feature errors - get
 
     def test_get_api_feature_error_400_bad_request(self):
+        self.tester.api_feature_error_400_bad_request(f_table_name="layer_1001", feature_id="abc")
+        self.tester.api_feature_error_400_bad_request(f_table_name="layer_1001", feature_id=0)
+        self.tester.api_feature_error_400_bad_request(f_table_name="layer_1001", feature_id=-1)
+        self.tester.api_feature_error_400_bad_request(f_table_name="layer_1001", feature_id="-1")
+        self.tester.api_feature_error_400_bad_request(f_table_name="layer_1001", feature_id="0")
+
         self.tester.api_feature_error_400_bad_request(feature_id="abc")
         self.tester.api_feature_error_400_bad_request(feature_id=0)
         self.tester.api_feature_error_400_bad_request(feature_id=-1)
         self.tester.api_feature_error_400_bad_request(feature_id="-1")
         self.tester.api_feature_error_400_bad_request(feature_id="0")
 
-        self.tester.api_feature_error_400_bad_request(parent_id="abc")
-        self.tester.api_feature_error_400_bad_request(parent_id=0)
-        self.tester.api_feature_error_400_bad_request(parent_id=-1)
-        self.tester.api_feature_error_400_bad_request(parent_id="-1")
-        self.tester.api_feature_error_400_bad_request(parent_id="0")
-
-        self.tester.api_feature_error_400_bad_request(user_id_creator="abc")
-        self.tester.api_feature_error_400_bad_request(user_id_creator=0)
-        self.tester.api_feature_error_400_bad_request(user_id_creator=-1)
-        self.tester.api_feature_error_400_bad_request(user_id_creator="-1")
-        self.tester.api_feature_error_400_bad_request(user_id_creator="0")
-
     def test_get_api_feature_error_404_not_found(self):
-        self.tester.api_feature_error_404_not_found(feature_id="999")
-        self.tester.api_feature_error_404_not_found(feature_id="998")
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_1001", feature_id="999")
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_1001", feature_id="998")
 
-        self.tester.api_feature_error_404_not_found(parent_id="999")
-        self.tester.api_feature_error_404_not_found(parent_id="998")
-
-        self.tester.api_feature_error_404_not_found(user_id_creator="999")
-        self.tester.api_feature_error_404_not_found(user_id_creator="998")
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
 
     # feature errors - create
-
+    """
     def test_post_api_feature_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -327,7 +318,7 @@ class TestAPIfeatureFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

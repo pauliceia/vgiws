@@ -1942,6 +1942,10 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
+        # if there is not feature
+        if results_of_query is None:
+            raise HTTPError(404, "Not found any resource.")
+
         return results_of_query
 
     def get_feature(self, f_table_name, feature_id=None):
