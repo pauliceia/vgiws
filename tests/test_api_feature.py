@@ -16,130 +16,50 @@ class TestAPIFeature(TestCase):
         self.tester = UtilTester(self)
 
     # feature - get
-    """
+
     def test_get_api_feature_return_all_features_by_f_table_name(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1001},
-                    'type': 'feature'
+                    'properties': {'changeset_id': 1001, 'id': 1001, 'end_date': '1869-12-31 00:00:00',
+                                   'geom': 'MULTIPOINT(-46.6375790530164 -23.5290461960682)', 'version': 1,
+                                   'address': 'R. São José', 'start_date': '1869-01-01 00:00:00'},
+                    'type': 'Feature'
                 },
-            ],
-            'type': 'FeatureCollection'
+                {
+                    'properties': {'changeset_id': 1001, 'id': 1002, 'end_date': '1869-12-31 00:00:00',
+                                   'geom': 'MULTIPOINT(-46.6498716962487 -23.5482894062877)', 'version': 1,
+                                   'address': 'R. Marechal Deodoro', 'start_date': '1869-01-01 00:00:00'},
+                    'type': 'Feature'
+                },
+                {
+                    'properties': {'changeset_id': 1001, 'id': 1003, 'end_date': '1875-12-31 00:00:00',
+                                   'geom': 'MULTIPOINT(-46.6468896156385 -23.5494865576549)', 'version': 1,
+                                   'address': None, 'start_date': '1875-01-01 00:00:00'},
+                    'type': 'Feature'
+                }
+            ]
         }
 
         self.tester.api_feature(expected, f_table_name="layer_1001")
 
-    def test_get_api_feature_return_feature_by_feature_id(self):
+    def test_get_api_feature_return_all_features_by_f_table_name_and_feature_id(self):
         expected = {
+            'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'parent_id': 1002, 'name': 'crime', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1003},
-                    'type': 'feature'
-                },
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_feature(expected, feature_id="1003")
-
-    def test_get_api_feature_return_feature_by_user_id_creator(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1001},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1002},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1010},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1001, 'name': 'object', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1020},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1030, 'name': 'cinema', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1031},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1020, 'name': 'street', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1040},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1020, 'name': 'address', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1041},
-                    'type': 'feature'
+                    'properties': {'changeset_id': 1001, 'id': 1001, 'end_date': '1869-12-31 00:00:00',
+                                   'geom': 'MULTIPOINT(-46.6375790530164 -23.5290461960682)', 'version': 1,
+                                   'address': 'R. São José', 'start_date': '1869-01-01 00:00:00'},
+                    'type': 'Feature'
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
-        self.tester.api_feature(expected, user_id_creator="1001")
+        self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="1001")
 
-    def test_get_api_feature_return_feature_by_parent_id(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1001},
-                    'type': 'feature'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_feature(expected, parent_id="NULL")
-
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1004},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1003, 'name': 'robbery', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1005},
-                    'type': 'feature'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_feature(expected, parent_id="1003")
-
-    def test_get_api_feature_return_feature_by_name(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1004},
-                    'type': 'feature'
-                },
-                {
-                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'feature_id': 1010},
-                    'type': 'feature'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_feature(expected, name="As")
-
+    """
     # feature - create, update and delete
 
     def test_api_feature_create_but_update_and_delete_with_admin_user(self):

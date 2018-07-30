@@ -5,6 +5,7 @@
 - [Changeset](changeset.md)
 - [Layer](layer.md)
 - [Feature Table](feature_table.md)
+- [Feature](feature.md)
 - [Temporal Columns](temporal_columns.md)
 - [Import](import.md)
 - [Reference](reference.md)

@@ -1950,16 +1950,16 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         columns_of_table = self.get_columns_from_table(f_table_name)
-        columns_of_table = self.get_columns_from_table_formatted(columns_of_table)
+        columns_of_table_string = self.get_columns_from_table_formatted(columns_of_table)
 
-        subquery = get_subquery_feature(f_table_name=f_table_name, feature_id=feature_id)
+        subquery = get_subquery_feature(f_table_name, feature_id, columns_of_table)
 
         # # CREATE THE QUERY AND EXECUTE IT
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
-                    'type',       'User',
+                    'type',       'Feature',
                     'properties', json_build_object(
                         {0}
                     )
@@ -1967,29 +1967,27 @@ class PGSQLConnection:
             ) AS row_to_json
             FROM
             {1}
-        """.format(columns_of_table, subquery)
+        """.format(columns_of_table_string, subquery)
 
-        # # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-        #
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-        #
-        # ######################################################################
-        # # POST-PROCESSING
-        # ######################################################################
-        #
-        # # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-        # if "row_to_json" in results_of_query:
-        #     results_of_query = results_of_query["row_to_json"]
-        #
-        # # if there is not feature
-        # if results_of_query["features"] is None:
-        #     raise HTTPError(404, "Not found any resource.")
-        #
-        # return results_of_query
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
-        return []
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
 
     def create_feature(self, resource_json, verified_social_login_email=False):
         p = resource_json["properties"]
