@@ -1070,6 +1070,59 @@ class BaseHandlerMask(BaseHandlerTemplateMethod):
     #     raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
 
 
+class BaseHandlerFeature(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_feature(kwargs["f_table_name"], **kwargs)
+
+    # POST
+
+    # def _create_resource(self, resource_json, current_user_id, **kwargs):
+    #     return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
+
+    # PUT
+
+    # def _put_resource(self, resource_json, current_user_id, **kwargs):
+    #     self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
+    #
+    #     return self.PGSQLConn.update_layer(resource_json, current_user_id)
+
+    # DELETE
+
+    # def _delete_resource(self, current_user_id, *args, **kwargs):
+    #     layer_id = args[0]
+    #     self.can_current_user_manage(current_user_id, layer_id)
+    #
+    #     self.PGSQLConn.delete_layer(*args)
+
+    # VALIDATION
+
+    # def can_current_user_manage(self, current_user_id, layer_id):
+    #     """
+    #     Verify if the user has permission of managing a layer
+    #     :param current_user_id: current user id
+    #     :param layer_id: layer id
+    #     :return:
+    #     """
+    #
+    #     # if the current user is admin, so ok...
+    #     if self.is_current_user_an_administrator():
+    #         return
+    #
+    #     user_layer = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+    #
+    #     properties = user_layer["features"][0]["properties"]
+    #
+    #     # if the current_user_id is the creator of the layer, so ok...
+    #     if properties['is_the_creator'] and properties['user_id'] == current_user_id:
+    #         return
+    #
+    #     # ... else, raise an exception.
+    #     raise HTTPError(403, "The owner of layer or administrator are who can manage a layer.")
+
+
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
 #     def _get_resource(self, *args, **kwargs):

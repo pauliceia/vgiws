@@ -7,7 +7,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-"""
+
 class TestAPIFeatureTable(TestCase):
 
     def setUp(self):
@@ -253,7 +253,7 @@ class TestAPIFeatureTable(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+
 
 class TestAPIFeatureTableErrors(TestCase):
 
@@ -518,6 +518,7 @@ class TestAPIFeatureTableErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

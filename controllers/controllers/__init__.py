@@ -15,4 +15,5 @@ from .notification import *
 from .changeset import *
 from .feature_table import *
 from .element import *
+from .feature import *
 from .other import *

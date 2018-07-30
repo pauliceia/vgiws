@@ -1903,6 +1903,148 @@ class PGSQLConnection:
         return results_of_query
 
     ################################################################################
+    # FEATURE
+    ################################################################################
+
+    def get_columns_from_table(self, table_name):
+        query_text = """
+            SELECT jsonb_agg(json_build_object('column_name', column_name::TEXT, 'type', udt_name::regtype::TEXT)) as dict
+            FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = '{0}';
+        """.format(table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        print(results_of_query)
+
+        return results_of_query
+
+    def get_feature(self, f_table_name, feature_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        columns_of_table = self.get_columns_from_table(f_table_name)
+
+        # subquery = get_subquery_feature(f_table_name=f_table_name, feature_id=feature_id)
+        #
+        # # CREATE THE QUERY AND EXECUTE IT
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type', 'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'User',
+        #             'properties', json_build_object(
+        #                 'user_id',        user_id,
+        #                 'email',          email,
+        #                 'username',       username,
+        #                 'name',           name,
+        #                 'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+        #                 'is_email_valid', is_email_valid,
+        #                 'terms_agreed',   terms_agreed,
+        #                 'login_date',     login_date,
+        #                 'is_the_admin',   is_the_admin,
+        #                 'receive_notification_by_email',   receive_notification_by_email
+        #             )
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        # """.format(subquery)
+        #
+        # # do the query in database
+        # self.__PGSQL_CURSOR__.execute(query_text)
+        #
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        #
+        # ######################################################################
+        # # POST-PROCESSING
+        # ######################################################################
+        #
+        # # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        # if "row_to_json" in results_of_query:
+        #     results_of_query = results_of_query["row_to_json"]
+        #
+        # # if there is not feature
+        # if results_of_query["features"] is None:
+        #     raise HTTPError(404, "Not found any resource.")
+        #
+        # return results_of_query
+
+        return 0
+
+    def create_feature(self, resource_json, verified_social_login_email=False):
+        p = resource_json["properties"]
+
+        if verified_social_login_email:
+            p["is_email_valid"] = True
+        else:
+            p["is_email_valid"] = False
+
+        query_text = """
+            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
+                                        receive_notification_by_email, is_email_valid) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
+            RETURNING user_id;
+        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
+                   p["receive_notification_by_email"], p["is_email_valid"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result
+
+    def update_feature(self, resource_json, user_id):
+        p = resource_json["properties"]
+
+        query_text = """
+            UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
+                                        terms_agreed = {4}, receive_notification_by_email = {5} 
+            WHERE user_id = {0};
+        """.format(p["user_id"], p["email"], p["username"], p["name"],
+                   p["terms_agreed"], p["receive_notification_by_email"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    def delete_feature(self, feature_id):
+        if is_a_invalid_id(feature_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            DELETE FROM pauliceia_user WHERE user_id={0};
+        """.format(feature_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    ################################################################################
     # METHODS
     ################################################################################
 

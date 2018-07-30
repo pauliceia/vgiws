@@ -13,4 +13,5 @@ from .reference import get_subquery_reference_table
 from .keyword import get_subquery_keyword_table
 from .changeset import get_subquery_changeset_table
 from .notification import get_subquery_notification_table
+from .feature import get_subquery_feature
 from .other import *
