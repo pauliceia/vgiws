@@ -1542,6 +1542,137 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
+    # FEATURE
+    ##################################################
+
+    def api_feature(self, expected=None, expected_at_least=None, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        if expected is not None:
+            self.ut_self.assertEqual(expected, resulted)
+
+        elif expected_at_least is not None:
+            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
+
+    def api_feature_create(self, resource_json, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/feature/create/{0}'.format(arguments),
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertIn("reference_id", resulted)
+        self.ut_self.assertNotEqual(resulted["reference_id"], -1)
+
+        # put the id received in the original JSON
+        resource_json["properties"]["reference_id"] = resulted["reference_id"]
+
+        return resource_json
+
+    def api_feature_update(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature/',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_feature_delete(self, feature_id):
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # feature errors - get
+
+    def api_feature_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/feature/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # feature errors - create
+
+    def api_feature_create_error_400_bad_request(self, resource_json):
+        response = self.session.post(self.URL + '/api/feature/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    # feature errors - update
+
+    def api_feature_update_error_400_bad_request(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_update_error_401_unauthorized(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_feature_update_error_403_forbidden(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_feature_update_error_404_not_found(self, resource_json):
+        response = self.session.put(self.URL + '/api/feature',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # feature errors - delete
+
+    def api_feature_delete_error_400_bad_request(self, feature_id):
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_feature_delete_error_401_unauthorized(self, feature_id):
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_feature_delete_error_403_forbidden(self, feature_id):
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_feature_delete_error_404_not_found(self, feature_id):
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
     # IMPORT
     ##################################################
 

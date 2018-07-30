@@ -298,6 +298,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             result = self._get_resource(*args, **arguments)
+        except KeyError as error:
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+                            str(error) + " is missing)")
         except TypeError as error:
             raise HTTPError(400, str(error))
         except Error as error:
@@ -1075,7 +1078,10 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # GET
 
     def _get_resource(self, *args, **kwargs):
-        return self.PGSQLConn.get_feature(kwargs["f_table_name"], **kwargs)
+        f_table_name = kwargs["f_table_name"]
+        del kwargs["f_table_name"]  # remove the f_table_name from dict
+
+        return self.PGSQLConn.get_feature(f_table_name, **kwargs)
 
     # POST
 

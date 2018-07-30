@@ -1906,9 +1906,24 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
+    def get_columns_from_table_formatted(self, list_of_column_name_with_type):
+        column_names = []
+
+        for column_name_with_type in list_of_column_name_with_type:
+            if "timestamp" in column_name_with_type["type"]:
+                string = "'" + column_name_with_type["column_name"] + "', to_char(" + column_name_with_type["column_name"] + ", 'YYYY-MM-DD HH24:MI:SS')"
+            else:
+                string = "'" + column_name_with_type["column_name"] + "', " + column_name_with_type["column_name"]
+
+            column_names.append(string)
+
+        column_names = ", ".join(column_names)
+
+        return column_names
+
     def get_columns_from_table(self, table_name):
         query_text = """
-            SELECT jsonb_agg(json_build_object('column_name', column_name::TEXT, 'type', udt_name::regtype::TEXT)) as dict
+            SELECT jsonb_agg(json_build_object('column_name', column_name::TEXT, 'type', udt_name::regtype::TEXT)) as row_to_json
             FROM information_schema.columns
             WHERE table_schema = 'public' AND table_name = '{0}';
         """.format(table_name)
@@ -1927,8 +1942,6 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        print(results_of_query)
-
         return results_of_query
 
     def get_feature(self, f_table_name, feature_id=None):
@@ -1937,33 +1950,25 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         columns_of_table = self.get_columns_from_table(f_table_name)
+        columns_of_table = self.get_columns_from_table_formatted(columns_of_table)
 
-        # subquery = get_subquery_feature(f_table_name=f_table_name, feature_id=feature_id)
-        #
+        subquery = get_subquery_feature(f_table_name=f_table_name, feature_id=feature_id)
+
         # # CREATE THE QUERY AND EXECUTE IT
-        # query_text = """
-        #     SELECT jsonb_build_object(
-        #         'type', 'FeatureCollection',
-        #         'features',   jsonb_agg(jsonb_build_object(
-        #             'type',       'User',
-        #             'properties', json_build_object(
-        #                 'user_id',        user_id,
-        #                 'email',          email,
-        #                 'username',       username,
-        #                 'name',           name,
-        #                 'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-        #                 'is_email_valid', is_email_valid,
-        #                 'terms_agreed',   terms_agreed,
-        #                 'login_date',     login_date,
-        #                 'is_the_admin',   is_the_admin,
-        #                 'receive_notification_by_email',   receive_notification_by_email
-        #             )
-        #         ))
-        #     ) AS row_to_json
-        #     FROM
-        #     {0}
-        # """.format(subquery)
-        #
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'User',
+                    'properties', json_build_object(
+                        {0}
+                    )
+                ))
+            ) AS row_to_json
+            FROM
+            {1}
+        """.format(columns_of_table, subquery)
+
         # # do the query in database
         # self.__PGSQL_CURSOR__.execute(query_text)
         #
@@ -1984,7 +1989,7 @@ class PGSQLConnection:
         #
         # return results_of_query
 
-        return 0
+        return []
 
     def create_feature(self, resource_json, verified_social_login_email=False):
         p = resource_json["properties"]
