@@ -21,6 +21,7 @@
 from abc import ABCMeta
 from requests import Session
 from copy import deepcopy
+from json import dumps
 
 from tornado.web import HTTPError
 
@@ -1906,6 +1907,23 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
+    # def get_columns_from_table_formatted_02(self, list_of_column_name_with_type, passed_properties):
+    #     column_names = []
+    #
+    #     geom = dumps(passed_properties)
+    #
+    #     for column_name_with_type in list_of_column_name_with_type:
+    #         if "geom" in column_name_with_type["type"]:
+    #             string = "ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')"
+    #         else:
+    #             string = "'" + column_name_with_type["column_name"] + "', " + column_name_with_type["column_name"]
+    #
+    #         column_names.append(string)
+    #
+    #     column_names = ", ".join(column_names)
+    #
+    #     return column_names
+
     def get_columns_from_table_formatted(self, list_of_column_name_with_type):
         column_names = []
 
@@ -1993,13 +2011,13 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_feature(self, resource_json, verified_social_login_email=False):
-        p = resource_json["properties"]
+    def create_feature(self, resource_json):
+        passed_properties = resource_json["properties"]
 
-        if verified_social_login_email:
-            p["is_email_valid"] = True
-        else:
-            p["is_email_valid"] = False
+        columns_of_table = self.get_columns_from_table(resource_json["f_table_name"])
+        # columns_of_table_string = self.get_columns_from_table_formatted_02(columns_of_table, passed_properties)
+
+        #
 
         query_text = """
             INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 

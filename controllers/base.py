@@ -648,7 +648,7 @@ class FeatureTableValidator(BaseHandler):
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "Just the owner of the layer or administrator can manage a resource")
+        raise HTTPError(403, "Just the owner of the layer or administrator can manage a resource.")
 
 
 class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
@@ -1085,8 +1085,9 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
     # POST
 
-    # def _create_resource(self, resource_json, current_user_id, **kwargs):
-    #     return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
+        return self.PGSQLConn.create_feature(resource_json, current_user_id, **kwargs)
 
     # PUT
 
@@ -1105,28 +1106,32 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
     # VALIDATION
 
-    # def can_current_user_manage(self, current_user_id, layer_id):
-    #     """
-    #     Verify if the user has permission of managing a layer
-    #     :param current_user_id: current user id
-    #     :param layer_id: layer id
-    #     :return:
-    #     """
-    #
-    #     # if the current user is admin, so ok...
-    #     if self.is_current_user_an_administrator():
-    #         return
-    #
-    #     user_layer = self.PGSQLConn.get_user_layers(layer_id=layer_id)
-    #
-    #     properties = user_layer["features"][0]["properties"]
-    #
-    #     # if the current_user_id is the creator of the layer, so ok...
-    #     if properties['is_the_creator'] and properties['user_id'] == current_user_id:
-    #         return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The owner of layer or administrator are who can manage a layer.")
+    def can_current_user_manage(self, current_user_id, f_table_name):
+
+        try:
+            # search layers by feature table name and use the layer_id to search the creator of the layer
+            layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+        except HTTPError as error:
+            # if not found a layer, so raise a better error message
+            if error.status_code == 404:
+                raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
+                                "It is needed to create a layer with the f_table_name before of using this function.")
+
+        layer_id = layers["features"][0]["properties"]["layer_id"]
+
+        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+        for layer in layers["features"]:
+            if layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is collaborator of the layer, so ok...
+                return
+
+        # if current user is an administrator, so ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "Just the collaborator of the layer or administrator can manage a resource.")
 
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):

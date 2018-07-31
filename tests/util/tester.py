@@ -1570,11 +1570,11 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("reference_id", resulted)
-        self.ut_self.assertNotEqual(resulted["reference_id"], -1)
+        self.ut_self.assertIn("id", resulted)
+        self.ut_self.assertNotEqual(resulted["id"], -1)
 
         # put the id received in the original JSON
-        resource_json["properties"]["reference_id"] = resulted["reference_id"]
+        resource_json["properties"]["id"] = resulted["id"]
 
         return resource_json
 
