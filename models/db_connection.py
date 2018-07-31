@@ -1907,22 +1907,51 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
-    # def get_columns_from_table_formatted_02(self, list_of_column_name_with_type, passed_properties):
-    #     column_names = []
-    #
-    #     geom = dumps(passed_properties)
-    #
-    #     for column_name_with_type in list_of_column_name_with_type:
-    #         if "geom" in column_name_with_type["type"]:
-    #             string = "ST_GeomFromGeoJSON('{"type":"Point","coordinates":[-48.23456,20.12345]}')"
-    #         else:
-    #             string = "'" + column_name_with_type["column_name"] + "', " + column_name_with_type["column_name"]
-    #
-    #         column_names.append(string)
-    #
-    #     column_names = ", ".join(column_names)
-    #
-    #     return column_names
+    def get_srid_from_table_name(self, table_name):
+
+        query_text = """
+            SELECT srid FROM geometry_columns WHERE f_table_name='{0}';        
+        """.format(table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        result = self.__PGSQL_CURSOR__.fetchone()
+
+        return result["srid"]
+
+    def get_insert_statement_from_geojson(self, resource_json):
+        column_names = []
+        values = []
+
+        properties = resource_json["properties"]
+        del properties["id"]  # it is not possible to set the id and version
+        del properties["version"]
+
+        for property_ in properties:
+            if isinstance(properties[property_], int):
+                value = str(properties[property_])
+            else:  # if it is string
+                value = "'" + str(properties[property_]) + "'"
+
+            column_names.append(property_)
+            values.append(value)
+
+        srid = self.get_srid_from_table_name(resource_json["f_table_name"])
+
+        # put the GEOM attribute
+        column_names.append("geom")
+        values.append("ST_SetSRID(ST_GeomFromGeoJSON('" + str(dumps(resource_json["geometry"])) + "'), " + str(srid) + ")")
+
+        column_names = ", ".join(column_names)
+        values = ", ".join(values)
+
+        insert_statement = """
+            INSERT INTO {0} ({1}) VALUES ({2}) RETURNING id;
+        """.format(resource_json["f_table_name"], column_names, values)
+
+        return insert_statement
 
     def get_columns_from_table_formatted(self, list_of_column_name_with_type):
         column_names = []
@@ -2010,21 +2039,8 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_feature(self, resource_json):
-        passed_properties = resource_json["properties"]
-
-        columns_of_table = self.get_columns_from_table(resource_json["f_table_name"])
-        # columns_of_table_string = self.get_columns_from_table_formatted_02(columns_of_table, passed_properties)
-
-        #
-
-        query_text = """
-            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
-                                        receive_notification_by_email, is_email_valid) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
-            RETURNING user_id;
-        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
-                   p["receive_notification_by_email"], p["is_email_valid"])
+    def create_feature(self, resource_json, current_user_id):
+        query_text = self.get_insert_statement_from_geojson(resource_json)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -60,10 +60,10 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="1001")
 
     # feature - create, update and delete
-    """
+
     def test_api_feature_create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.tester.auth_login("rafael@admin.com", "rafael")
 
         ####################################################################################################
         # create a changeset to create a feature
@@ -80,13 +80,13 @@ class TestAPIFeature(TestCase):
         # create a feature with user miguel
         ##################################################
 
-        f_table_name = "layer_1003"
+        f_table_name = "layer_1002"
 
         feature = {
             'f_table_name': f_table_name,
-            'properties': {'id': -1, 'geom': 'MULTIPOINT(-50.63 -20.52)', 'changeset_id': changeset_create_feature_id,
-                           'end_date': '1870-12-31', 'start_date': '1870-01-01',
-                           'address': 'R. São Paulo, 123', 'version': 1},
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_create_feature_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
         feature = self.tester.api_feature_create(feature)
@@ -130,7 +130,7 @@ class TestAPIFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
 
 class TestAPIFeatureFeature(TestCase):
 

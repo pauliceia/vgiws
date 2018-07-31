@@ -824,5 +824,24 @@ ORDER BY ordinal_position
 
 */
 
+/*
+select * from layer_1006;
 
+INSERT INTO layer_1006 (id, geom, name, start_date, end_date, changeset_id) 
+VALUES (1005, ST_SetSRID(
+	ST_GeomFromGeoJSON(
+		'{
+		    "type":"MultiPolygon",
+		    "coordinates":[[[[-46.6323318652266, -23.5316246866608], [-46.6316800884359, -23.5296637586354], [-46.6221419360542, -23.5384048923064], [-46.6375790530164, -23.5290461960682], [-46.6323318652266, -23.5316246866608]]]]
+		}'
+	), 4326), 
+	'Joar''s cinema', 1900, 1940, 1006);
+
+SELECT srid FROM geometry_columns WHERE f_table_name='layer_1001';
+*/
+/*
+INSERT INTO layer_1002 (start_date, changeset_id, address, end_date, geom) 
+VALUES ('1870-01-01', 1, 'R. São José', '1870-12-31', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "MultiPoint", "coordinates": [[-46.6375790530164, -23.5290461960682]]}'), 4326)) 
+RETURNING id;
+*/
 

@@ -17,11 +17,11 @@ This method gets features from DB. If you doesn't put any parameter, so it will 
     {
         'features': [
             {
-                'properties': {'changeset_id': 1001, 'id': 1001, 'end_date': '1869-12-31 00:00:00',
-                               'geom': 'MULTIPOINT(-46.6375790530164 -23.5290461960682)', 'version': 1,
-                               'address': 'R. São José', 'start_date': '1869-01-01 00:00:00'},
+                'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. São José',
+                               'id': 1001, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
                 'type': 'Feature'
-            },
+            }
         ],
         'type': 'FeatureCollection'
     }

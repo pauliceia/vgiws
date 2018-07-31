@@ -356,14 +356,23 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except KeyError as error:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            if error.pgcode == "42703":  # 42703 - undefined_column
+                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
+            else:
+                raise error  # if is other error, so raise it up
         except Error as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
                 raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+            elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
+                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
