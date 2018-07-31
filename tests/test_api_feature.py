@@ -22,21 +22,21 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'changeset_id': 1001, 'id': 1001, 'end_date': '1869-12-31 00:00:00',
-                                   'geom': 'MULTIPOINT(-46.6375790530164 -23.5290461960682)', 'version': 1,
-                                   'address': 'R. São José', 'start_date': '1869-01-01 00:00:00'},
+                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. São José',
+                                   'id': 1001, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'changeset_id': 1001, 'id': 1002, 'end_date': '1869-12-31 00:00:00',
-                                   'geom': 'MULTIPOINT(-46.6498716962487 -23.5482894062877)', 'version': 1,
-                                   'address': 'R. Marechal Deodoro', 'start_date': '1869-01-01 00:00:00'},
+                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. Marechal Deodoro',
+                                   'id': 1002, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'geometry': {'coordinates': [[-46.6498716962487, -23.5482894062877]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'changeset_id': 1001, 'id': 1003, 'end_date': '1875-12-31 00:00:00',
-                                   'geom': 'MULTIPOINT(-46.6468896156385 -23.5494865576549)', 'version': 1,
-                                   'address': None, 'start_date': '1875-01-01 00:00:00'},
+                    'properties': {'end_date': '1875-12-31T00:00:00', 'version': 1, 'address': None, 'id': 1003,
+                                   'start_date': '1875-01-01T00:00:00', 'changeset_id': 1001},
+                    'geometry': {'coordinates': [[-46.6468896156385, -23.5494865576549]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 }
             ]
@@ -49,9 +49,9 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'changeset_id': 1001, 'id': 1001, 'end_date': '1869-12-31 00:00:00',
-                                   'geom': 'MULTIPOINT(-46.6375790530164 -23.5290461960682)', 'version': 1,
-                                   'address': 'R. São José', 'start_date': '1869-01-01 00:00:00'},
+                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. São José',
+                                   'id': 1001, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 }
             ]

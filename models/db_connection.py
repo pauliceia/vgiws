@@ -1982,14 +1982,13 @@ class PGSQLConnection:
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Feature',
-                    'properties', json_build_object(
-                        {0}
-                    )
+                    'geometry',   ST_AsGeoJSON(geom)::json,
+                    'properties', to_jsonb(feature) - 'geom'
                 ))
             ) AS row_to_json
             FROM
-            {1}
-        """.format(columns_of_table_string, subquery)
+            {0}
+        """.format(subquery)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
