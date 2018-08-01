@@ -113,10 +113,10 @@ class TestAPIFeature(TestCase):
         feature_id = feature["properties"]["id"]
 
         # remove the resource
-        # self.tester.api_feature_delete(resource_id)
+        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id)
 
         # it is not possible to find the resource that just deleted
-        # self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
+        self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
 
         ####################################################################################################
         # login with admin to delete the changesets

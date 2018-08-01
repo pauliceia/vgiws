@@ -2068,13 +2068,13 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def delete_feature(self, feature_id):
+    def delete_feature(self, f_table_name, feature_id):
         if is_a_invalid_id(feature_id):
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            DELETE FROM pauliceia_user WHERE user_id={0};
-        """.format(feature_id)
+            DELETE FROM {0} WHERE id={1};
+        """.format(f_table_name, feature_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -1584,8 +1584,10 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-    def api_feature_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/feature/{0}'.format(feature_id),
+    def api_feature_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(arguments),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
