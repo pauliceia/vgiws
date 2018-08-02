@@ -96,8 +96,9 @@ This method deletes one feature by id.
 - Parameters:
     - f_table_name (mandatory) (text): which feature table is searching (e.g 'layer_1001');
     - feature_id (mandatory) (int): the id of a feature that is a positive integer not null (e.g. 1, 2, 3, ...).
+    - changeset_id (mandatory) (int): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a resource by id: ```DELETE http://localhost:8888/api/feature/?f_table_name=layer_1001&feature_id=1001```
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/feature/?f_table_name=layer_1001&feature_id=1001&changeset_id=1001```
 - Send (in Body):
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.

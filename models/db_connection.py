@@ -1921,13 +1921,15 @@ class PGSQLConnection:
 
         return result["srid"]
 
-    def get_insert_statement_from_geojson(self, resource_json):
+    def get_insert_statement_from_geojson(self, resource_json, remove_id_and_version_from_properties=True):
         column_names = []
         values = []
 
         properties = resource_json["properties"]
-        del properties["id"]  # it is not possible to set the id and version
-        del properties["version"]
+
+        if remove_id_and_version_from_properties:  # it is used when create a new feature
+            del properties["id"]  # it is not possible to set the id and version
+            del properties["version"]
 
         for property_ in properties:
             if isinstance(properties[property_], int):
@@ -2039,8 +2041,9 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_feature(self, resource_json, current_user_id):
-        query_text = self.get_insert_statement_from_geojson(resource_json)
+    def create_feature(self, resource_json, current_user_id, remove_id_and_version_from_properties=True):
+        query_text = self.get_insert_statement_from_geojson(resource_json,
+                                                            remove_id_and_version_from_properties=remove_id_and_version_from_properties)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -2068,10 +2071,18 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def delete_feature(self, f_table_name, feature_id):
-        if is_a_invalid_id(feature_id):
+    def delete_feature(self, f_table_name, feature_id, changeset_id, current_user_id):
+        if is_a_invalid_id(feature_id) and is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
+        ##################################################
+        # get the feature before of deleting it
+        ##################################################
+        feature = self.get_feature(f_table_name, feature_id=feature_id)["features"][0]
+
+        ##################################################
+        # try to delete the feature from feature table
+        ##################################################
         query_text = """
             DELETE FROM {0} WHERE id={1};
         """.format(f_table_name, feature_id)
@@ -2083,6 +2094,14 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
+
+        ##################################################
+        # add the version_feature_table name in resource json and the changeset id
+        # and insert the feature inside the version_feature_table name
+        ##################################################
+        feature["f_table_name"] = "version_" + f_table_name
+        feature["properties"]["changeset_id"] = changeset_id
+        self.create_feature(feature, current_user_id, remove_id_and_version_from_properties=False)
 
     ################################################################################
     # METHODS

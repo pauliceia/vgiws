@@ -69,12 +69,12 @@ class TestAPIFeature(TestCase):
         # create a changeset to create a feature
         ##################################################
 
-        changeset_create_feature = {
+        changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Inserting feature in layer_1003'},
             'type': 'Changeset'
         }
-        changeset_create_feature = self.tester.api_changeset_create(changeset_create_feature)
-        changeset_create_feature_id = changeset_create_feature["properties"]["changeset_id"]
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
 
         ##################################################
         # create a feature with user miguel
@@ -85,14 +85,11 @@ class TestAPIFeature(TestCase):
         feature = {
             'f_table_name': f_table_name,
             'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
-                           'address': 'R. São José', 'changeset_id': changeset_create_feature_id},
+                           'address': 'R. São José', 'changeset_id': changeset_id},
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
         feature = self.tester.api_feature_create(feature)
-
-        # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=changeset_create_feature_id)
 
         ####################################################################################################
         # update the feature with admin
@@ -113,10 +110,13 @@ class TestAPIFeature(TestCase):
         feature_id = feature["properties"]["id"]
 
         # remove the resource
-        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id)
+        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
         self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
+
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
 
         ####################################################################################################
         # login with admin to delete the changesets
@@ -124,7 +124,7 @@ class TestAPIFeature(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_create_feature_id)
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         ####################################################################################################
 
