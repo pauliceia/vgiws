@@ -1907,6 +1907,20 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
+    def are_properties_valid(self, f_table_name, properties):
+        list_of_column_name_with_type = self.get_columns_from_table(f_table_name)
+
+        # if one column of the feature table is not specified in properties, so it is an invalid GeoJSON
+        for column_name_with_type in list_of_column_name_with_type:
+            # to ignore the "geom" column, because it is not specified in properties
+            if column_name_with_type["column_name"] == "geom":
+                continue
+
+            if not column_name_with_type["column_name"] in properties:
+                return False
+
+        return True
+
     def get_srid_from_table_name(self, table_name):
 
         query_text = """
@@ -1926,6 +1940,10 @@ class PGSQLConnection:
         values = []
 
         properties = resource_json["properties"]
+        f_table_name = resource_json["f_table_name"]
+
+        if not self.are_properties_valid(f_table_name, properties):
+            raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure!")
 
         if remove_id_and_version_from_properties:  # it is used when create a new feature
             del properties["id"]  # it is not possible to set the id and version
@@ -1940,7 +1958,7 @@ class PGSQLConnection:
             column_names.append(property_)
             values.append(value)
 
-        srid = self.get_srid_from_table_name(resource_json["f_table_name"])
+        srid = self.get_srid_from_table_name(f_table_name)
 
         # put the GEOM attribute
         column_names.append("geom")
@@ -1951,7 +1969,7 @@ class PGSQLConnection:
 
         insert_statement = """
             INSERT INTO {0} ({1}) VALUES ({2}) RETURNING id;
-        """.format(resource_json["f_table_name"], column_names, values)
+        """.format(f_table_name, column_names, values)
 
         return insert_statement
 

@@ -161,36 +161,64 @@ class TestAPIFeatureFeature(TestCase):
         self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
 
     # feature errors - create
-    """
-    def test_post_api_feature_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to create a feature with a name that already exist
-        resource = {
-            'properties': {'name': 'event', 'parent_id': 1003},
-            'type': 'feature'
-        }
-        self.tester.api_feature_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
 
     def test_post_api_feature_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("rafael@admin.com", "rafael")
 
-        # try to create a layer (without name)
+        # try to create a layer (without f_table_name)
         resource = {
-            'properties': {'parent_id': 1003},
-            'type': 'feature'
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1002},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
         }
         self.tester.api_feature_create_error_400_bad_request(resource)
 
-        # try to create a layer (without parent_id)
+        # try to create a layer (without properties)
         resource = {
-            'properties': {'name': 'newfeature'},
-            'type': 'feature'
+            'f_table_name': 'layer_1002',
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_400_bad_request(resource)
+
+        # try to create a layer (without geometry)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1002},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_400_bad_request(resource)
+
+        # try to create a layer (without start_date)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1002},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_400_bad_request(resource)
+
+        # try to create a layer (without address)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'changeset_id': 1002},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_400_bad_request(resource)
+
+        # try to create a layer (without changeset_id)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José'},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
         }
         self.tester.api_feature_create_error_400_bad_request(resource)
 
@@ -199,11 +227,14 @@ class TestAPIFeatureFeature(TestCase):
 
     def test_post_api_feature_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
-            'properties': {'feature_id': -1, 'name': 'newfeature', 'parent_id': 1003},
-            'type': 'feature'
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1001},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
         }
         self.tester.api_feature_create_error_401_unauthorized(resource)
-
+    """
     # feature errors - update
 
     def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
