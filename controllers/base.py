@@ -1095,7 +1095,9 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_user_uses_the_changeset(current_user_id, resource_json["properties"]["changeset_id"])
         self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
+
         return self.PGSQLConn.create_feature(resource_json, current_user_id, **kwargs)
 
     # PUT
@@ -1108,10 +1110,25 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
+        # self.can_user_uses_the_changeset(current_user_id, kwargs["changeset_id"])
         self.can_current_user_manage(current_user_id, kwargs["f_table_name"])
+
         self.PGSQLConn.delete_feature(kwargs["f_table_name"], kwargs["feature_id"], kwargs["changeset_id"], current_user_id)
 
     # VALIDATION
+
+    def can_user_uses_the_changeset(self, current_user_id, changeset_id):
+        try:
+            changeset = self.PGSQLConn.get_changesets(changeset_id)["features"][0]
+        except HTTPError as error:
+            # if not found a layer, so raise a better error message
+            if error.status_code == 404:
+                raise HTTPError(404, "Not found the specified changeset_id.")
+            else:
+                raise error
+
+        if changeset["properties"]["user_id_creator"] != current_user_id:
+            raise HTTPError(403, "The specified changeset_id was not created by current user.")
 
     def can_current_user_manage(self, current_user_id, f_table_name):
 
@@ -1123,6 +1140,8 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
             if error.status_code == 404:
                 raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
                                 "It is needed to create a layer with the f_table_name before of using this function.")
+            else:
+                raise error
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 

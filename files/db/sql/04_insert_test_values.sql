@@ -343,7 +343,7 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1002, 1004, '2017-03-05');
 
 -- create a changeset
-INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1002, 'Creating layer_1002', '2017-03-05', 1002, 1003);
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1002, 'Creating layer_1002', '2017-03-05', 1002, 1004);
 
 -- insert the data into the layer
 INSERT INTO layer_1002 (id, geom, address, start_date, end_date, changeset_id) VALUES 

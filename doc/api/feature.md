@@ -60,6 +60,8 @@ This method creates a new feature described in a JSON.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the feature table structure!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
+     - 403 (Forbidden): The specified changeset_id was not created by current user.
+     - 404 (Not Found): Not found the specified changeset_id.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.

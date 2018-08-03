@@ -26,7 +26,7 @@ class TestAPIChangeset(TestCase):
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1003, 'changeset_id': 1002,
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1002,
                                    'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
                                    'description': 'Creating layer_1002'},
                     'type': 'Changeset'
@@ -156,7 +156,7 @@ class TestAPIChangeset(TestCase):
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1003, 'changeset_id': 1002,
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1002,
                                    'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
                                    'description': 'Creating layer_1002'},
                     'type': 'Changeset'

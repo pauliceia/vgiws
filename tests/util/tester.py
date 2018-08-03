@@ -1628,6 +1628,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_feature_create_error_404_not_found(self, resource_json):
+        response = self.session.post(self.URL + '/api/feature/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
     # feature errors - update
 
     def api_feature_update_error_400_bad_request(self, resource_json):

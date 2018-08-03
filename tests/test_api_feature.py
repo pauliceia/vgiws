@@ -252,6 +252,40 @@ class TestAPIFeatureFeature(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_feature_create_error_403_forbidden_user_did_not_create_the_changeset(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer (without f_table_name)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1001},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_403_forbidden(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_feature_create_error_404_not_found_changeset_id(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer (without f_table_name)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 999},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # feature errors - update
     """
     def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
