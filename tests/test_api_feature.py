@@ -381,19 +381,19 @@ class TestAPIFeatureFeature(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("rafael@admin.com", "rafael")
 
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id="abc", changeset_id=1001)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=0, changeset_id=1001)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=-1, changeset_id=1001)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id="-1", changeset_id=1001)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id="0", changeset_id=1001)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="abc", changeset_id=1002)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=0, changeset_id=1002)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=-1, changeset_id=1002)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="-1", changeset_id=1002)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="0", changeset_id=1002)
 
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=1001, changeset_id="abc")
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=1001, changeset_id=0)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=1001, changeset_id=-1)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=1001, changeset_id="-1")
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1001", feature_id=1001, changeset_id="0")
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id="abc")
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id=0)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id=-1)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id="-1")
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -407,26 +407,41 @@ class TestAPIFeatureFeature(TestCase):
         self.tester.api_feature_delete_error_401_unauthorized(f_table_name="layer_1001", feature_id="1001", changeset_id=1001)
 
     def test_delete_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ########################################
+        # try to delete the feature with user miguel
+        ########################################
+        # TRY TO REMOVE THE LAYER
+        self.tester.api_feature_delete_error_403_forbidden(f_table_name="layer_1001", feature_id="1001", changeset_id=1002)
+
+        # logout with user rodrigo
+        self.tester.auth_logout()
+    
+    def test_delete_api_feature_error_403_forbidden_user_did_not_create_the_changeset(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the feature with user miguel
         ########################################
         # TRY TO REMOVE THE LAYER
-        self.tester.api_feature_delete_error_403_forbidden(f_table_name="layer_1001", feature_id="1001", changeset_id=1001)
+        self.tester.api_feature_delete_error_403_forbidden(f_table_name="layer_1001", feature_id="1001", changeset_id=1002)
 
         # logout with user rodrigo
         self.tester.auth_logout()
 
-    def test_delete_api_feature_error_404_not_found(self):
+    def test_delete_api_feature_error_404_not_found_feature_id_or_changeset_id(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("rafael@admin.com", "rafael")
 
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1001", feature_id="999", changeset_id=1001)
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1001", feature_id="999", changeset_id=1001)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1002)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1002)
+
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=999)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=999)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

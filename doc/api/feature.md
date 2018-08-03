@@ -101,15 +101,17 @@ This method deletes one feature by id.
     - feature_id (mandatory) (int): the id of a feature that is a positive integer not null (e.g. 1, 2, 3, ...).
     - changeset_id (mandatory) (int): the id of a changeset that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-     - Delete a resource by id: ```DELETE http://localhost:8888/api/feature/?f_table_name=layer_1001&feature_id=1001&changeset_id=1001```
+    - Delete a resource by id: ```DELETE http://localhost:8888/api/feature/?f_table_name=layer_1001&feature_id=1001&changeset_id=1001```
 - Send (in Body):
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Invalid parameter.
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
-     - 404 (Not Found): Not found any resource.
-     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
+    - 400 (Bad Request): Invalid parameter.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
+    - 403 (Forbidden): The specified changeset_id was not created by current user.
+    - 404 (Not Found): Not found any resource.
+    - 404 (Not Found): Not found the specified changeset_id.
+    - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

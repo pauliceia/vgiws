@@ -1110,7 +1110,7 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        # self.can_user_uses_the_changeset(current_user_id, kwargs["changeset_id"])
+        self.can_user_uses_the_changeset(current_user_id, kwargs["changeset_id"])
         self.can_current_user_manage(current_user_id, kwargs["f_table_name"])
 
         self.PGSQLConn.delete_feature(kwargs["f_table_name"], kwargs["feature_id"], kwargs["changeset_id"], current_user_id)
