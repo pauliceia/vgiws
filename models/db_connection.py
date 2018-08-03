@@ -2090,7 +2090,7 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
     def delete_feature(self, f_table_name, feature_id, changeset_id, current_user_id):
-        if is_a_invalid_id(feature_id) and is_a_invalid_id(changeset_id):
+        if is_a_invalid_id(feature_id) or is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
         ##################################################
