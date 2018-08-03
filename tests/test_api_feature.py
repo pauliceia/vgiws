@@ -169,7 +169,7 @@ class TestAPIFeatureFeature(TestCase):
         # try to create a layer (without f_table_name)
         resource = {
             'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
-                           'address': 'R. São José', 'changeset_id': 1002},
+                           'address': 'R. São José', 'changeset_id': 1014},
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
@@ -187,7 +187,7 @@ class TestAPIFeatureFeature(TestCase):
         resource = {
             'f_table_name': 'layer_1002',
             'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
-                           'address': 'R. São José', 'changeset_id': 1002},
+                           'address': 'R. São José', 'changeset_id': 1014},
             'type': 'Feature'
         }
         self.tester.api_feature_create_error_400_bad_request(resource)
@@ -196,7 +196,7 @@ class TestAPIFeatureFeature(TestCase):
         resource = {
             'f_table_name': 'layer_1002',
             'properties': {'id': -1, 'end_date': '1870-12-31', 'version': 1,
-                           'address': 'R. São José', 'changeset_id': 1002},
+                           'address': 'R. São José', 'changeset_id': 1014},
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
@@ -206,7 +206,7 @@ class TestAPIFeatureFeature(TestCase):
         resource = {
             'f_table_name': 'layer_1002',
             'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
-                           'changeset_id': 1002},
+                           'changeset_id': 1014},
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
@@ -383,11 +383,11 @@ class TestAPIFeatureFeature(TestCase):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="abc", changeset_id=1002)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=0, changeset_id=1002)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=-1, changeset_id=1002)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="-1", changeset_id=1002)
-        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="0", changeset_id=1002)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="abc", changeset_id=1014)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=0, changeset_id=1014)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=-1, changeset_id=1014)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="-1", changeset_id=1014)
+        self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id="0", changeset_id=1014)
 
         self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id="abc")
         self.tester.api_feature_delete_error_400_bad_request(f_table_name="layer_1002", feature_id=1001, changeset_id=0)
@@ -413,7 +413,7 @@ class TestAPIFeatureFeature(TestCase):
         # try to delete the feature with user miguel
         ########################################
         # TRY TO REMOVE THE LAYER
-        self.tester.api_feature_delete_error_403_forbidden(f_table_name="layer_1001", feature_id="1001", changeset_id=1002)
+        self.tester.api_feature_delete_error_403_forbidden(f_table_name="layer_1001", feature_id="1001", changeset_id=1014)
 
         # logout with user rodrigo
         self.tester.auth_logout()
@@ -437,11 +437,11 @@ class TestAPIFeatureFeature(TestCase):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1002)
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1002)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
 
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=999)
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=999)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

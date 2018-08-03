@@ -64,6 +64,11 @@ class TestAPIChangeset(TestCase):
                     'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1014,
+                                   'closed_at': None, 'layer_id': 1002, 'description': 'An open changeset'},
+                    'type': 'Changeset'
                 }
             ],
             'type': 'FeatureCollection'
@@ -138,6 +143,11 @@ class TestAPIChangeset(TestCase):
                 {
                     'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
+                    'type': 'Changeset'
+                },
+                {
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1014,
+                                   'closed_at': None, 'layer_id': 1002, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 }
             ],

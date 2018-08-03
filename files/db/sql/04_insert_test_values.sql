@@ -367,6 +367,9 @@ VALUES (1009,
 -- close the changeset
 UPDATE changeset SET closed_at='2017-03-05' WHERE changeset_id=1002;
 
+-- create a open changeset
+INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1014, 'An open changeset', '2017-01-08', 1002, 1004);
+
 -- verify if the layer has features and verify if the changeset was created
 /*
 SELECT * FROM layer_1002;

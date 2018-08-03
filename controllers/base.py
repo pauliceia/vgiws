@@ -1130,6 +1130,10 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
         if changeset["properties"]["user_id_creator"] != current_user_id:
             raise HTTPError(403, "The specified changeset_id was not created by current user.")
 
+        closed_at = changeset["properties"]["closed_at"]
+        if closed_at is not None:
+            raise HTTPError(409, "The specified changeset_id was already closed in " + str(closed_at))
+
     def can_current_user_manage(self, current_user_id, f_table_name):
 
         try:
