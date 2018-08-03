@@ -455,10 +455,7 @@ class TestAPIFeatureFeature(TestCase):
         self.tester.auth_login("rafael@admin.com", "rafael")
 
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
-
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
-        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="998", changeset_id=1014)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
