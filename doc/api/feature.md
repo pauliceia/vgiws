@@ -62,6 +62,7 @@ This method creates a new feature described in a JSON.
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
      - 403 (Forbidden): The specified changeset_id was not created by current user.
      - 404 (Not Found): Not found the specified changeset_id.
+     - 409 (Conflict): The specified changeset_id was already closed.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
@@ -113,5 +114,6 @@ This method deletes one feature by id.
     - 403 (Forbidden): The specified changeset_id was not created by current user.
     - 404 (Not Found): Not found any resource.
     - 404 (Not Found): Not found the specified changeset_id.
+    - 409 (Conflict): The specified changeset_id was already closed.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

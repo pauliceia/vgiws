@@ -1634,6 +1634,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    def api_feature_create_error_409_conflict(self, resource_json):
+        response = self.session.post(self.URL + '/api/feature/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
     # feature errors - update
 
     def api_feature_update_error_400_bad_request(self, resource_json):
@@ -1693,6 +1699,14 @@ class UtilTester:
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+    def api_feature_delete_error_409_conflict(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/feature/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
 
     ##################################################
     # IMPORT

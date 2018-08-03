@@ -286,6 +286,23 @@ class TestAPIFeatureFeature(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_feature_create_error_409_conflict_changeset_was_already_closed(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer (without f_table_name)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1002},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_409_conflict(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # feature errors - update
     """
     def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
@@ -442,6 +459,19 @@ class TestAPIFeatureFeature(TestCase):
 
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_feature_error_409_conflict_changeset_was_already_closed(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        self.tester.api_feature_delete_error_409_conflict(f_table_name="layer_1002", feature_id="1001", changeset_id=1002)
+        self.tester.api_feature_delete_error_409_conflict(f_table_name="layer_1002", feature_id="1001", changeset_id=1002)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
