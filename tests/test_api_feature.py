@@ -225,6 +225,23 @@ class TestAPIFeatureFeature(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_feature_create_error_400_bad_request_invalid_geometry(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer with an invalid geometry
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1014},
+            'geometry': {'coordinates': [-46.6375790530164, -23.5290461960682], 'type': 'Point'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_post_api_feature_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'f_table_name': 'layer_1002',

@@ -58,6 +58,7 @@ This method creates a new feature described in a JSON.
     ```
 - Error codes:
      - 400 (Bad Request): Some attribute in JSON is missing. Look the feature table structure!
+     - 400 (Bad Request): One specified attribute is invalid.
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
      - 403 (Forbidden): The specified changeset_id was not created by current user.
