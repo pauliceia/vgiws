@@ -286,7 +286,10 @@ class PGSQLConnection:
                         'terms_agreed',   terms_agreed,                        
                         'login_date',     login_date,
                         'is_the_admin',   is_the_admin,
-                        'receive_notification_by_email',   receive_notification_by_email 
+                        'receive_notification_by_email',   receive_notification_by_email,                        
+                        'picture',        picture,                        
+                        'social_id',      social_id,
+                        'social_account', social_account 
                     )
                 ))
             ) AS row_to_json

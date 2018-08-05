@@ -7,46 +7,45 @@ DELETE FROM pauliceia_user;
 -- add users
 -- PS: the passwords are in sha512 hash
 
---login_date, is_the_admin, can_add_layer, receive_notification_by_email) 
 -- password - admin
-INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1001, 'admin', 'admin@admin.com', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec', 
-'Administrator', '2017-01-01', TRUE, TRUE, '2017-01-01', TRUE, FALSE);
+'Administrator', '2017-01-01', TRUE, TRUE, '2017-01-01', TRUE, FALSE, '', '', '');
 
 -- password - rodrigo
-INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1002, 'rodrigo', 'rodrigo@admin.com', '3ad7e557497e106756c44b7f3f401fd3f28f84c3c9ad989157868d03686f683f82d5cde1a096c4bbdbd76287e96e9a04d9f0ce8726b945c95f01b18361088a0d', 
-'Rodrigo', '2017-03-03', TRUE, TRUE, '2017-03-03', TRUE, FALSE);
+'Rodrigo', '2017-03-03', TRUE, TRUE, '2017-03-03', TRUE, FALSE, '', '', '');
 
 -- password - miguel
-INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1003, 'miguel', 'miguel@admin.com', 'e1fc7a4313def98ae5303b0448c89d9a5126f3239608950859f3ea6fdeb8b19f6f7c103ecf97700be851cfbf8cda756c0929498021c675c643809eeeb4ebcbda', 
-'Miguel', '2017-05-08', TRUE, TRUE, '2017-05-08', FALSE, FALSE);
+'Miguel', '2017-05-08', TRUE, TRUE, '2017-05-08', FALSE, FALSE, '', '', '');
 
 -- password - rafael
-INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1004, 'rafael', 'rafael@admin.com', 'c5663337df01fe3ab80478e78963534956a7e5446d72b16db9f33a36c787954414fea6de37a02d5f32ac2fe18f010068688d707e6dd260ca1f0a255f6d2f1959', 
-'Rafael', '2017-06-09', TRUE, FALSE, '2017-06-09', FALSE, TRUE);
+'Rafael', '2017-06-09', TRUE, FALSE, '2017-06-09', FALSE, TRUE, '', '', '');
 
 -- password - gabriel
-INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1005, 'gabriel', 'gabriel@admin.com', '5dbe7d079067809bb06f7c80de78ecb9d914f5735265148cd704f85353fc0b5114ebbfc960539cd3f430e7b12eb3fdc261726bb756bab9658c6db6a302913df1', 
-'Gabriel', '2017-09-20', FALSE, FALSE, '2017-09-20', FALSE, TRUE);
+'Gabriel', '2017-09-20', FALSE, FALSE, '2017-09-20', FALSE, TRUE, '', '', '');
 
 -- password - fernanda
-INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda',
-'2017-01-19', TRUE, FALSE, '2017-01-19', FALSE, TRUE);
+'2017-01-19', TRUE, FALSE, '2017-01-19', FALSE, TRUE, '', '', '');
 
 -- password - ana
-INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1007, 'ana', 'ana@gmail.com', 'ana',
-'2017-01-18', FALSE, TRUE, '2017-01-18', FALSE, FALSE);
+'2017-01-18', FALSE, TRUE, '2017-01-18', FALSE, FALSE, '', '', '');
 
 -- password - bea
-INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email) 
+INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1008, 'bea', 'bea@gmail.com', 'bea', 
-'2017-01-30', FALSE, FALSE, '2017-01-30', FALSE, FALSE);
+'2017-01-30', FALSE, FALSE, '2017-01-30', FALSE, FALSE, '', '', '');
 
 
 -- SELECT name FROM pauliceia_user;
