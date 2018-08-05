@@ -322,13 +322,22 @@ class PGSQLConnection:
         else:
             p["is_email_valid"] = False
 
+        if "picture" not in p:
+            p["picture"] = ""
+        if "social_id" not in p:
+            p["social_id"] = ""
+        if "social_account" not in p:
+            p["social_account"] = ""
+
         query_text = """
-            INSERT INTO pauliceia_user (email, username, name, password, created_at, terms_agreed, 
-                                        receive_notification_by_email, is_email_valid) 
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6})
+            INSERT INTO pauliceia_user (email, username, name, password, created_at, 
+                                        terms_agreed, receive_notification_by_email, is_email_valid,
+                                        picture, social_id, social_account) 
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6}, '{7}', '{8}', '{9}')
             RETURNING user_id;
-        """.format(p["email"], p["username"], p["name"], p["password"], p["terms_agreed"],
-                   p["receive_notification_by_email"], p["is_email_valid"])
+        """.format(p["email"], p["username"], p["name"], p["password"],
+                   p["terms_agreed"], p["receive_notification_by_email"], p["is_email_valid"],
+                   p["picture"], p["social_id"], p["social_account"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -169,7 +169,7 @@ class FacebookLoginHandler(BaseHandlerSocialLogin, FacebookGraphMixin):
                     extra_fields=['email']
             )
 
-            self.social_login(user)
+            self.social_login(user, "facebook")
 
         else:
             yield self.authorize_redirect(
@@ -201,7 +201,7 @@ class GoogleLoginHandler(BaseHandlerSocialLogin, GoogleOAuth2Mixin):
                             "https://www.googleapis.com/oauth2/v1/userinfo",
                             access_token=access["access_token"])
 
-            self.social_login(user)
+            self.social_login(user, "google")
 
         else:
             yield self.authorize_redirect(

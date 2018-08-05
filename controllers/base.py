@@ -264,15 +264,24 @@ class BaseHandler(RequestHandler):
 
 class BaseHandlerSocialLogin(BaseHandler):
 
-    def social_login(self, user):
+    def social_login(self, user, social_account):
         # print("\nuser: ", user, "\n")
         # for key in user:
         #     print(key, ": ", user[key])
 
+        if isinstance(user["picture"], str):  # google photo
+            picture = user["picture"]
+        elif isinstance(user["picture"], dict):  # facebook photo
+            # picture = user["picture"]["data"]["url"]  # this image is 50x50
+            picture = "https://graph.facebook.com/{0}/picture?type=large&height=500".format(user['id'])
+        else:
+            picture = ''
+
         user_json = {
             'type': 'User',
             'properties': {'user_id': -1, 'email': user["email"], 'password': '', 'username': user["email"],
-                           'name': user['name'], 'terms_agreed': True, 'receive_notification_by_email': False}
+                           'name': user['name'], 'terms_agreed': True, 'receive_notification_by_email': False,
+                           'picture': picture, 'social_id': user['id'], 'social_account': social_account}
         }
 
         if "verified_email" not in user:  # login with facebook doesn't have "verified_email", but google has, so put it
