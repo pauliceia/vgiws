@@ -291,7 +291,7 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_create_error_401_unauthorized(feature)
 
-    def test_post_api_layer_create_error_409_unauthorized(self):
+    def test_post_api_layer_create_error_409_conflict(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
