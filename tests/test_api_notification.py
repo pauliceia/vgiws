@@ -189,6 +189,76 @@ class TestAPINotification(TestCase):
 
         self.tester.api_notification(expected, layer_id="NULL", keyword_id="NULL", notification_id_parent="NULL")
 
+    def test_get_api_notification_return_denunciations(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
+                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
+                                   'description': 'A camada contêm dados inapropriados.',
+                                   'created_at': '2017-03-01 00:00:00'}
+                }
+            ]
+        }
+
+        self.tester.api_notification(expected, is_denunciation=True)
+
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Congresso X acontecerá em 2018/03/25',
+                                   'created_at': '2017-01-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Evento Y no dia 24/06/2018',
+                                   'created_at': '2017-02-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
+                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
+                                   'description': 'Ações estão sendo tomadas.',
+                                   'created_at': '2017-03-01 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1015, 'is_denunciation': False, 'keyword_id': None,
+                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': 1002,
+                                   'description': 'Muito boa camada. Parabéns.',
+                                   'created_at': '2017-04-05 00:00:00'}
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
+                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
+                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
+                }
+            ]
+        }
+
+        self.tester.api_notification(expected, is_denunciation=False)
+
     # notification - create update and delete
 
     def test_api_notification_create_update_and_delete(self):

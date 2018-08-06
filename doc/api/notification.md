@@ -5,11 +5,12 @@
 
 This method gets notifications from DB. If you doesn't put any parameter, so will return all.
 - Parameters:
-    - notification_id (optional) (int): the id of a notification that is a positive integer not null (e.g. 1, 2, 3, ...).
-    - user_id_creator (optional) (int): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
-    - layer_id (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...).
-    - keyword_id (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...).
-    - notification_id_parent (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...).
+    - notification_id (optional) (int): the id of a notification that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - user_id_creator (optional) (int): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
+    - layer_id (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...);
+    - keyword_id (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...);
+    - notification_id_parent (optional) (int): the id of a user that is a positive integer or null (e.g. NULL, 1, 2, 3, ...);
+    - is_denunciation (optional) (boolean): a flag that indicates if the notification is a denunciation or not (e.g. True or False).
 - Examples:
      - Get all notifications: http://localhost:8888/api/notification/
      - Get one notification by id: http://localhost:8888/api/notification/?notification_id=1001
@@ -17,6 +18,8 @@ This method gets notifications from DB. If you doesn't put any parameter, so wil
      - Get notifications by layer id: http://localhost:8888/api/notification/?layer_id=1001
      - Get notifications by keyword id: http://localhost:8888/api/notification/?keyword_id=1001
      - Get notifications by notification id parent: http://localhost:8888/api/notification/?notification_id_parent=1001
+     - Get denunciations: http://localhost:8888/api/notification/?is_denunciation=True
+     - Don't get denunciations: http://localhost:8888/api/notification/?is_denunciation=False
      - Get all general notifications: http://localhost:8888/api/notification/?layer_id=NULL&keyword_id=NULL&notification_id_parent=NULL
 - Send:
 - Response: a JSON that contain the features selected. Example:

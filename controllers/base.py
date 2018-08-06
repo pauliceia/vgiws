@@ -998,7 +998,13 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
+        result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
+
+        # subject = "Notification - Not reply"
+        # body = ""
+        # self.send_notification_to_email("test@test.com", subject=subject, body=body)
+
+        return result
 
     # PUT
 
