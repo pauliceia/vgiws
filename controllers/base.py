@@ -12,6 +12,7 @@ from os.path import exists
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile, BadZipFile
+from copy import deepcopy
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -180,7 +181,7 @@ class BaseHandler(RequestHandler):
 
     # MAIL
 
-    def send_notification_to_email(self, to_email_address, subject="", body=""):
+    def send_email(self, to_email_address, subject="", body=""):
         from_mail_address = __TO_MAIL_ADDRESS__
 
         msg = MIMEMultipart()
@@ -213,7 +214,38 @@ class BaseHandler(RequestHandler):
             Please, click on under URL to validate your email:
             {0}
         """.format(url_to_validate_email)
-        self.send_notification_to_email(to_email_address, subject=subject, body=body)
+        self.send_email(to_email_address, subject=subject, body=body)
+
+    def send_notification_by_email(self, resource_json, current_user_id):
+
+        # TODO: create a thread to send the emails
+
+        users = {"features": []}
+
+        # (1) general notification, everybody receives a notification by email
+        if resource_json["properties"]["layer_id"] is None and resource_json["properties"]["keyword_id"] is None \
+                and resource_json["properties"]["notification_id_parent"] is None:
+            users = self.PGSQLConn.get_users()
+
+        # (2) notification by layer
+        # (2.1) everybody who is collaborator of the layer, will receive a not. by email
+
+        # (2.1) everybody who follows the layer, will receive a not. by email
+
+        # (3) notification by keyword: everybody who follows the keyword, will receive a not. by email
+
+        # send the email to the selected users
+
+        subject = "Notification - Not reply"
+        body = resource_json["properties"]["description"]
+
+        print("subject: ", subject)
+        print("body: ", body)
+
+        for user in users["features"]:
+            if user["properties"]["receive_notification_by_email"] and user["properties"]["is_email_valid"]:
+                print(user["properties"]["email"])
+                # self.send_email(user["email"], subject=subject, body=body)
 
     # URLS
 
@@ -998,11 +1030,11 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
+        resource_json_copy = deepcopy(resource_json)
+
         result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
 
-        # subject = "Notification - Not reply"
-        # body = ""
-        # self.send_notification_to_email("test@test.com", subject=subject, body=body)
+        # self.send_notification_by_email(resource_json_copy, current_user_id)
 
         return result
 
