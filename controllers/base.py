@@ -13,6 +13,8 @@ from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile, BadZipFile
 from copy import deepcopy
+from threading import Thread
+from time import sleep
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -28,10 +30,35 @@ from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEB
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
                                 __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
-from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__
+from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
+                                __EMAIL_SIGNATURE__
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
                             get_shapefile_name_inside_zip, catch_generic_exception
+
+
+def send_email(to_email_address, subject="", body=""):
+
+    def __thread_send_email__(__to_email_address__, __subject__, __body__):
+        __from_mail_address__ = __TO_MAIL_ADDRESS__
+
+        msg = MIMEMultipart()
+        msg['From'] = __from_mail_address__
+        msg['To'] = __to_email_address__
+        msg['Subject'] = __subject__
+
+        msg.attach(MIMEText(__body__, 'plain'))
+
+        server = SMTP(__SMTP_ADDRESS__, __SMTP_PORT__)
+        server.starttls()
+        server.login(__from_mail_address__, __PASSWORD_MAIL_ADDRESS__)
+        server.sendmail(__from_mail_address__, __to_email_address__, msg.as_string())
+        server.quit()
+
+        # print("\nSent email to: " + __to_email_address__ + "\n")
+
+    thread = Thread(target=__thread_send_email__, args=(to_email_address, subject, body,))
+    thread.start()
 
 
 # BASE CLASS
@@ -181,22 +208,6 @@ class BaseHandler(RequestHandler):
 
     # MAIL
 
-    def send_email(self, to_email_address, subject="", body=""):
-        from_mail_address = __TO_MAIL_ADDRESS__
-
-        msg = MIMEMultipart()
-        msg['From'] = from_mail_address
-        msg['To'] = to_email_address
-        msg['Subject'] = subject
-
-        msg.attach(MIMEText(body, 'plain'))
-
-        server = SMTP(__SMTP_ADDRESS__, __SMTP_PORT__)
-        server.starttls()
-        server.login(from_mail_address, __PASSWORD_MAIL_ADDRESS__)
-        server.sendmail(from_mail_address, to_email_address, msg.as_string())
-        server.quit()
-
     def send_validation_email_to(self, to_email_address, user_id):
         if self.DEBUG_MODE:
             url_to_validate_email = __VALIDATE_EMAIL_DEBUG__
@@ -207,19 +218,21 @@ class BaseHandler(RequestHandler):
 
         url_to_validate_email += "/" + email_token   # convert bytes to str
 
-        subject = "Email Validation"
+        subject = "Email Validation - Not reply"
         body = """
-            Please, not reply this message.
+Hello, 
 
-            Please, click on under URL to validate your email:
-            {0}
-        """.format(url_to_validate_email)
-        self.send_email(to_email_address, subject=subject, body=body)
+Please, not reply this message.
 
-    def send_notification_by_email(self, resource_json, current_user_id):
+Please, click on under URL to validate your email:
+{0}
+          
+{1}
+        """.format(url_to_validate_email, __EMAIL_SIGNATURE__)
 
-        # TODO: create a thread to send the emails
+        send_email(to_email_address, subject=subject, body=body)
 
+    def get_users_to_send_email(self, resource_json):
         users = {"features": []}
 
         # (1) general notification, everybody receives a notification by email
@@ -229,23 +242,55 @@ class BaseHandler(RequestHandler):
 
         # (2) notification by layer
         # (2.1) everybody who is collaborator of the layer, will receive a not. by email
+        elif resource_json["properties"]["layer_id"] is not None:
+            # get all the collaborators of the layer
+            users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
+
+            # get the user information of the collaborators
+            for user_layer in users_layer["features"]:
+                user = self.PGSQLConn.get_users(user_layer["properties"]["user_id"])["features"][0]
+                users["features"].append(user)
 
         # (2.1) everybody who follows the layer, will receive a not. by email
 
         # (3) notification by keyword: everybody who follows the keyword, will receive a not. by email
 
-        # send the email to the selected users
+        return users
+
+    def send_email_to_selected_users(self, users_to_send_email, current_user_id, resource_json):
+        user_that_is_sending_email = self.PGSQLConn.get_users(user_id=current_user_id)["features"][0]
 
         subject = "Notification - Not reply"
-        body = resource_json["properties"]["description"]
+        body = """
+Hello,
 
-        print("subject: ", subject)
-        print("body: ", body)
+Please, not reply this message.
 
-        for user in users["features"]:
+{0} has sent a new notification: 
+
+"{1}"
+
+Enter on the Pauliceia platform to visualize or reply this notification.
+
+{2}
+        """.format(user_that_is_sending_email["properties"]["name"],
+                   resource_json["properties"]["description"],
+                   __EMAIL_SIGNATURE__)
+
+        print("\n\nsubject: ", subject)
+        print("body: ", body, "\n\n")
+
+        for user in users_to_send_email["features"]:
+            print(user)
+
             if user["properties"]["receive_notification_by_email"] and user["properties"]["is_email_valid"]:
                 print(user["properties"]["email"])
-                # self.send_email(user["email"], subject=subject, body=body)
+                # send_email(user["email"], subject=subject, body=body)
+
+    def send_notification_by_email(self, resource_json, current_user_id):
+        users_to_send_email = self.get_users_to_send_email(resource_json)
+
+        self.send_email_to_selected_users(users_to_send_email, current_user_id, resource_json)
 
     # URLS
 
