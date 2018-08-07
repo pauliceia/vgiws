@@ -704,8 +704,21 @@ class PGSQLConnection:
         ##################################################
         # remove the references and keywords from layer
         ##################################################
-        self.delete_layer_reference(layer_id=new_layer_properties["layer_id"])
-        self.delete_layer_keyword(layer_id=new_layer_properties["layer_id"])
+        try:
+            self.delete_layer_reference(layer_id=new_layer_properties["layer_id"])
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            # error 404 is expected, because when update a layer, may exist a layer without reference
+
+        try:
+            self.delete_layer_keyword(layer_id=new_layer_properties["layer_id"])
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            # error 404 is expected, because when update a layer, may exist a layer without keyword
 
         ##################################################
         # add the list of references in layer

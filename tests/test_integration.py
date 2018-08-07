@@ -28,7 +28,7 @@ class TestAPIIntegration(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+                           'reference': [], 'keyword': []}
         }
         layer = self.tester.api_layer_create(layer)
 
@@ -66,6 +66,8 @@ class TestAPIIntegration(TestCase):
         ##################################################
         layer["properties"]["name"] = "Some addresses"
         layer["properties"]["description"] = "Addresses"
+        layer["properties"]["reference"] = [1050, 1052]
+        layer["properties"]["keyword"] = [1001, 1041]
         self.tester.api_layer_update(layer)
 
         ##################################################
