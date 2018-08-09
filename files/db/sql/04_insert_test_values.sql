@@ -10,17 +10,17 @@ DELETE FROM pauliceia_user;
 -- password - admin
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1001, 'admin', 'admin@admin.com', 'c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec', 
-'Administrator', '2017-01-01', TRUE, TRUE, '2017-01-01', TRUE, FALSE, '', '', '');
+'Administrator', '2017-01-01', TRUE, TRUE, '2017-01-01', TRUE, TRUE, '', '', '');
 
 -- password - rodrigo
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1002, 'rodrigo', 'rodrigo@admin.com', '3ad7e557497e106756c44b7f3f401fd3f28f84c3c9ad989157868d03686f683f82d5cde1a096c4bbdbd76287e96e9a04d9f0ce8726b945c95f01b18361088a0d', 
-'Rodrigo', '2017-03-03', TRUE, TRUE, '2017-03-03', TRUE, FALSE, '', '', '');
+'Rodrigo', '2017-03-03', TRUE, TRUE, '2017-03-03', TRUE, TRUE, '', '', '');
 
 -- password - miguel
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
 VALUES (1003, 'miguel', 'miguel@admin.com', 'e1fc7a4313def98ae5303b0448c89d9a5126f3239608950859f3ea6fdeb8b19f6f7c103ecf97700be851cfbf8cda756c0929498021c675c643809eeeb4ebcbda', 
-'Miguel', '2017-05-08', TRUE, TRUE, '2017-05-08', FALSE, FALSE, '', '', '');
+'Miguel', '2017-05-08', TRUE, TRUE, '2017-05-08', FALSE, TRUE, '', '', '');
 
 -- password - rafael
 INSERT INTO pauliceia_user (user_id, username, email, password, name, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 

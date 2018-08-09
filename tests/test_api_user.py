@@ -23,7 +23,7 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
                                    'username': 'admin', 'user_id': 1001, 'email': 'admin@admin.com',
                                    'name': 'Administrator', 'is_the_admin': True,
                                    'created_at': '2017-01-01 00:00:00', 'login_date': '2017-01-01T00:00:00',
@@ -31,7 +31,7 @@ class TestAPIUser(TestCase):
                 },
                 {
                     'type': 'User',
-                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
                                    'username': 'rodrigo', 'user_id': 1002, 'email': 'rodrigo@admin.com',
                                    'name': 'Rodrigo', 'is_the_admin': True,
                                    'created_at': '2017-03-03 00:00:00', 'login_date': '2017-03-03T00:00:00',
@@ -39,7 +39,7 @@ class TestAPIUser(TestCase):
                 },
                 {
                     'type': 'User',
-                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
@@ -94,7 +94,7 @@ class TestAPIUser(TestCase):
         expected = {
             'features': [
                 {'properties': {'name': 'Rodrigo', 'login_date': '2017-03-03T00:00:00', 'terms_agreed': True,
-                                'receive_notification_by_email': False, 'user_id': 1002, 'username': 'rodrigo',
+                                'receive_notification_by_email': True, 'user_id': 1002, 'username': 'rodrigo',
                                 'is_email_valid': True, 'is_the_admin': True, 'email': 'rodrigo@admin.com',
                                 'created_at': '2017-03-03 00:00:00', 'picture': '', 'social_id': '', 'social_account': ''},
                  'type': 'User'}
@@ -110,7 +110,7 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
@@ -160,7 +160,7 @@ class TestAPIUser(TestCase):
             'features': [
                 {
                     'type': 'User',
-                    'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
+                    'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
                                    'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',

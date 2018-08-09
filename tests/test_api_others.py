@@ -21,7 +21,7 @@ class TestAPICurrentUser(TestCase):
             'properties': {
                 'username': 'rodrigo', 'is_the_admin': True, 'user_id': 1002,
                 'email': 'rodrigo@admin.com', 'terms_agreed': True, 'name': 'Rodrigo',
-                'is_email_valid': True, 'receive_notification_by_email': False
+                'is_email_valid': True, 'receive_notification_by_email': True
             },
             'type': 'User'
         }
