@@ -55,7 +55,7 @@ def send_email(to_email_address, subject="", body=""):
         server.sendmail(__from_mail_address__, __to_email_address__, msg.as_string())
         server.quit()
 
-        # print("\nSent email to: " + __to_email_address__ + "\n")
+        # print("\n\n -----> Sent email to: " + __to_email_address__ + "\n\n")
 
     thread = Thread(target=__thread_send_email__, args=(to_email_address, subject, body,))
     thread.start()
@@ -241,8 +241,9 @@ Please, click on under URL to validate your email:
             users = self.PGSQLConn.get_users()
 
         # (2) notification by layer
-        # (2.1) everybody who is collaborator of the layer, will receive a not. by email
         elif resource_json["properties"]["layer_id"] is not None:
+            # (2.1) everybody who is collaborator of the layer, will receive a not. by email
+
             # get all the collaborators of the layer
             users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
 
@@ -251,9 +252,11 @@ Please, click on under URL to validate your email:
                 user = self.PGSQLConn.get_users(user_layer["properties"]["user_id"])["features"][0]
                 users["features"].append(user)
 
-        # (2.1) everybody who follows the layer, will receive a not. by email
+            # TODO: (2.1) everybody who follows the layer, will receive a notification by email
 
-        # (3) notification by keyword: everybody who follows the keyword, will receive a not. by email
+        # TODO: (3) notification by keyword: everybody who follows the keyword, will receive a notification by email
+        # elif resource_json["properties"]["keyword_id"] is not None:
+        #     pass
 
         return users
 
@@ -277,15 +280,9 @@ Enter on the Pauliceia platform to visualize or reply this notification.
                    resource_json["properties"]["description"],
                    __EMAIL_SIGNATURE__)
 
-        print("\n\nsubject: ", subject)
-        print("body: ", body, "\n\n")
-
         for user in users_to_send_email["features"]:
-            print(user)
-
             if user["properties"]["receive_notification_by_email"] and user["properties"]["is_email_valid"]:
-                print(user["properties"]["email"])
-                # send_email(user["email"], subject=subject, body=body)
+                send_email(user["properties"]["email"], subject=subject, body=body)
 
     def send_notification_by_email(self, resource_json, current_user_id):
         users_to_send_email = self.get_users_to_send_email(resource_json)
@@ -1079,7 +1076,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
 
         result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
 
-        # self.send_notification_by_email(resource_json_copy, current_user_id)
+        self.send_notification_by_email(resource_json_copy, current_user_id)
 
         return result
 
