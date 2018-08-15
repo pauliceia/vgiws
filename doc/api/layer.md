@@ -44,10 +44,8 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
 
 This method creates a new layer described in a JSON.
 - Parameters:
-    - is_to_create_feature_table (optional): it is a boolean that indicates if a feature table will be created together the layer or not (e.g. 'TRUE' or 'FALSE'; default is 'TRUE');
 - Examples:
     - Create a layer with feature table: ```POST http://localhost:8888/api/layer/create```
-    - Create a layer without feature table: ```POST http://localhost:8888/api/layer/create/?is_to_create_feature_table=FALSE```
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
