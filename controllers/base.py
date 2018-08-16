@@ -14,7 +14,7 @@ from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile, BadZipFile
 from copy import deepcopy
 from threading import Thread
-from time import sleep
+from requests import Session
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -59,6 +59,26 @@ def send_email(to_email_address, subject="", body=""):
 
     thread = Thread(target=__thread_send_email__, args=(to_email_address, subject, body,))
     thread.start()
+
+
+def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
+    session = Session()
+
+    file_name_prj = folder_to_extract_zip + "/" + file_name.replace("shp", "prj")
+
+    with open(file_name_prj) as file:
+        prj = file.read()
+
+        response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
+
+        if response.status_code != 200:
+            raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        EPSG = resulted["codes"][0]["code"]
+
+        return EPSG
 
 
 # BASE CLASS
@@ -1339,20 +1359,20 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         :return:
         """
 
+        EPSG = get_epsg_from_shapefile(shapefile_name, folder_to_extract_zip)
+
         __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
 
         postgresql_connection = '"host=' + __DB_CONNECTION__["HOSTNAME"] + ' dbname=' + __DB_CONNECTION__["DATABASE"] + \
                                 ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
         try:
             # FEATURE TABLE
-            # command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
-            #                                      shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(epsg) + \
-            #                                      ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
-
             command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
-                                                 shapefile_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
+                                                 shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(EPSG) + \
+                                                 ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
-            # print("\n\n>>> ", command_to_import_shp_into_postgis, "\n\n")
+            # command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
+            #                                      shapefile_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)

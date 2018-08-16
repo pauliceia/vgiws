@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from random import randint
 
 from unittest import TestCase
 from util.tester import UtilTester
@@ -17,7 +18,7 @@ class TestAPIImport(TestCase):
 
         self.folder_name = "files/"
         self.folder_name_shp_originais = "files/shp_originais/"
-        self.f_table_name = "points"
+        self.f_table_name = "points_" + str(randint(0, 100))
 
         ##################################################
         # create a new layer
@@ -61,7 +62,7 @@ class TestAPIImport(TestCase):
         self.tester.auth_logout()
 
     # import - create
-    """
+
     def test_post_import_shp_point(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -85,7 +86,7 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
-    
+
     def test_post_import_shp_asb_dep_abast_agua(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -96,7 +97,7 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
-    """
+
     """
     # the tests under are manual tests
         
