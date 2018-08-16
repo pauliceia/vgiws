@@ -16,6 +16,7 @@ class TestAPIImport(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
+        self.folder_name_shp_originais = "files/shp_originais/"
         self.f_table_name = "points"
 
         ##################################################
@@ -61,7 +62,7 @@ class TestAPIImport(TestCase):
 
     # import - create
 
-    def test_post_import_shp(self):
+    def test_post_import_shp_point(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
@@ -72,6 +73,96 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id, epsg=epsg)
+
+    # the tests under are with shapefile from internet
+
+    def test_post_import_shp_asb_cemiterio(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "asb_cemiterio.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    
+    def test_post_import_shp_asb_dep_abast_agua(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "asb_dep_abast_agua.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+
+    """
+    # the tests under are manual tests
+        
+    def test_post_import_shp_ref_urbana_2013(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "ref_urbana_2013.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + 'shp_pesado/' +  file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    
+    def test_post_import_shp_sp_mun(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "sp_mun.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    
+    def test_post_import_shp_sp_mun97_region(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "sp_mun97_region.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    
+    def test_post_import_shp_ugrhi5_base_cont(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "ugrhi5_base_cont.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    
+    def test_post_import_shp_teste_peso_file_with_98_mb(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "teste_peso.zip"
+        epsg = 4618
+        with open(self.folder_name_shp_originais + 'shp_pesado/' + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id, epsg=epsg)
+    """
 
 
 class TestAPIImportError(TestCase):
@@ -182,6 +273,19 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=wrong_file_name, changeset_id=self.changeset_id,
                                                                  epsg=epsg)
+    
+    def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "shopping_2014.zip"
+        epsg = 4618
+        with open(self.folder_name + 'shp_originais/' + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_500_internal_server_error(binary_file_content, f_table_name=self.f_table_name,
+                                                                              file_name=file_name, changeset_id=self.changeset_id,
+                                                                              epsg=epsg)
 
 
 class TestAPIImportErrorWithoutLogin(TestCase):

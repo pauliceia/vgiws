@@ -1762,6 +1762,14 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 409)
 
+    def api_import_shp_create_error_500_internal_server_error(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/import/shp/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 500)
+
     ##################################################
     # MASK
     ##################################################

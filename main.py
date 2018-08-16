@@ -99,6 +99,7 @@ class HttpServerApplication(Application):
 
 def start_application():
     parse_command_line()
+    # http_server = HTTPServer(HttpServerApplication(), max_buffer_size=10485760000)  # 10G
     http_server = HTTPServer(HttpServerApplication())
     http_server.listen(options.port, address=options.address)
     print("\nRunning Tornado on " + URL_APP)

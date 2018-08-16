@@ -21,6 +21,7 @@ This method imports a ShapeFile as feature table of a layer.
      - 403 (Forbidden): Just the owner of the layer or administrator can create/update a feature table or do a import.
      - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
      - 409 (Conflict): File is not a zip file.
+     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
      - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
 - Notes:
     - It is necessary create a new layer without a feature table before to import the ShapeFile.

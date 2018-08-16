@@ -1349,15 +1349,21 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + shapefile_name + \
             #                                      ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -a_srs EPSG:' + str(epsg)
 
+            # command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
+            #                                      shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(epsg) + \
+            #                                      ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
+
             command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
-                                                 shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(epsg) + \
-                                                 ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
+                                                 shapefile_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
+
+            # print("\n\n>>> ", command_to_import_shp_into_postgis, "\n\n")
 
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
         except CalledProcessError as error:
-            raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
+            # raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import.")
 
     def get_shapefile_name(self, folder_with_file_name):
         """
