@@ -9,7 +9,7 @@ from util.tester import UtilTester
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 """
-class TestAPIUserLayer(TestCase):
+class TestAPILayerFollower(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -17,7 +17,7 @@ class TestAPIUserLayer(TestCase):
 
     # user_layer - get
 
-    def test_get_api_user_layer_return_all_users_in_layers(self):
+    def test_get_api_layer_follower_return_all_followers_in_layer(self):
         expected = {
             'features': [
                 {
@@ -94,7 +94,7 @@ class TestAPIUserLayer(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected)
+        self.tester.api_layer_follower(expected)
 
     def test_get_api_user_layer_return_user_layer_by_layer_id(self):
         expected = {
@@ -232,8 +232,8 @@ class TestAPIUserLayer(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
-
+"""
+"""
 class TestAPIUserLayerErrors(TestCase):
 
     def setUp(self):
