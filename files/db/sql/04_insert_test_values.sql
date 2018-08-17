@@ -165,6 +165,20 @@ DELETE FROM layer_reference;
 
 
 -- -----------------------------------------------------
+-- Table user_layer
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM layer_followers;
+
+
+-- -----------------------------------------------------
+-- Table user_layer
+-- -----------------------------------------------------
+-- clean table
+DELETE FROM keyword_followers;
+
+
+-- -----------------------------------------------------
 -- Table layer
 -- -----------------------------------------------------
 -- clean table
@@ -266,6 +280,9 @@ VALUES (1003,
 -- close the changeset
 UPDATE changeset SET closed_at='2017-01-05' WHERE changeset_id=1001;
 
+-- users can follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1001, 1003, '2017-01-02');
+
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1011, 'An open changeset', '2017-01-08', 1001, 1001);
 
@@ -365,6 +382,10 @@ VALUES (1009,
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-03-05' WHERE changeset_id=1002;
+
+-- users can follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1003, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1005, '2017-01-02');
 
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1014, 'An open changeset', '2017-01-08', 1002, 1004);
@@ -647,6 +668,11 @@ VALUES (1002,
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-08-05' WHERE changeset_id=1005;
+
+-- users can follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1003, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1004, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1005, '2017-01-02');
 
 -- verify if the layer has features and verify if the changeset was created
 /*

@@ -1155,9 +1155,9 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-                    INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
-                    VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
-                """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
+            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
+            VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
+        """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1879,6 +1879,105 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
+
+    ################################################################################
+    # LAYER FOLLOWERS
+    ################################################################################
+
+    def get_layer_follower(self, layer_id=None, user_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_layer_follower_table(layer_id=layer_id, user_id=user_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'LayerFollower',
+                    'properties', json_build_object(
+                        'layer_id',     layer_id,
+                        'user_id',      user_id,
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    def create_layer_follower(self, resource_json, user_id):
+        # put the current user id as the creator of the reference
+        resource_json["properties"]["user_id"] = user_id
+
+        p = resource_json["properties"]
+
+        query_text = """
+            INSERT INTO layer_followers (layer_id, user_id, created_at)
+            VALUES ({0}, {1}, LOCALTIMESTAMP);
+        """.format(p["layer_id"], p["user_id"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        # result = self.__PGSQL_CURSOR__.fetchone()
+        #
+        # return result
+
+    # def update_layer_follower(self, resource_json, user_id):
+    #     p = resource_json["properties"]
+    #
+    #     query_text = """
+    #         UPDATE reference SET description = '{1}'
+    #         WHERE reference_id={0};
+    #     """.format(p["reference_id"], p["description"])
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
+    #
+    #     if rows_affected == 0:
+    #         raise HTTPError(404, "Not found any resource.")
+
+    def delete_layer_follower(self, layer_id, user_id):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        query_text = """
+            DELETE FROM layer_followers WHERE user_id={0} AND layer_id={1};
+        """.format(user_id, layer_id)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
     # MASK

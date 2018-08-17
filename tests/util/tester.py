@@ -1709,6 +1709,127 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 409)
 
     ##################################################
+    # LAYER FOLLOWER
+    ##################################################
+
+    def api_layer_follower(self, expected, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/layer_follower/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+        resulted = loads(response.text)  # convert string to dict/JSON
+
+        self.ut_self.assertEqual(expected, resulted)
+
+    def api_layer_follower_create(self, feature_json, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/layer_follower/create/{0}'.format(arguments),
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # def api_layer_follower_update(self, resource_json):
+    #     response = self.session.put(self.URL + '/api/layer_follower/',
+    #                                 data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_layer_follower_delete(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/layer_follower/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    # layer_follower errors - get
+
+    def api_layer_follower_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/layer_follower/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_follower_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/layer_follower/{0}'.format(arguments))
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    # user layer errors - create
+
+    def api_layer_follower_create_error_400_bad_request(self, feature_json):
+        response = self.session.post(self.URL + '/api/layer_follower/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_follower_create_error_401_unauthorized(self, feature_json):
+        response = self.session.post(self.URL + '/api/layer_follower/create/',
+                                     data=dumps(feature_json))
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_layer_follower_create_error_403_forbidden(self, feature_json):
+        response = self.session.post(self.URL + '/api/layer_follower/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    # layer_follower errors - update
+
+    # def api_layer_follower_update_error_400_bad_request(self, resource_json):
+    #     response = self.session.put(self.URL + '/api/layer_follower',
+    #                                 data=dumps(resource_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 400)
+    #
+    # def api_layer_follower_update_error_401_unauthorized(self, feature_json):
+    #     response = self.session.put(self.URL + '/api/layer_follower',
+    #                                 data=dumps(feature_json), headers=self.headers)
+    #
+    #     self.ut_self.assertEqual(response.status_code, 401)
+
+    # layer_follower errors - delete
+
+    def api_layer_follower_delete_error_400_bad_request(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/layer_follower/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_follower_delete_error_401_unauthorized(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/layer_follower/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_layer_follower_delete_error_403_forbidden(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/layer_follower/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 403)
+
+    def api_layer_follower_delete_error_404_not_found(self, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.delete(self.URL + '/api/layer_follower/{0}'.format(arguments),
+                                       headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
+
+    ##################################################
     # IMPORT
     ##################################################
 

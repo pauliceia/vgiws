@@ -1275,6 +1275,52 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
         raise HTTPError(403, "Just the collaborator of the layer or administrator can manage a resource.")
 
 
+class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_layer_follower(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        layer_id = resource_json["properties"]["layer_id"]
+        self.can_current_user_create(current_user_id, layer_id)
+        return self.PGSQLConn.create_layer_follower(resource_json, current_user_id, **kwargs)
+
+    # PUT
+
+    # def _put_resource(self, resource_json, current_user_id, **kwargs):
+    #     self.can_current_user_update_or_delete(current_user_id, resource_json["properties"]["reference_id"])
+    #
+    #     return self.PGSQLConn.update_reference(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        self.PGSQLConn.delete_layer_follower(*args)
+
+    # VALIDATION
+
+    def can_current_user_create(self, current_user_id, layer_id):
+        layers = {"features": []}
+        layer_followers = {"features": []}
+
+        try:
+            layers = self.PGSQLConn.get_user_layers(user_id=str(current_user_id), layer_id=str(layer_id))
+
+            layer_followers = self.PGSQLConn.get_layer_follower(user_id=str(current_user_id), layer_id=str(layer_id))
+        except HTTPError as error:
+            # if the error is different of 404, raise an exception..., because I expect a 404
+            # (when a user is not a collaborator of a layer he can follow the layer)
+            if error.status_code != 404:
+                raise error
+
+        if layers["features"] or layer_followers["features"]:  # if it was returned a list with users, raise an exception
+            raise HTTPError(409, "The user can't follow a layer, because he/she is already a collaborator or owner of it.")
+
+
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 #
 #     def _get_resource(self, *args, **kwargs):
@@ -1295,6 +1341,7 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 #
 #     def _delete_resource(self, *args, **kwargs):
 #         self.PGSQLConn.delete_changeset_in_db(*args)
+
 
 # IMPORT
 
