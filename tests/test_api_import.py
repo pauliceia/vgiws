@@ -17,7 +17,7 @@ class TestAPIImport(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
-        self.folder_name_shp_originais = "files/shp_originais/"
+        self.folder_name_shp_originals = "files/shp_originals/"
         self.f_table_name = "points_" + str(randint(0, 100))
 
         ##################################################
@@ -81,7 +81,7 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "asb_cemiterio.zip"
-        with open(self.folder_name_shp_originais + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -92,21 +92,20 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "asb_dep_abast_agua.zip"
-        with open(self.folder_name_shp_originais + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
 
-    """
     # the tests under are manual tests
-        
+    """
     def test_post_import_shp_ref_urbana_2013(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "ref_urbana_2013.zip"
-        with open(self.folder_name_shp_originais + 'shp_pesado/' +  file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + 'shp_pesado/' +  file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -117,18 +116,18 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "sp_mun.zip"
-        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
-    
+
     def test_post_import_shp_sp_mun97_region(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "sp_mun97_region.zip"
-        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -139,7 +138,7 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "ugrhi5_base_cont.zip"
-        with open(self.folder_name_shp_originais + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -150,7 +149,7 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "teste_peso.zip"
-        with open(self.folder_name_shp_originais + 'shp_pesado/' + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -168,6 +167,7 @@ class TestAPIImportError(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.folder_name = "files/"
+        self.folder_name_shp_originals = "files/shp_originals/"
         self.f_table_name = "layer_1003"
         self.changeset_id = 1005
 
@@ -267,7 +267,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "shopping_2014.zip"
 
-        with open(self.folder_name + 'shp_originais/' + file_name, mode='rb') as file:  # rb = read binary
+        with open(self.folder_name_shp_originals + file_name, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_500_internal_server_error(binary_file_content, f_table_name=self.f_table_name,

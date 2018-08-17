@@ -71,12 +71,14 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
 
         response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
 
-        if response.status_code != 200:
-            raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
-
         resulted = loads(response.text)  # convert string to dict/JSON
 
+        if response.status_code != 200 or not resulted["codes"]:  # if status_code != 200 or resulted["codes"] is empty:
+            raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
+
         EPSG = resulted["codes"][0]["code"]
+
+        # print("\n\n EPSG: ", EPSG, "\n\n")
 
         return EPSG
 
