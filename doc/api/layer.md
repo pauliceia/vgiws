@@ -6,6 +6,7 @@ A layer is a group of elements. All elements have to be associated with a layer.
 ### GET /api/layer/?\<params>
 
 This method gets layers from DB. If you doesn't put any parameter, so it will return all.
+
 - Parameters:
     - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
     - is_published (optional): it is a boolean that indicates if a layer is published or not (e.g. 'TRUE' or 'FALSE');
@@ -43,6 +44,7 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
 ### POST /api/layer/create/?\<params>
 
 This method creates a new layer described in a JSON.
+
 - Parameters:
 - Examples:
     - Create a layer with feature table: ```POST http://localhost:8888/api/layer/create```
@@ -76,6 +78,7 @@ This method creates a new layer described in a JSON.
 ### PUT /api/layer
 
 This method updated a reference described in a JSON.
+
 - Parameters:
 - Examples:
     - Update a reference: ```PUT http://localhost:8888/api/layer```
@@ -104,6 +107,7 @@ This method updated a reference described in a JSON.
 ### DELETE /api/layer/#id
 
 This method deletes one layer by id = #id.
+
 - Parameters:
     - #id (mandatory): the id of the resource that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
@@ -129,6 +133,7 @@ Users who are part of a layer.
 ### GET /api/user_layer/?\<params>
 
 This method gets users in layers from DB. If you doesn't put any parameter, so it will return all.
+
 - Parameters:
     - layer_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
     - user_id (optional): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
@@ -163,6 +168,7 @@ This method gets users in layers from DB. If you doesn't put any parameter, so i
 ### POST /api/user_layer/create
 
 This method adds a user in a layer described in JSON.
+
 - Parameters:
 - Examples:
     - Add a user in a layer: ```POST http://localhost:8888/api/user_layer/create```
@@ -191,11 +197,101 @@ This method adds a user in a layer described in JSON.
 ### DELETE /api/user_layer/?\<params>
 
 This method remove a user from a layer.
+
 - Parameters:
     - layer_id (mandatory): the id of a layer that is a positive integer not null (e.g. 1, 2, 3, ...);
     - user_id (mandatory): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...);
 - Examples:
      - Delete a resource by id: ```DELETE http://localhost:8888/api/user_layer/?layer_id=1001&user_id=1004```
+- Send (in Body):
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The creator of the layer is the unique who can delete a user from a layer.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
+- Notes:
+
+
+
+## Layer_follower
+
+Users who follow a layer.
+
+
+### GET /api/layer_follower/?\<params>
+
+This method gets users who follow layers from DB. If you doesn't put any parameter, so it will return all.
+
+- Parameters:
+    - layer_id (optional) (int not null): the id of a layer (e.g. 1, 2, 3, ...);
+    - user_id (optional) (int not null): the id of a layer (e.g. 1, 2, 3, ...).
+- Examples:
+     - Get all users who follow layers: http://localhost:8888/api/layer_follower/
+     - Get users that follow a specific layer by id: http://localhost:8888/api/layer_follower/?layer_id=1001
+     - Get layers that a user follow by id: http://localhost:8888/api/layer_follower/?user_id=1001
+- Send (in Body):
+- Send (in Header):
+- Response: a JSON that contains the selected resources. Example:
+    ```javascript
+    {
+        'features': [
+            {
+                'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
+                'type': 'LayerFollower'
+            },
+        ],
+        'type': 'FeatureCollection'
+    }
+    ```
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
+- Notes:
+
+
+### POST /api/layer_follower/create
+
+This method follow a user in a layer described in JSON.
+
+- Parameters:
+- Examples:
+    - Add a user in a layer: ```POST http://localhost:8888/api/layer_follower/create```
+- Send (in Body): a JSON describing the resource. Example:
+    ```javascript
+    {
+        'properties': {'layer_id': 1006},
+        'type': 'LayerFollower'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response:
+- Error codes:
+    - 400 (Bad Request): Attribute already exists.
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): The creator of the layer is the unique who can add user in layer.
+    - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
+- Notes:
+
+
+<!-- - PUT /api/layer_follower/update -->
+
+
+### DELETE /api/layer_follower/?\<params>
+
+This method do a user stop following a layer.
+
+- Parameters:
+    - layer_id (mandatory) (int not null): the id of a layer (e.g. 1, 2, 3, ...);
+    - user_id (mandatory) (int not null): the id of a user (e.g. 1, 2, 3, ...).
+- Examples:
+     - Delete a resource by id: ```DELETE http://localhost:8888/api/layer_follower/?layer_id=1001&user_id=1004```
 - Send (in Body):
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.

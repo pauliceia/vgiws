@@ -1299,7 +1299,7 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.PGSQLConn.delete_layer_follower(*args)
+        self.PGSQLConn.delete_layer_follower(kwargs["layer_id"], kwargs["user_id"])
 
     # VALIDATION
 
