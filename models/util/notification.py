@@ -45,7 +45,7 @@ def get_subquery_notification_table(**kwargs):
     # default get all features
     subquery_table = """
         (
-            SELECT * FROM notification {0} ORDER BY notification_id
+            SELECT * FROM notification {0} ORDER BY created_at DESC, notification_id DESC
         ) AS notification
     """.format(where_clause)
 
