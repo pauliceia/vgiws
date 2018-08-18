@@ -4,7 +4,7 @@ ignore/*
 files/ignore/*
 0_old/*
 files/production/*
-tests/files/shp_originais/shp_pesado/*
+tests/files/shp_pesado/*
 
 # Ignore specific files
 settings/db_settings.py
