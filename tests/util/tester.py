@@ -1781,6 +1781,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
+    def api_layer_follower_create_error_409_conflict(self, feature_json):
+        response = self.session.post(self.URL + '/api/layer_follower/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
     # layer_follower errors - update
 
     # def api_layer_follower_update_error_400_bad_request(self, resource_json):

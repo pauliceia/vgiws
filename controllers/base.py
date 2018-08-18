@@ -1317,7 +1317,7 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
 
         # if it was returned a list with users, raise an exception
         if layers["features"]:
-            raise HTTPError(400, "The user can't follow a layer, because he/she is a collaborator or owner of it.")
+            raise HTTPError(409, "The user can't follow a layer, because he/she is a collaborator or owner of it.")
 
         try:
             layer_followers = self.PGSQLConn.get_layer_follower(user_id=str(current_user_id), layer_id=str(layer_id))
@@ -1329,7 +1329,7 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
 
         # if it was returned a list with users, raise an exception
         if layer_followers["features"]:
-            raise HTTPError(400, "The user can't follow a layer, because he/she already follow it.")
+            raise HTTPError(409, "The user can't follow a layer, because he/she already follow it.")
 
 
 # class BaseHandlerChangeset(BaseHandlerTemplateMethod):

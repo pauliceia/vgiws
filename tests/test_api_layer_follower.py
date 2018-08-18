@@ -154,40 +154,6 @@ class TestAPIUserLayerErrors(TestCase):
 
     # layer_follower errors - create
 
-    def test_post_api_layer_follower_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        # user miguel (1003) tries to follow a layer that he already follow
-        layer_follower = {
-            'properties': {'layer_id': 1001},
-            'type': 'LayerFollower'
-        }
-
-        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
-
-        # user miguel (1003) tries to follow a layer that he is a owner
-        layer_follower = {
-            'properties': {'layer_id': 1003},
-            'type': 'LayerFollower'
-        }
-
-        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
-
-        self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # user miguel (1003) tries to follow a layer that he is a collaborator
-        layer_follower = {
-            'properties': {'layer_id': 1001},
-            'type': 'LayerFollower'
-        }
-
-        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
     def test_post_api_layer_follower_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -209,6 +175,40 @@ class TestAPIUserLayerErrors(TestCase):
             'type': 'LayerFollower'
         }
         self.tester.api_layer_follower_create_error_401_unauthorized(resource)
+
+    def test_post_api_layer_follower_create_error_409_conflict_user_already_follow_or_is_collaborator(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # user miguel (1003) tries to follow a layer that he already follow
+        layer_follower = {
+            'properties': {'layer_id': 1001},
+            'type': 'LayerFollower'
+        }
+
+        self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
+
+        # user miguel (1003) tries to follow a layer that he is a owner
+        layer_follower = {
+            'properties': {'layer_id': 1003},
+            'type': 'LayerFollower'
+        }
+
+        self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
+
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # user miguel (1003) tries to follow a layer that he is a collaborator
+        layer_follower = {
+            'properties': {'layer_id': 1001},
+            'type': 'LayerFollower'
+        }
+
+        self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     """
     # def test_post_api_layer_follower_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
