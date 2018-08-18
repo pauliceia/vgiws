@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-"""
+
 class TestAPILayerFollower(TestCase):
 
     def setUp(self):
@@ -21,74 +21,28 @@ class TestAPILayerFollower(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1001, 'user_id': 1003},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
-                                   'created_at': '2017-01-03 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1003},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1005, 'user_id': 1003},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1005, 'user_id': 1004},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1006, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1004,
-                                   'created_at': '2017-06-15 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1007, 'layer_id': 1004,
-                                   'created_at': '2017-06-20 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1004,
-                                   'created_at': '2017-06-27 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1005,
-                                   'created_at': '2017-08-04 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1007, 'layer_id': 1006,
-                                   'created_at': '2017-09-04 00:00:00'},
-                    'type': 'UserLayer'
-                },
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1008, 'layer_id': 1006,
-                                   'created_at': '2017-09-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1005, 'user_id': 1005},
+                    'type': 'LayerFollower'
                 }
             ],
             'type': 'FeatureCollection'
@@ -100,87 +54,51 @@ class TestAPILayerFollower(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1003},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': False, 'user_id': 1002, 'layer_id': 1001,
-                                   'created_at': '2017-01-03 00:00:00'},
-                    'type': 'UserLayer'
-                }
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
+                    'type': 'LayerFollower'
+                },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected, layer_id="1001")
+        self.tester.api_layer_follower(expected, layer_id="1002")
 
     def test_get_api_user_layer_return_user_layer_by_user_id(self):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
+                    'type': 'LayerFollower'
                 },
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1004,
-                                   'created_at': '2017-06-15 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1005, 'user_id': 1005},
+                    'type': 'LayerFollower'
                 }
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected, user_id="1003")
+        self.tester.api_layer_follower(expected, user_id="1005")
 
     def test_get_api_user_layer_return_user_layer_by_user_id_and_layer_id(self):
         expected = {
             'features': [
                 {
-                    'properties': {'is_the_creator': True, 'user_id': 1003, 'layer_id': 1003,
-                                   'created_at': '2017-04-10 00:00:00'},
-                    'type': 'UserLayer'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_user_layer(expected, user_id="1003", layer_id="1003")
-
-    def test_get_api_user_layer_return_all_user_layer_by_user_id_and_is_the_creator(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1001,
-                                   'created_at': '2017-01-02 00:00:00'},
-                    'type': 'UserLayer'
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1003},
+                    'type': 'LayerFollower'
                 },
-                {
-                    'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1002,
-                                   'created_at': '2017-03-05 00:00:00'},
-                    'type': 'UserLayer'
-                }
             ],
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_user_layer(expected, user_id="1001", is_the_creator="TRUE")
+        self.tester.api_layer_follower(expected, user_id="1003", layer_id="1002")
 
-        expected = {
-            'features': [
-                {
-                    'properties': {'is_the_creator': False, 'user_id': 1001, 'layer_id': 1003,
-                                   'created_at': '2017-04-11 00:00:00'},
-                    'type': 'UserLayer'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_user_layer(expected, user_id="1001", is_the_creator="FALSE")
-
-    # user_layer - create and delete
+    """
+    # layer follower - create and delete
 
     def test_api_user_layer_create_and_delete(self):
         # DO LOGIN
@@ -232,7 +150,7 @@ class TestAPILayerFollower(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
 """
 class TestAPIUserLayerErrors(TestCase):
 
