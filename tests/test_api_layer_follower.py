@@ -123,114 +123,112 @@ class TestAPILayerFollower(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-"""
+
 class TestAPIUserLayerErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-    # user_layer errors - get
+    # layer_follower errors - get
 
-    def test_get_api_user_layer_error_400_bad_request(self):
-        self.tester.api_user_layer_error_400_bad_request(layer_id="abc")
-        self.tester.api_user_layer_error_400_bad_request(layer_id=0)
-        self.tester.api_user_layer_error_400_bad_request(layer_id=-1)
-        self.tester.api_user_layer_error_400_bad_request(layer_id="-1")
-        self.tester.api_user_layer_error_400_bad_request(layer_id="0")
+    def test_get_api_layer_follower_error_400_bad_request(self):
+        self.tester.api_layer_follower_error_400_bad_request(layer_id="abc")
+        self.tester.api_layer_follower_error_400_bad_request(layer_id=0)
+        self.tester.api_layer_follower_error_400_bad_request(layer_id=-1)
+        self.tester.api_layer_follower_error_400_bad_request(layer_id="-1")
+        self.tester.api_layer_follower_error_400_bad_request(layer_id="0")
 
-        self.tester.api_user_layer_error_400_bad_request(user_id="abc")
-        self.tester.api_user_layer_error_400_bad_request(user_id=0)
-        self.tester.api_user_layer_error_400_bad_request(user_id=-1)
-        self.tester.api_user_layer_error_400_bad_request(user_id="-1")
-        self.tester.api_user_layer_error_400_bad_request(user_id="0")
+        self.tester.api_layer_follower_error_400_bad_request(user_id="abc")
+        self.tester.api_layer_follower_error_400_bad_request(user_id=0)
+        self.tester.api_layer_follower_error_400_bad_request(user_id=-1)
+        self.tester.api_layer_follower_error_400_bad_request(user_id="-1")
+        self.tester.api_layer_follower_error_400_bad_request(user_id="0")
 
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="abc")
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator=0)
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator=-1)
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="0")
-        self.tester.api_user_layer_error_400_bad_request(is_the_creator="-1")
+    def test_get_api_layer_follower_error_404_not_found(self):
+        self.tester.api_layer_follower_error_404_not_found(layer_id="999")
+        self.tester.api_layer_follower_error_404_not_found(layer_id="998")
 
-    def test_get_api_user_layer_error_404_not_found(self):
-        self.tester.api_user_layer_error_404_not_found(layer_id="999")
-        self.tester.api_user_layer_error_404_not_found(layer_id="998")
+        self.tester.api_layer_follower_error_404_not_found(user_id="999")
+        self.tester.api_layer_follower_error_404_not_found(user_id="998")
 
-        self.tester.api_user_layer_error_404_not_found(user_id="999")
-        self.tester.api_user_layer_error_404_not_found(user_id="998")
-    
-    # user_layer errors - create
+    # layer_follower errors - create
 
-    def test_post_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):
+    def test_post_api_layer_follower_create_error_400_bad_request_attribute_already_exist(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # add a user in a layer
-        user_layer = {
-            'properties': {'is_the_creator': True, 'user_id': 1001, 'layer_id': 1003},
-            'type': 'UserLayer'
+        # user miguel (1003) tries to follow a layer that he already follow
+        layer_follower = {
+            'properties': {'layer_id': 1001},
+            'type': 'LayerFollower'
         }
 
-        self.tester.api_user_layer_create_error_400_bad_request(user_layer)
+        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
+
+        # user miguel (1003) tries to follow a layer that he is a owner
+        layer_follower = {
+            'properties': {'layer_id': 1003},
+            'type': 'LayerFollower'
+        }
+
+        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
+
+        self.tester.auth_logout()
+        self.tester.auth_login("admin@admin.com", "admin")
+
+        # user miguel (1003) tries to follow a layer that he is a collaborator
+        layer_follower = {
+            'properties': {'layer_id': 1001},
+            'type': 'LayerFollower'
+        }
+
+        self.tester.api_layer_follower_create_error_400_bad_request(layer_follower)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_user_layer_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test_post_api_layer_follower_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         # try to add a user in a layer (without is_the_creator)
         user_layer = {
-            'properties': {'user_id': 1002, 'layer_id': 1003},
-            'type': 'UserLayer'
+            'properties': {},
+            'type': 'LayerFollower'
         }
         # try to add the user in layer again and raise an error
-        self.tester.api_user_layer_create_error_400_bad_request(user_layer)
-
-        # try to add a user in a layer (without user_id)
-        user_layer = {
-            'properties': {'is_the_creator': True, 'layer_id': 1003},
-            'type': 'UserLayer'
-        }
-        # try to add the user in layer again and raise an error
-        self.tester.api_user_layer_create_error_400_bad_request(user_layer)
-
-        # try to add a user in a layer (without layer_id)
-        user_layer = {
-            'properties': {'is_the_creator': True, 'user_id': 1002},
-            'type': 'UserLayer'
-        }
-        # try to add the user in layer again and raise an error
-        self.tester.api_user_layer_create_error_400_bad_request(user_layer)
+        self.tester.api_layer_follower_create_error_400_bad_request(user_layer)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
-    def test_post_api_user_layer_create_error_401_unauthorized_without_authorization_header(self):
+
+    def test_post_api_layer_follower_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
-            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1001},
-            'type': 'UserLayer'
+            'properties': {'layer_id': 1001},
+            'type': 'LayerFollower'
         }
-        self.tester.api_user_layer_create_error_401_unauthorized(resource)
+        self.tester.api_layer_follower_create_error_401_unauthorized(resource)
 
-    def test_post_api_user_layer_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
-        # DO LOGIN
-        # login with gabriel and he tries to add a user in the layer of admin
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    """
+    # def test_post_api_layer_follower_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
+    #     # DO LOGIN
+    #     # login with gabriel and he tries to add a user in the layer of admin
+    #     self.tester.auth_login("miguel@admin.com", "miguel")
+    # 
+    #     # add a user in a layer
+    #     user_layer = {
+    #         'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1002},
+    #         'type': 'UserLayer'
+    #     }
+    #     self.tester.api_user_layer_create_error_403_forbidden(user_layer)
+    # 
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
-        # add a user in a layer
-        user_layer = {
-            'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1002},
-            'type': 'UserLayer'
-        }
-        self.tester.api_user_layer_create_error_403_forbidden(user_layer)
+    # layer_follower errors - delete
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    # user_layer errors - delete
-
-    def test_delete_api_user_layer_error_400_bad_request(self):
+    def test_delete_api_layer_follower_error_400_bad_request(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
@@ -246,13 +244,13 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_user_layer_error_401_unauthorized_user_without_login(self):
+    def test_delete_api_layer_follower_error_401_unauthorized_user_without_login(self):
         self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id=1001)
         self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id="1001")
         self.tester.api_user_layer_delete_error_401_unauthorized(user_id=0, layer_id=-1)
         self.tester.api_user_layer_delete_error_401_unauthorized(user_id="0", layer_id="-1")
 
-    def test_delete_api_user_layer_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
+    def test_delete_api_layer_follower_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
         # DO LOGIN
 
         # login with other user (admin) and he tries to delete a user from a layer of rodrigo
@@ -264,7 +262,7 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_delete_api_user_layer_error_404_not_found(self):
+    def test_delete_api_layer_follower_error_404_not_found(self):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
@@ -276,6 +274,7 @@ class TestAPIUserLayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+    """
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

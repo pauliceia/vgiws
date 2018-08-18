@@ -274,8 +274,9 @@ This method follow a user in a layer described in JSON.
 - Error codes:
     - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 409 (Bad Request): The user can't follow a layer, because he/she is a collaborator or owner of it.
+    - 409 (Bad Request): The user can't follow a layer, because he/she already follow it.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The creator of the layer is the unique who can add user in layer.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 
