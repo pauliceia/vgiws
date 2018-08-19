@@ -210,7 +210,6 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    """
     # def test_post_api_layer_follower_create_error_403_forbidden_invalid_user_tries_to_add_user_in_layer(self):
     #     # DO LOGIN
     #     # login with gabriel and he tries to add a user in the layer of admin
@@ -233,34 +232,34 @@ class TestAPIUserLayerErrors(TestCase):
         self.tester = UtilTester(self)
 
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="abc", layer_id="abc")
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id=0, layer_id=0)
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id=-1, layer_id=-1)
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="-1", layer_id="-1")
-        self.tester.api_user_layer_delete_error_400_bad_request(user_id="0", layer_id="0")
+        self.tester.api_layer_follower_delete_error_400_bad_request(user_id="abc", layer_id="abc")
+        self.tester.api_layer_follower_delete_error_400_bad_request(user_id=0, layer_id=0)
+        self.tester.api_layer_follower_delete_error_400_bad_request(user_id=-1, layer_id=-1)
+        self.tester.api_layer_follower_delete_error_400_bad_request(user_id="-1", layer_id="-1")
+        self.tester.api_layer_follower_delete_error_400_bad_request(user_id="0", layer_id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_delete_api_layer_follower_error_401_unauthorized_user_without_login(self):
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id=1001)
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=1001, layer_id="1001")
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id=0, layer_id=-1)
-        self.tester.api_user_layer_delete_error_401_unauthorized(user_id="0", layer_id="-1")
+        self.tester.api_layer_follower_delete_error_401_unauthorized(user_id=1001, layer_id=1001)
+        self.tester.api_layer_follower_delete_error_401_unauthorized(user_id=1001, layer_id="1001")
+        self.tester.api_layer_follower_delete_error_401_unauthorized(user_id=0, layer_id=-1)
+        self.tester.api_layer_follower_delete_error_401_unauthorized(user_id="0", layer_id="-1")
 
-    def test_delete_api_layer_follower_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
-        # DO LOGIN
-
-        # login with other user (admin) and he tries to delete a user from a layer of rodrigo
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        # try to remove the user in layer
-        self.tester.api_user_layer_delete_error_403_forbidden(user_id=1004, layer_id=1002)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    # def test_delete_api_layer_follower_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
+    #     # DO LOGIN
+    #
+    #     # login with other user (admin) and he tries to delete a user from a layer of rodrigo
+    #     self.tester.auth_login("miguel@admin.com", "miguel")
+    #
+    #     # try to remove the user in layer
+    #     self.tester.api_user_layer_delete_error_403_forbidden(user_id=1004, layer_id=1002)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
 
     def test_delete_api_layer_follower_error_404_not_found(self):
         # create a tester passing the unittest self
@@ -269,12 +268,12 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5000)
-        self.tester.api_user_layer_delete_error_404_not_found(user_id=1001, layer_id=5001)
+        self.tester.api_layer_follower_delete_error_404_not_found(user_id=1001, layer_id=5000)
+        self.tester.api_layer_follower_delete_error_404_not_found(user_id=1001, layer_id=5001)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
