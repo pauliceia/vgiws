@@ -34,17 +34,17 @@ VALUES (1005, 'gabriel', 'gabriel@admin.com', '5dbe7d079067809bb06f7c80de78ecb9d
 
 -- password - fernanda
 INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
-VALUES (1006, 'fernanda', 'fernanda@gmail.com', 'fernanda',
+VALUES (1006, 'fernanda', 'fernanda@admin.com', 'fernanda',
 '2017-01-19', TRUE, FALSE, '2017-01-19', FALSE, TRUE, '', '', '');
 
 -- password - ana
 INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
-VALUES (1007, 'ana', 'ana@gmail.com', 'ana',
+VALUES (1007, 'ana', 'ana@admin.com', 'ana',
 '2017-01-18', FALSE, TRUE, '2017-01-18', FALSE, FALSE, '', '', '');
 
 -- password - bea
 INSERT INTO pauliceia_user (user_id, username, email, password, created_at, is_email_valid, terms_agreed, login_date, is_the_admin, receive_notification_by_email, picture, social_id, social_account) 
-VALUES (1008, 'bea', 'bea@gmail.com', 'bea', 
+VALUES (1008, 'bea', 'bea@admin.com', 'bea', 
 '2017-01-30', FALSE, FALSE, '2017-01-30', FALSE, FALSE, '', '', '');
 
 

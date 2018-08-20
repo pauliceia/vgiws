@@ -194,6 +194,33 @@ def remove_example_table(text):
 
     return text
 
+def put_delete_cascade_in_notification_table(text):
+    lines = text.split("\n")
+    lines_copy = list(lines)  # create a copy to iterate inside it
+
+    remove_line = False
+
+    for i in range(0, len(lines_copy)):
+        line = lines_copy[i]
+
+        line_lower = line.lower()
+
+        # start to remove when find the "foreign key (notification_id_parent)" (when it is the delete no action)
+        if "foreign key (notification_id_parent)" in line_lower:
+            remove_line = True
+
+        # replace the line to delete cascade
+        if remove_line:
+            lines[i] = lines[i].replace("ON DELETE NO ACTION", "ON DELETE CASCADE")  # erase the line
+
+        # stop to remove the line when find "on update cascade"
+        if "on update cascade" in line_lower and remove_line:
+            remove_line = False
+
+    text = "\n".join(lines)
+
+    return text
+
 def last_modifications(text):
 
     # remove the schema
@@ -244,6 +271,8 @@ def main():
 
         # remove the <feature_table> and version_<feature_table>
         text = remove_example_table(text)
+
+        text = put_delete_cascade_in_notification_table(text)
 
         text = last_modifications(text)
 

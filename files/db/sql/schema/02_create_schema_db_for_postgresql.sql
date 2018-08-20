@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS notification (
   CONSTRAINT fk_notification_notification1
     FOREIGN KEY (notification_id_parent)
     REFERENCES notification (notification_id)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 

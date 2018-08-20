@@ -517,6 +517,63 @@ class TestAPINotification(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_api_notification_create_update_and_delete_notification_with_reply(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # create notification
+        ##################################################
+        notification = {
+            'type': 'Notification',
+            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': None, 'layer_id': None, 'description': 'Congresso de HD no RJ'}
+        }
+        notification = self.tester.api_notification_create(notification)
+
+        notification_id = notification["properties"]["notification_id"]
+
+        ##################################################
+        # create reply
+        ##################################################
+        reply = {
+            'type': 'Notification',
+            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+                           'notification_id_parent': notification_id, 'layer_id': None, 'description': 'Legal!'}
+        }
+        reply = self.tester.api_notification_create(reply)
+
+        reply_id = reply["properties"]["notification_id"]
+
+        ##################################################
+        # verify if the notification was added
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [notification]}
+        self.tester.api_notification(expected_at_least=expected_resource,
+                                     notification_id=notification_id)
+
+        ##################################################
+        # verify if the reply was added
+        ##################################################
+        expected_resource = {'type': 'FeatureCollection', 'features': [reply]}
+        self.tester.api_notification(expected_at_least=expected_resource,
+                                     notification_id=reply["properties"]["notification_id"])
+
+        ##################################################
+        # remove notification
+        ##################################################
+        # remove the notification (and together the reply)
+        self.tester.api_notification_delete(notification_id=notification_id)
+
+        # it is not possible to find the notification that just deleted
+        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+
+        # it is not possible to find the reply that just deleted
+        self.tester.api_notification_error_404_not_found(notification_id=reply_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
 
 class TestAPINotificationErrors(TestCase):
 
