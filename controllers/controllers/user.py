@@ -7,7 +7,7 @@
 
 
 from ..base import BaseHandlerUser
-from modules.common import auth_non_browser_based
+from modules.common import auth_non_browser_based, just_run_on_debug_mode
 
 
 # USER
@@ -28,6 +28,7 @@ class APIUser(BaseHandlerUser):
     def put(self, param=None):
         self.put_method_api_resource(param)
 
+    @just_run_on_debug_mode
     @auth_non_browser_based
     def delete(self, param=None):
         self.delete_method_api_resource(param)

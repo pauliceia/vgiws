@@ -92,7 +92,7 @@ This method updates a user described in a JSON.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
 
-
+<!--
 ### DELETE /api/user/#id
 
 This method delete one user by id = #id.
@@ -109,3 +109,4 @@ This method delete one user by id = #id.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
+-->
