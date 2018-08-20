@@ -188,24 +188,13 @@ class TestAPIUserLayerErrors(TestCase):
 
         self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
 
-        # user miguel (1003) tries to follow a layer that he is a owner
-        layer_follower = {
-            'properties': {'layer_id': 1003},
-            'type': 'LayerFollower'
-        }
-
-        self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
-
-        self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        # user miguel (1003) tries to follow a layer that he is a collaborator
-        layer_follower = {
-            'properties': {'layer_id': 1001},
-            'type': 'LayerFollower'
-        }
-
-        self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
+        # # user miguel (1003) tries to follow a layer that he is a owner
+        # layer_follower = {
+        #     'properties': {'layer_id': 1003},
+        #     'type': 'LayerFollower'
+        # }
+        #
+        # self.tester.api_layer_follower_create_error_409_conflict(layer_follower)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

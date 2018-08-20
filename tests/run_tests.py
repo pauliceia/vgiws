@@ -24,8 +24,8 @@ if __name__ == '__main__':
     print("Running the tests \n")
 
     # Get all the files on current folder that has .py in the final
-    tests = TestLoader().discover(ROOT_PATH, "*.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
+    # tests = TestLoader().discover(ROOT_PATH, "*.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_layer_follower.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

@@ -1304,20 +1304,20 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
     # VALIDATION
 
     def can_current_user_create(self, current_user_id, layer_id):
-        layers = {"features": []}
+        # layers = {"features": []}
         layer_followers = {"features": []}
 
-        try:
-            layers = self.PGSQLConn.get_user_layers(user_id=str(current_user_id), layer_id=str(layer_id))
-        except HTTPError as error:
-            # if the error is different of 404, raise an exception..., because I expect a 404
-            # (when a user is not a collaborator of a layer he can follow the layer)
-            if error.status_code != 404:
-                raise error
-
-        # if it was returned a list with users, raise an exception
-        if layers["features"]:
-            raise HTTPError(409, "The user can't follow a layer, because he/she is a collaborator or owner of it.")
+        # try:
+        #     layers = self.PGSQLConn.get_user_layers(user_id=str(current_user_id), layer_id=str(layer_id))
+        # except HTTPError as error:
+        #     # if the error is different of 404, raise an exception..., because I expect a 404
+        #     # (when a user is not a collaborator of a layer he can follow the layer)
+        #     if error.status_code != 404:
+        #         raise error
+        #
+        # # if it was returned a list with users, raise an exception
+        # if layers["features"]:
+        #     raise HTTPError(409, "The user can't follow a layer, because he/she is a collaborator or owner of it.")
 
         try:
             layer_followers = self.PGSQLConn.get_layer_follower(user_id=str(current_user_id), layer_id=str(layer_id))
