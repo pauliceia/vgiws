@@ -64,7 +64,7 @@ class TestAPIUser(TestCase):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'fernanda', 'user_id': 1006, 'email': 'fernanda@gmail.com',
+                                   'username': 'fernanda', 'user_id': 1006, 'email': 'fernanda@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-19 00:00:00', 'login_date': '2017-01-19T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -72,7 +72,7 @@ class TestAPIUser(TestCase):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
-                                   'username': 'ana', 'user_id': 1007, 'email': 'ana@gmail.com',
+                                   'username': 'ana', 'user_id': 1007, 'email': 'ana@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-18 00:00:00', 'login_date': '2017-01-18T00:00:00',
                                    'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -80,7 +80,7 @@ class TestAPIUser(TestCase):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': False,
-                                   'username': 'bea', 'user_id': 1008, 'email': 'bea@gmail.com',
+                                   'username': 'bea', 'user_id': 1008, 'email': 'bea@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-30 00:00:00', 'login_date': '2017-01-30T00:00:00',
                                    'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
