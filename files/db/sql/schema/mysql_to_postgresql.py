@@ -206,16 +206,18 @@ def put_delete_cascade_in_notification_table(text):
         line_lower = line.lower()
 
         # start to remove when find the "foreign key (notification_id_parent)" (when it is the delete no action)
-        if "foreign key (notification_id_parent)" in line_lower:
+        if "foreign key (notification_id_parent)" in line_lower or "foreign key (layer_id)" in line_lower:
             remove_line = True
 
         # replace the line to delete cascade
         if remove_line:
             lines[i] = lines[i].replace("ON DELETE NO ACTION", "ON DELETE CASCADE")  # erase the line
+            #print(lines[i])
 
         # stop to remove the line when find "on update cascade"
         if "on update cascade" in line_lower and remove_line:
             remove_line = False
+            #print("\n\n")
 
     text = "\n".join(lines)
 
