@@ -654,7 +654,7 @@ class PGSQLConnection:
             'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': id_in_json["layer_id"]},
             'type': 'UserLayer'
         }
-        self.create_user_layer(user_layer_json)
+        self.create_user_layer(user_layer_json, user_id)
 
         return id_in_json
 
@@ -1151,7 +1151,7 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_user_layer(self, resource_json):
+    def create_user_layer(self, resource_json, user_id):
         p = resource_json["properties"]
 
         query_text = """
@@ -1161,6 +1161,15 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
+
+        ##################################################
+        # do the user follows the layer
+        ##################################################
+        # layer_follower = {
+        #     'properties': {'layer_id': p["layer_id"]},
+        #     'type': 'LayerFollower'
+        # }
+        # self.create_layer_follower(layer_follower, user_id)
 
     def delete_user_layer(self, user_id=None, layer_id=None):
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
@@ -1963,13 +1972,22 @@ class PGSQLConnection:
     #     if rows_affected == 0:
     #         raise HTTPError(404, "Not found any resource.")
 
-    def delete_layer_follower(self, layer_id, user_id):
+    def delete_layer_follower(self, layer_id=None, user_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        query_text = """
-            DELETE FROM layer_followers WHERE user_id={0} AND layer_id={1};
-        """.format(user_id, layer_id)
+        if user_id is None:
+            query_text = """
+                DELETE FROM layer_followers WHERE layer_id={0};
+            """.format(layer_id)
+        elif layer_id is None:
+            query_text = """
+                DELETE FROM layer_followers WHERE user_id={0};
+            """.format(user_id)
+        else:
+            query_text = """
+                DELETE FROM layer_followers WHERE user_id={0} AND layer_id={1};
+            """.format(user_id, layer_id)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

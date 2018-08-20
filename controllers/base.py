@@ -267,14 +267,21 @@ Please, click on under URL to validate your email:
             # (2.1) everybody who is collaborator of the layer, will receive a not. by email
 
             # get all the collaborators of the layer
-            users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
+            # users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
+            #
+            # # get the user information of the collaborators
+            # for user_layer in users_layer["features"]:
+            #     user = self.PGSQLConn.get_users(user_id=user_layer["properties"]["user_id"])["features"][0]
+            #     users["features"].append(user)
+
+            # (2.1) everybody who follows the layer, will receive a notification by email
+
+            users_follow_layer = self.PGSQLConn.get_layer_follower(layer_id=resource_json["properties"]["layer_id"])
 
             # get the user information of the collaborators
-            for user_layer in users_layer["features"]:
-                user = self.PGSQLConn.get_users(user_layer["properties"]["user_id"])["features"][0]
+            for user_follow_layer in users_follow_layer["features"]:
+                user = self.PGSQLConn.get_users(user_id=user_follow_layer["properties"]["user_id"])["features"][0]
                 users["features"].append(user)
-
-            # TODO: (2.1) everybody who follows the layer, will receive a notification by email
 
         # TODO: (3) notification by keyword: everybody who follows the keyword, will receive a notification by email
         # elif resource_json["properties"]["keyword_id"] is not None:
@@ -876,7 +883,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         self.can_current_user_add_user_in_layer(current_user_id, resource_json["properties"]["layer_id"])
 
-        return self.PGSQLConn.create_user_layer(resource_json, **kwargs)
+        return self.PGSQLConn.create_user_layer(resource_json, current_user_id)
 
     # PUT
 

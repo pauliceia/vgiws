@@ -142,6 +142,8 @@ class TestAPILayer(TestCase):
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
 
+        # TODO: verificar se o usuário segue aquela layer
+
         ##################################################
         # delete the layer
         ##################################################
