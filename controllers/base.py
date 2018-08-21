@@ -314,7 +314,14 @@ Enter on the Pauliceia platform to visualize or reply this notification.
                 send_email(user["properties"]["email"], subject=subject, body=body)
 
     def send_notification_by_email(self, resource_json, current_user_id):
-        users_to_send_email = self.get_users_to_send_email(resource_json)
+        try:
+            users_to_send_email = self.get_users_to_send_email(resource_json)
+        except HTTPError as error:
+            # if not found users, send to 0 users the notifications
+            if error.status_code == 404:
+                users_to_send_email = {"features": []}
+            else:
+                raise error
 
         self.send_email_to_selected_users(users_to_send_email, current_user_id, resource_json)
 
