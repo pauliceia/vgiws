@@ -1165,28 +1165,30 @@ class PGSQLConnection:
         ##################################################
         # do the user follows the layer
         ##################################################
-        # try:
-        #     layer_follower = {
-        #         'properties': {'layer_id': p["layer_id"]},
-        #         'type': 'LayerFollower'
-        #     }
-        #     self.create_layer_follower(layer_follower, user_id)
-        # except Error as error:
-        #     self.rollback()  # do a rollback to comeback in a safe state of DB
-        #     # I expect a 23505
-        #     if error.pgcode != "23505":  # 23505 - unique_violation
-        #         raise error
+        try:
+            layer_follower = {
+                'properties': {'layer_id': p["layer_id"]},
+                'type': 'LayerFollower'
+            }
+            self.create_layer_follower(layer_follower, p["user_id"])
+        except Error as error:
+            self.rollback()  # do a rollback to comeback in a safe state of DB
+            # I expect a 23505, if a user already follows a layer, he keeps to follow
+            if error.pgcode != "23505":  # 23505 - unique_violation
+                raise error
 
     def delete_user_layer(self, user_id=None, layer_id=None):
         ##################################################
         # do the user follows the layer
         ##################################################
-        # try:
-        #     self.delete_layer_follower(layer_id=layer_id, user_id=user_id)
-        # except HTTPError as error:
-        #     # if the error is different of 404, raise a exception..., because I except a 404
-        #     if error.status_code != 404:
-        #         raise error
+        try:
+            self.delete_layer_follower(layer_id=layer_id, user_id=user_id)
+        except HTTPError as error:
+            # if the error is different of 404, raise a exception..., because I except a 404
+            if error.status_code != 404:
+                raise error
+            else:
+                pass
 
         # delete the user from a layer
         if is_a_invalid_id(user_id) or is_a_invalid_id(layer_id):
