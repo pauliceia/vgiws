@@ -186,18 +186,37 @@ class TestAPIUserLayer(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # add a user in a layer
+        ##################################################
+        # create a user in a layer
+        ##################################################
         user_layer = {
             'properties': {'is_the_creator': True, 'user_id': 1002, 'layer_id': 1003},
             'type': 'UserLayer'
         }
         self.tester.api_user_layer_create(user_layer)
 
+        ##################################################
+        # verify if the user started to follow the layer automatically
+        ##################################################
+        expected_at_least = {
+            'features': [
+                {
+                    'properties': {'layer_id': 1003, 'user_id': 1002},
+                    'type': 'LayerFollower'
+                },
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_layer_follower(expected_at_least=expected_at_least,
+                                       user_id="1002", layer_id="1003")
+
+        ##################################################
+        # remove the user in layer
+        ##################################################
         # get the id of layer to REMOVE it
         user_id = user_layer["properties"]["user_id"]
         layer_id = user_layer["properties"]["layer_id"]
 
-        # remove the user in layer
         self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
 
         # it is not possible to find the layer that just deleted
@@ -210,12 +229,33 @@ class TestAPIUserLayer(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # add a user in a layer
+        ##################################################
+        # create a user in a layer
+        ##################################################
         user_layer = {
             'properties': {'is_the_creator': True, 'user_id': 1002, 'layer_id': 1003},
             'type': 'UserLayer'
         }
         self.tester.api_user_layer_create(user_layer)
+
+        ##################################################
+        # verify if the user started to follow the layer automatically
+        ##################################################
+        expected_at_least = {
+            'features': [
+                {
+                    'properties': {'layer_id': 1003, 'user_id': 1002},
+                    'type': 'LayerFollower'
+                },
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_layer_follower(expected_at_least=expected_at_least,
+                                       user_id="1002", layer_id="1003")
+
+        ##################################################
+        # log in with the admin to delete the user
+        ##################################################
 
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
