@@ -52,7 +52,7 @@ def get_subquery_notification_table(**kwargs):
     return subquery_table
 
 
-def get_subquery_notification_table_by_follower(user_id):
+def get_subquery_notification_table_related_to_user(user_id):
 
     # default get all features
     subquery_table = """

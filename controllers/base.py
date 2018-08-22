@@ -1152,12 +1152,12 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
 
 
-class BaseHandlerNotificationByFollower(BaseHandlerTemplateMethod):
+class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
 
     # GET
 
     def _get_resource(self, *args, **kwargs):
-        return self.PGSQLConn.get_notification_by_follower(kwargs["user_id"])
+        return self.PGSQLConn.get_notification_related_to_user(kwargs["user_id"])
 
     # POST
 

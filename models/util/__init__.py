@@ -12,6 +12,6 @@ from .user_layer import get_subquery_user_layer_table
 from .reference import get_subquery_reference_table
 from .keyword import get_subquery_keyword_table
 from .changeset import get_subquery_changeset_table
-from .notification import get_subquery_notification_table, get_subquery_notification_table_by_follower
+from .notification import get_subquery_notification_table, get_subquery_notification_table_related_to_user
 from .feature import get_subquery_feature
 from .other import *

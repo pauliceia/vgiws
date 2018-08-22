@@ -819,7 +819,7 @@ class TestAPINotificationErrors(TestCase):
         self.tester.auth_logout()
 
 
-class TestAPINotificationByFollower(TestCase):
+class TestAPINotificationRelatedToUser(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -827,7 +827,7 @@ class TestAPINotificationByFollower(TestCase):
 
     # notification - get
 
-    def test_get_api_notification_by_follower_return_notification_by_user_id(self):
+    def test_get_api_notification_related_to_user_return_notification_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -858,7 +858,7 @@ class TestAPINotificationByFollower(TestCase):
             ]
         }
 
-        self.tester.api_notification_by_follower(expected, user_id="1003")
+        self.tester.api_notification_related_to_user(expected, user_id="1003")
 
 """
 class TestAPINotificationByFollowerErrors(TestCase):
@@ -870,11 +870,11 @@ class TestAPINotificationByFollowerErrors(TestCase):
     # notification errors - get
 
     def test_get_api_notification_error_400_bad_request(self):
-        self.tester.api_notification_error_400_bad_request(notification_id="abc")
-        self.tester.api_notification_error_400_bad_request(notification_id=0)
-        self.tester.api_notification_error_400_bad_request(notification_id=-1)
-        self.tester.api_notification_error_400_bad_request(notification_id="-1")
-        self.tester.api_notification_error_400_bad_request(notification_id="0")
+        self.tester.api_notification_error_400_bad_request(user_id="abc")
+        self.tester.api_notification_error_400_bad_request(user_id=0)
+        self.tester.api_notification_error_400_bad_request(user_id=-1)
+        self.tester.api_notification_error_400_bad_request(user_id="-1")
+        self.tester.api_notification_error_400_bad_request(user_id="0")
 
     # def test_get_api_notification_error_404_not_found(self):
     #     self.tester.api_notification_error_404_not_found(notification_id="999")

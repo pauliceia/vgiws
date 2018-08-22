@@ -115,3 +115,32 @@ This method deletes one notification by id = #id.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
+
+
+### GET /api/notification_related_to_user/?\<params>
+
+This method gets all notifications related to a user.
+- Parameters:
+    - user_id (mandatory) (int): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
+- Examples:
+     - Get notifications by user id: http://localhost:8888/api/notification_related_to_user/?user_id=1001
+- Send:
+- Response: a JSON that contain the features selected. Example:
+    ```javascript
+    {
+        'features': [
+            {
+                'type': 'Notification',
+                'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
+                               'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
+                               'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+            },
+        ],
+        'type': 'FeatureCollection'
+    }
+    ```
+- Error codes:
+    - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found any feature.
+    - 500 (Internal Server Error): Problem when get a feature. Please, contact the administrator.
+- Notes:

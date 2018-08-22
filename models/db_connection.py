@@ -1852,12 +1852,12 @@ class PGSQLConnection:
     # NOTIFICATION
     ################################################################################
 
-    def get_notification_by_follower(self, user_id=None):
+    def get_notification_related_to_user(self, user_id=None):
         # the id have to be a int
         if is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_notification_table_by_follower(user_id=user_id)
+        subquery = get_subquery_notification_table_related_to_user(user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
