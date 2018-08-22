@@ -1849,6 +1849,59 @@ class PGSQLConnection:
             raise HTTPError(404, "Not found any resource.")
 
     ################################################################################
+    # NOTIFICATION
+    ################################################################################
+
+    def get_notification_by_follower(self, user_id=None):
+        # the id have to be a int
+        if is_a_invalid_id(user_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_notification_table_by_follower(user_id=user_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'Notification',
+                    'properties', json_build_object(
+                        'notification_id',     notification_id,
+                        'description',      description,
+                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_denunciation',  is_denunciation,
+                        'user_id_creator',     user_id_creator,
+                        'layer_id',      layer_id,
+                        'keyword_id',  keyword_id,
+                        'notification_id_parent',  notification_id_parent
+                    )
+                ))
+            ) AS row_to_json
+            FROM 
+            {0}            
+        """.format(subquery)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
+
+    ################################################################################
     # IMPORT
     ################################################################################
 

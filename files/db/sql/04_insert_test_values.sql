@@ -883,15 +883,23 @@ SELECT srid FROM geometry_columns WHERE f_table_name='layer_1001';
 INSERT INTO layer_1002 (start_date, changeset_id, address, end_date, geom) 
 VALUES ('1870-01-01', 1, 'R. São José', '1870-12-31', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "MultiPoint", "coordinates": [[-46.6375790530164, -23.5290461960682]]}'), 4326)) 
 RETURNING id;
+
+
+SELECT *
+FROM
+(
+	-- notifications that a user follows
+	SELECT notification_id, description, created_at, is_denunciation, user_id_creator, layer_id, keyword_id, notification_id_parent FROM 
+	(SELECT layer_id AS lf_layer_id FROM layer_followers WHERE user_id = 1006) lf INNER JOIN notification n 
+	ON lf.lf_layer_id = n.layer_id
+		-- union the tables
+		UNION
+	-- general notifications
+	SELECT * FROM notification WHERE layer_id is NULL AND keyword_id is NULL AND notification_id_parent is NULL
+) __notification__
+WHERE is_denunciation = FALSE
+ORDER BY created_at DESC, notification_id
 */
-
-
-
-
-
---SELECT * FROM layer_followers WHERE user_id = 1003;
-
-
 
 
 

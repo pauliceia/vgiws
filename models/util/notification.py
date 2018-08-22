@@ -50,3 +50,28 @@ def get_subquery_notification_table(**kwargs):
     """.format(where_clause)
 
     return subquery_table
+
+
+def get_subquery_notification_table_by_follower(user_id):
+
+    # default get all features
+    subquery_table = """
+        (
+            SELECT *
+            FROM
+            (
+                -- notifications that a user follows
+                SELECT notification_id, description, created_at, is_denunciation, user_id_creator, layer_id, keyword_id, notification_id_parent FROM 
+                (SELECT layer_id AS lf_layer_id FROM layer_followers WHERE user_id = {0}) lf INNER JOIN notification n 
+                ON lf.lf_layer_id = n.layer_id
+                    -- union the tables
+                    UNION
+                -- general notifications
+                SELECT * FROM notification WHERE layer_id is NULL AND keyword_id is NULL AND notification_id_parent is NULL
+            ) __notification__
+            WHERE is_denunciation = FALSE
+            ORDER BY created_at DESC, notification_id
+        ) AS notification
+    """.format(user_id)
+
+    return subquery_table

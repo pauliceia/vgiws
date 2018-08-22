@@ -1152,6 +1152,60 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
 
 
+class BaseHandlerNotificationByFollower(BaseHandlerTemplateMethod):
+
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_notification_by_follower(kwargs["user_id"])
+
+    # POST
+
+    # def _create_resource(self, resource_json, current_user_id, **kwargs):
+    #     resource_json_copy = deepcopy(resource_json)
+    #
+    #     result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
+    #
+    #     self.send_notification_by_email(resource_json_copy, current_user_id)
+    #
+    #     return result
+    #
+    # # PUT
+    #
+    # def _put_resource(self, resource_json, current_user_id, **kwargs):
+    #     self.can_current_user_update_or_delete_notification(current_user_id, resource_json["properties"]["notification_id"])
+    #
+    #     return self.PGSQLConn.update_notification(resource_json, current_user_id, **kwargs)
+    #
+    # # DELETE
+    #
+    # def _delete_resource(self, current_user_id, *args, **kwargs):
+    #     self.can_current_user_update_or_delete_notification(current_user_id, **kwargs)
+    #
+    #     self.PGSQLConn.delete_notification(**kwargs)
+    #
+    # # VALIDATION
+    #
+    # def can_current_user_update_or_delete_notification(self, current_user_id, notification_id):
+    #     """
+    #     Verify if the current user can update or delete a notification
+    #     :return:
+    #     """
+    #
+    #     # if currente user is an administrator, so ok ...
+    #     if self.is_current_user_an_administrator():
+    #         return
+    #
+    #     notification = self.PGSQLConn.get_notification(notification_id=notification_id)
+    #
+    #     # if the current_user_id is the creator of the notification, so ok...
+    #     if notification["features"][0]["properties"]['user_id_creator'] == current_user_id:
+    #         return
+    #
+    #     # ... else, raise an exception.
+    #     raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
+
+
 class BaseHandlerMask(BaseHandlerTemplateMethod):
 
     # GET

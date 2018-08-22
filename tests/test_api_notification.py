@@ -819,5 +819,70 @@ class TestAPINotificationErrors(TestCase):
         self.tester.auth_logout()
 
 
+class TestAPINotificationByFollower(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    # notification - get
+
+    def test_get_api_notification_by_follower_return_notification_by_user_id(self):
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Notification',
+                    'properties': {
+                        'notification_id': 1015, 'notification_id_parent': None, 'created_at': '2017-04-05 00:00:00',
+                        'layer_id': 1002, 'description': 'Muito boa camada. Parabéns.', 'user_id_creator': 1002,
+                        'keyword_id': None, 'is_denunciation': False
+                    }
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {
+                        'notification_id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
+                        'layer_id': None, 'description': 'Evento Y no dia 24/06/2018', 'user_id_creator': 1002,
+                        'keyword_id': None, 'is_denunciation': False
+                    }
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {
+                        'notification_id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
+                        'layer_id': None, 'description': 'Congresso X acontecerá em 2018/03/25', 'user_id_creator': 1001,
+                        'keyword_id': None, 'is_denunciation': False
+                    }
+                }
+            ]
+        }
+
+        self.tester.api_notification_by_follower(expected, user_id="1003")
+
+"""
+class TestAPINotificationByFollowerErrors(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+    # notification errors - get
+
+    def test_get_api_notification_error_400_bad_request(self):
+        self.tester.api_notification_error_400_bad_request(notification_id="abc")
+        self.tester.api_notification_error_400_bad_request(notification_id=0)
+        self.tester.api_notification_error_400_bad_request(notification_id=-1)
+        self.tester.api_notification_error_400_bad_request(notification_id="-1")
+        self.tester.api_notification_error_400_bad_request(notification_id="0")
+
+    # def test_get_api_notification_error_404_not_found(self):
+    #     self.tester.api_notification_error_404_not_found(notification_id="999")
+    #     self.tester.api_notification_error_404_not_found(user_id_creator="998")
+    #     self.tester.api_notification_error_404_not_found(layer_id="999")
+    #     self.tester.api_notification_error_404_not_found(keyword_id="998")
+    #     self.tester.api_notification_error_404_not_found(notification_id_parent="999")
+"""
+
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
