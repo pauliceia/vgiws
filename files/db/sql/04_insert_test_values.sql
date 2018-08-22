@@ -257,6 +257,12 @@ INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_col
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1001, 1001, '2017-01-02', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1001, 1002, '2017-01-03');
 
+
+-- users can follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1001, 1001, '2017-01-01');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1001, 1002, '2017-01-05');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1001, 1003, '2017-01-08');
+
 -- create a changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1001, 'Creating layer_1001', '2017-01-05', 1001, 1001);
 
@@ -279,9 +285,6 @@ VALUES (1003,
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-01-05' WHERE changeset_id=1001;
-
--- users can follow the layer
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1001, 1003, '2017-01-02');
 
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1011, 'An open changeset', '2017-01-08', 1001, 1001);
@@ -358,6 +361,11 @@ INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_col
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1002, 1001, '2017-03-05', TRUE);
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1002, 1004, '2017-03-05');
 
+-- users that follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1001, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1003, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1005, '2017-01-02');
+
 -- create a changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1002, 'Creating layer_1002', '2017-03-05', 1002, 1004);
 
@@ -382,10 +390,6 @@ VALUES (1009,
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-03-05' WHERE changeset_id=1002;
-
--- users can follow the layer
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1003, '2017-01-02');
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1002, 1005, '2017-01-02');
 
 -- create a open changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1014, 'An open changeset', '2017-01-08', 1002, 1004);
@@ -464,6 +468,11 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1001, '2017-04-11');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1006, '2017-04-11');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1003, 1007, '2017-04-11');
+
+-- users that follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1003, 1003, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1003, 1006, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1003, 1007, '2017-01-02');
 
 -- create a changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1003, 'Creating layer_1003', '2017-04-12', 1003, 1005);
@@ -558,6 +567,9 @@ INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1007, '2017-06-20');
 INSERT INTO user_layer (layer_id, user_id, created_at) VALUES (1004, 1008, '2017-06-27');
 
+-- users that follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1004, 1003, '2017-01-09');
+
 -- create a changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1004, 'Creating layer_1004', '2017-06-28', 1004, 1005);
 
@@ -649,6 +661,11 @@ INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_col
 -- add users in layers
 INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) VALUES (1005, 1007, '2017-08-04', TRUE);
 
+-- users that follow the layer
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1003, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1004, '2017-01-02');
+INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1005, '2017-01-02');
+
 -- create a changeset
 INSERT INTO changeset (changeset_id, description, created_at, layer_id, user_id_creator) VALUES (1005, 'Creating layer_1005', '2017-08-05', 1005, 1007);
 
@@ -668,11 +685,6 @@ VALUES (1002,
 
 -- close the changeset
 UPDATE changeset SET closed_at='2017-08-05' WHERE changeset_id=1005;
-
--- users can follow the layer
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1003, '2017-01-02');
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1004, '2017-01-02');
-INSERT INTO layer_followers (layer_id, user_id, created_at) VALUES (1005, 1005, '2017-01-02');
 
 -- verify if the layer has features and verify if the changeset was created
 /*
@@ -872,4 +884,19 @@ INSERT INTO layer_1002 (start_date, changeset_id, address, end_date, geom)
 VALUES ('1870-01-01', 1, 'R. São José', '1870-12-31', ST_SetSRID(ST_GeomFromGeoJSON('{"type": "MultiPoint", "coordinates": [[-46.6375790530164, -23.5290461960682]]}'), 4326)) 
 RETURNING id;
 */
+
+
+
+
+
+--SELECT * FROM layer_followers WHERE user_id = 1003;
+
+
+
+
+
+
+
+
+
 

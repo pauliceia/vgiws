@@ -21,7 +21,19 @@ class TestAPILayerFollower(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1001, 'user_id': 1003},
+                    'properties': {'created_at': '2017-01-01 00:00:00', 'layer_id': 1001, 'user_id': 1001},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-05 00:00:00', 'layer_id': 1001, 'user_id': 1002},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'layer_id': 1001, 'user_id': 1003},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1001},
                     'type': 'LayerFollower'
                 },
                 {
@@ -30,6 +42,22 @@ class TestAPILayerFollower(TestCase):
                 },
                 {
                     'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1003, 'user_id': 1003},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1003, 'user_id': 1006},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1003, 'user_id': 1007},
+                    'type': 'LayerFollower'
+                },
+                {
+                    'properties': {'created_at': '2017-01-09 00:00:00', 'layer_id': 1004, 'user_id': 1003},
                     'type': 'LayerFollower'
                 },
                 {
@@ -54,13 +82,17 @@ class TestAPILayerFollower(TestCase):
         expected = {
             'features': [
                 {
+                    'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1001},
+                    'type': 'LayerFollower'
+                },
+                {
                     'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1003},
                     'type': 'LayerFollower'
                 },
                 {
                     'properties': {'created_at': '2017-01-02 00:00:00', 'layer_id': 1002, 'user_id': 1005},
                     'type': 'LayerFollower'
-                },
+                }
             ],
             'type': 'FeatureCollection'
         }
