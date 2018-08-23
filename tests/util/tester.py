@@ -1979,6 +1979,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 200)
 
+        # (https://stackoverflow.com/questions/17011357/what-is-the-difference-between-content-and-text)
+        # binary_zip_file = response.text  # r.text is the content of the response in unicode
+        binary_zip_file = response.content  # r.content is the content of the response in bytes.
+
+        return binary_zip_file
+
     # FEATURE TABLE
 
     # ELEMENT

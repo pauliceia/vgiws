@@ -71,6 +71,26 @@ This method gets masks from DB. If you doesn't put any parameter, so it will ret
 - Notes:
 
 
+### POST /api/convert_geojson_to_shapefile/?\<params>
+
+This method converts a GeoJSON to ShapeFile.
+- Parameters:
+    - file_name (mandatory) (text): the file name of the zip with the extension (e.g. json.geojson).
+- Examples:
+    - Convert GeoJSON to ShapeFile: ```POST http://localhost:8888/api/convert_geojson_to_shapefile/?file_name=json.geojson```
+- Send:
+    - Send the binary of the GeoJSON file.
+- Response:
+    - Return the Shapefile inside a zip in binary mode.
+- Error codes:
+    - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
+    - 400 (Bad Request): It is necessary to pass the file_name in request.
+    - 409 (Conflict): File is not a zip file.
+    - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
+    - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
+- Notes:
+
+
 <!-- ### GET /api/capabilities/ -->
 
 <!-- This method return the capabilities of the server. -->

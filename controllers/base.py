@@ -15,6 +15,7 @@ from zipfile import ZipFile, BadZipFile
 from copy import deepcopy
 from threading import Thread
 from requests import Session
+from shutil import make_archive
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -1560,13 +1561,16 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
 # CONVERT
 
-class BaseHandlerConvertGeoJSONToShapefile(BaseHandlerTemplateMethod):
+class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
 
     __TEMP_FOLDER_TO_CONVERT__ = __TEMP_FOLDER__ + "geojson_to_shapefile/"
 
     def do_validation(self, arguments, binary_file):
         if "file_name" not in arguments:
-            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
+            raise HTTPError(400, "It is necessary to pass the file_name in the request.")
+
+        if "/" in arguments["file_name"] or "\'" in arguments["file_name"]:
+            raise HTTPError(400, "It is a invalid file name.")
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
@@ -1592,6 +1596,23 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandlerTemplateMethod):
         output_file.write(binary_file)
         output_file.close()
 
+    def convert_geojson_to_shapefile_with_ogr2ogr(self, geojson_name, folder_to_create_shapefile):
+
+        shapefile_name = geojson_name.replace("geojson", "shp")
+
+        try:
+            command_to_import_shp_into_postgis = 'ogr2ogr -f "ESRI Shapefile" ' + shapefile_name + ' "' + geojson_name + '"'
+
+            # call a process to execute the command to import the SHP into the PostGIS
+            check_call(command_to_import_shp_into_postgis, cwd=folder_to_create_shapefile, shell=True)
+
+        except CalledProcessError as error:
+            # raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
+            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import.")
+
+    def create_zip_with_shapefile(self, zip_file_name, folder_to_zip):
+        make_archive(zip_file_name, 'zip', folder_to_zip)
+
     def convert_geojson_to_shapefile(self):
         # get the arguments of the request
         arguments = self.get_aguments()
@@ -1601,72 +1622,30 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandlerTemplateMethod):
         # validate the arguments and binary_file
         self.do_validation(arguments, binary_file)
 
-        # remove the extension of the file name (e.g. geojson_01)
-        FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".geojson", "")
-
         # file name of the zip (e.g. /tmp/vgiws/geojson_to_shapefile/geojson_01.geojson)
         FILE_NAME_WITH_FOLDER = self.__TEMP_FOLDER_TO_CONVERT__ + arguments["file_name"]
 
         self.save_binary_file_in_folder(binary_file, FILE_NAME_WITH_FOLDER)
 
+        self.convert_geojson_to_shapefile_with_ogr2ogr(arguments["file_name"], self.__TEMP_FOLDER_TO_CONVERT__)
 
+        # delete the file (it is not needed anymore and because it doesn't have to appear inside the zip)
+        remove_file(FILE_NAME_WITH_FOLDER)
 
+        ZIP_FILE_NAME_WITH_FOLDER = __TEMP_FOLDER__ + arguments["file_name"].replace(".geojson", "")
 
-# class BaseHandlerElement(BaseHandlerTemplateMethod):
-#
-#     def _get_resource(self, *args, **kwargs):
-#         return self.PGSQLConn.get_elements(args[0], **kwargs)
-#
-#     def _create_resource(self, resource_json, current_user_id):
-#         raise NotImplementedError
-#
-#     @catch_generic_exception
-#     def put_method_api_resource_create(self, *args):
-#         element = args[0]
-#         resource_json = self.get_the_json_validated()
-#
-#         if not self.is_element_type_valid(element, resource_json):
-#             raise HTTPError(404, "Invalid URL.")
-#
-#         # current_user_id = self.get_current_user_id()
-#
-#         list_of_id_of_resources_created = []
-#
-#         try:
-#             for resource in resource_json["features"]:
-#                 # the CRS is necessary inside the geometry, because the DB needs to know the EPSG
-#                 resource["geometry"]["crs"] = resource_json["crs"]
-#
-#                 list_of_id_of_resources_created.append(
-#                     # create_element returns the id of the element created
-#                     self.PGSQLConn.create_element(element, resource)
-#                 )
-#
-#             # send the elements created to DB
-#             self.PGSQLConn.commit()
-#
-#         except psycopg2.Error as error:
-#             # print(">>>> ", error)
-#             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-#
-#             if error.pgcode == "VW001":
-#                 # VW001 - The changeset with id=#ID was closed at #CLOSED_AT, so it is not possible to use it
-#                 raise HTTPError(409, str(error))
-#
-#             # if the db error is undefined so raise it again...
-#             raise error
-#             # raise HTTPError(500, "Psycopg2 error. Please, contact the administrator.")
-#             # raise HTTPError(500, "Psycopg2 error. Please, contact the administrator. Information: " + str(error))
-#
-#         except DataError as error:
-#             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
-#
-#         # Default: self.set_header('Content-Type', 'application/json')
-#         self.write(json_encode(list_of_id_of_resources_created))
-#
-#     def _update_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_resource(self, *args, **kwargs):
-#         self.PGSQLConn.delete_element_in_db(*args)
+        self.create_zip_with_shapefile(ZIP_FILE_NAME_WITH_FOLDER, self.__TEMP_FOLDER_TO_CONVERT__)
+
+        # remove the temp folder
+        remove_folder_with_contents(self.__TEMP_FOLDER_TO_CONVERT__)
+
+        ZIP_FILE_NAME_WITH_FOLDER = ZIP_FILE_NAME_WITH_FOLDER + ".zip"
+
+        # read the zip in binary to send to front
+        with open(ZIP_FILE_NAME_WITH_FOLDER, mode='rb') as file:  # r = read binary
+            binary_file_content = file.read()
+            self.write(binary_file_content)  # send the zip to the front
+
+        # delete the zip after using it
+        remove_file(ZIP_FILE_NAME_WITH_FOLDER)
+

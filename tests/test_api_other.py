@@ -140,7 +140,6 @@ class TestAPIMaskErrors(TestCase):
         self.tester.api_mask_error_404_not_found(mask_id="998")
 
 
-"""
 class TestAPIConvertGeoJSONToShapefile(TestCase):
 
     def setUp(self):
@@ -149,21 +148,28 @@ class TestAPIConvertGeoJSONToShapefile(TestCase):
 
         self.folder_name = "files/geojson/"
 
-    # def tearDown(self):
-    #     pass
-
     # import - create
 
-    def test_post_import_shp_point(self):
+    def test_post_convert_geojson_to_shapefile(self):
         ##################################################
         # convert a geojson to a shapefile
         ##################################################
         file_name = "test_geojson_01.geojson"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
 
-            self.tester.api_convert_geojson_to_shapefile(binary_file_content, file_name=file_name)
-"""
+        file_name_with_folder = self.folder_name + file_name
+
+        with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
+            binary_file_geojson = file.read()
+
+            binary_file_zip = self.tester.api_convert_geojson_to_shapefile(binary_file_geojson,
+                                                                           file_name=file_name)
+
+            zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
+
+            output_file = open(zip_file_name_with_folder, 'wb')  # wb - write binary
+            output_file.write(binary_file_zip)
+            output_file.close()
+
 
 
 
