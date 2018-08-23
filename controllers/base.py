@@ -1400,28 +1400,6 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
             raise HTTPError(409, "The user can't follow a layer, because he/she already follow it.")
 
 
-# class BaseHandlerChangeset(BaseHandlerTemplateMethod):
-#
-#     def _get_resource(self, *args, **kwargs):
-#         return self.PGSQLConn.get_changesets(**kwargs)
-#
-#     def _create_resource(self, resource_json, current_user_id):
-#         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
-#
-#     def _update_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _close_resource(self, *args, **kwargs):
-#         try:
-#             self.PGSQLConn.close_changeset(args[0])
-#         except DataError as error:
-#             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator.")
-#
-#     def _delete_resource(self, *args, **kwargs):
-#         self.PGSQLConn.delete_changeset_in_db(*args)
-
-
 # IMPORT
 
 class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidator):
@@ -1528,6 +1506,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         # get the binary file in body of the request
         binary_file = self.request.body
 
+        # validate the arguments and binary_file
         self.do_validation(arguments, binary_file)
 
         # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
@@ -1579,54 +1558,59 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
 
 
-# class BaseFeatureTable(BaseHandlerTemplateMethod):
-#
-#     def _get_resource(self, *args, **kwargs):
-#         # print("\n\n*args: ", args)
-#         # print("**kwargs: ", kwargs, "\n\n")
-#         return self.PGSQLConn.get_resource_table(**kwargs)
-#
-#     def _create_resource(self, resource_json, current_user_id, **kwargs):
-#         raise NotImplementedError
-#
-#     def _update_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_resource(self, *args, **kwargs):
-#         raise NotImplementedError
+# CONVERT
+
+class BaseHandlerConvertGeoJSONToShapefile(BaseHandlerTemplateMethod):
+
+    __TEMP_FOLDER_TO_CONVERT__ = __TEMP_FOLDER__ + "geojson_to_shapefile/"
+
+    def do_validation(self, arguments, binary_file):
+        if "file_name" not in arguments:
+            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
+
+        if binary_file == b'':
+            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
+
+        # if do not exist the temp folders, create them
+        if not exists(__TEMP_FOLDER__):
+            makedirs(__TEMP_FOLDER__)
+        if not exists(self.__TEMP_FOLDER_TO_CONVERT__):
+            makedirs(self.__TEMP_FOLDER_TO_CONVERT__)
+
+        # the file needs to be in a zip file
+        if not arguments["file_name"].endswith(".geojson"):
+            raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]) + ". It is necessary to be a GeoJSON.")
+
+    def save_binary_file_in_folder(self, binary_file, folder_with_file_name):
+        """
+        :param binary_file: a file in binary
+        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :return:
+        """
+        # save the zip with the shp inside the temp folder
+        output_file = open(folder_with_file_name, 'wb')  # wb - write binary
+        output_file.write(binary_file)
+        output_file.close()
+
+    def convert_geojson_to_shapefile(self):
+        # get the arguments of the request
+        arguments = self.get_aguments()
+        # get the binary file in body of the request
+        binary_file = self.request.body
+
+        # validate the arguments and binary_file
+        self.do_validation(arguments, binary_file)
+
+        # remove the extension of the file name (e.g. geojson_01)
+        FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".geojson", "")
+
+        # file name of the zip (e.g. /tmp/vgiws/geojson_to_shapefile/geojson_01.geojson)
+        FILE_NAME_WITH_FOLDER = self.__TEMP_FOLDER_TO_CONVERT__ + arguments["file_name"]
+
+        self.save_binary_file_in_folder(binary_file, FILE_NAME_WITH_FOLDER)
 
 
-# class BaseHandlerFeatureTable(BaseHandlerTemplateMethod):
-#
-#     def _get_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     @catch_generic_exception
-#     def _create_resource(self):
-#         # get the JSON sent, to add in DB
-#         resource_json = self.get_the_json_validated()
-#         current_user_id = self.get_current_user_id()
-#
-#         try:
-#             self.PGSQLConn.create_resource_table(resource_json, current_user_id)
-#
-#             # do commit after create a resource
-#             self.PGSQLConn.commit()
-#         except DataError as error:
-#             # print("Error: ", error)
-#             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator.")
-#         except ProgrammingError as error:
-#             if error.pgcode == "42P07":
-#                 self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
-#                 raise HTTPError(400, "resource table already exist.")
-#             else:
-#                 raise error
-#
-#     def _update_resource(self, *args, **kwargs):
-#         raise NotImplementedError
-#
-#     def _delete_resource(self, *args, **kwargs):
-#         raise NotImplementedError
+
 
 # class BaseHandlerElement(BaseHandlerTemplateMethod):
 #

@@ -861,7 +861,7 @@ class TestAPINotificationRelatedToUser(TestCase):
         self.tester.api_notification_related_to_user(expected, user_id="1003")
 
 """
-class TestAPINotificationByFollowerErrors(TestCase):
+class TestAPINotificationRelatedToUser(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self

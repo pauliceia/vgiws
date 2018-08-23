@@ -1967,6 +1967,18 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    ##################################################
+    # CONVERT GEOJSON TO SHAPEFILE
+    ##################################################
+
+    def api_convert_geojson_to_shapefile(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.get(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
+                                    data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
     # FEATURE TABLE
 
     # ELEMENT

@@ -140,6 +140,31 @@ class TestAPIMaskErrors(TestCase):
         self.tester.api_mask_error_404_not_found(mask_id="998")
 
 
+"""
+class TestAPIConvertGeoJSONToShapefile(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        self.folder_name = "files/geojson/"
+
+    # def tearDown(self):
+    #     pass
+
+    # import - create
+
+    def test_post_import_shp_point(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_geojson_01.geojson"
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_convert_geojson_to_shapefile(binary_file_content, file_name=file_name)
+"""
+
 
 
 

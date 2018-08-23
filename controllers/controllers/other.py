@@ -7,7 +7,7 @@
 
 from tornado.escape import json_encode
 
-from ..base import BaseHandler, BaseHandlerMask
+from ..base import BaseHandler, BaseHandlerMask, BaseHandlerConvertGeoJSONToShapefile
 from modules.common import auth_non_browser_based, just_run_on_debug_mode, get_decoded_jwt_token
 
 # from settings import VERSION
@@ -73,6 +73,32 @@ class APIMask(BaseHandlerMask):
     # @auth_non_browser_based
     # def delete(self, param=None):
     #     self.delete_method_api_resource(param)
+
+
+# CONVERT GEOJSON TO SHAPEFILE
+
+class APIConvertGeoJSONToShapefile(BaseHandlerConvertGeoJSONToShapefile):
+
+    # A list of URLs that can be use for the HTTP methods
+    urls = [r"/api/convert_geojson_to_shapefile/", r"/api/convert_geojson_to_shapefile"]
+
+    def get(self):
+        self.convert_geojson_to_shapefile()
+
+    # @auth_non_browser_based
+    # def post(self):
+    #     self.convert_geojson_to_shapefile()
+
+    # @auth_non_browser_based
+    # def put(self, param=None):
+    #     self.put_method_api_resource(param)
+
+    # @auth_non_browser_based
+    # def delete(self, param=None):
+    #     self.delete_method_api_feature(param)
+
+    # def options(self, param=None):
+    #     super().options()
 
 
 # class APICapabilities(BaseHandler):
