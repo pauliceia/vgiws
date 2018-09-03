@@ -227,6 +227,37 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name=file_name)
 
+    def test_post_import_shp_error_400_bad_request_f_table_name_start_number(self):
+        ##################################################
+        # try to import the shapefile, but the zip doesn't have a shapefile
+        ##################################################
+        file_name = "points.zip"
+        f_table_name = "23920_point"
+
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
+                                                                    file_name="points",
+                                                                    changeset_id=self.changeset_id)
+
+    def test_post_import_shp_error_400_bad_request_f_table_name_has_special_chars(self):
+        ##################################################
+        # try to import the shapefile, but the zip doesn't have a shapefile
+        ##################################################
+        file_name = "points.zip"
+
+        list_f_table_name = ["*+-_point", "po=-)int", "point/"]
+
+        for f_table_name in list_f_table_name:
+
+            with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+                binary_file_content = file.read()
+
+                self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
+                                                                        file_name="points",
+                                                                        changeset_id=self.changeset_id)
+
     def test_post_import_shp_error_403_forbidden_invalid_user_tries_to_create_a_feature_table(self):
         self.f_table_name = "layer_1002"
 

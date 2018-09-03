@@ -16,6 +16,7 @@ from copy import deepcopy
 from threading import Thread
 from requests import Session
 from shutil import make_archive
+from string import punctuation
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -91,6 +92,7 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             return EPSG
     except FileNotFoundError as error:
         raise HTTPError(404, "Not found .prj inside the zip.")
+
 
 # BASE CLASS
 
@@ -1422,6 +1424,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
     def do_validation(self, arguments, binary_file):
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
             raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
+
+        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
+        invalid_chars = set(punctuation.replace("_", ""))
+        if any(char in invalid_chars for char in arguments["f_table_name"]):
+            raise HTTPError(400, "Feature table name can not have special characters.")
+
+        if arguments["f_table_name"][0].isdigit():
+            raise HTTPError(400, "Feature table name can not start with number.")
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
