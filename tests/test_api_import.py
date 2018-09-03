@@ -177,18 +177,6 @@ class TestAPIImportError(TestCase):
 
     # import - create error
 
-    def test_post_import_shp_error_400_bad_request_zip_without_shapefile(self):
-        ##################################################
-        # try to import the shapefile, but the zip doesn't have a shapefile
-        ##################################################
-        file_name = "folder_with_nothing.zip"
-
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
-                                                                    file_name=file_name, changeset_id=self.changeset_id)
-
     def test_post_import_shp_error_400_bad_request_file_name_is_not_zip(self):
         ##################################################
         # try to import the shapefile, but the zip doesn't have a shapefile
@@ -201,6 +189,18 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name="folder_with_nothing",
                                                                     changeset_id=self.changeset_id)
+
+    def test_post_import_shp_error_400_bad_request_zip_without_shapefile(self):
+        ##################################################
+        # try to import the shapefile, but the zip doesn't have a shapefile
+        ##################################################
+        file_name = "folder_with_nothing.zip"
+
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
+                                                                    file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_400_bad_request_argument_is_missing(self):
         ##################################################
@@ -249,6 +249,18 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
                                                                   file_name=file_name, changeset_id=self.changeset_id)
 
+    def test_post_import_shp_error_404_not_found_not_found_prj(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "points_without_prj.zip"
+
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
+                                                                  file_name=file_name, changeset_id=self.changeset_id)
+
     def test_post_import_shp_error_409_conflict_file_is_not_a_zip_file(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -260,7 +272,21 @@ class TestAPIImportError(TestCase):
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=wrong_file_name, changeset_id=self.changeset_id)
-    
+
+    def test_post_import_shp_error_409_conflict_invalid_prj(self):
+        # TODO: 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
+
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "points_bad_prj.zip"
+
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
+                                                                 file_name=file_name, changeset_id=self.changeset_id)
+
     def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)

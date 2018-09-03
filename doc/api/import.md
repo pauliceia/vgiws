@@ -20,8 +20,10 @@ This method imports a ShapeFile as feature table of a layer.
      - 400 (Bad Request): It is necessary to pass one binary zip file in the body of the request.
      - 403 (Forbidden): Just the owner of the layer or administrator can create/update a feature table or do a import.
      - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
+     - 404 (Not Found): Not found .prj inside the zip.
      - 409 (Conflict): File is not a zip file.
      - 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
+     - 409 (Conflict): Invalid .prj.
      - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
      - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
 - Notes:

@@ -67,22 +67,30 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
 
     file_name_prj = folder_to_extract_zip + "/" + file_name.replace("shp", "prj")
 
-    with open(file_name_prj) as file:
-        prj = file.read()
+    try:
+        with open(file_name_prj) as file:
+            prj = file.read()
 
-        response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
+            response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
 
-        resulted = loads(response.text)  # convert string to dict/JSON
+            resulted = loads(response.text)  # convert string to dict/JSON
 
-        if response.status_code != 200 or not resulted["codes"]:  # if status_code != 200 or resulted["codes"] is empty:
-            raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
+            if response.status_code != 200:
+                raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
 
-        EPSG = resulted["codes"][0]["code"]
+            if "codes" not in resulted:
+                raise HTTPError(409, "Invalid .prj.")
 
-        # print("\n\n EPSG: ", EPSG, "\n\n")
+            if not resulted["codes"]:  # if status_code != 200 or resulted["codes"] is empty:
+                raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
 
-        return EPSG
+            EPSG = resulted["codes"][0]["code"]
 
+            # print("\n\n EPSG: ", EPSG, "\n\n")
+
+            return EPSG
+    except FileNotFoundError as error:
+        raise HTTPError(404, "Not found .prj inside the zip.")
 
 # BASE CLASS
 
