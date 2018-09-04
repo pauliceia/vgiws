@@ -417,7 +417,7 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_post_api_layer_create_error_409_conflict_f_table_name_is_reserved_name(self):
+    def test_post_api_feature_table_create_error_409_conflict_f_table_name_is_reserved_name(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 

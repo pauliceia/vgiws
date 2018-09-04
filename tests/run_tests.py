@@ -19,13 +19,13 @@ sys_path.append(os_path_abspath(PROJECT_PATH))
 ROOT_PATH = os_path.dirname(__file__)
 
 
-# Roda os testes da pasta test/
+# Run the tests of the folder test/
 if __name__ == '__main__':
     print("Running the tests \n")
 
     # Get all the files on current folder that has .py in the final
     tests = TestLoader().discover(ROOT_PATH, "*.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_temporal_columns.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

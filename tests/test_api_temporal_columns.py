@@ -433,7 +433,26 @@ class TestAPITemporalColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    
+    def test_post_api_temporal_columns_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
+        # try to create a layer with invalid f_table_name
+        list_invalid_f_table_name = ["*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer"]
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'properties': {'f_table_name': invalid_f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                               'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                               'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                'type': 'TemporalColumns'
+            }
+
+            self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+    
     def test_post_api_temporal_columns_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
@@ -471,6 +490,25 @@ class TestAPITemporalColumnsErrors(TestCase):
             'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_temporal_columns_create_error_409_conflict_f_table_name_is_reserved_name(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a layer with f_table_name that table that already exist or with reserved name
+        list_invalid_f_table_name = ["abort", "access"]
+
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'properties': {'f_table_name': invalid_f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                               'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                               'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                'type': 'TemporalColumns'
+            }
+            self.tester.api_temporal_columns_create_error_409_conflict(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
