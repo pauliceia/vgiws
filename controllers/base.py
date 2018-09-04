@@ -706,7 +706,20 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
         raise HTTPError(403, "The administrator is who can create/update/delete a curator")
 
 
-class BaseHandlerLayer(BaseHandlerTemplateMethod):
+class LayerValidator(BaseHandler):
+
+    def verify_if_f_table_name_is_valid(self, f_table_name):
+
+        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
+        invalid_chars = set(punctuation.replace("_", ""))
+        if any(char in invalid_chars for char in f_table_name):
+            raise HTTPError(400, "Feature table name can not have special characters.")
+
+        if f_table_name[0].isdigit():
+            raise HTTPError(400, "Feature table name can not start with number.")
+
+
+class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
     # GET
 
@@ -716,6 +729,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.verify_if_f_table_name_is_valid(resource_json["properties"]["f_table_name"])
+
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
     # PUT
@@ -790,7 +805,7 @@ class FeatureTableValidator(BaseHandler):
         raise HTTPError(403, "Just the owner of the layer or administrator can manage a resource.")
 
 
-class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
+class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
 
     # GET
 
@@ -800,6 +815,8 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.verify_if_f_table_name_is_valid(resource_json["f_table_name"])
+
         self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
 
         return self.PGSQLConn.create_feature_table(resource_json, current_user_id, **kwargs)
@@ -856,7 +873,7 @@ class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValid
     # It is in FeatureTableValidator
 
 
-class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidator):
+class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
 
     # GET
 
@@ -866,6 +883,8 @@ class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidato
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
+        self.verify_if_f_table_name_is_valid(resource_json["properties"]["f_table_name"])
+
         self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
 
         return self.PGSQLConn.create_temporal_columns(resource_json, current_user_id, **kwargs)
@@ -1413,7 +1432,7 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
 
 # IMPORT
 
-class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidator):
+class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
 
     # VALIDATION
 
@@ -1425,13 +1444,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
             raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
 
-        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
-        invalid_chars = set(punctuation.replace("_", ""))
-        if any(char in invalid_chars for char in arguments["f_table_name"]):
-            raise HTTPError(400, "Feature table name can not have special characters.")
-
-        if arguments["f_table_name"][0].isdigit():
-            raise HTTPError(400, "Feature table name can not start with number.")
+        self.verify_if_f_table_name_is_valid(arguments["f_table_name"])
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
