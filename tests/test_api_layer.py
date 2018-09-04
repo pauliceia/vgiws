@@ -285,6 +285,23 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_layer_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a layer with invalid f_table_name
+        list_invalid_f_table_name = ["*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer"]
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'properties': {'f_table_name': invalid_f_table_name, 'description': '', 'name': 'Addresses in 1869',
+                               'reference': [1001, 1002], 'source_description': '', 'keyword': [1001, 1041]},
+                'type': 'Layer'
+            }
+            self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_post_api_layer_create_error_401_unauthorized(self):
         feature = {
             'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',
@@ -293,36 +310,21 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_create_error_401_unauthorized(feature)
 
-    def test_post_api_layer_create_error_409_conflict(self):
+    def test_post_api_layer_create_error_409_conflict_f_table_name_already_exist_or_reserved_name(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a layer with f_table_name of a table that already exist
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'reference', 'name': '',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []}
-        }
-        self.tester.api_layer_create_error_409_conflict(resource)
+        # try to create a layer with f_table_name that table that already exist or with reserved name
+        list_invalid_f_table_name = ["reference", "changeset", "spatial_ref_sys", "abort", "access"]
 
-        # try to create a layer with f_table_name of a table that already exist
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'changeset', 'name': '',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []}
-        }
-        self.tester.api_layer_create_error_409_conflict(resource)
-
-        # try to create a layer with f_table_name of a table that already exist
-        resource = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': 'spatial_ref_sys', 'name': '',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []}
-        }
-        self.tester.api_layer_create_error_409_conflict(resource)
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'type': 'Layer',
+                'properties': {'layer_id': -1, 'f_table_name': invalid_f_table_name, 'name': '',
+                               'description': '', 'source_description': '',
+                               'reference': [], 'keyword': []}
+            }
+            self.tester.api_layer_create_error_409_conflict(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
