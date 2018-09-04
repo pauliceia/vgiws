@@ -2358,6 +2358,28 @@ class PGSQLConnection:
 
         return results_of_query
 
+    def get_reserved_words_of_postgresql(self):
+        query_text = """        
+            SELECT jsonb_agg(word) AS row_to_json 
+            FROM pg_get_keywords();
+        """
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        return results_of_query
+
     ################################################################################
     # ELEMENT
     ################################################################################
