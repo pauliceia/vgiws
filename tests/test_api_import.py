@@ -317,6 +317,17 @@ class TestAPIImportError(TestCase):
                                                                      f_table_name=invalid_f_table_name,
                                                                      changeset_id=self.changeset_id)
 
+    def test_post_import_shp_error_409_conflict_shapefile_has_version_and_changeset_id_attribute(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "layer_with_version_and_changeset_id.zip"
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
+                                                                 file_name=file_name, changeset_id=self.changeset_id)
+
     def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)

@@ -17,6 +17,8 @@ from threading import Thread
 from requests import Session
 from shutil import make_archive
 from string import punctuation
+# import geopandas as gpd
+import fiona
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -1532,7 +1534,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
         except CalledProcessError as error:
-            # raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
             raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import.")
 
     def get_shapefile_name(self, folder_with_file_name):
@@ -1547,6 +1548,14 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                 return get_shapefile_name_inside_zip(zip_reference)
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file.")
+
+    def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
+        layer = fiona.open(shapefile_path)
+        fields = dict(layer.schema["properties"])
+
+        # the shapefile can not have the version and changeset_id attributes
+        if "version" in fields or "changeset_id" in fields:
+            raise HTTPError(409, "The shapefile has the version or changeset_id attribute. Please, rename it.")
 
     def import_shp(self):
         # get the arguments of the request
@@ -1578,6 +1587,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
 
         self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+
+        SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
+        self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
         self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
