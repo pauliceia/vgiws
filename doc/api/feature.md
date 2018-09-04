@@ -64,6 +64,7 @@ This method creates a new feature described in a JSON.
      - 403 (Forbidden): The specified changeset_id was not created by current user.
      - 404 (Not Found): Not found the specified changeset_id.
      - 409 (Conflict): The specified changeset_id was already closed.
+     - 500 (Bad Request): Invalid field of feature. Please contact the administrator.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.

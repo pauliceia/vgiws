@@ -75,7 +75,7 @@ class TestAPIUser(TestCase):
                                    'username': 'ana', 'user_id': 1007, 'email': 'ana@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-18 00:00:00', 'login_date': '2017-01-18T00:00:00',
-                                   'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
+                                   'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
                 },
                 {
                     'type': 'User',

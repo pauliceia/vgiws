@@ -2161,10 +2161,15 @@ class PGSQLConnection:
             del properties["version"]
 
         for property_ in properties:
-            if isinstance(properties[property_], int):
+            if isinstance(properties[property_], int) or isinstance(properties[property_], float):
                 value = str(properties[property_])
-            else:  # if it is string
+            elif isinstance(properties[property_], str):
                 value = "'" + str(properties[property_]) + "'"
+            elif properties[property_] is None:
+                value = "NULL"
+            else:
+                raise HTTPError(500, "Invalid field of feature (" + property_ + ": " + str(properties[property_]) + ")."
+                                + "Please contact the administrator.")
 
             column_names.append(property_)
             values.append(value)

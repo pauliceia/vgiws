@@ -131,6 +131,79 @@ class TestAPIFeature(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_api_feature_create_update_and_delete__create_with_optional_values(self):
+        # DO LOGIN
+        self.tester.auth_login("ana@admin.com", "ana")
+
+        ####################################################################################################
+        # create a changeset to create a feature
+        ##################################################
+
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1006, 'description': 'Inserting feature in layer_1006'},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # create a feature with user miguel
+        ##################################################
+
+        f_table_name = "layer_1006"
+
+        feature = {
+            'f_table_name': f_table_name,
+            'properties': {'id': -1, 'start_date': 1870, 'end_date': None, 'version': 1,
+                           'name': '', 'changeset_id': changeset_id},
+            'geometry': {
+                "type": "MultiPolygon",
+                "coordinates": [[[[-46.6323, -23.5316], [-46.6375, -23.5290], [-46.6323, -23.5316]]]],
+            },
+            'type': 'Feature'
+        }
+        feature = self.tester.api_feature_create(feature)
+
+        ####################################################################################################
+        # update the feature with admin
+        ##################################################
+        # resource["properties"]["parent_id"] = 1005
+        # self.tester.api_feature_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        # self.tester.api_feature(expected_at_least=expected_resource, feature_id=resource["properties"]["feature_id"])
+
+        ##################################################
+        # remove the feature
+        ##################################################
+        # get the id of the feature to REMOVE it
+        feature_id = feature["properties"]["id"]
+
+        # remove the resource
+        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
+
+        # it is not possible to find the resource that just deleted
+        self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
+
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        ####################################################################################################
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
 
 class TestAPIFeatureFeature(TestCase):
 
