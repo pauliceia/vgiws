@@ -227,27 +227,13 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
                                                                     file_name=file_name)
 
-    def test_post_import_shp_error_400_bad_request_f_table_name_start_number(self):
-        ##################################################
-        # try to import the shapefile, but the zip doesn't have a shapefile
-        ##################################################
-        file_name = "points.zip"
-        f_table_name = "23920_point"
-
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
-                                                                    file_name="points",
-                                                                    changeset_id=self.changeset_id)
-
-    def test_post_import_shp_error_400_bad_request_f_table_name_has_special_chars(self):
+    def test_post_import_shp_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
         ##################################################
         # try to import the shapefile, but the zip doesn't have a shapefile
         ##################################################
         file_name = "points.zip"
 
-        list_f_table_name = ["*+-_point", "po=-)int", "point/"]
+        list_f_table_name = ["*+-_point", "po=-)int", "point/", "23920_point", "0_point"]
 
         for f_table_name in list_f_table_name:
 
@@ -305,8 +291,6 @@ class TestAPIImportError(TestCase):
                                                                  file_name=wrong_file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_409_conflict_invalid_prj(self):
-        # TODO: 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
-
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
@@ -317,6 +301,21 @@ class TestAPIImportError(TestCase):
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=file_name, changeset_id=self.changeset_id)
+
+    def test_post_import_shp_error_409_conflict_f_table_name_is_reserved_name(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "points.zip"
+        list_invalid_f_table_name = ["abort", "access"]
+
+        for invalid_f_table_name in list_invalid_f_table_name:
+            with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+                binary_file_content = file.read()
+
+                self.tester.api_import_shp_create_error_409_conflict(binary_file_content, file_name=file_name,
+                                                                     f_table_name=invalid_f_table_name,
+                                                                     changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
         ##################################################
