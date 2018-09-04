@@ -2118,19 +2118,18 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
-    def are_properties_valid(self, f_table_name, properties):
+    def verify_if_the_properties_are_valid(self, f_table_name, properties):
         list_of_column_name_with_type = self.get_columns_from_table(f_table_name)
 
         # if one column of the feature table is not specified in properties, so it is an invalid GeoJSON
         for column_name_with_type in list_of_column_name_with_type:
-            # to ignore the "geom" column, because it is not specified in properties
+            # we can ignore the "geom" column, because it is not specified in properties
             if column_name_with_type["column_name"] == "geom":
                 continue
 
             if not column_name_with_type["column_name"] in properties:
-                return False
-
-        return True
+                raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure! (error: " +
+                                str(column_name_with_type["column_name"]) + " is missing)")
 
     def get_srid_from_table_name(self, table_name):
 
@@ -2153,8 +2152,7 @@ class PGSQLConnection:
         properties = resource_json["properties"]
         f_table_name = resource_json["f_table_name"]
 
-        if not self.are_properties_valid(f_table_name, properties):
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure!")
+        self.verify_if_the_properties_are_valid(f_table_name, properties)
 
         if remove_id_and_version_from_properties:  # it is used when create a new feature
             del properties["id"]  # it is not possible to set the id and version

@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
+"""
 class TestAPIFeature(TestCase):
 
     def setUp(self):
@@ -203,9 +203,9 @@ class TestAPIFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+"""
 
-
-class TestAPIFeatureFeature(TestCase):
+class TestAPIFeatureError(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -394,93 +394,93 @@ class TestAPIFeatureFeature(TestCase):
         self.tester.auth_logout()
 
     # feature errors - update
-    """
-    def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        ##################################################
-        # try to update the feature with a name that already exist, raising the 400
-        ##################################################
-        resource = {
-            'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_400_bad_request(resource)
+    # def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     ##################################################
+    #     # try to update the feature with a name that already exist, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_400_bad_request(resource)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+    #
+    # def test_put_api_feature_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    #
+    #     ##################################################
+    #     # try to update the feature without a feature_id, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'name': 'newfeature', 'parent_id': 1003},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_400_bad_request(resource)
+    #
+    #     ##################################################
+    #     # try to update the feature without a name, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'feature_id': 1003, 'parent_id': 1003},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_400_bad_request(resource)
+    #
+    #     ##################################################
+    #     # try to update the feature without a parent_id, raising the 400
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'feature_id': 1003, 'name': 'newfeature'},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_400_bad_request(resource)
+    #
+    #     # DO LOGOUT AFTER THE TESTS
+    #     self.tester.auth_logout()
+    #
+    # def test_put_api_feature_error_401_unauthorized_user_is_not_logged(self):
+    #     resource = {
+    #         'properties': {'feature_id': 1001, 'name': 'newfeature', 'parent_id': 1003},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_401_unauthorized(resource)
+    #
+    # def test_put_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("miguel@admin.com", "miguel")
+    #
+    #     ##################################################
+    #     # gabriel tries to update one feature that doesn't belong to him
+    #     ##################################################
+    #     resource = {
+    #         'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_403_forbidden(resource)
+    #
+    #     # DO LOGOUT
+    #     self.tester.auth_logout()
+    #
+    # def test_put_api_feature_error_404_not_found(self):
+    #     # DO LOGIN
+    #     self.tester.auth_login("admin@admin.com", "admin")
+    #
+    #     resource = {
+    #         'properties': {'feature_id': 999, 'name': 'street', 'parent_id': 1002},
+    #         'type': 'feature'
+    #     }
+    #     self.tester.api_feature_update_error_404_not_found(resource)
+    #
+    #     # DO LOGOUT
+    #     self.tester.auth_logout()
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_put_api_feature_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        ##################################################
-        # try to update the feature without a feature_id, raising the 400
-        ##################################################
-        resource = {
-            'properties': {'name': 'newfeature', 'parent_id': 1003},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_400_bad_request(resource)
-
-        ##################################################
-        # try to update the feature without a name, raising the 400
-        ##################################################
-        resource = {
-            'properties': {'feature_id': 1003, 'parent_id': 1003},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_400_bad_request(resource)
-
-        ##################################################
-        # try to update the feature without a parent_id, raising the 400
-        ##################################################
-        resource = {
-            'properties': {'feature_id': 1003, 'name': 'newfeature'},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_put_api_feature_error_401_unauthorized_user_is_not_logged(self):
-        resource = {
-            'properties': {'feature_id': 1001, 'name': 'newfeature', 'parent_id': 1003},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_401_unauthorized(resource)
-
-    def test_put_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        ##################################################
-        # gabriel tries to update one feature that doesn't belong to him
-        ##################################################
-        resource = {
-            'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_403_forbidden(resource)
-
-        # DO LOGOUT
-        self.tester.auth_logout()
-
-    def test_put_api_feature_error_404_not_found(self):
-        # DO LOGIN
-        self.tester.auth_login("admin@admin.com", "admin")
-
-        resource = {
-            'properties': {'feature_id': 999, 'name': 'street', 'parent_id': 1002},
-            'type': 'feature'
-        }
-        self.tester.api_feature_update_error_404_not_found(resource)
-
-        # DO LOGOUT
-        self.tester.auth_logout()
-    """
     # feature errors - delete
 
     def test_delete_api_feature_error_400_bad_request(self):
