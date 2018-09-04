@@ -708,15 +708,18 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
 
 class LayerValidator(BaseHandler):
 
-    def verify_if_f_table_name_is_valid(self, f_table_name):
-
+    def verify_if_f_table_name_starts_with_number_or_it_has_special_chars(self, f_table_name):
         # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
         invalid_chars = set(punctuation.replace("_", ""))
         if any(char in invalid_chars for char in f_table_name):
-            raise HTTPError(400, "Feature table name can not have special characters.")
+            raise HTTPError(400, "f_table_name can not have special characters.")
 
         if f_table_name[0].isdigit():
-            raise HTTPError(400, "Feature table name can not start with number.")
+            raise HTTPError(400, "f_table_name can not start with number.")
+
+    def verify_if_f_table_name_already_exist_in_db(self, f_table_name):
+        if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
+            raise HTTPError(409, "Conflict of f_table_name. Please, rename it.")
 
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
@@ -729,7 +732,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        self.verify_if_f_table_name_is_valid(resource_json["properties"]["f_table_name"])
+        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(resource_json["properties"]["f_table_name"])
+        self.verify_if_f_table_name_already_exist_in_db(resource_json["properties"]["f_table_name"])
 
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
@@ -815,7 +819,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        self.verify_if_f_table_name_is_valid(resource_json["f_table_name"])
+        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(resource_json["f_table_name"])
 
         self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
 
@@ -883,7 +887,7 @@ class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidato
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        self.verify_if_f_table_name_is_valid(resource_json["properties"]["f_table_name"])
+        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(resource_json["properties"]["f_table_name"])
 
         self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
 
@@ -1444,7 +1448,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
             raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
 
-        self.verify_if_f_table_name_is_valid(arguments["f_table_name"])
+        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(arguments["f_table_name"])
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")

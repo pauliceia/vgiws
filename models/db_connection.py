@@ -619,9 +619,6 @@ class PGSQLConnection:
         if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
 
-        if properties["f_table_name"] in self.get_invalid_table_names():
-            raise HTTPError(409, "Conflict of feature table name, please rename it: " + str(properties["f_table_name"]))
-
         ##################################################
         # add the layer in db
         ##################################################
@@ -2339,7 +2336,7 @@ class PGSQLConnection:
     # METHODS
     ################################################################################
 
-    def get_invalid_table_names(self):
+    def get_table_names_that_already_exist_in_db(self):
         query_text = """        
             SELECT jsonb_agg(table_name) AS row_to_json
             FROM information_schema.tables WHERE table_schema = 'public';
