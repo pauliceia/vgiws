@@ -17,8 +17,7 @@ from threading import Thread
 from requests import Session
 from shutil import make_archive
 from string import punctuation
-# import geopandas as gpd
-import fiona
+from fiona import open as fiona_open
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -1550,7 +1549,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(409, "File is not a zip file.")
 
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
-        layer = fiona.open(shapefile_path)
+        layer = fiona_open(shapefile_path)
         fields = dict(layer.schema["properties"])
 
         # the shapefile can not have the version and changeset_id attributes
