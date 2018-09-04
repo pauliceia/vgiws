@@ -753,6 +753,12 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
+    def api_feature_table_create_error_409_conflict(self, feature_json):
+        response = self.session.post(self.URL + '/api/feature_table/create/',
+                                     data=dumps(feature_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
     # feature_table errors - update
 
     def api_feature_table_update_error_400_bad_request(self, resource_json):

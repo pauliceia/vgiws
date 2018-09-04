@@ -340,6 +340,29 @@ class TestAPIFeatureTableErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+    
+    def test_post_api_feature_table_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a layer with invalid f_table_name
+        list_invalid_f_table_name = ["*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer"]
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'type': 'FeatureTable',
+                'f_table_name': invalid_f_table_name,
+                'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                               'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                               'address': 'text'},
+                'geometry': {
+                    'type': 'MULTIPOINT'
+                }
+            }
+
+            self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     def test_post_api_feature_table_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
@@ -390,6 +413,29 @@ class TestAPIFeatureTableErrors(TestCase):
             }
         }
         self.tester.api_feature_table_create_error_404_not_found(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_layer_create_error_409_conflict_f_table_name_is_reserved_name(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a layer with f_table_name that table that already exist or with reserved name
+        list_invalid_f_table_name = ["abort", "access"]
+
+        for invalid_f_table_name in list_invalid_f_table_name:
+            resource = {
+                'type': 'FeatureTable',
+                'f_table_name': invalid_f_table_name,
+                'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                               'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                               'address': 'text'},
+                'geometry': {
+                    'type': 'MULTIPOINT'
+                }
+            }
+            self.tester.api_feature_table_create_error_409_conflict(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
