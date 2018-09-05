@@ -222,6 +222,9 @@ class TestAPIUserLayer(TestCase):
         # it is not possible to find the layer that just deleted
         self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
 
+        # verify if the user stopped automatically of following the layer
+        self.tester.api_layer_follower_error_404_not_found(user_id=user_id, layer_id=layer_id)
+
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
@@ -269,6 +272,9 @@ class TestAPIUserLayer(TestCase):
 
         # it is not possible to find the layer that just deleted
         self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
+
+        # verify if the user stopped automatically of following the layer
+        self.tester.api_layer_follower_error_404_not_found(user_id=user_id, layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
