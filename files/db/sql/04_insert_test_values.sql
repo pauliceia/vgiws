@@ -891,10 +891,36 @@ WHERE is_denunciation = FALSE
 ORDER BY created_at DESC, notification_id
 */
 
+/*
+SELECT  ST_Transform(
+	    ST_MakeEnvelope (
+		313389.67, 7343788.61,
+		360663.23, 7416202.05,
+		29193
+	    )	
+	, 4326);
+
+SELECT ST_Union(geom) as geom FROM streets_pilot_area;
 
 
 
 
+SELECT ST_Contains(bb_default_city.geom, union_f_table.geom)
+FROM
+(
+	-- get the union of a feature table
+	SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM streets_pilot_area
+) union_f_table,
+(
+	-- create a bouding box of the default city (by default is SP city)
+	SELECT  ST_Transform(
+	    ST_MakeEnvelope (
+		313389.67, 7343788.61,
+		360663.23, 7416202.05,
+		29193
+	    )	
+	, 4326) as geom
+) bb_default_city;
 
 
-
+*/

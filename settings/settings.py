@@ -68,3 +68,17 @@ __AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social"
 # URL to validate the email (production and debug)
 __VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/email"
 __VALIDATE_EMAIL_DEBUG__ = "http://localhost:8081/portal/valid/email"
+
+
+####################################################################################################
+# SPATIAL BOUNDING BOX
+####################################################################################################
+# by default, the spatial bounding box is the São Paulo city
+# hint: it can be discovered by QGIS
+__SPATIAL_BB__ = {
+    "xmin": 313389.67,
+    "ymin": 7343788.61,
+    "xmax": 360663.23,
+    "ymax": 7416202.05,
+    "EPSG": 29193,
+}
