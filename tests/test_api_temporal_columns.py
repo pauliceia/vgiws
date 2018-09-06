@@ -15,7 +15,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester = UtilTester(self)
 
     # temporal_columns - get
-    
+
     def test_get_api_temporal_columns_return_all_temporal_columns(self):
         expected = {
             'type': 'FeatureCollection',
@@ -315,6 +315,70 @@ class TestAPITemporalColumns(TestCase):
         self.tester.auth_logout()
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # the time columns is automatically removed when delete its layer
+        ##################################################
+
+        ####################################################################################################
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        # get the id of layer to SEARCH AND REMOVE it
+        layer_id = layer["properties"]["layer_id"]
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_api_temporal_columns_create_and_update_not_fill_all_fields(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'addresses_1930_12'
+
+        ##################################################
+        # create a layer
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+
+        ####################################################################################################
+
+        ##################################################
+        # create the time columns for the layer above
+        ##################################################
+        temporal_columns = {
+            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': '', 'start_date_column_name': '',
+                           'start_date_mask_id': None, 'end_date_mask_id': None},
+            'type': 'TemporalColumns'
+        }
+
+        self.tester.api_temporal_columns_create(temporal_columns)
+
+        ##################################################
+        # update the time columns
+        ##################################################
+        temporal_columns["properties"]["start_date"] = '1920-01-01'
+        self.tester.api_temporal_columns_update(temporal_columns)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
+        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
         # the time columns is automatically removed when delete its layer

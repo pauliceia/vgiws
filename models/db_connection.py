@@ -1042,6 +1042,12 @@ class PGSQLConnection:
     def create_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
 
+        if p["start_date_mask_id"] is None:
+            p["start_date_mask_id"] = "NULL"
+
+        if p["end_date_mask_id"] is None:
+            p["end_date_mask_id"] = "NULL"
+
         query_text = """
             INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date,
                                           start_date_mask_id, end_date_mask_id)
@@ -1063,6 +1069,12 @@ class PGSQLConnection:
 
     def update_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
+
+        if p["start_date_mask_id"] is None:
+            p["start_date_mask_id"] = "NULL"
+
+        if p["end_date_mask_id"] is None:
+            p["end_date_mask_id"] = "NULL"
 
         query_text = """
             UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
