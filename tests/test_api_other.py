@@ -90,15 +90,15 @@ class TestAPIMask(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                    'properties': {'mask_id': 1001, 'mask': 'YYYY-MM-DD'},
                     'type': 'Mask'
                 },
                 {
-                    'properties': {'mask_id': 1002, 'user_id_creator': 1001, 'mask': 'YYYY-MM'},
+                    'properties': {'mask_id': 1002, 'mask': 'YYYY-MM'},
                     'type': 'Mask'
                 },
                 {
-                    'properties': {'mask_id': 1003, 'user_id_creator': 1001, 'mask': 'YYYY'},
+                    'properties': {'mask_id': 1003, 'mask': 'YYYY'},
                     'type': 'Mask'
                 }
             ]
@@ -111,7 +111,7 @@ class TestAPIMask(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                    'properties': {'mask_id': 1001, 'mask': 'YYYY-MM-DD'},
                     'type': 'Mask'
                 },
             ]

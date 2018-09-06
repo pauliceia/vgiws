@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Dom 05 Ago 2018 19:03:24 -03
+-- Qui 06 Set 2018 15:39:54 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS pauliceia_user (
   picture TEXT NULL,
   social_id TEXT NULL,
   social_account TEXT NULL,
+  language TEXT NULL,
   PRIMARY KEY (user_id)
 );
 
@@ -116,14 +117,8 @@ CREATE TABLE IF NOT EXISTS keyword (
   keyword_id SERIAL ,
   name TEXT NOT NULL UNIQUE,
   created_at TIMESTAMP NULL,
-  parent_id INT NULL,
   user_id_creator INT NOT NULL,
   PRIMARY KEY (keyword_id),
-  CONSTRAINT fk_theme_theme1
-    FOREIGN KEY (parent_id)
-    REFERENCES keyword (keyword_id)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
   CONSTRAINT fk_theme_user1
     FOREIGN KEY (user_id_creator)
     REFERENCES pauliceia_user (user_id)
@@ -348,13 +343,7 @@ DROP TABLE IF EXISTS mask CASCADE ;
 CREATE TABLE IF NOT EXISTS mask (
   mask_id SERIAL ,
   mask TEXT NULL,
-  user_id_creator INT NOT NULL,
-  PRIMARY KEY (mask_id),
-  CONSTRAINT fk_mask_pauliceia_user1
-    FOREIGN KEY (user_id_creator)
-    REFERENCES pauliceia_user (user_id)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE
+  PRIMARY KEY (mask_id)
 );
 
 
@@ -367,10 +356,10 @@ CREATE TABLE IF NOT EXISTS temporal_columns (
   f_table_name TEXT NOT NULL UNIQUE,
   start_date_column_name TEXT NULL,
   end_date_column_name TEXT NULL,
-  start_date TIMESTAMP NULL,
-  end_date TIMESTAMP NULL,
-  start_date_mask_id INT NOT NULL,
-  end_date_mask_id INT NOT NULL,
+  start_date TIMESTAMP NOT NULL,
+  end_date TIMESTAMP NOT NULL,
+  start_date_mask_id INT NULL,
+  end_date_mask_id INT NULL,
   PRIMARY KEY (f_table_name),
   CONSTRAINT fk_temporal_columns_mask1
     FOREIGN KEY (start_date_mask_id)

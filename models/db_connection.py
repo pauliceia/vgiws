@@ -2084,9 +2084,8 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Mask',
                     'properties',  json_build_object(
-                        'mask_id',          mask_id,
-                        'mask',             mask,
-                        'user_id_creator',  user_id_creator
+                        'mask_id', mask_id,
+                        'mask',    mask
                     )
                 ))
             ) AS row_to_json

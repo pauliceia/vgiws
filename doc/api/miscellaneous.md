@@ -58,7 +58,7 @@ This method gets masks from DB. If you doesn't put any parameter, so it will ret
         'type': 'FeatureCollection',
         'features': [
             {
-                'properties': {'mask_id': 1001, 'user_id_creator': 1001, 'mask': 'YYYY-MM-DD'},
+                'properties': {'mask_id': 1001, 'mask': 'YYYY-MM-DD'},
                 'type': 'Mask'
             },
         ]
