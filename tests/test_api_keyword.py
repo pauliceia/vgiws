@@ -21,72 +21,72 @@ class TestAPIKeyword(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
+                    'properties': {'name': 'generic', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
+                    'properties': {'name': 'event', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1002, 'name': 'crime', 'user_id_creator': 1002,
+                    'properties': {'name': 'crime', 'user_id_creator': 1002,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
+                    'properties': {'name': 'assault', 'user_id_creator': 1002,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1003, 'name': 'robbery', 'user_id_creator': 1002,
+                    'properties': {'name': 'robbery', 'user_id_creator': 1002,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1005},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                    'properties': {'name': 'disease', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1001, 'name': 'object', 'user_id_creator': 1001,
+                    'properties': {'name': 'object', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'building', 'user_id_creator': 1003,
+                    'properties': {'name': 'building', 'user_id_creator': 1003,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1021},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1021, 'name': 'school', 'user_id_creator': 1003,
+                    'properties': {'name': 'school', 'user_id_creator': 1003,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1022},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1021, 'name': 'hospital', 'user_id_creator': 1003,
+                    'properties': {'name': 'hospital', 'user_id_creator': 1003,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1023},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'cultural place', 'user_id_creator': 1003,
+                    'properties': {'name': 'cultural place', 'user_id_creator': 1003,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1030},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1030, 'name': 'cinema', 'user_id_creator': 1001,
+                    'properties': {'name': 'cinema', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'street', 'user_id_creator': 1001,
+                    'properties': {'name': 'street', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'address', 'user_id_creator': 1001,
+                    'properties': {'name': 'address', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
                     'type': 'Keyword'
                 }
@@ -100,7 +100,7 @@ class TestAPIKeyword(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'parent_id': 1002, 'name': 'crime', 'user_id_creator': 1002,
+                    'properties': {'name': 'crime', 'user_id_creator': 1002,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
                     'type': 'Keyword'
                 },
@@ -114,37 +114,37 @@ class TestAPIKeyword(TestCase):
         expected = {
             'features': [
                 {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
+                    'properties': {'name': 'generic', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
+                    'properties': {'name': 'event', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                    'properties': {'name': 'disease', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1001, 'name': 'object', 'user_id_creator': 1001,
+                    'properties': {'name': 'object', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1030, 'name': 'cinema', 'user_id_creator': 1001,
+                    'properties': {'name': 'cinema', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'street', 'user_id_creator': 1001,
+                    'properties': {'name': 'street', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1020, 'name': 'address', 'user_id_creator': 1001,
+                    'properties': {'name': 'address', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
                     'type': 'Keyword'
                 }
@@ -154,48 +154,16 @@ class TestAPIKeyword(TestCase):
 
         self.tester.api_keyword(expected, user_id_creator="1001")
 
-    def test_get_api_keyword_return_keyword_by_parent_id(self):
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': None, 'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
-                    'type': 'Keyword'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_keyword(expected, parent_id="NULL")
-
-        expected = {
-            'features': [
-                {
-                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
-                    'type': 'Keyword'
-                },
-                {
-                    'properties': {'parent_id': 1003, 'name': 'robbery', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1005},
-                    'type': 'Keyword'
-                }
-            ],
-            'type': 'FeatureCollection'
-        }
-
-        self.tester.api_keyword(expected, parent_id="1003")
-
     def test_get_api_keyword_return_keyword_by_name(self):
         expected = {
             'features': [
                 {
-                    'properties': {'parent_id': 1003, 'name': 'assault', 'user_id_creator': 1002,
+                    'properties': {'name': 'assault', 'user_id_creator': 1002,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
                     'type': 'Keyword'
                 },
                 {
-                    'properties': {'parent_id': 1002, 'name': 'disease', 'user_id_creator': 1001,
+                    'properties': {'name': 'disease', 'user_id_creator': 1001,
                                    'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
                     'type': 'Keyword'
                 }
@@ -215,7 +183,7 @@ class TestAPIKeyword(TestCase):
         # create a keyword with user gabriel
         ##################################################
         resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
+            'properties': {'keyword_id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         resource = self.tester.api_keyword_create(resource)
@@ -227,7 +195,7 @@ class TestAPIKeyword(TestCase):
         ##################################################
         # update the keyword with admin
         ##################################################
-        resource["properties"]["parent_id"] = 1005
+        resource["properties"]["name"] = "newname"
         self.tester.api_keyword_update(resource)
 
         ##################################################
@@ -261,17 +229,12 @@ class TestAPIKeywordErrors(TestCase):
     # keyword errors - get
 
     def test_get_api_keyword_error_400_bad_request(self):
+        # invalid parameter
         self.tester.api_keyword_error_400_bad_request(keyword_id="abc")
         self.tester.api_keyword_error_400_bad_request(keyword_id=0)
         self.tester.api_keyword_error_400_bad_request(keyword_id=-1)
         self.tester.api_keyword_error_400_bad_request(keyword_id="-1")
         self.tester.api_keyword_error_400_bad_request(keyword_id="0")
-
-        self.tester.api_keyword_error_400_bad_request(parent_id="abc")
-        self.tester.api_keyword_error_400_bad_request(parent_id=0)
-        self.tester.api_keyword_error_400_bad_request(parent_id=-1)
-        self.tester.api_keyword_error_400_bad_request(parent_id="-1")
-        self.tester.api_keyword_error_400_bad_request(parent_id="0")
 
         self.tester.api_keyword_error_400_bad_request(user_id_creator="abc")
         self.tester.api_keyword_error_400_bad_request(user_id_creator=0)
@@ -279,12 +242,14 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.api_keyword_error_400_bad_request(user_id_creator="-1")
         self.tester.api_keyword_error_400_bad_request(user_id_creator="0")
 
+        # invalid argument
+        self.tester.api_keyword_error_400_bad_request(parent_id=1001)
+        self.tester.api_keyword_error_400_bad_request(usee_id=1001)
+        self.tester.api_keyword_error_400_bad_request(keyboard_id=1001)
+
     def test_get_api_keyword_error_404_not_found(self):
         self.tester.api_keyword_error_404_not_found(keyword_id="999")
         self.tester.api_keyword_error_404_not_found(keyword_id="998")
-
-        self.tester.api_keyword_error_404_not_found(parent_id="999")
-        self.tester.api_keyword_error_404_not_found(parent_id="998")
 
         self.tester.api_keyword_error_404_not_found(user_id_creator="999")
         self.tester.api_keyword_error_404_not_found(user_id_creator="998")
@@ -297,7 +262,7 @@ class TestAPIKeywordErrors(TestCase):
 
         # try to create a keyword with a name that already exist
         resource = {
-            'properties': {'name': 'event', 'parent_id': 1003},
+            'properties': {'name': 'event'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_create_error_400_bad_request(resource)
@@ -311,14 +276,7 @@ class TestAPIKeywordErrors(TestCase):
 
         # try to create a layer (without name)
         resource = {
-            'properties': {'parent_id': 1003},
-            'type': 'Keyword'
-        }
-        self.tester.api_keyword_create_error_400_bad_request(resource)
-
-        # try to create a layer (without parent_id)
-        resource = {
-            'properties': {'name': 'newkeyword'},
+            'properties': {},
             'type': 'Keyword'
         }
         self.tester.api_keyword_create_error_400_bad_request(resource)
@@ -328,7 +286,7 @@ class TestAPIKeywordErrors(TestCase):
 
     def test_post_api_keyword_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword', 'parent_id': 1003},
+            'properties': {'keyword_id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_create_error_401_unauthorized(resource)
@@ -343,7 +301,7 @@ class TestAPIKeywordErrors(TestCase):
         # try to update the keyword with a name that already exist, raising the 400
         ##################################################
         resource = {
-            'properties': {'keyword_id': 1003, 'name': 'street', 'parent_id': 1002},
+            'properties': {'keyword_id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_400_bad_request(resource)
@@ -355,29 +313,16 @@ class TestAPIKeywordErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        ##################################################
         # try to update the keyword without a keyword_id, raising the 400
-        ##################################################
         resource = {
-            'properties': {'name': 'newkeyword', 'parent_id': 1003},
+            'properties': {'name': 'newkeyword'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_400_bad_request(resource)
 
-        ##################################################
         # try to update the keyword without a name, raising the 400
-        ##################################################
         resource = {
-            'properties': {'keyword_id': 1003, 'parent_id': 1003},
-            'type': 'Keyword'
-        }
-        self.tester.api_keyword_update_error_400_bad_request(resource)
-
-        ##################################################
-        # try to update the keyword without a parent_id, raising the 400
-        ##################################################
-        resource = {
-            'properties': {'keyword_id': 1003, 'name': 'newkeyword'},
+            'properties': {'keyword_id': 1003},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_400_bad_request(resource)
@@ -387,7 +332,7 @@ class TestAPIKeywordErrors(TestCase):
 
     def test_put_api_keyword_error_401_unauthorized_user_is_not_logged(self):
         resource = {
-            'properties': {'keyword_id': 1001, 'name': 'newkeyword', 'parent_id': 1003},
+            'properties': {'keyword_id': 1001, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_401_unauthorized(resource)
@@ -400,7 +345,7 @@ class TestAPIKeywordErrors(TestCase):
         # gabriel tries to update one keyword that doesn't belong to him
         ##################################################
         resource = {
-            'properties': {'keyword_id': 1003, 'name': 'street', 'parent_id': 1002},
+            'properties': {'keyword_id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_403_forbidden(resource)
@@ -413,7 +358,7 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.auth_login("admin@admin.com", "admin")
 
         resource = {
-            'properties': {'keyword_id': 999, 'name': 'street', 'parent_id': 1002},
+            'properties': {'keyword_id': 999, 'name': 'street'},
             'type': 'Keyword'
         }
         self.tester.api_keyword_update_error_404_not_found(resource)

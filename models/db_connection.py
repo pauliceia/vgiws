@@ -1401,14 +1401,13 @@ class PGSQLConnection:
     # KEYWORD
     ################################################################################
 
-    def get_keywords(self, keyword_id=None, name=None, parent_id=None, user_id_creator=None):
+    def get_keywords(self, keyword_id=None, name=None, user_id_creator=None):
 
         # the id have to be a int
-        if is_a_invalid_id(keyword_id) or is_a_invalid_id(parent_id) or is_a_invalid_id(user_id_creator):
+        if is_a_invalid_id(keyword_id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_keyword_table(keyword_id=keyword_id, name=name,
-                                              parent_id=parent_id, user_id_creator=user_id_creator)
+        subquery = get_subquery_keyword_table(keyword_id=keyword_id, name=name, user_id_creator=user_id_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
         query_text = """
@@ -1419,7 +1418,6 @@ class PGSQLConnection:
                     'properties', json_build_object(
                         'keyword_id',      keyword_id,
                         'name',            name,
-                        'parent_id',       parent_id,
                         'user_id_creator', user_id_creator,
                         'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
                     )
@@ -1455,13 +1453,10 @@ class PGSQLConnection:
 
         p = resource_json["properties"]
 
-        if p["parent_id"] is None:
-            p["parent_id"] = "NULL"
-
         query_text = """
-            INSERT INTO keyword (name, parent_id, user_id_creator, created_at)
-            VALUES ('{0}', {1}, {2}, LOCALTIMESTAMP) RETURNING keyword_id;
-        """.format(p["name"], p["parent_id"], p["user_id_creator"])
+            INSERT INTO keyword (name, user_id_creator, created_at)
+            VALUES ('{0}', {1}, LOCALTIMESTAMP) RETURNING keyword_id;
+        """.format(p["name"], p["user_id_creator"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1474,13 +1469,10 @@ class PGSQLConnection:
     def update_keyword(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        if p["parent_id"] is None:
-            p["parent_id"] = "NULL"
-
         query_text = """
-            UPDATE keyword SET name = '{1}', parent_id = {2}
+            UPDATE keyword SET name = '{1}'
             WHERE keyword_id={0};
-        """.format(p["keyword_id"], p["name"], p["parent_id"])
+        """.format(p["keyword_id"], p["name"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

@@ -433,6 +433,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(400, "Some attribute is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
+            # example: - 400 (Bad Request): get_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, str(error))
         except Error as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB

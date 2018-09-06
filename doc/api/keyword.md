@@ -6,14 +6,12 @@
 This method gets keywords from DB. If you doesn't put any parameter, so it will return all.
 - Parameters:
     - keyword_id (optional): the id of a keyword that is a positive integer not null (e.g. 1, 2, 3, ...);
-    - parent_id (optional): the id of a parent keyword that is a positive integer not null (e.g. 1, 2, 3, ...);
     - name (optional): a text with a name of the keyword that is searching (e.g 'assault');
     - user_id_creator (optional): the id of a user that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
      - Get all keywords: http://localhost:8888/api/keyword/
      - Get one keyword by id: http://localhost:8888/api/keyword/?keyword_id=1001
      - Get keywords by user id: http://localhost:8888/api/keyword/?user_id_creator=1001
-     - Get keywords by parent id: http://localhost:8888/api/keyword/?parent_id=1001
      - Get keywords by name: http://localhost:8888/api/keyword/?name=assault
 - Send (in Body):
 - Send (in Header):
@@ -22,7 +20,7 @@ This method gets keywords from DB. If you doesn't put any parameter, so it will 
     {
         'features': [
             {
-                'properties': {'parent_id': 1001, 'name': 'event', 'user_id_creator': 1001,
+                'properties': {'name': 'event', 'user_id_creator': 1001,
                                'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
                 'type': 'Keyword'
             },
@@ -32,6 +30,7 @@ This method gets keywords from DB. If you doesn't put any parameter, so it will 
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
+    - 400 (Bad Request): get_keywords() got an unexpected keyword argument '\<INVALID ARGUMENT\>'
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
