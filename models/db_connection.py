@@ -33,6 +33,7 @@ from modules.design_pattern import Singleton
 from settings.db_settings import __PGSQL_CONNECTION_SETTINGS__, __DEBUG_PGSQL_CONNECTION_SETTINGS__, \
                                     __GEOSERVER_CONNECTION_SETTINGS__, __DEBUG_GEOSERVER_CONNECTION_SETTINGS__, \
                                     __GEOSERVER_REST_CONNECTION_SETTINGS__
+from settings.settings import __SPATIAL_BB__
 
 from .util import *
 
@@ -1962,6 +1963,39 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
+    def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
+            FROM
+            (
+                -- get the union of a feature table (shapefile)
+                SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM {0}
+            ) union_f_table,
+            (
+                -- create a bouding box of the default city (by default is SP city)
+                SELECT  ST_Transform(
+                    ST_MakeEnvelope (
+                        {1}, {2},
+                        {3}, {4},
+                        {5}
+                    )	
+                , 4326) as geom
+            ) bb_default_city;      
+        """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
+                                 __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        is_shapefile_inside_default_city = self.__PGSQL_CURSOR__.fetchone()
+
+        if "row_to_json" in is_shapefile_inside_default_city:
+            is_shapefile_inside_default_city = is_shapefile_inside_default_city["row_to_json"]
+
+        return is_shapefile_inside_default_city
+
     ################################################################################
     # LAYER FOLLOWERS
     ################################################################################
@@ -2385,6 +2419,14 @@ class PGSQLConnection:
             results_of_query = results_of_query["row_to_json"]
 
         return results_of_query
+
+    def drop_table_by_name(self, table_name):
+        query_text = """            
+            DROP TABLE IF EXISTS {0};   
+        """.format(table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
     ################################################################################
     # ELEMENT

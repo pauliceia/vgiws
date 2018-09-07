@@ -26,10 +26,12 @@ This method imports a ShapeFile as feature table of a layer.
     - 409 (Conflict): File is not a zip file.
     - 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
     - 409 (Conflict): Invalid .prj.
-    - 409 (Bad Request): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
-    - 409 (Bad Request): The shapefile has the version or changeset_id attribute. Please, rename it.
+    - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
+    - 409 (Conflict): The shapefile has the version or changeset_id attribute. Please, rename it.
+    - 409 (Conflict): Shapefile is not inside the default city of the project.
     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
-    - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
+    - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.    - 500 (Internal Server Error): Some geometries of the Shapefile are with problem. Please, verify them and try to import again later.
+    - 500 (Internal Server Error): Problem when to import a resource. Please, contact the administrator.
 - Notes:
     - It is necessary create a new layer without a feature table before to import the ShapeFile.
     - Inside the zip must have just the ShapeFile.
