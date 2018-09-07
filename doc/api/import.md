@@ -27,7 +27,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
     - 409 (Conflict): Invalid .prj.
     - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
-    - 409 (Conflict): The shapefile has the version or changeset_id attribute. Please, rename it.
+    - 409 (Conflict): The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.
     - 409 (Conflict): Shapefile is not inside the default city of the project.
     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.    - 500 (Internal Server Error): Some geometries of the Shapefile are with problem. Please, verify them and try to import again later.

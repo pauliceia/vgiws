@@ -63,16 +63,16 @@ class TestAPIImport(TestCase):
 
     # import - create
 
-    # def test_post_import_shp_point(self):
-    #     ##################################################
-    #     # import the shapefile with the created layer (the feature table will be the shapefile)
-    #     ##################################################
-    #     file_name = "points.zip"
-    #     with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
-    #         binary_file_content = file.read()
-    #
-    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-    #                                           changeset_id=self.changeset_id)
+    def test_post_import_shp_places_5_points(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "places_5_points.zip"
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+                                              changeset_id=self.changeset_id)
 
     # the under tests are with shapefile from internet
 
@@ -86,17 +86,6 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
-
-    # def test_post_import_shp_sp_bacia_hidrografica(self):
-    #     ##################################################
-    #     # import the shapefile with the created layer (the feature table will be the shapefile)
-    #     ##################################################
-    #     file_name = "sp_bacia_hidrografica.zip"
-    #     with open(self.folder_name_shp_originals + file_name, mode='rb') as file:  # rb = read binary
-    #         binary_file_content = file.read()
-    # 
-    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-    #                                           changeset_id=self.changeset_id)
 
     # the tests under are manual tests
     """
@@ -328,6 +317,53 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=file_name, changeset_id=self.changeset_id)
 
+    def test_post_import_shp_error_409_conflict_shapefile_is_not_inside_default_city(self):
+        f_table_name = "layer_test"
+
+        ##################################################
+        # create a new layer
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Points',
+                           'description': '', 'source_description': '',
+                           'reference': [1050], 'keyword': [1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create a new changeset
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "points.zip"
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=f_table_name,
+                                                                 file_name=file_name, changeset_id=changeset_id)
+
+        ##################################################
+        # remove the layer
+        ##################################################
+        # CLOSE THE CHANGESET
+        self.tester.api_changeset_close(changeset_id=changeset_id)
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(layer_id)
+
+        # it is not possible to find the layer that just deleted
+        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+
     def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -377,6 +413,7 @@ class TestAPIImportError(TestCase):
                                                                               f_table_name=f_table_name,
                                                                               file_name=file_name,
                                                                               changeset_id=changeset_id)
+        
         ##################################################
         # remove the layer
         ##################################################

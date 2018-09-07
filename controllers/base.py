@@ -1567,7 +1567,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         # the shapefile can not have the version and changeset_id attributes
         if "version" in fields or "changeset_id" in fields:
-            raise HTTPError(409, "The shapefile has the version or changeset_id attribute. Please, rename it.")
+            raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
 
     def import_shp(self):
         # get the arguments of the request
