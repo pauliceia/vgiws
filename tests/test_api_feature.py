@@ -8,7 +8,7 @@ from util.tester import UtilTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-"""
+
 class TestAPIFeature(TestCase):
 
     def setUp(self):
@@ -203,7 +203,7 @@ class TestAPIFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-"""
+
 
 class TestAPIFeatureError(TestCase):
 
