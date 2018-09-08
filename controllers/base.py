@@ -724,7 +724,7 @@ class LayerValidator(BaseHandler):
             raise HTTPError(409, "Conflict of f_table_name. The table name already exist. Please, rename it.")
 
     def verify_if_f_table_name_is_a_reserved_word(self, f_table_name):
-        if f_table_name in self.PGSQLConn.get_reserved_words_of_postgresql():
+        if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
             raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it.")
 
 
@@ -831,6 +831,8 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
 
+        self.verify_if_fields_of_f_table_are_invalids(resource_json)
+
         self.can_current_user_manage(current_user_id, f_table_name)
 
         return self.PGSQLConn.create_feature_table(resource_json, current_user_id, **kwargs)
@@ -852,6 +854,33 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
     # VALIDATION
 
     # It is in FeatureTableValidator
+
+    def verify_if_fields_of_f_table_are_invalids(self, resource_json):
+
+        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
+        invalid_chars = set(punctuation.replace("_", ""))
+
+        list_reserved_words = self.PGSQLConn.get_reserved_words_of_postgresql()
+
+        for field in resource_json["properties"]:
+            if any(char in invalid_chars for char in field):
+                raise HTTPError(400, "There is a field with have special characters. " +
+                                     "Please, rename it. (" + str(field) + ")")
+
+            if field[0].isdigit():
+                raise HTTPError(400, "There is a field that starts with number. " +
+                                "Please, rename it. (" + str(field) + ")")
+
+            if " " in field:
+                raise HTTPError(400, "There is a field with white spaces. " +
+                                "Please, rename it. (" + str(field) + ")")
+
+            # version is a reserved word that is allowed
+            f = str(field).lower()
+            if f != "version" and f in list_reserved_words:
+                raise HTTPError(400, "There is a field that is a reserved word. " +
+                                "Please, rename it. (" + str(field) + ")")
+
 
 
 class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValidator):
