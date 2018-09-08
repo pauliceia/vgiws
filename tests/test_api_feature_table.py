@@ -364,6 +364,57 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_feature_table_create_error_400_bad_request_invalid_fields(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a layer with invalid field (special chars)
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': "layer_100X",
+            'properties': {'a(ddre*ss': 'text', 'end_date': 'timestamp without time zone'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # try to create a layer with invalid field (starts with number)
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': "layer_100X",
+            'properties': {'0address': 'text', 'end_date': 'timestamp without time zone'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # try to create a layer with invalid field (white space)
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': "layer_100X",
+            'properties': {'address ': 'text', 'end_date': 'timestamp without time zone'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # try to create a layer with invalid field (reserved word)
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': "layer_100X",
+            'properties': {'abort': 'text', 'end_date': 'timestamp without time zone'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_post_api_feature_table_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'type': 'FeatureTable',

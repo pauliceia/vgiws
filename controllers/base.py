@@ -865,21 +865,21 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         for field in resource_json["properties"]:
             if any(char in invalid_chars for char in field):
                 raise HTTPError(400, "There is a field with have special characters. " +
-                                     "Please, rename it. (" + str(field) + ")")
+                                     "Please, rename it. (field: " + str(field) + ")")
 
             if field[0].isdigit():
                 raise HTTPError(400, "There is a field that starts with number. " +
-                                "Please, rename it. (" + str(field) + ")")
+                                "Please, rename it. (field: " + str(field) + ")")
 
             if " " in field:
                 raise HTTPError(400, "There is a field with white spaces. " +
-                                "Please, rename it. (" + str(field) + ")")
+                                "Please, rename it. (field: " + str(field) + ")")
 
             # version is a reserved word that is allowed
             f = str(field).lower()
             if f != "version" and f in list_reserved_words:
                 raise HTTPError(400, "There is a field that is a reserved word. " +
-                                "Please, rename it. (" + str(field) + ")")
+                                "Please, rename it. (field: " + str(field) + ")")
 
 
 
