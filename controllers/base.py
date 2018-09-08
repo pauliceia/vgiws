@@ -740,8 +740,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
         self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.verify_if_f_table_name_already_exist_in_db(f_table_name)
         self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.verify_if_f_table_name_already_exist_in_db(f_table_name)
 
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
@@ -830,6 +830,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         f_table_name = resource_json["f_table_name"]
         self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
+        # self.verify_if_f_table_name_already_exist_in_db(f_table_name)
 
         self.verify_if_fields_of_f_table_are_invalids(resource_json)
 
@@ -880,7 +881,6 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
             if f != "version" and f in list_reserved_words:
                 raise HTTPError(400, "There is a field that is a reserved word. " +
                                 "Please, rename it. (field: " + str(field) + ")")
-
 
 
 class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValidator):
