@@ -714,18 +714,20 @@ class LayerValidator(BaseHandler):
         # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
         invalid_chars = set(punctuation.replace("_", ""))
         if any(char in invalid_chars for char in f_table_name):
-            raise HTTPError(400, "f_table_name can not have special characters.")
+            raise HTTPError(400, "f_table_name can not have special characters. (table: " + f_table_name + ")")
 
         if f_table_name[0].isdigit():
-            raise HTTPError(400, "f_table_name can not start with number.")
+            raise HTTPError(400, "f_table_name can not start with number. (table: " + f_table_name + ")")
 
     def verify_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
-            raise HTTPError(409, "Conflict of f_table_name. The table name already exist. Please, rename it.")
+            raise HTTPError(409, "Conflict of f_table_name. The table name already exist. Please, rename it. "
+                            + "(table: " + f_table_name + ")")
 
     def verify_if_f_table_name_is_a_reserved_word(self, f_table_name):
         if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
-            raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it.")
+            raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
+                            + "(table: " + f_table_name + ")")
 
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
@@ -830,7 +832,6 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         f_table_name = resource_json["f_table_name"]
         self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
-        # self.verify_if_f_table_name_already_exist_in_db(f_table_name)
 
         self.verify_if_fields_of_f_table_are_invalids(resource_json)
 

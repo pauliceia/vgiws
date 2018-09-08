@@ -340,7 +340,7 @@ class TestAPIFeatureTableErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_feature_table_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
