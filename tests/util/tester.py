@@ -1983,19 +1983,35 @@ class UtilTester:
     # CONVERT GEOJSON TO SHAPEFILE
     ##################################################
 
-    def api_convert_geojson_to_shapefile(self, binary_file, **arguments):
+    def api_post_convert_geojson_to_shapefile(self, binary_file, **arguments):
         arguments = get_url_arguments(**arguments)
 
-        response = self.session.get(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
-                                    data=binary_file, headers=self.headers)
+        response = self.session.post(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
-        # (https://stackoverflow.com/questions/17011357/what-is-the-difference-between-content-and-text)
+        # (source: https://stackoverflow.com/questions/17011357/what-is-the-difference-between-content-and-text)
         # binary_zip_file = response.text  # r.text is the content of the response in unicode
         binary_zip_file = response.content  # r.content is the content of the response in bytes.
 
         return binary_zip_file
+
+    def api_post_convert_geojson_to_shapefile_400_bad_request(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_post_convert_geojson_to_shapefile_500_internal_server_error(self, binary_file, **arguments):
+        arguments = get_url_arguments(**arguments)
+
+        response = self.session.post(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
+                                     data=binary_file, headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
 
     # FEATURE TABLE
 

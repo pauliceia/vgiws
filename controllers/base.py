@@ -1674,7 +1674,7 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
             raise HTTPError(400, "It is a invalid file name.")
 
         if binary_file == b'':
-            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
+            raise HTTPError(400, "It is necessary to pass one binary file in the body of the request.")
 
         # if do not exist the temp folders, create them
         if not exists(__TEMP_FOLDER__):
@@ -1708,8 +1708,7 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_create_shapefile, shell=True)
 
         except CalledProcessError as error:
-            # raise HTTPError(500, "Problem when import a resource. Please, contact the administrator.")
-            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import.")
+            raise HTTPError(500, "Problem when to convert the GeoJSON to Shapefile. OGR was not able to convert.")
 
     def create_zip_with_shapefile(self, zip_file_name, folder_to_zip):
         make_archive(zip_file_name, 'zip', folder_to_zip)

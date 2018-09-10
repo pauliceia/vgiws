@@ -62,6 +62,13 @@ class TestAPIValidateEmail(TestCase):
         user = self.tester.api_user(user_id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
+
+class TestAPIValidateEmailErrors(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
     def test_api_validate_email_400_bad_request(self):
         # try to validate the email
         self.tester.api_validate_email_400_bad_request('eyJhbGciOiJIVCJ9.eyJ1c2VyMDAzfQ.IsLw6ZQh-UoPWEKc8Cj5q8')
@@ -168,8 +175,60 @@ class TestAPIConvertGeoJSONToShapefile(TestCase):
         with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
             binary_file_geojson = file.read()
 
-            binary_file_zip = self.tester.api_convert_geojson_to_shapefile(binary_file_geojson,
-                                                                           file_name=file_name)
+            binary_file_zip = self.tester.api_post_convert_geojson_to_shapefile(binary_file_geojson, file_name=file_name)
+
+            zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
+
+            output_file = open(zip_file_name_with_folder, 'wb')  # wb - write binary
+            output_file.write(binary_file_zip)
+            output_file.close()
+
+            remove_file(zip_file_name_with_folder)
+
+    def test_post_convert_geojson_to_shapefile_gabriels_geojson(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_gabriels_geojson.geojson"
+
+        file_name_with_folder = self.folder_name + file_name
+
+        with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
+            binary_file_geojson = file.read()
+
+            binary_file_zip = self.tester.api_post_convert_geojson_to_shapefile(binary_file_geojson, file_name=file_name)
+
+            zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
+
+            output_file = open(zip_file_name_with_folder, 'wb')  # wb - write binary
+            output_file.write(binary_file_zip)
+            output_file.close()
+
+            remove_file(zip_file_name_with_folder)
+
+"""
+class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        self.folder_name = "files/geojson/"
+
+    # import - create
+
+    def test_post_convert_geojson_to_shapefile_mini_geojson(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_geojson_01.geojson"
+
+        file_name_with_folder = self.folder_name + file_name
+
+        with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
+            binary_file_geojson = file.read()
+
+            binary_file_zip = self.tester.api_convert_geojson_to_shapefile(binary_file_geojson, file_name=file_name)
 
             zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
 
@@ -200,8 +259,7 @@ class TestAPIConvertGeoJSONToShapefile(TestCase):
             output_file.close()
 
             remove_file(zip_file_name_with_folder)
-
-
+"""
 
 
 

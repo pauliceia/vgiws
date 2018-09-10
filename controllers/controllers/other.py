@@ -82,12 +82,11 @@ class APIConvertGeoJSONToShapefile(BaseHandlerConvertGeoJSONToShapefile):
     # A list of URLs that can be use for the HTTP methods
     urls = [r"/api/convert_geojson_to_shapefile/", r"/api/convert_geojson_to_shapefile"]
 
-    def get(self):
-        self.convert_geojson_to_shapefile()
-
-    # @auth_non_browser_based
-    # def post(self):
+    # def get(self):
     #     self.convert_geojson_to_shapefile()
+
+    def post(self):
+        self.convert_geojson_to_shapefile()
 
     # @auth_non_browser_based
     # def put(self, param=None):

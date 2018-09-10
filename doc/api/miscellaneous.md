@@ -83,11 +83,12 @@ This method converts a GeoJSON to ShapeFile.
 - Response:
     - Return the Shapefile inside a zip in binary mode.
 - Error codes:
-    - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
     - 400 (Bad Request): It is necessary to pass the file_name in request.
-    - 409 (Conflict): File is not a zip file.
-    - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
-    - 500 (Internal Server Error): Problem when import a resource. Please, contact the administrator.
+    - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
+    - 400 (Bad Request): It is necessary to pass one binary file in the body of the request.
+    - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a GeoJSON.
+    - 500 (Internal Server Error): Problem when to convert the GeoJSON to Shapefile. OGR was not able to convert.
+    - 500 (Internal Server Error): Problem when convert the resource. Please, contact the administrator.
 - Notes:
 
 
