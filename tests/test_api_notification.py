@@ -860,8 +860,8 @@ class TestAPINotificationRelatedToUser(TestCase):
 
         self.tester.api_notification_related_to_user(expected, user_id="1003")
 
-"""
-class TestAPINotificationRelatedToUser(TestCase):
+
+class TestAPINotificationRelatedToUserErrors(TestCase):
 
     def setUp(self):
         # create a tester passing the unittest self
@@ -870,19 +870,15 @@ class TestAPINotificationRelatedToUser(TestCase):
     # notification errors - get
 
     def test_get_api_notification_error_400_bad_request(self):
-        self.tester.api_notification_error_400_bad_request(user_id="abc")
-        self.tester.api_notification_error_400_bad_request(user_id=0)
-        self.tester.api_notification_error_400_bad_request(user_id=-1)
-        self.tester.api_notification_error_400_bad_request(user_id="-1")
-        self.tester.api_notification_error_400_bad_request(user_id="0")
+        list_of_bad_user_id = ["abc", 0, -1, "-1", "0"]
 
-    # def test_get_api_notification_error_404_not_found(self):
-    #     self.tester.api_notification_error_404_not_found(notification_id="999")
-    #     self.tester.api_notification_error_404_not_found(user_id_creator="998")
-    #     self.tester.api_notification_error_404_not_found(layer_id="999")
-    #     self.tester.api_notification_error_404_not_found(keyword_id="998")
-    #     self.tester.api_notification_error_404_not_found(notification_id_parent="999")
-"""
+        for bad_user_id in list_of_bad_user_id:
+            self.tester.api_notification_related_to_user_error_400_bad_request(user_id=bad_user_id)
+
+    def test_get_api_notification_error_404_not_found(self):
+        self.tester.api_notification_related_to_user_error_404_not_found(user_id="999")
+        self.tester.api_notification_related_to_user_error_404_not_found(user_id="998")
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py

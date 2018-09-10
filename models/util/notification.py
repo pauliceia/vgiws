@@ -60,7 +60,7 @@ def get_subquery_notification_table_related_to_user(user_id):
             SELECT *
             FROM
             (
-                -- notifications that a user follows
+                -- notifications who a user follows
                 SELECT notification_id, description, created_at, is_denunciation, user_id_creator, layer_id, keyword_id, notification_id_parent FROM 
                 (SELECT layer_id AS lf_layer_id FROM layer_followers WHERE user_id = {0}) lf INNER JOIN notification n 
                 ON lf.lf_layer_id = n.layer_id

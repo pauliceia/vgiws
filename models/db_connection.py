@@ -1859,6 +1859,9 @@ class PGSQLConnection:
         if is_a_invalid_id(user_id):
             raise HTTPError(400, "Invalid parameter.")
 
+        # if the code don't find the user, raise a 404 exception
+        self.get_users(user_id=user_id)
+
         subquery = get_subquery_notification_table_related_to_user(user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -1868,13 +1871,13 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Notification',
                     'properties', json_build_object(
-                        'notification_id',     notification_id,
-                        'description',      description,
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_denunciation',  is_denunciation,
-                        'user_id_creator',     user_id_creator,
-                        'layer_id',      layer_id,
-                        'keyword_id',  keyword_id,
+                        'notification_id', notification_id,
+                        'description',     description,
+                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_denunciation', is_denunciation,
+                        'user_id_creator', user_id_creator,
+                        'layer_id',        layer_id,
+                        'keyword_id',      keyword_id,
                         'notification_id_parent',  notification_id_parent
                     )
                 ))
