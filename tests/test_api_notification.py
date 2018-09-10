@@ -858,7 +858,32 @@ class TestAPINotificationRelatedToUser(TestCase):
             ]
         }
 
+        self.tester.api_notification_related_to_user(expected, user_id="1001")
         self.tester.api_notification_related_to_user(expected, user_id="1003")
+
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Notification',
+                    'properties': {
+                        'notification_id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
+                        'layer_id': None, 'description': 'Evento Y no dia 24/06/2018', 'user_id_creator': 1002,
+                        'keyword_id': None, 'is_denunciation': False
+                    }
+                },
+                {
+                    'type': 'Notification',
+                    'properties': {
+                        'notification_id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
+                        'layer_id': None, 'description': 'Congresso X acontecerá em 2018/03/25',
+                        'user_id_creator': 1001, 'keyword_id': None, 'is_denunciation': False
+                    }
+                }
+            ]
+        }
+
+        self.tester.api_notification_related_to_user(expected, user_id="1002")
 
 
 class TestAPINotificationRelatedToUserErrors(TestCase):
