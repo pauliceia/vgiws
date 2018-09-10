@@ -1670,10 +1670,10 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
         if "file_name" not in arguments:
             raise HTTPError(400, "It is necessary to pass the file_name in the request.")
 
-        if "/" in arguments["file_name"] or "\'" in arguments["file_name"]:
-            raise HTTPError(400, "It is a invalid file name.")
+        if "/" in arguments["file_name"] or "\\" in arguments["file_name"]:
+            raise HTTPError(400, "It is an invalid file name. (file_name: " + arguments["file_name"] + ")")
 
-        if binary_file == b'':
+        if binary_file == b'' or binary_file == "":
             raise HTTPError(400, "It is necessary to pass one binary file in the body of the request.")
 
         # if do not exist the temp folders, create them

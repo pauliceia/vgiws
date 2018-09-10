@@ -206,7 +206,7 @@ class TestAPIConvertGeoJSONToShapefile(TestCase):
 
             remove_file(zip_file_name_with_folder)
 
-"""
+
 class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
 
     def setUp(self):
@@ -217,7 +217,7 @@ class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
 
     # import - create
 
-    def test_post_convert_geojson_to_shapefile_mini_geojson(self):
+    def test_post_import_shp_error_400_bad_request_it_is_necessary_to_pass_the_file_name_in_request(self):
         ##################################################
         # convert a geojson to a shapefile
         ##################################################
@@ -228,38 +228,46 @@ class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
         with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
             binary_file_geojson = file.read()
 
-            binary_file_zip = self.tester.api_convert_geojson_to_shapefile(binary_file_geojson, file_name=file_name)
+            self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(binary_file_geojson)
 
-            zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
-
-            output_file = open(zip_file_name_with_folder, 'wb')  # wb - write binary
-            output_file.write(binary_file_zip)
-            output_file.close()
-
-            remove_file(zip_file_name_with_folder)
-
-    def test_post_convert_geojson_to_shapefile_gabriels_geojson(self):
+    def test_post_import_shp_error_400_bad_request_it_is_invalid_file_name(self):
         ##################################################
         # convert a geojson to a shapefile
         ##################################################
-        file_name = "test_gabriels_geojson.geojson"
+        file_name = "test_geojson_01.geojson"
 
         file_name_with_folder = self.folder_name + file_name
 
         with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
             binary_file_geojson = file.read()
 
-            binary_file_zip = self.tester.api_convert_geojson_to_shapefile(binary_file_geojson,
-                                                                           file_name=file_name)
+            self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(binary_file_geojson, file_name="aa/ass")
 
-            zip_file_name_with_folder = file_name_with_folder.replace(".geojson", ".zip")
+            self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(binary_file_geojson, file_name="aa\\ass")
 
-            output_file = open(zip_file_name_with_folder, 'wb')  # wb - write binary
-            output_file.write(binary_file_zip)
-            output_file.close()
+    def test_post_import_shp_error_400_bad_request_empty_file(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_geojson_01.geojson"
 
-            remove_file(zip_file_name_with_folder)
-"""
+        self.tester.api_post_convert_geojson_to_shapefile_400_bad_request('', file_name=file_name)
+        self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(b'', file_name=file_name)
+
+    def test_post_import_shp_error_400_bad_request_it_is_invalid_file_name_it_is_not_geojson(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_geojson_01.geojson"
+
+        file_name_with_folder = self.folder_name + file_name
+
+        with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
+            binary_file_geojson = file.read()
+
+            self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(binary_file_geojson,
+                                                                              file_name="test_geojson_01")
+
 
 
 
