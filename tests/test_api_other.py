@@ -268,6 +268,21 @@ class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
             self.tester.api_post_convert_geojson_to_shapefile_400_bad_request(binary_file_geojson,
                                                                               file_name="test_geojson_01")
 
+    def test_post_import_shp_error_500_internal_server_error_invalid_geojson_binary_file(self):
+        ##################################################
+        # convert a geojson to a shapefile
+        ##################################################
+        file_name = "test_invalid_geojson.geojson"
+
+        file_name_with_folder = self.folder_name + file_name
+
+        with open(file_name_with_folder, mode='rb') as file:  # rb = read binary
+            binary_file_geojson = file.read()
+
+            self.tester.api_post_convert_geojson_to_shapefile_500_internal_server_error(binary_file_geojson,
+                                                                                        file_name=file_name)
+
+
 
 
 

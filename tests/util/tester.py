@@ -2011,7 +2011,7 @@ class UtilTester:
         response = self.session.post(self.URL + '/api/convert_geojson_to_shapefile/{0}'.format(arguments),
                                      data=binary_file, headers=self.headers)
 
-        self.ut_self.assertEqual(response.status_code, 400)
+        self.ut_self.assertEqual(response.status_code, 500)
 
     # FEATURE TABLE
 
