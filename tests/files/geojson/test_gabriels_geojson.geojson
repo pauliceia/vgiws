@@ -1,0 +1,25 @@
+{
+    "type":"FeatureCollection",
+    "features":[
+        {
+            "type":"Feature",
+            "geometry":{
+                "type":"Point","coordinates":[-46.6531396058257,-23.5465662154437]
+            },
+            "properties":{"street":"avenida tiradentes","number":"17","year":"1931"}
+        },
+        {
+            "type":"Feature",
+            "geometry":{
+                "type":"Point","coordinates":[-46.6222783584245,-23.5349383778133]
+            },
+            "properties":{"street":"avenida vautier","number":"54","year":"1937"}
+        },
+        {
+            "type":"Feature",
+            "geometry":{"type":"Point","coordinates":[-46.6325772971946,-23.5435713088692]
+            },
+            "properties":{"street":"ladeira da constituicao","number":"74","year":"1937"}
+        }
+    ]
+}
