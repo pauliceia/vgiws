@@ -59,27 +59,6 @@ def validate_feature_json(feature_json):
         raise HTTPError(400, "The 'properties' attribute must be a JSON, it is " + str(type(properties)))
 
 
-def format_the_table_name_to_standard(table_name, user_id):
-    # the table name follow the standard: _<user_id>_<table_name>
-    return "_" + str(user_id) + "_" + table_name
-
-
-def remove_unnecessary_properties(properties):
-    if "id" in properties:
-        del properties["id"]
-
-    if "geom" in properties:
-        del properties["geom"]
-
-    if "version" in properties:
-        del properties["version"]
-
-    if "changeset_id" in properties:
-        del properties["changeset_id"]
-
-    return properties
-
-
 class BaseDBConnection(metaclass=ABCMeta):
 
     def __init__(self):
@@ -872,8 +851,6 @@ class PGSQLConnection:
         geometry_type = resource_json["geometry"]["type"]
         EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
         properties = resource_json["properties"]
-
-        properties = remove_unnecessary_properties(properties)
 
         # get the attributes of the feature table
         properties_string = ""
