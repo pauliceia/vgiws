@@ -434,7 +434,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): get_keywords() got an unexpected keyword argument 'parent_id'
-            raise HTTPError(400, str(error))
+            raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "22007":  # 22007 - invalid_datetime_format
@@ -490,7 +490,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): create_keywords() got an unexpected keyword argument 'parent_id'
-            raise HTTPError(400, str(error))
+            raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column
@@ -564,7 +564,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
-            raise HTTPError(400, str(error))
+            raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -595,7 +595,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             self.PGSQLConn.commit()
         except TypeError as error:
             # example: - 400 (Bad Request): delete_keywords() got an unexpected keyword argument 'parent_id'
-            raise HTTPError(400, str(error))
+            raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column

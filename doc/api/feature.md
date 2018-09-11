@@ -29,7 +29,7 @@ This method gets features from DB. If you doesn't put any parameter, so it will 
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 400 (Bad Request): Some attribute is missing. Look the documentation!
-    - 404 (Not Found): Not found any resource.
+    - 404 (Not Found): Not found the table name \<TABLE NAME\>.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
@@ -115,6 +115,7 @@ This method deletes one feature by id.
     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
     - 403 (Forbidden): The specified changeset_id was not created by current user.
     - 404 (Not Found): Not found any resource.
+    - 404 (Not Found): Not found feature \<ID\>.
     - 404 (Not Found): Not found the specified changeset_id.
     - 409 (Conflict): The specified changeset_id was already closed.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

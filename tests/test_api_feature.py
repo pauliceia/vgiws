@@ -59,6 +59,15 @@ class TestAPIFeature(TestCase):
 
         self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="1001")
 
+    def test_get_api_feature_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="999")
+        self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="998")
+
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
+        self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
+
     # feature - create, update and delete
 
     def test_api_feature_create_update_and_delete(self):
@@ -113,7 +122,8 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
-        self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
         close_changeset = {
@@ -190,7 +200,8 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
-        self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
         close_changeset = {
@@ -233,13 +244,6 @@ class TestAPIFeatureError(TestCase):
         self.tester.api_feature_error_400_bad_request(feature_id=-1)
         self.tester.api_feature_error_400_bad_request(feature_id="-1")
         self.tester.api_feature_error_400_bad_request(feature_id="0")
-
-    def test_get_api_feature_error_404_not_found(self):
-        self.tester.api_feature_error_404_not_found(f_table_name="layer_1001", feature_id="999")
-        self.tester.api_feature_error_404_not_found(f_table_name="layer_1001", feature_id="998")
-
-        self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
-        self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
 
     # feature errors - create
 

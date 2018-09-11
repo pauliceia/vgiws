@@ -2246,7 +2246,7 @@ class PGSQLConnection:
 
         # if there is not feature
         if results_of_query is None:
-            raise HTTPError(404, "Not found any resource.")
+            raise HTTPError(404, "Not found the table_name {0}.".format(table_name))
 
         return results_of_query
 
@@ -2288,9 +2288,9 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is not feature
+        # if there is not feature, returns an empty list
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
+            results_of_query["features"] = []
 
         return results_of_query
 
@@ -2331,7 +2331,9 @@ class PGSQLConnection:
         ##################################################
         # get the feature before of deleting it
         ##################################################
-        feature = self.get_feature(f_table_name, feature_id=feature_id)["features"][0]
+        feature = self.get_feature(f_table_name, feature_id=feature_id)
+        if not feature["features"]:  # if list is empty
+            raise HTTPError(404, "Not found feature {0}.".format(feature_id))
 
         ##################################################
         # try to delete the feature from feature table
@@ -2352,6 +2354,7 @@ class PGSQLConnection:
         # add the version_feature_table name in resource json and the changeset id
         # and insert the feature inside the version_feature_table name
         ##################################################
+        feature = feature["features"][0]
         feature["f_table_name"] = "version_" + f_table_name
         feature["properties"]["changeset_id"] = changeset_id
         self.create_feature(feature, current_user_id, remove_id_and_version_from_properties=False)
