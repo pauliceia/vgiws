@@ -1431,9 +1431,9 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is not feature
+        # if there is not feature, returns an empty list
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
+            results_of_query["features"] = []
 
         return results_of_query
 

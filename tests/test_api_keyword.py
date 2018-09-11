@@ -173,6 +173,15 @@ class TestAPIKeyword(TestCase):
 
         self.tester.api_keyword(expected, name="As")
 
+    def test_get_api_keyword_return_zero_resources(self):
+        expected = {'features': [], 'type': 'FeatureCollection'}
+
+        self.tester.api_keyword(expected, keyword_id="999")
+        self.tester.api_keyword(expected, keyword_id="998")
+
+        self.tester.api_keyword(expected, user_id_creator="999")
+        self.tester.api_keyword(expected, user_id_creator="998")
+
     # keyword - create, update and delete
 
     def test_api_keyword_create_but_update_and_delete_with_admin_user(self):
@@ -214,7 +223,8 @@ class TestAPIKeyword(TestCase):
         self.tester.api_keyword_delete(resource_id)
 
         # it is not possible to find the resource that just deleted
-        self.tester.api_keyword_error_404_not_found(keyword_id=resource_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_keyword(expected, keyword_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -246,13 +256,6 @@ class TestAPIKeywordErrors(TestCase):
         self.tester.api_keyword_error_400_bad_request(parent_id=1001)
         self.tester.api_keyword_error_400_bad_request(usee_id=1001)
         self.tester.api_keyword_error_400_bad_request(keyboard_id=1001)
-
-    def test_get_api_keyword_error_404_not_found(self):
-        self.tester.api_keyword_error_404_not_found(keyword_id="999")
-        self.tester.api_keyword_error_404_not_found(keyword_id="998")
-
-        self.tester.api_keyword_error_404_not_found(user_id_creator="999")
-        self.tester.api_keyword_error_404_not_found(user_id_creator="998")
 
     # keyword errors - create
 
@@ -416,6 +419,7 @@ class TestAPIKeywordErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
+
 
 # It is not necessary to pyt the main() of unittest here,
 # because this file will be call by run_tests.py
