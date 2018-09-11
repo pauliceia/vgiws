@@ -36,7 +36,6 @@ This method gets changesets from DB. If you doesn't put any parameter, so will r
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any feature.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
@@ -86,9 +85,9 @@ This method close a changeset.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 404 (Not Found): Not found any feature.
-    - 409 (Conflict): Changeset with ID <id> has already been closed at <datetime>.
-    - 409 (Conflict): The user <id> didn't create the changeset <id>.
+    - 404 (Not Found): Not found the changeset \<ID\>.
+    - 409 (Conflict): Changeset \<ID\> has already been closed at <datetime>.
+    - 409 (Conflict): The user \<ID\> didn't create the changeset \<ID\>.
     - 500 (Internal Server Error): Problem when close a feature. Please, contact the administrator.
 - Notes:
 

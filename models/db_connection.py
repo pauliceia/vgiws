@@ -1619,9 +1619,9 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is not feature
+        # if there is not feature, put an empty list
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
+            results_of_query["features"] = []
 
         return results_of_query
 
@@ -1652,9 +1652,14 @@ class PGSQLConnection:
 
         # verify if the changeset is closed or not, if it is closed, raise 409 exception
         list_changesets = self.get_changesets(changeset_id=changeset_id)
+
+        # if the list is empty, so raise an exception
+        if not list_changesets['features']:
+            raise HTTPError(404, "Not found the changeset {0}.".format(changeset_id))
+
         closed_at = list_changesets['features'][0]['properties']['closed_at']
         if closed_at is not None:
-            raise HTTPError(409, "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
+            raise HTTPError(409, "Changeset {0} has already been closed at {1}.".format(changeset_id, closed_at))
 
         # verify if the user created the changeset
         user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
@@ -1669,11 +1674,6 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
-
-        if rows_affected == 0:
-            raise HTTPError(404, "Not found any resource.")
 
     def delete_changeset(self, changeset_id=None, layer_id=None):
         if is_a_invalid_id(changeset_id) or is_a_invalid_id(layer_id):
@@ -2173,8 +2173,10 @@ class PGSQLConnection:
 
         self.verify_if_the_properties_are_valid(f_table_name, properties)
 
-        if remove_id_and_version_from_properties:  # it is used when create a new feature
-            del properties["id"]  # it is not possible to set the id and version
+        # it is not possible to set the id and version when create the feature in feature table,
+        # however, it is possible to add these fields when we add the feature in the version table
+        if remove_id_and_version_from_properties:
+            del properties["id"]
             del properties["version"]
 
         for property_ in properties:

@@ -61,9 +61,9 @@ This method creates a new feature described in a JSON.
      - 400 (Bad Request): One specified attribute is invalid.
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
-     - 403 (Forbidden): The specified changeset_id was not created by current user.
-     - 404 (Not Found): Not found the specified changeset_id.
-     - 409 (Conflict): The specified changeset_id was already closed.
+     - 403 (Forbidden): The changeset_id \<ID\> was not created by current user.
+     - 404 (Not Found): Not found the changeset_id \<ID\>.
+     - 409 (Conflict): The changeset_id \<ID\> was already closed at \<DATE\>.
      - 500 (Bad Request): Invalid field of feature. Please contact the administrator.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:

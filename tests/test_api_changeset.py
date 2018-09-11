@@ -265,6 +265,12 @@ class TestAPIChangeset(TestCase):
 
         self.tester.api_changeset(expected, closed=True, user_id_creator="1005")
 
+    def test_get_api_changeset_return_zero_resources(self):
+        expected = {'features': [], 'type': 'FeatureCollection'}
+
+        self.tester.api_changeset(expected, changeset_id="999")
+        self.tester.api_changeset(expected, changeset_id="998")
+
     # changeset - create, close and delete
 
     def test_get_api_changeset_create_and_close_but_delete_with_admin(self):
@@ -339,10 +345,6 @@ class TestAPIChangesetErrors(TestCase):
         self.tester.api_changeset_error_400_bad_request(changeset_id="-1")
         self.tester.api_changeset_error_400_bad_request(changeset_id="0")
 
-    def test_get_api_changeset_error_404_not_found(self):
-        self.tester.api_changeset_error_404_not_found(changeset_id="999")
-        self.tester.api_changeset_error_404_not_found(changeset_id="998")
-
     # changeset errors - create
 
     def test_put_api_changeset_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
@@ -409,7 +411,7 @@ class TestAPIChangesetErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_put_api_changeset_close_error_409_conflict_changeset_is_closed(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")

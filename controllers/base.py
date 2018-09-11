@@ -488,6 +488,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except KeyError as error:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
+        except TypeError as error:
+            # example: - 400 (Bad Request): create_keywords() got an unexpected keyword argument 'parent_id'
+            raise HTTPError(400, str(error))
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column
@@ -559,6 +562,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except KeyError as error:
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
+        except TypeError as error:
+            # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
+            raise HTTPError(400, str(error))
         except Error as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
@@ -587,6 +593,9 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
             # do commit after delete the resource
             self.PGSQLConn.commit()
+        except TypeError as error:
+            # example: - 400 (Bad Request): delete_keywords() got an unexpected keyword argument 'parent_id'
+            raise HTTPError(400, str(error))
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column
@@ -1377,21 +1386,19 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # VALIDATION
 
     def can_user_uses_the_changeset(self, current_user_id, changeset_id):
-        try:
-            changeset = self.PGSQLConn.get_changesets(changeset_id)["features"][0]
-        except HTTPError as error:
-            # if not found a layer, so raise a better error message
-            if error.status_code == 404:
-                raise HTTPError(404, "Not found the specified changeset_id.")
-            else:
-                raise error
+        changeset = self.PGSQLConn.get_changesets(changeset_id)
 
-        if changeset["properties"]["user_id_creator"] != current_user_id:
-            raise HTTPError(403, "The specified changeset_id was not created by current user.")
+        if not changeset["features"]:  # if the list is empty
+            raise HTTPError(404, "Not found the changeset_id {0}.".format(changeset_id))
 
-        closed_at = changeset["properties"]["closed_at"]
+        changeset = changeset["features"][0]["properties"]
+
+        if changeset["user_id_creator"] != current_user_id:
+            raise HTTPError(403, "The changeset_id {0} was not created by current user.".format(changeset_id))
+
+        closed_at = changeset["closed_at"]
         if closed_at is not None:
-            raise HTTPError(409, "The specified changeset_id was already closed in " + str(closed_at))
+            raise HTTPError(409, "The changeset_id {0} was already closed at {1}.".format(changeset_id, str(closed_at)))
 
     def can_current_user_manage(self, current_user_id, f_table_name):
 

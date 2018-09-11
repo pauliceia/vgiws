@@ -1323,13 +1323,6 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_changeset_error_404_not_found(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/changeset/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
     # changeset errors - create
 
     def api_changeset_create_error_400_bad_request(self, feature_json):
