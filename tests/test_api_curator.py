@@ -16,7 +16,7 @@ class TestAPICurator(TestCase):
         self.tester = UtilTester(self)
 
     # curator - get
-    
+
     def test_get_api_curator_return_all_curators(self):
         expected = {
             'type': 'FeatureCollection',
@@ -136,7 +136,16 @@ class TestAPICurator(TestCase):
         }
 
         self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
-    
+
+    def test_get_api_curator_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_curator(expected, keyword_id="999")
+        self.tester.api_curator(expected, keyword_id="998")
+
+        self.tester.api_curator(expected, user_id="999")
+        self.tester.api_curator(expected, user_id="998")
+
     # curator - create, update and delete
 
     def test_api_curator_create_update_and_delete(self):
@@ -176,7 +185,8 @@ class TestAPICurator(TestCase):
         self.tester.api_curator_delete(user_id=user_id, keyword_id=keyword_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_curator_error_404_not_found(user_id=user_id, keyword_id=keyword_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_curator(expected, user_id=user_id, keyword_id=keyword_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -202,13 +212,6 @@ class TestAPIUserCuratorErrors(TestCase):
         self.tester.api_curator_error_400_bad_request(user_id=-1)
         self.tester.api_curator_error_400_bad_request(user_id="-1")
         self.tester.api_curator_error_400_bad_request(user_id="0")
-
-    def test_get_api_curator_error_404_not_found(self):
-        self.tester.api_curator_error_404_not_found(keyword_id="999")
-        self.tester.api_curator_error_404_not_found(keyword_id="998")
-
-        self.tester.api_curator_error_404_not_found(user_id="999")
-        self.tester.api_curator_error_404_not_found(user_id="998")
     
     # curator errors - create
 
