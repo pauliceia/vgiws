@@ -60,7 +60,8 @@ class TestAPIImport(TestCase):
         self.tester.api_layer_delete(self.layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=self.layer_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=self.layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -370,7 +371,8 @@ class TestAPIImportError(TestCase):
         self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=layer_id)
 
     def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
         ##################################################
@@ -436,7 +438,8 @@ class TestAPIImportError(TestCase):
         self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=layer_id)
 
 
 class TestAPIImportErrorWithoutLogin(TestCase):

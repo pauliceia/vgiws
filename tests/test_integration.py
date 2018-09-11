@@ -75,7 +75,7 @@ class TestAPIIntegration(TestCase):
         expected_layer = {'type': 'FeatureCollection', 'features': [layer]}
         self.tester.api_layer(expected_at_least=expected_layer, f_table_name=f_table_name)
 
-        # add the other attributes
+
         feature_table["properties"]["id"] = "integer"
         feature_table["properties"]["geom"] = "geometry"
         feature_table["properties"]["version"] = "integer"
@@ -96,7 +96,8 @@ class TestAPIIntegration(TestCase):
         self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=layer_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

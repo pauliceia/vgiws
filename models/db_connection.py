@@ -552,21 +552,9 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is not feature
+        # if there is not feature, returns an empty layer
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
-
-        # POST PROCESSING
-
-        # iterate in features to change the original table name (_<user_id>_<table_name>) by just table_name
-        # for feature in results_of_query["features"]:
-        #     table_name = feature["properties"]["table_name"]
-        #
-        #     # get just the table name, without the user id
-        #     second_underscore = table_name.find("_", 2)
-        #     table_name_without_user_id = table_name[second_underscore+1:]
-        #
-        #     feature["properties"]["table_name"] = table_name_without_user_id
+            results_of_query["features"] = []
 
         return results_of_query
 
@@ -731,6 +719,10 @@ class PGSQLConnection:
     def delete_layer_dependencies(self, layer_id):
         # get the layer information before to remove the layer
         layer = self.get_layers(layer_id=layer_id)
+
+        if not layer["features"]:  # if list is empty
+            raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
+
         f_table_name = layer["features"][0]["properties"]["f_table_name"]
 
         # 1) delete all users from layer

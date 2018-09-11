@@ -112,6 +112,12 @@ class TestAPILayer(TestCase):
 
         self.tester.api_layer(expected, keyword_id="1001")
 
+    def test_get_api_layer_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_layer(expected, layer_id="999")
+        self.tester.api_layer(expected, layer_id="998")
+
     # layer - create, update and delete
 
     def test_api_layer_create_update_and_delete(self):
@@ -154,7 +160,8 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_delete(resource_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -203,7 +210,8 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_delete(resource_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_error_404_not_found(layer_id=resource_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -223,10 +231,6 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_error_400_bad_request(layer_id=-1)
         self.tester.api_layer_error_400_bad_request(layer_id="-1")
         self.tester.api_layer_error_400_bad_request(layer_id="0")
-
-    def test_get_api_layer_error_404_not_found(self):
-        self.tester.api_layer_error_404_not_found(layer_id="999")
-        self.tester.api_layer_error_404_not_found(layer_id="998")
 
     # layer errors - create
 

@@ -801,14 +801,11 @@ class FeatureTableValidator(BaseHandler):
 
     def can_current_user_manage(self, current_user_id, f_table_name):
 
-        try:
-            # search layers by feature table name and use the layer_id to search the creator of the layer
-            layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
-        except HTTPError as error:
-            # if not found a layer, so raise a better error message
-            if error.status_code == 404:
-                raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                                "It is needed to create a layer with the f_table_name before of using this function.")
+        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+
+        if not layers["features"]:  # if list is empty
+            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
+                            "It is needed to create a layer with the f_table_name before of using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -1402,16 +1399,11 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
     def can_current_user_manage(self, current_user_id, f_table_name):
 
-        try:
-            # search layers by feature table name and use the layer_id to search the creator of the layer
-            layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
-        except HTTPError as error:
-            # if not found a layer, so raise a better error message
-            if error.status_code == 404:
-                raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                                "It is needed to create a layer with the f_table_name before of using this function.")
-            else:
-                raise error
+        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+
+        if not layers["features"]:  # if list is empty
+            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
+                            "It is needed to create a layer with the f_table_name before of using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
