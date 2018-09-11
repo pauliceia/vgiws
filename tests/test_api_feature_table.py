@@ -399,11 +399,22 @@ class TestAPIFeatureTableErrors(TestCase):
         }
         self.tester.api_feature_table_create_error_400_bad_request(resource)
 
-        # try to create a layer with invalid field (reserved word)
+        # try to create a layer with invalid field (db reserved word)
         resource = {
             'type': 'FeatureTable',
             'f_table_name': "layer_100X",
             'properties': {'abort': 'text', 'end_date': 'timestamp without time zone'},
+            'geometry': {
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_400_bad_request(resource)
+
+        # try to create a layer with invalid field (db reserved word)
+        resource = {
+            'type': 'FeatureTable',
+            'f_table_name': "layer_100X",
+            'properties': {'id': 'integer', 'end_date': 'timestamp without time zone'},
             'geometry': {
                 'type': 'MULTIPOINT'
             }
