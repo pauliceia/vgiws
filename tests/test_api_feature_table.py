@@ -135,8 +135,7 @@ class TestAPIFeatureTable(TestCase):
         feature_table = {
             'type': 'FeatureTable',
             'f_table_name': f_table_name,
-            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
                            'address': 'text'},
             'geometry': {
                 'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -207,8 +206,7 @@ class TestAPIFeatureTable(TestCase):
         feature_table = {
             'type': 'FeatureTable',
             'f_table_name': f_table_name,
-            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
                            'address': 'text'},
             'geometry': {
                 'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},

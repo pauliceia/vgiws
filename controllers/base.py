@@ -862,7 +862,11 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
         invalid_chars = set(punctuation.replace("_", ""))
 
-        list_reserved_words = self.PGSQLConn.get_reserved_words_of_postgresql()
+        list_invalid_words = ["id", "geom", "version", "changeset_id"]
+        list_db_reserved_words = self.PGSQLConn.get_reserved_words_of_postgresql()
+
+        # union both lists with invalid words
+        list_reserved_words = list_invalid_words + list_db_reserved_words
 
         for field in resource_json["properties"]:
             if any(char in invalid_chars for char in field):
@@ -879,7 +883,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
             # version is a reserved word that is allowed
             f = str(field).lower()
-            if f != "version" and f in list_reserved_words:
+            if f in list_reserved_words:
                 raise HTTPError(400, "There is a field that is a reserved word. " +
                                 "Please, rename it. (field: " + str(field) + ")")
 

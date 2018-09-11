@@ -38,8 +38,7 @@ class TestAPIIntegration(TestCase):
         feature_table = {
             'type': 'FeatureTable',
             'f_table_name': f_table_name,
-            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
                            'address': 'text'},
             'geometry': {
                 'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -76,6 +75,11 @@ class TestAPIIntegration(TestCase):
         expected_layer = {'type': 'FeatureCollection', 'features': [layer]}
         self.tester.api_layer(expected_at_least=expected_layer, f_table_name=f_table_name)
 
+        # add the other attributes
+        feature_table["properties"]["id"] = "integer"
+        feature_table["properties"]["geom"] = "geometry"
+        feature_table["properties"]["version"] = "integer"
+        feature_table["properties"]["changeset_id"] = "integer"
         expected_feature_table = {'type': 'FeatureCollection', 'features': [feature_table]}
         self.tester.api_feature_table(expected_feature_table, f_table_name=f_table_name)
 
