@@ -1283,10 +1283,10 @@ class UtilTester:
         #
         #     self.ut_self.assertTrue(resulted_bool)
 
-    def api_changeset_create(self, feature_json):
+    def api_changeset_create(self, resource_json):
         # do a GET call, sending a changeset to add in DB
-        response = self.session.post(self.URL + '/api/changeset/create/',
-                                    data=dumps(feature_json), headers=self.headers)
+        response = self.session.post(self.URL + '/api/changeset/create',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -1296,15 +1296,13 @@ class UtilTester:
         self.ut_self.assertNotEqual(resulted["changeset_id"], -1)
 
         # post the id received in the original JSON of changeset
-        feature_json["properties"]["changeset_id"] = resulted["changeset_id"]
+        resource_json["properties"]["changeset_id"] = resulted["changeset_id"]
 
-        return feature_json
+        return resource_json
 
-    def api_changeset_close(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
-                                     headers=self.headers)
+    def api_changeset_close(self, resource_json):
+        response = self.session.post(self.URL + '/api/changeset/close',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -1348,35 +1346,27 @@ class UtilTester:
 
     # changeset errors - close
 
-    def api_changeset_close_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
-                                     headers=self.headers)
+    def api_changeset_close_error_400_bad_request(self, resource_json):
+        response = self.session.post(self.URL + '/api/changeset/close',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-    def api_changeset_close_error_401_unauthorized(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
-                                     headers=self.headers)
+    def api_changeset_close_error_401_unauthorized(self, resource_json):
+        response = self.session.post(self.URL + '/api/changeset/close',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_changeset_close_error_404_not_found(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
-                                     headers=self.headers)
+    def api_changeset_close_error_404_not_found(self, resource_json):
+        response = self.session.post(self.URL + '/api/changeset/close',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-    def api_changeset_close_error_409_conflict(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/changeset/close/{0}'.format(arguments),
-                                     headers=self.headers)
+    def api_changeset_close_error_409_conflict(self, resource_json):
+        response = self.session.post(self.URL + '/api/changeset/close',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 409)
 

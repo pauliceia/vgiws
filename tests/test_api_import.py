@@ -36,7 +36,7 @@ class TestAPIImport(TestCase):
         # create a new changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': self.layer_id, 'description': 'Import points.shp'},
+            'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -47,7 +47,11 @@ class TestAPIImport(TestCase):
         # remove the layer
         ##################################################
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=self.changeset_id)
+        close_changeset = {
+            'properties': {'changeset_id': self.changeset_id, 'description': 'Import points.shp'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
 
         # DELETE THE CHANGESET (the changeset is automatically removed when delete a layer)
         # self.tester.api_changeset_delete(changeset_id=changeset_id)
@@ -336,7 +340,7 @@ class TestAPIImportError(TestCase):
         # create a new changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'properties': {'changeset_id': -1, 'layer_id': layer_id},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -356,7 +360,11 @@ class TestAPIImportError(TestCase):
         # remove the layer
         ##################################################
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=changeset_id)
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Import points.shp'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
 
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
@@ -395,7 +403,7 @@ class TestAPIImportError(TestCase):
         # create a new changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': layer_id, 'description': 'Import points.shp'},
+            'properties': {'changeset_id': -1, 'layer_id': layer_id},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -418,7 +426,11 @@ class TestAPIImportError(TestCase):
         # remove the layer
         ##################################################
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=changeset_id)
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Import points.shp'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
 
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)

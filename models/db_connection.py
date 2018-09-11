@@ -1632,9 +1632,9 @@ class PGSQLConnection:
         p = resource_json["properties"]
 
         query_text = """
-            INSERT INTO changeset (description, created_at, layer_id, user_id_creator)
-            VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}) RETURNING changeset_id;
-        """.format(p["description"], p["layer_id"], p["user_id_creator"])
+            INSERT INTO changeset (created_at, layer_id, user_id_creator)
+            VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING changeset_id;
+        """.format(p["layer_id"], p["user_id_creator"])
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -1644,7 +1644,9 @@ class PGSQLConnection:
 
         return result
 
-    def close_changeset(self, current_user_id, changeset_id):
+    def close_changeset(self, resource_json, current_user_id):
+        changeset_id = resource_json["properties"]["changeset_id"]
+
         if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
@@ -1652,18 +1654,18 @@ class PGSQLConnection:
         list_changesets = self.get_changesets(changeset_id=changeset_id)
         closed_at = list_changesets['features'][0]['properties']['closed_at']
         if closed_at is not None:
-            raise HTTPError(409,
-                            "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
+            raise HTTPError(409, "Changeset with ID {0} has already been closed at {1}.".format(changeset_id, closed_at))
 
         # verify if the user created the changeset
         user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
         if user_id_creator != current_user_id:
-            raise HTTPError(409,
-                            "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
+            raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
 
+        description = resource_json["properties"]["description"]
         query_text = """
-            UPDATE changeset SET closed_at=LOCALTIMESTAMP WHERE changeset_id={0};
-        """.format(changeset_id)
+            UPDATE changeset SET closed_at=LOCALTIMESTAMP, description='{1}'
+            WHERE changeset_id={0};
+        """.format(changeset_id, description)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)

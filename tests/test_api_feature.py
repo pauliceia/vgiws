@@ -70,7 +70,7 @@ class TestAPIFeature(TestCase):
         ##################################################
 
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Inserting feature in layer_1003'},
+            'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -116,7 +116,11 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=changeset_id)
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
 
         ####################################################################################################
         # login with admin to delete the changesets
@@ -140,7 +144,7 @@ class TestAPIFeature(TestCase):
         ##################################################
 
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1006, 'description': 'Inserting feature in layer_1006'},
+            'properties': {'changeset_id': -1, 'layer_id': 1006},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -189,7 +193,11 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_error_404_not_found(f_table_name=f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
-        self.tester.api_changeset_close(changeset_id=changeset_id)
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1006'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
 
         ####################################################################################################
         # login with admin to delete the changesets

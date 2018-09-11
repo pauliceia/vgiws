@@ -516,11 +516,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
     # close
     def post_method_api_resource_close(self):
         # get the sent JSON, to add in DB
+        resource_json = self.get_the_json_validated()
         current_user_id = self.get_current_user_id()
-        arguments = self.get_aguments()
 
         try:
-            self._close_resource(current_user_id, **arguments)
+            self._close_resource(resource_json, current_user_id)
 
             # do commit after create a resource
             self.PGSQLConn.commit()
@@ -528,7 +528,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
-    def _close_resource(self, current_user_id, **kwargs):
+    def _close_resource(self, resource_json, current_user_id):
         raise NotImplementedError
 
     # request
@@ -1148,8 +1148,8 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         return self.PGSQLConn.create_changeset(resource_json, current_user_id)
 
-    def _close_resource(self, current_user_id, **kwargs):
-        self.PGSQLConn.close_changeset(current_user_id, **kwargs)
+    def _close_resource(self, resource_json, current_user_id):
+        self.PGSQLConn.close_changeset(resource_json, current_user_id)
 
     # PUT
 

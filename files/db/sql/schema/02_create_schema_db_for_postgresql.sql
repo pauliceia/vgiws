@@ -10,7 +10,7 @@ BEGIN
 END $$;
 
 
--- Qui 06 Set 2018 15:39:54 -03
+-- Ter 11 Set 2018 15:55:39 -03
 
 -- -----------------------------------------------------
 -- Table pauliceia_user
@@ -60,7 +60,7 @@ DROP TABLE IF EXISTS changeset CASCADE ;
 
 CREATE TABLE IF NOT EXISTS changeset (
   changeset_id SERIAL ,
-  description TEXT NOT NULL,
+  description TEXT NULL,
   created_at TIMESTAMP NOT NULL,
   closed_at TIMESTAMP NULL,
   user_id_creator INT NOT NULL,

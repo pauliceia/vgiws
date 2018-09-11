@@ -50,7 +50,7 @@ This method create a new changeset described in a JSON.
 - Send (in Body): a JSON describing the feature. Example:
     ```javascript
     {
-        'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
+        'properties': {'changeset_id': -1, 'layer_id': 1003},
         'type': 'Changeset'
     }
     ```
@@ -67,14 +67,21 @@ This method create a new changeset described in a JSON.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
 
-### POST /api/changeset/close/?\<params>
+### POST /api/changeset/close
 
 This method close a changeset.
 - Parameters:
-    - changeset_id (mandatory): the id of the feature that is a positive integer not null (e.g. 1, 2, 3, ...).
 - Examples:
-    - Close a changeset by id: ```POST http://localhost:8888/api/changeset/close/?changeset_id=7```
-- Send:
+    - Close a changeset by id: ```POST http://localhost:8888/api/changeset/close```
+- Send (in Body): a JSON describing the feature. Example:
+    ```javascript
+    {
+        'properties': {'changeset_id': 7, 'description': 'Creating layer_1003'},
+        'type': 'ChangesetClose'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
