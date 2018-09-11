@@ -108,6 +108,11 @@ class TestAPIFeatureTable(TestCase):
 
         self.tester.api_feature_table(expected, f_table_name="1003")
 
+    def test_get_api_feature_table_return_zero_resources(self):
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_feature_table(expected, f_table_name="998")
+        self.tester.api_feature_table(expected, f_table_name="999")
+
     # feature table - create and update
 
     def test_api_feature_table_create_and_update(self):
@@ -260,10 +265,6 @@ class TestAPIFeatureTableErrors(TestCase):
         self.tester = UtilTester(self)
 
     # feature_table errors - get
-
-    def test_get_api_feature_table_error_404_not_found(self):
-        self.tester.api_feature_table_error_404_not_found(f_table_name="999")
-        self.tester.api_feature_table_error_404_not_found(f_table_name="998")
 
     # feature_table errors - create
 
