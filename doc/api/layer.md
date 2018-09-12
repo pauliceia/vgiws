@@ -36,7 +36,6 @@ This method gets layers from DB. If you doesn't put any parameter, so it will re
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
@@ -163,7 +162,6 @@ This method gets users in layers from DB. If you doesn't put any parameter, so i
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 
@@ -252,7 +250,6 @@ This method gets users who follow layers from DB. If you doesn't put any paramet
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 

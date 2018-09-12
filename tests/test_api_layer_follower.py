@@ -129,6 +129,15 @@ class TestAPILayerFollower(TestCase):
 
         self.tester.api_layer_follower(expected, user_id="1003", layer_id="1002")
 
+    def test_get_api_layer_follower_return_zero_resources(self):
+        expected = {'features': [], 'type': 'FeatureCollection'}
+
+        self.tester.api_layer_follower(expected, layer_id="999")
+        self.tester.api_layer_follower(expected, layer_id="998")
+
+        self.tester.api_layer_follower(expected, user_id="999")
+        self.tester.api_layer_follower(expected, user_id="998")
+
     # layer_follower - create and delete
 
     def test_api_layer_follower_create_and_delete(self):
@@ -150,7 +159,8 @@ class TestAPILayerFollower(TestCase):
         self.tester.api_layer_follower_delete(user_id=user_id, layer_id=layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_layer_follower_error_404_not_found(user_id=user_id, layer_id=layer_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_layer_follower(expected, user_id=user_id, layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -176,13 +186,6 @@ class TestAPIUserLayerErrors(TestCase):
         self.tester.api_layer_follower_error_400_bad_request(user_id=-1)
         self.tester.api_layer_follower_error_400_bad_request(user_id="-1")
         self.tester.api_layer_follower_error_400_bad_request(user_id="0")
-
-    def test_get_api_layer_follower_error_404_not_found(self):
-        self.tester.api_layer_follower_error_404_not_found(layer_id="999")
-        self.tester.api_layer_follower_error_404_not_found(layer_id="998")
-
-        self.tester.api_layer_follower_error_404_not_found(user_id="999")
-        self.tester.api_layer_follower_error_404_not_found(user_id="998")
 
     # layer_follower errors - create
 

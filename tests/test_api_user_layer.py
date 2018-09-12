@@ -223,7 +223,8 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
 
         # verify if the user stopped automatically of following the layer
-        self.tester.api_layer_follower_error_404_not_found(user_id=user_id, layer_id=layer_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_layer_follower(expected, user_id=user_id, layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -274,7 +275,8 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
 
         # verify if the user stopped automatically of following the layer
-        self.tester.api_layer_follower_error_404_not_found(user_id=user_id, layer_id=layer_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_layer_follower(expected, user_id=user_id, layer_id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
