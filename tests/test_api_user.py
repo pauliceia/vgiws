@@ -171,6 +171,12 @@ class TestAPIUser(TestCase):
 
         self.tester.api_user(expected, username="miguel")
 
+    def test_get_api_user_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_user(expected, user_id="999")
+        self.tester.api_user(expected, user_id="998")
+
     # user - create, update and delete
 
     def test_get_api_user_create_update_and_delete(self):
@@ -253,6 +259,10 @@ class TestAPIUser(TestCase):
         # remove the created user
         self.tester.api_user_delete(resource_id)
 
+        # verify if the user was deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_user(expected, user_id=resource_id)
+
         # logout
         self.tester.auth_logout()
 
@@ -271,10 +281,6 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_error_400_bad_request(user_id=-1)
         self.tester.api_user_error_400_bad_request(user_id="-1")
         self.tester.api_user_error_400_bad_request(user_id="0")
-
-    def test_get_api_user_error_404_not_found(self):
-        self.tester.api_user_error_404_not_found(user_id="999")
-        self.tester.api_user_error_404_not_found(user_id="998")
 
     # user errors - create
 

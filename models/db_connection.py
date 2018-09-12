@@ -291,9 +291,9 @@ class PGSQLConnection:
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
 
-        # if there is not feature
+        # if there is not feature, returns an empty list
         if results_of_query["features"] is None:
-            raise HTTPError(404, "Not found any resource.")
+            results_of_query["features"] = []
 
         return results_of_query
 
@@ -1831,7 +1831,9 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         # if the code don't find the user, raise a 404 exception
-        self.get_users(user_id=user_id)
+        user = self.get_users(user_id=user_id)
+        if not user["features"]:  # if the list is empty
+            raise HTTPError(404, "Not found the user {0}.".format(user_id))
 
         subquery = get_subquery_notification_table_related_to_user(user_id=user_id)
 

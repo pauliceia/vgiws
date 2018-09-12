@@ -34,7 +34,6 @@ This method gets users from DB. If you doesn't put any parameter, so will return
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a user. Please, contact the administrator.
 - Notes:
 
