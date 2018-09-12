@@ -131,6 +131,12 @@ class TestAPIMask(TestCase):
 
         self.tester.api_mask(expected, mask_id="1001")
 
+    def test_get_api_mask_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_mask(expected, mask_id="999")
+        self.tester.api_mask(expected, mask_id="998")
+
 
 class TestAPIMaskErrors(TestCase):
 
@@ -146,10 +152,6 @@ class TestAPIMaskErrors(TestCase):
         self.tester.api_mask_error_400_bad_request(mask_id=-1)
         self.tester.api_mask_error_400_bad_request(mask_id="-1")
         self.tester.api_mask_error_400_bad_request(mask_id="0")
-
-    def test_get_api_mask_error_404_not_found(self):
-        self.tester.api_mask_error_404_not_found(mask_id="999")
-        self.tester.api_mask_error_404_not_found(mask_id="998")
 
 
 # CONVERT GEOJSON TO SHAPEFILE
