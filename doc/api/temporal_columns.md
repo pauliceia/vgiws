@@ -37,7 +37,6 @@ This method gets temporal columns from DB. If you doesn't put any parameter, so 
     ```
 - Error codes:
     - 400 (Bad Request): Invalid date format.
-    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when get a resource. Please, contact the administrator.
 - Notes:
 

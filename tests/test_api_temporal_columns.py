@@ -198,7 +198,16 @@ class TestAPITemporalColumns(TestCase):
         }
 
         self.tester.api_temporal_columns(expected, end_date="1920-12-31")
-    
+
+    def test_get_api_temporal_columns_error_404_not_found(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_temporal_columns(expected, f_table_name="layer_x")
+        self.tester.api_temporal_columns(expected, start_date="1800-01-01")
+        self.tester.api_temporal_columns(expected, end_date="2000-01-01")
+        self.tester.api_temporal_columns(expected, start_date_gte="2000-01-01")
+        self.tester.api_temporal_columns(expected, end_date_lte="1800-01-01")
+
     # temporal_columns - create and update
 
     def test_api_temporal_columns_create_and_update(self):
@@ -259,9 +268,10 @@ class TestAPITemporalColumns(TestCase):
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer that just deleted
+        # it is not possible to find the layer and temporal columns that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
+        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -332,9 +342,10 @@ class TestAPITemporalColumns(TestCase):
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer that just deleted
+        # it is not possible to find the layer and temporal columns that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
+        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -397,9 +408,10 @@ class TestAPITemporalColumns(TestCase):
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer that just deleted
+        # it is not possible to find the layer and temporal columns that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
+        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -418,13 +430,6 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.api_temporal_columns_error_400_bad_request(end_date="1910-01/01")
         self.tester.api_temporal_columns_error_400_bad_request(start_date_gte="1910/01=01")
         self.tester.api_temporal_columns_error_400_bad_request(end_date_lte="1910-01)01")
-
-    def test_get_api_temporal_columns_error_404_not_found(self):
-        self.tester.api_temporal_columns_error_404_not_found(f_table_name="layer_x")
-        self.tester.api_temporal_columns_error_404_not_found(start_date="1800-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(end_date="2000-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(start_date_gte="2000-01-01")
-        self.tester.api_temporal_columns_error_404_not_found(end_date_lte="1800-01-01")
     
     # temporal_columns errors - create
 
