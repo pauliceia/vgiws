@@ -258,7 +258,16 @@ class TestAPINotification(TestCase):
         }
 
         self.tester.api_notification(expected, is_denunciation=False)
-    
+
+    def test_get_api_notification_error_404_not_found(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_notification(expected, notification_id="999")
+        self.tester.api_notification(expected, user_id_creator="998")
+        self.tester.api_notification(expected, layer_id="999")
+        self.tester.api_notification(expected, keyword_id="998")
+        self.tester.api_notification(expected, notification_id_parent="999")
+
     # notification - create update and delete
 
     def test_api_notification_create_update_and_delete_general(self):
@@ -297,8 +306,9 @@ class TestAPINotification(TestCase):
         # remove the user in layer
         self.tester.api_notification_delete(notification_id=notification_id)
 
-        # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        # it is not possible to find the notification that was just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -339,8 +349,9 @@ class TestAPINotification(TestCase):
         # remove the user in layer
         self.tester.api_notification_delete(notification_id=notification_id)
 
-        # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        # it is not possible to find the layer that was just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -381,8 +392,9 @@ class TestAPINotification(TestCase):
         # remove the user in layer
         self.tester.api_notification_delete(notification_id=notification_id)
 
-        # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        # it is not possible to find the layer that was just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -423,8 +435,9 @@ class TestAPINotification(TestCase):
         # remove the user in layer
         self.tester.api_notification_delete(notification_id=notification_id)
 
-        # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        # it is not possible to find the layer that was just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -466,7 +479,8 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_delete(notification_id=notification_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -512,7 +526,8 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_delete(notification_id=notification_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -566,10 +581,11 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_delete(notification_id=notification_id)
 
         # it is not possible to find the notification that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=notification_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_notification(expected, notification_id=notification_id)
 
         # it is not possible to find the reply that just deleted
-        self.tester.api_notification_error_404_not_found(notification_id=reply_id)
+        self.tester.api_notification(expected, notification_id=reply_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -613,13 +629,6 @@ class TestAPINotificationErrors(TestCase):
         self.tester.api_notification_error_400_bad_request(notification_id_parent=-1)
         self.tester.api_notification_error_400_bad_request(notification_id_parent="-1")
         self.tester.api_notification_error_400_bad_request(notification_id_parent="0")
-
-    def test_get_api_notification_error_404_not_found(self):
-        self.tester.api_notification_error_404_not_found(notification_id="999")
-        self.tester.api_notification_error_404_not_found(user_id_creator="998")
-        self.tester.api_notification_error_404_not_found(layer_id="999")
-        self.tester.api_notification_error_404_not_found(keyword_id="998")
-        self.tester.api_notification_error_404_not_found(notification_id_parent="999")
 
     # notification errors - create
 
@@ -818,6 +827,8 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+
+# NOTIFICATIONS (GENERAL + FOLLOWERS) RELATED TO A SPECIFIC USER
 
 class TestAPINotificationRelatedToUser(TestCase):
 
