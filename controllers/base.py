@@ -1082,6 +1082,9 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
         references = self.PGSQLConn.get_references(reference_id=reference_id)
 
+        if not references["features"]:  # if the list is empty
+            raise HTTPError(404, "Not found the reference {0}.".format(reference_id))
+
         # if the current_user_id is the creator of the reference, so ok...
         if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
             return
@@ -1324,27 +1327,6 @@ class BaseHandlerMask(BaseHandlerTemplateMethod):
     #     self.PGSQLConn.delete_reference(*args)
 
     # VALIDATION
-
-    # def can_current_user_update_or_delete(self, current_user_id, reference_id):
-    #     """
-    #     Verify if the user has permission of deleting a reference
-    #     :param current_user_id: current user id
-    #     :param reference_id: reference id
-    #     :return:
-    #     """
-    #
-    #     # if the current user is admin, so ok...
-    #     if self.is_current_user_an_administrator():
-    #         return
-    #
-    #     references = self.PGSQLConn.get_references(reference_id=reference_id)
-    #
-    #     # if the current_user_id is the creator of the reference, so ok...
-    #     if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
-    #         return
-    #
-    #     # ... else, raise an exception.
-    #     raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
 
 
 class BaseHandlerFeature(BaseHandlerTemplateMethod):

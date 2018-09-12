@@ -121,6 +121,15 @@ class TestAPIReference(TestCase):
 
         self.tester.api_reference(expected, description="marco")
 
+    def test_get_api_reference_return_zero_resources(self):
+        expected = {'type': 'FeatureCollection', 'features': []}
+
+        self.tester.api_reference(expected, reference_id="999")
+        self.tester.api_reference(expected, reference_id="998")
+
+        self.tester.api_reference(expected, user_id_creator="999")
+        self.tester.api_reference(expected, user_id_creator="998")
+
     # reference - create, update and delete
 
     def test_api_reference_create_update_and_delete(self):
@@ -159,7 +168,8 @@ class TestAPIReference(TestCase):
         self.tester.api_reference_delete(resource_id)
 
         # it is not possible to find the resource that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_reference(expected, reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -204,7 +214,8 @@ class TestAPIReference(TestCase):
         self.tester.api_reference_delete(resource_id)
 
         # it is not possible to find the resource that just deleted
-        self.tester.api_reference_error_404_not_found(reference_id=resource_id)
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_reference(expected, reference_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -230,13 +241,6 @@ class TestAPIReferenceErrors(TestCase):
         self.tester.api_reference_error_400_bad_request(user_id_creator=-1)
         self.tester.api_reference_error_400_bad_request(user_id_creator="-1")
         self.tester.api_reference_error_400_bad_request(user_id_creator="0")
-
-    def test_get_api_reference_error_404_not_found(self):
-        self.tester.api_reference_error_404_not_found(reference_id="999")
-        self.tester.api_reference_error_404_not_found(reference_id="998")
-
-        self.tester.api_reference_error_404_not_found(user_id_creator="999")
-        self.tester.api_reference_error_404_not_found(user_id_creator="998")
 
     # reference errors - create
 
