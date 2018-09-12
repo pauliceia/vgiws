@@ -2140,6 +2140,10 @@ class PGSQLConnection:
             if column_name_with_type["column_name"] == "geom":
                 continue
 
+            # if pass the "id", we can ignore
+            if column_name_with_type["column_name"] == "id":
+                continue
+
             if not column_name_with_type["column_name"] in properties:
                 raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure! (error: " +
                                 str(column_name_with_type["column_name"]) + " is missing)")
@@ -2170,8 +2174,10 @@ class PGSQLConnection:
         # it is not possible to set the id and version when create the feature in feature table,
         # however, it is possible to add these fields when we add the feature in the version table
         if remove_id_and_version_from_properties:
-            del properties["id"]
-            del properties["version"]
+            if "id" in properties:
+                del properties["id"]
+            if "version" in properties:
+                del properties["version"]
 
         for property_ in properties:
             if isinstance(properties[property_], int) or isinstance(properties[property_], float):
@@ -2350,7 +2356,7 @@ class PGSQLConnection:
         ##################################################
         feature = feature["features"][0]
         feature["f_table_name"] = "version_" + f_table_name
-        feature["properties"]["changeset_id"] = changeset_id
+        feature["properties"]["changeset_id"] = int(changeset_id)
         self.create_feature(feature, current_user_id, remove_id_and_version_from_properties=False)
 
     ################################################################################

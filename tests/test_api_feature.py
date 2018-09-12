@@ -44,6 +44,67 @@ class TestAPIFeature(TestCase):
 
         self.tester.api_feature(expected, f_table_name="layer_1001")
 
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'start_date': '1930-01-01T00:00:00', 'version': 1, 'name': 'rua boa vista',
+                                   'id': 1001, 'changeset_id': 1003, 'end_date': '1940-12-31T00:00:00'},
+                    'type': 'Feature',
+                    'geometry': {
+                        'coordinates': [[[-46.6237603488114, -23.5533938154249], [-46.6235408108831, -23.5522660084575], [-46.6233933273529, -23.5516456142714], [-46.623209681096, -23.5507601376416], [-46.622973981047, -23.5496552515087], [-46.6236497790913, -23.5484119132552]]],
+                        'type': 'MultiLineString'
+                    }
+                },
+                {
+                    'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'type': 'Feature',
+                    'geometry': {
+                        'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.63471434053, -23.5454695514008], [-46.6343109517528, -23.5458044203441]]],
+                        'type': 'MultiLineString'
+                    }
+                },
+                {
+                    'properties': {'start_date': '1930-01-01T00:00:00', 'version': 1, 'name': None, 'id': 1003,
+                                   'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'type': 'Feature',
+                    'geometry': {
+                        'coordinates': [[[-46.6289810574309, -23.542735394758], [-46.6267724837701, -23.5427585091922]]],
+                        'type': 'MultiLineString'
+                    }
+                }
+            ]
+        }
+
+        self.tester.api_feature(expected, f_table_name="layer_1003")
+
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [[[[-46.6536941024203, -23.5446440934747], [-46.6536987312376, -23.5446514885665], [-46.6531421851224, -23.5427759121502], [-46.6531368207044, -23.5426136385048], [-46.6536941024203, -23.5446440934747]]]]
+                    },
+                    'properties': {'start_date': '1920-01', 'changeset_id': 1005, 'version': 1, 'end_date': '1940-12',
+                                   'id': 1001, 'name': "Sant'Anna's Hospital"}
+                },
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [[[[-46.6531368207044, -23.5426136385048], [-46.6526581134833, -23.5401195274321], [-46.6526581134833, -23.5401195274321], [-46.6535666865397, -23.5322186250535], [-46.6531368207044, -23.5426136385048]]]]
+                    },
+                    'properties': {'start_date': '1920-01', 'changeset_id': 1005, 'version': 1, 'end_date': '1940-12',
+                                   'id': 1002, 'name': "Holy Mary's Hospital"}
+                }
+            ]
+        }
+
+        self.tester.api_feature(expected, f_table_name="layer_1005")
+
     def test_get_api_feature_return_all_features_by_f_table_name_and_feature_id(self):
         expected = {
             'type': 'FeatureCollection',
@@ -59,18 +120,53 @@ class TestAPIFeature(TestCase):
 
         self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="1001")
 
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'type': 'Feature',
+                    'geometry': {
+                        'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.63471434053, -23.5454695514008], [-46.6343109517528, -23.5458044203441]]],
+                        'type': 'MultiLineString'
+                    }
+                }
+            ]
+        }
+
+        self.tester.api_feature(expected, f_table_name="layer_1003", feature_id="1002")
+
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'MultiPolygon',
+                        'coordinates': [[[[-46.6531368207044, -23.5426136385048], [-46.6526581134833, -23.5401195274321], [-46.6526581134833, -23.5401195274321], [-46.6535666865397, -23.5322186250535], [-46.6531368207044, -23.5426136385048]]]]
+                    },
+                    'properties': {'start_date': '1920-01', 'changeset_id': 1005, 'version': 1, 'end_date': '1940-12',
+                                   'id': 1002, 'name': "Holy Mary's Hospital"}
+                }
+            ]
+        }
+
+        self.tester.api_feature(expected, f_table_name="layer_1005", feature_id="1002")
+
     def test_get_api_feature_return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
         self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="999")
-        self.tester.api_feature(expected, f_table_name="layer_1001", feature_id="998")
+        self.tester.api_feature(expected, f_table_name="layer_1003", feature_id="998")
+        self.tester.api_feature(expected, f_table_name="layer_1005", feature_id="997")
 
         self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
         self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
 
     # feature - create, update and delete
-
-    def test_api_feature_create_update_and_delete(self):
+    
+    def test_api_feature_create_update_and_delete_point(self):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
@@ -79,7 +175,7 @@ class TestAPIFeature(TestCase):
         ##################################################
 
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003},
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset = self.tester.api_changeset_create(changeset)
@@ -145,7 +241,85 @@ class TestAPIFeature(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_api_feature_create_update_and_delete__create_with_optional_values(self):
+    def test_api_feature_create_update_and_delete_line(self):
+        # DO LOGIN
+        self.tester.auth_login("fernanda@admin.com", "fernanda")
+
+        ####################################################################################################
+        # create a changeset to create a feature
+        ##################################################
+
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1003},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # create a feature with user miguel
+        ##################################################
+
+        f_table_name = "layer_1003"
+
+        feature = {
+            'f_table_name': f_table_name,
+            'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                           'changeset_id': changeset_id, 'end_date': '1930-12-31T00:00:00'},
+            'type': 'Feature',
+            'geometry': {
+                'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.6343109517528, -23.5458044203441]]],
+                'type': 'MultiLineString'
+            }
+        }
+        feature = self.tester.api_feature_create(feature)
+
+        ####################################################################################################
+        # update the feature with admin
+        ##################################################
+        # resource["properties"]["parent_id"] = 1005
+        # self.tester.api_feature_update(resource)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
+        # self.tester.api_feature(expected_at_least=expected_resource, feature_id=resource["properties"]["feature_id"])
+
+        ##################################################
+        # remove the feature
+        ##################################################
+        # get the id of the feature to REMOVE it
+        feature_id = feature["properties"]["id"]
+
+        # remove the resource
+        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
+
+        # it is not possible to find the resource that just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
+
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        ####################################################################################################
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_api_feature_create_update_and_delete_polygon__create_with_optional_values(self):
         # DO LOGIN
         self.tester.auth_login("ana@admin.com", "ana")
 
