@@ -140,5 +140,6 @@ This method gets all notifications related to a user.
     ```
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
+    - 404 (Not Found): Not found the user \<ID\>.
     - 500 (Internal Server Error): Problem when get a feature. Please, contact the administrator.
 - Notes:

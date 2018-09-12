@@ -911,7 +911,7 @@ class TestAPINotificationRelatedToUserErrors(TestCase):
         for bad_user_id in list_of_bad_user_id:
             self.tester.api_notification_related_to_user_error_400_bad_request(user_id=bad_user_id)
 
-    def test_get_api_notification_error_404_not_found(self):
+    def test_get_api_notification_error_404_not_found_user_doesn_exist(self):
         self.tester.api_notification_related_to_user_error_404_not_found(user_id="999")
         self.tester.api_notification_related_to_user_error_404_not_found(user_id="998")
 
