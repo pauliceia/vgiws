@@ -180,6 +180,15 @@ class TestAPIUserLayer(TestCase):
 
         self.tester.api_user_layer(expected, user_id="1001", is_the_creator="FALSE")
 
+    def test_get_api_user_layer_return_zero_resources(self):
+        expected = {'features': [], 'type': 'FeatureCollection'}
+
+        self.tester.api_user_layer(expected, layer_id="999")
+        self.tester.api_user_layer(expected, layer_id="998")
+
+        self.tester.api_user_layer(expected, user_id="999")
+        self.tester.api_user_layer(expected, user_id="998")
+
     # user_layer - create and delete
 
     def test_api_user_layer_create_and_delete(self):
@@ -220,7 +229,8 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_user_layer(expected, user_id=user_id, layer_id=layer_id)
 
         # verify if the user stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
@@ -272,7 +282,8 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_delete(user_id=user_id, layer_id=layer_id)
 
         # it is not possible to find the layer that just deleted
-        self.tester.api_user_layer_error_404_not_found(user_id=user_id, layer_id=layer_id)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_user_layer(expected, user_id=user_id, layer_id=layer_id)
 
         # verify if the user stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
@@ -309,13 +320,6 @@ class TestAPIUserLayerErrors(TestCase):
         self.tester.api_user_layer_error_400_bad_request(is_the_creator="0")
         self.tester.api_user_layer_error_400_bad_request(is_the_creator="-1")
 
-    def test_get_api_user_layer_error_404_not_found(self):
-        self.tester.api_user_layer_error_404_not_found(layer_id="999")
-        self.tester.api_user_layer_error_404_not_found(layer_id="998")
-
-        self.tester.api_user_layer_error_404_not_found(user_id="999")
-        self.tester.api_user_layer_error_404_not_found(user_id="998")
-    
     # user_layer errors - create
 
     def test_post_api_user_layer_create_error_400_bad_request_attribute_already_exist(self):

@@ -101,6 +101,7 @@ This method updated a reference described in a JSON.
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The owner of layer or administrator are who can manage a layer.
      - 404 (Not Found): Not found any resource.
+     - 404 (Not Found): Not found users in layer \<ID\>.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
     - The user can't update the "f_table_name" attribute.
@@ -123,6 +124,7 @@ This method deletes one layer by id = #id.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): The owner of layer or administrator are who can delete a layer.
     - 404 (Not Found): Not found the layer \<ID\>.
+    - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
 

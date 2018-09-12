@@ -199,7 +199,7 @@ class TestAPITemporalColumns(TestCase):
 
         self.tester.api_temporal_columns(expected, end_date="1920-12-31")
 
-    def test_get_api_temporal_columns_error_404_not_found(self):
+    def test_get_api_temporal_columns_return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
         self.tester.api_temporal_columns(expected, f_table_name="layer_x")

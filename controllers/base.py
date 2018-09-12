@@ -787,6 +787,9 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
         user_layer = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
+        if not user_layer["features"]:  # if list is empty:
+            raise HTTPError(404, "Not found users in layer {0}.".format(layer_id))
+
         properties = user_layer["features"][0]["properties"]
 
         # if the current_user_id is the creator of the layer, so ok...
