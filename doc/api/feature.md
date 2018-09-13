@@ -94,9 +94,10 @@ This method updates a feature described in a JSON.
 - Response:
 - Error codes:
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 400 (Bad Request): Invalid feature id \<ID\>.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
-    - 404 (Not Found): Not found any resource.
+    - 404 (Not Found): Not found feature \<ID\>.
     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
     - The key 'changeset_id' indicates what is the changeset related to the feature. The changeset created before adding the feature.

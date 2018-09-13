@@ -1609,11 +1609,15 @@ class UtilTester:
 
     # feature errors - update
 
-    def api_feature_update_error_400_bad_request(self, resource_json):
+    def api_feature_update_error_400_bad_request(self, resource_json, string_to_compare_error=None):
         response = self.session.put(self.URL + '/api/feature',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
+
+        # verify if the error message is the correct
+        if string_to_compare_error is not None:
+            self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
     def api_feature_update_error_401_unauthorized(self, resource_json):
         response = self.session.put(self.URL + '/api/feature',
@@ -1621,11 +1625,15 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 401)
 
-    def api_feature_update_error_403_forbidden(self, resource_json):
+    def api_feature_update_error_403_forbidden(self, resource_json, string_to_compare_error=None):
         response = self.session.put(self.URL + '/api/feature',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
+
+        # verify if the error message is the correct
+        if string_to_compare_error is not None:
+            self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
     def api_feature_update_error_404_not_found(self, resource_json):
         response = self.session.put(self.URL + '/api/feature',

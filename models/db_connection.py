@@ -2382,7 +2382,14 @@ class PGSQLConnection:
         f_table_name = resource_json["f_table_name"]
         feature_id = resource_json["properties"]["id"]
 
-        old_feature = self.get_feature(f_table_name, feature_id=feature_id)
+        old_feature = {"features": []}
+
+        try:
+            old_feature = self.get_feature(f_table_name, feature_id=feature_id)
+        except HTTPError as error:
+            if error.status_code == 400:
+                raise HTTPError(400, "Invalid feature id " + str(feature_id) + ".")
+
         if not old_feature["features"]:  # if list is empty
             raise HTTPError(404, "Not found feature {0}.".format(feature_id))
 

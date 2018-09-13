@@ -173,7 +173,6 @@ class TestAPIFeature(TestCase):
         ####################################################################################################
         # create a changeset to create a feature
         ##################################################
-
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
@@ -184,7 +183,6 @@ class TestAPIFeature(TestCase):
         ##################################################
         # create a feature with user miguel
         ##################################################
-
         f_table_name = "layer_1002"
 
         feature = {
@@ -587,91 +585,168 @@ class TestAPIFeatureError(TestCase):
 
     # feature errors - update
 
-    # def test_put_api_feature_error_400_bad_request_attribute_already_exist(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     ##################################################
-    #     # try to update the feature with a name that already exist, raising the 400
-    #     ##################################################
-    #     resource = {
-    #         'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_400_bad_request(resource)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    #
-    # def test_put_api_feature_error_400_bad_request_attribute_in_JSON_is_missing(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-    #
-    #     ##################################################
-    #     # try to update the feature without a feature_id, raising the 400
-    #     ##################################################
-    #     resource = {
-    #         'properties': {'name': 'newfeature', 'parent_id': 1003},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_400_bad_request(resource)
-    #
-    #     ##################################################
-    #     # try to update the feature without a name, raising the 400
-    #     ##################################################
-    #     resource = {
-    #         'properties': {'feature_id': 1003, 'parent_id': 1003},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_400_bad_request(resource)
-    #
-    #     ##################################################
-    #     # try to update the feature without a parent_id, raising the 400
-    #     ##################################################
-    #     resource = {
-    #         'properties': {'feature_id': 1003, 'name': 'newfeature'},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_400_bad_request(resource)
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
-    #
-    # def test_put_api_feature_error_401_unauthorized_user_is_not_logged(self):
-    #     resource = {
-    #         'properties': {'feature_id': 1001, 'name': 'newfeature', 'parent_id': 1003},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_401_unauthorized(resource)
-    #
-    # def test_put_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("miguel@admin.com", "miguel")
-    #
-    #     ##################################################
-    #     # gabriel tries to update one feature that doesn't belong to him
-    #     ##################################################
-    #     resource = {
-    #         'properties': {'feature_id': 1003, 'name': 'street', 'parent_id': 1002},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_403_forbidden(resource)
-    #
-    #     # DO LOGOUT
-    #     self.tester.auth_logout()
-    #
-    # def test_put_api_feature_error_404_not_found(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("admin@admin.com", "admin")
-    #
-    #     resource = {
-    #         'properties': {'feature_id': 999, 'name': 'street', 'parent_id': 1002},
-    #         'type': 'feature'
-    #     }
-    #     self.tester.api_feature_update_error_404_not_found(resource)
-    #
-    #     # DO LOGOUT
-    #     self.tester.auth_logout()
+    def test_put_api_feature_error_400_bad_request_attribute_in_JSON_is_missing(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer (without f_table_name)
+        resource = {
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1014},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # try to create a layer (without properties)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # try to create a layer (without geometry)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1014},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # try to create a layer (without start_date)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1014},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # try to create a layer (without address)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'changeset_id': 1014},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # try to create a layer (without changeset_id)
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José'},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_401_unauthorized_user_is_not_logged(self):
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1014},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_401_unauthorized(resource)
+    
+    def test_put_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ####################################################################################################
+        # miguel tries to update one feature that doesn't belong to him
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_403_forbidden(resource, string_to_compare_error="Just the collaborator")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_404_not_found(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ####################################################################################################
+        # rafael tries to update one feature that doesn't exist
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 999, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_404_not_found(resource)
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     # feature errors - delete
 
