@@ -2146,7 +2146,7 @@ class PGSQLConnection:
 
             if not column_name_with_type["column_name"] in properties:
                 raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure! (error: " +
-                                str(column_name_with_type["column_name"]) + " is missing)")
+                                str(column_name_with_type["column_name"]) + " is missing).")
 
     def get_srid_from_table_name(self, table_name):
 
@@ -2208,11 +2208,65 @@ class PGSQLConnection:
 
         return insert_statement
 
+    def get_update_statement_from_geojson(self, resource_json):
+        column_names = []
+        values = []
+
+        properties = resource_json["properties"]
+        f_table_name = resource_json["f_table_name"]
+
+        self.verify_if_the_properties_are_valid(f_table_name, properties)
+
+        # increment 1 in version attribute, to indicate the new version
+        properties["version"] += 1
+
+        # get the feature_id to use in the WHERE clause of UPDATE
+        feature_id = properties["id"]
+
+        # remove the unnecessary field (we don't update the id)
+        del properties["id"]
+
+        for property_ in properties:
+            if isinstance(properties[property_], int) or isinstance(properties[property_], float):
+                value = str(properties[property_])
+            elif isinstance(properties[property_], str):
+                value = "'" + str(properties[property_]) + "'"
+            elif properties[property_] is None:
+                value = "NULL"
+            else:
+                raise HTTPError(500, "Invalid field of feature (" + property_ + ": " + str(properties[property_]) + ")."
+                                + "Please contact the administrator.")
+
+            column_names.append(property_)
+            values.append(value)
+
+        srid = self.get_srid_from_table_name(f_table_name)
+
+        # put the GEOM attribute
+        column_names.append("geom")
+        values.append("ST_SetSRID(ST_GeomFromGeoJSON('" + str(dumps(resource_json["geometry"])) + "'), " + str(srid) + ")")
+
+        ##################################################
+
+        fields_to_update = []
+        for column_name, value in zip(column_names, values):
+            fields_to_update.append(column_name + " = " + str(value))
+
+        fields_to_update = ", ".join(fields_to_update)
+
+        update_statement = """
+            UPDATE {0} SET {1} WHERE id={2};
+        """.format(f_table_name, fields_to_update, feature_id)
+
+        return update_statement
+
     def get_columns_from_table_formatted(self, list_of_column_name_with_type):
         column_names = []
 
         for column_name_with_type in list_of_column_name_with_type:
-            if "timestamp" in column_name_with_type["type"]:
+            if "geometry" in column_name_with_type["type"]:
+                continue  # if it is geom, so ignore
+            elif "timestamp" in column_name_with_type["type"]:
                 string = "'" + column_name_with_type["column_name"] + "', to_char(" + column_name_with_type["column_name"] + ", 'YYYY-MM-DD HH24:MI:SS')"
             else:
                 string = "'" + column_name_with_type["column_name"] + "', " + column_name_with_type["column_name"]
@@ -2261,18 +2315,33 @@ class PGSQLConnection:
         subquery = get_subquery_feature(f_table_name, feature_id, columns_of_table)
 
         # # CREATE THE QUERY AND EXECUTE IT
+        # query_text = """
+        #     SELECT jsonb_build_object(
+        #         'type', 'FeatureCollection',
+        #         'features',   jsonb_agg(jsonb_build_object(
+        #             'type',       'Feature',
+        #             'geometry',   ST_AsGeoJSON(geom)::json,
+        #             'properties', to_jsonb(feature) - 'geom'
+        #         ))
+        #     ) AS row_to_json
+        #     FROM
+        #     {0}
+        # """.format(subquery)
+
         query_text = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Feature',
                     'geometry',   ST_AsGeoJSON(geom)::json,
-                    'properties', to_jsonb(feature) - 'geom'
+                    'properties', json_build_object(
+                        {1}
+                    )
                 ))
             ) AS row_to_json
             FROM
             {0}
-        """.format(subquery)
+        """.format(subquery, columns_of_table_string)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -2306,15 +2375,21 @@ class PGSQLConnection:
 
         return result
 
-    def update_feature(self, resource_json, user_id):
-        p = resource_json["properties"]
+    def update_feature(self, resource_json, current_user_id):
+        ##################################################
+        # get the feature before of deleting it
+        ##################################################
+        f_table_name = resource_json["f_table_name"]
+        feature_id = resource_json["properties"]["id"]
 
-        query_text = """
-            UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
-                                        terms_agreed = {4}, receive_notification_by_email = {5} 
-            WHERE user_id = {0};
-        """.format(p["user_id"], p["email"], p["username"], p["name"],
-                   p["terms_agreed"], p["receive_notification_by_email"])
+        old_feature = self.get_feature(f_table_name, feature_id=feature_id)
+        if not old_feature["features"]:  # if list is empty
+            raise HTTPError(404, "Not found feature {0}.".format(feature_id))
+
+        ##################################################
+        # create the update statement
+        ##################################################
+        query_text = self.get_update_statement_from_geojson(resource_json)
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -2323,6 +2398,14 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
+
+        ##################################################
+        # add the version_feature_table name in resource json
+        # and insert the feature inside the version_feature_table name
+        ##################################################
+        old_feature = old_feature["features"][0]
+        old_feature["f_table_name"] = "version_" + f_table_name
+        self.create_feature(old_feature, current_user_id)
 
     def delete_feature(self, f_table_name, feature_id, changeset_id, current_user_id):
         if is_a_invalid_id(feature_id) or is_a_invalid_id(changeset_id):

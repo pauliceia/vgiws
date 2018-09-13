@@ -1348,14 +1348,15 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
         self.can_user_uses_the_changeset(current_user_id, resource_json["properties"]["changeset_id"])
         self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
 
-        return self.PGSQLConn.create_feature(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_feature(resource_json, current_user_id)
 
     # PUT
 
-    # def _put_resource(self, resource_json, current_user_id, **kwargs):
-    #     self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
-    #
-    #     return self.PGSQLConn.update_layer(resource_json, current_user_id)
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_user_uses_the_changeset(current_user_id, resource_json["properties"]["changeset_id"])
+        self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
+
+        return self.PGSQLConn.update_feature(resource_json, current_user_id)
 
     # DELETE
 

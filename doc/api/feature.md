@@ -44,7 +44,7 @@ This method creates a new feature described in a JSON.
     ```javascript
     {
         'f_table_name': 'layer_1001',
-        'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31',
+        'properties': {'id': -1, 'start_date': '1870-01-01 00:00:00', 'end_date': '1870-12-31 00:00:00',
                        'address': 'R. São José', 'changeset_id': 1},
         'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
         'type': 'Feature'
@@ -67,10 +67,12 @@ This method creates a new feature described in a JSON.
      - 500 (Bad Request): Invalid field of feature. Please contact the administrator.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
+    - The key 'changeset_id' indicates what is the changeset related to the feature. The changeset created before adding the feature.
+    - The datetime field must follow the mask: "YYYY-MM-DD HH:MM:SS"
     - The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
     - The system just accept "MULTI" geometries, like: MultiPoint, MultiLineString and MultiPolygon.
 
-<!--
+
 ### PUT /api/feature
 
 This method updates a feature described in a JSON.
@@ -80,21 +82,26 @@ This method updates a feature described in a JSON.
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
-        'type': 'feature',
-        'properties': {'feature_id': 1001, 'description': 'ArticleA'}
+        'f_table_name': 'layer_1001',
+        'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31',
+                       'address': 'R. São José', 'changeset_id': 5},
+        'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+        'type': 'Feature'
     }
     ```
 - Send (in Header):
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
-     - 404 (Not Found): Not found any resource.
-     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
+    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
+    - 404 (Not Found): Not found any resource.
+    - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
--->
+    - The key 'changeset_id' indicates what is the changeset related to the feature. The changeset created before adding the feature.
+    - The datetime field must follow the mask: "YYYY-MM-DD HH:MM:SS"
+
 
 ### DELETE /api/feature/?\<params>
 

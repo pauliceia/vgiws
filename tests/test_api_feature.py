@@ -22,20 +22,20 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. São José',
-                                   'id': 1001, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'properties': {'end_date': '1869-12-31 00:00:00', 'version': 1, 'address': 'R. São José',
+                                   'id': 1001, 'start_date': '1869-01-01 00:00:00', 'changeset_id': 1001},
                     'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. Marechal Deodoro',
-                                   'id': 1002, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'properties': {'end_date': '1869-12-31 00:00:00', 'version': 1, 'address': 'R. Marechal Deodoro',
+                                   'id': 1002, 'start_date': '1869-01-01 00:00:00', 'changeset_id': 1001},
                     'geometry': {'coordinates': [[-46.6498716962487, -23.5482894062877]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 },
                 {
-                    'properties': {'end_date': '1875-12-31T00:00:00', 'version': 1, 'address': None, 'id': 1003,
-                                   'start_date': '1875-01-01T00:00:00', 'changeset_id': 1001},
+                    'properties': {'end_date': '1875-12-31 00:00:00', 'version': 1, 'address': None, 'id': 1003,
+                                   'start_date': '1875-01-01 00:00:00', 'changeset_id': 1001},
                     'geometry': {'coordinates': [[-46.6468896156385, -23.5494865576549]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 }
@@ -48,8 +48,8 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1930-01-01T00:00:00', 'version': 1, 'name': 'rua boa vista',
-                                   'id': 1001, 'changeset_id': 1003, 'end_date': '1940-12-31T00:00:00'},
+                    'properties': {'start_date': '1930-01-01 00:00:00', 'version': 1, 'name': 'rua boa vista',
+                                   'id': 1001, 'changeset_id': 1003, 'end_date': '1940-12-31 00:00:00'},
                     'type': 'Feature',
                     'geometry': {
                         'coordinates': [[[-46.6237603488114, -23.5533938154249], [-46.6235408108831, -23.5522660084575], [-46.6233933273529, -23.5516456142714], [-46.623209681096, -23.5507601376416], [-46.622973981047, -23.5496552515087], [-46.6236497790913, -23.5484119132552]]],
@@ -57,8 +57,8 @@ class TestAPIFeature(TestCase):
                     }
                 },
                 {
-                    'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
-                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'properties': {'start_date': '1920-01-01 00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31 00:00:00'},
                     'type': 'Feature',
                     'geometry': {
                         'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.63471434053, -23.5454695514008], [-46.6343109517528, -23.5458044203441]]],
@@ -66,8 +66,8 @@ class TestAPIFeature(TestCase):
                     }
                 },
                 {
-                    'properties': {'start_date': '1930-01-01T00:00:00', 'version': 1, 'name': None, 'id': 1003,
-                                   'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'properties': {'start_date': '1930-01-01 00:00:00', 'version': 1, 'name': None, 'id': 1003,
+                                   'changeset_id': 1003, 'end_date': '1930-12-31 00:00:00'},
                     'type': 'Feature',
                     'geometry': {
                         'coordinates': [[[-46.6289810574309, -23.542735394758], [-46.6267724837701, -23.5427585091922]]],
@@ -110,8 +110,8 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'end_date': '1869-12-31T00:00:00', 'version': 1, 'address': 'R. São José',
-                                   'id': 1001, 'start_date': '1869-01-01T00:00:00', 'changeset_id': 1001},
+                    'properties': {'end_date': '1869-12-31 00:00:00', 'version': 1, 'address': 'R. São José',
+                                   'id': 1001, 'start_date': '1869-01-01 00:00:00', 'changeset_id': 1001},
                     'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
                     'type': 'Feature'
                 }
@@ -124,8 +124,8 @@ class TestAPIFeature(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
-                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31T00:00:00'},
+                    'properties': {'start_date': '1920-01-01 00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                                   'id': 1002, 'changeset_id': 1003, 'end_date': '1930-12-31 00:00:00'},
                     'type': 'Feature',
                     'geometry': {
                         'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.63471434053, -23.5454695514008], [-46.6343109517528, -23.5458044203441]]],
@@ -165,7 +165,7 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
 
     # feature - create, update and delete
-    
+
     def test_api_feature_create_update_and_delete_point(self):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
@@ -189,24 +189,26 @@ class TestAPIFeature(TestCase):
 
         feature = {
             'f_table_name': f_table_name,
-            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
-                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'properties': {'id': -1, 'start_date': '1870-01-01 00:00:00', 'end_date': '1870-12-31 00:00:00',
+                           'version': 1, 'address': 'R. São José', 'changeset_id': changeset_id},
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
         feature = self.tester.api_feature_create(feature)
 
         ####################################################################################################
-        # update the feature with admin
+        # update the feature with user
         ##################################################
-        # resource["properties"]["parent_id"] = 1005
-        # self.tester.api_feature_update(resource)
+        feature["properties"]["address"] = 'Rua São José Dormindo'
+        self.tester.api_feature_update(feature)
 
         ##################################################
         # verify if the resource was modified
         ##################################################
-        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        # self.tester.api_feature(expected_at_least=expected_resource, feature_id=resource["properties"]["feature_id"])
+        feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
+        expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
+                                feature_id=feature["properties"]["id"])
 
         ##################################################
         # remove the feature
@@ -264,8 +266,8 @@ class TestAPIFeature(TestCase):
 
         feature = {
             'f_table_name': f_table_name,
-            'properties': {'start_date': '1920-01-01T00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
-                           'changeset_id': changeset_id, 'end_date': '1930-12-31T00:00:00'},
+            'properties': {'start_date': '1920-01-01 00:00:00', 'version': 1, 'name': 'rua tres de dezembro',
+                           'changeset_id': changeset_id, 'end_date': '1930-12-31 00:00:00'},
             'type': 'Feature',
             'geometry': {
                 'coordinates': [[[-46.6353540826681, -23.5450950669741], [-46.6343109517528, -23.5458044203441]]],
@@ -275,16 +277,18 @@ class TestAPIFeature(TestCase):
         feature = self.tester.api_feature_create(feature)
 
         ####################################################################################################
-        # update the feature with admin
+        # update the feature with user
         ##################################################
-        # resource["properties"]["parent_id"] = 1005
-        # self.tester.api_feature_update(resource)
+        feature["properties"]["name"] = 'Rua treze de dezembro'
+        self.tester.api_feature_update(feature)
 
         ##################################################
         # verify if the resource was modified
         ##################################################
-        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        # self.tester.api_feature(expected_at_least=expected_resource, feature_id=resource["properties"]["feature_id"])
+        feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
+        expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
+                                feature_id=feature["properties"]["id"])
 
         ##################################################
         # remove the feature
@@ -353,16 +357,18 @@ class TestAPIFeature(TestCase):
         feature = self.tester.api_feature_create(feature)
 
         ####################################################################################################
-        # update the feature with admin
+        # update the feature with user
         ##################################################
-        # resource["properties"]["parent_id"] = 1005
-        # self.tester.api_feature_update(resource)
+        feature["properties"]["name"] = 'Hospital Rosa dos Santos'
+        self.tester.api_feature_update(feature)
 
         ##################################################
         # verify if the resource was modified
         ##################################################
-        # expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        # self.tester.api_feature(expected_at_least=expected_resource, feature_id=resource["properties"]["feature_id"])
+        feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
+        expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
+                                feature_id=feature["properties"]["id"])
 
         ##################################################
         # remove the feature
