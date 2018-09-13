@@ -570,6 +570,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
                 raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+            elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
+                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
@@ -1388,8 +1390,8 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
         layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
 
         if not layers["features"]:  # if list is empty
-            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "It is needed to create a layer with the f_table_name before of using this function.")
+            raise HTTPError(404, "Not found layer " + f_table_name +
+                            ". It is needed to create a layer with the f_table_name before of using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 

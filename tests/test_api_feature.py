@@ -570,7 +570,6 @@ class TestAPIFeatureError(TestCase):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
-        # try to create a layer (without f_table_name)
         resource = {
             'f_table_name': 'layer_1002',
             'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
@@ -579,6 +578,49 @@ class TestAPIFeatureError(TestCase):
             'type': 'Feature'
         }
         self.tester.api_feature_create_error_409_conflict(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_feature_create_error_404_not_found_f_table_name(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        # try to create a layer with invalid f_table_name
+        resource = {
+            'f_table_name': 'layer_100X',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_create_error_404_not_found(resource, string_to_compare_error="Not found layer")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -648,6 +690,96 @@ class TestAPIFeatureError(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_put_api_feature_error_400_bad_request_invalid_geometry(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # try to update a layer with an invalid geometry
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [-46.6375790530164, -23.5290461960682], 'type': 'Point'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="One specified attribute")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ##################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_400_bad_request_invalid_feature_id(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # try to update a layer with an invalid geometry
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': -1, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Invalid feature id")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ##################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_put_api_feature_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'f_table_name': 'layer_1002',
@@ -657,7 +789,7 @@ class TestAPIFeatureError(TestCase):
             'type': 'Feature'
         }
         self.tester.api_feature_update_error_401_unauthorized(resource)
-    
+
     def test_put_api_feature_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -703,7 +835,24 @@ class TestAPIFeatureError(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_put_api_feature_error_404_not_found(self):
+    def test_put_api_feature_error_403_forbidden_user_did_not_create_the_changeset(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # try to create a layer
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1001},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_403_forbidden(resource, string_to_compare_error="was not created by current")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_404_not_found_feature_id(self):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
@@ -727,7 +876,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_404_not_found(resource)
+        self.tester.api_feature_update_error_404_not_found(resource, string_to_compare_error="Not found feature")
 
         ##################################################
         # CLOSE THE CHANGESET
@@ -744,6 +893,89 @@ class TestAPIFeatureError(TestCase):
 
         # DELETE THE CHANGESET
         self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_404_not_found_changeset_id(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ####################################################################################################
+        # rafael tries to update one feature that doesn't exist
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 999},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_404_not_found(resource, string_to_compare_error="Not found the changeset")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_404_not_found_f_table_name(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # rafael tries to update one feature with invalid f_table_name
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_100X',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_404_not_found(resource, string_to_compare_error="Not found layer")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_409_conflict_changeset_was_already_closed(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # rafael tries to update one feature that with invalid changeset
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 1,
+                           'address': 'R. São José', 'changeset_id': 1002},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_409_conflict(resource, string_to_compare_error="was already closed at")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -791,7 +1023,7 @@ class TestAPIFeatureError(TestCase):
 
         # logout with user rodrigo
         self.tester.auth_logout()
-    
+
     def test_delete_api_feature_error_403_forbidden_user_did_not_create_the_changeset(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
@@ -813,6 +1045,43 @@ class TestAPIFeatureError(TestCase):
 
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="999", changeset_id=1014)
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_1002", feature_id="998", changeset_id=1014)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_delete_api_feature_error_404_not_found_f_table_name(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        # try to delete a feature with an invalid f_table_name
+        self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_100X", feature_id="1006",
+                                                           changeset_id=changeset_id)
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

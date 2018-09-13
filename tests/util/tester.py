@@ -1595,11 +1595,15 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-    def api_feature_create_error_404_not_found(self, resource_json):
+    def api_feature_create_error_404_not_found(self, resource_json, string_to_compare_error=None):
         response = self.session.post(self.URL + '/api/feature/create/',
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+        # verify if the error message is the correct
+        if string_to_compare_error is not None:
+            self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
     def api_feature_create_error_409_conflict(self, resource_json):
         response = self.session.post(self.URL + '/api/feature/create/',
@@ -1635,11 +1639,25 @@ class UtilTester:
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
-    def api_feature_update_error_404_not_found(self, resource_json):
+    def api_feature_update_error_404_not_found(self, resource_json, string_to_compare_error=None):
         response = self.session.put(self.URL + '/api/feature',
                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
+
+        # verify if the error message is the correct
+        if string_to_compare_error is not None:
+            self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
+
+    def api_feature_update_error_409_conflict(self, resource_json, string_to_compare_error=None):
+        response = self.session.put(self.URL + '/api/feature',
+                                    data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
+        # verify if the error message is the correct
+        if string_to_compare_error is not None:
+            self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
     # feature errors - delete
 
