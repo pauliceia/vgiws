@@ -2393,6 +2393,12 @@ class PGSQLConnection:
         if not old_feature["features"]:  # if list is empty
             raise HTTPError(404, "Not found feature {0}.".format(feature_id))
 
+        old_feature = old_feature["features"][0]
+
+        # if the version attribute is different from the new and old feature, raise an exception
+        if old_feature["properties"]["version"] != resource_json["properties"]["version"]:
+            raise HTTPError(409, "Invalid version attribute. (version: {0})".format(resource_json["properties"]["version"]))
+
         ##################################################
         # create the update statement
         ##################################################
@@ -2410,7 +2416,6 @@ class PGSQLConnection:
         # add the version_feature_table name in resource json
         # and insert the feature inside the version_feature_table name
         ##################################################
-        old_feature = old_feature["features"][0]
         old_feature["f_table_name"] = "version_" + f_table_name
         self.create_feature(old_feature, current_user_id)
 

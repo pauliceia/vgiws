@@ -966,7 +966,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rafael@admin.com", "rafael")
 
         ##################################################
-        # rafael tries to update one feature that with invalid changeset
+        # rafael tries to update one feature with invalid changeset
         ##################################################
         resource = {
             'f_table_name': 'layer_1002',
@@ -976,6 +976,51 @@ class TestAPIFeatureError(TestCase):
             'type': 'Feature'
         }
         self.tester.api_feature_update_error_409_conflict(resource, string_to_compare_error="was already closed at")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_put_api_feature_error_409_conflict_invalid_version(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to create a feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # rafael tries to update one feature with invalid version
+        ##################################################
+        resource = {
+            'f_table_name': 'layer_1002',
+            'properties': {'id': 1006, 'start_date': '1870-01-01', 'end_date': '1870-12-31', 'version': 5,
+                           'address': 'R. São José', 'changeset_id': changeset_id},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        self.tester.api_feature_update_error_409_conflict(resource, string_to_compare_error="Invalid version attribute")
+
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESET
+        self.tester.api_changeset_delete(changeset_id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

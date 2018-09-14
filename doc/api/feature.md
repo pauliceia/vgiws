@@ -104,6 +104,7 @@ This method updates a feature described in a JSON.
     - 404 (Not Found): Not found the changeset_id \<ID\>.
     - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. It is needed to create a layer with the f_table_name before using this function.
     - 409 (Conflict): The changeset_id \<ID\> was already closed at \<DATE\>.
+    - 409 (Conflict): Invalid version attribute. (version: \<ID\>)
     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
     - The key 'changeset_id' indicates what is the changeset related to the feature. The changeset created before adding the feature.
