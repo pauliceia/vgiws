@@ -170,7 +170,7 @@ class TestAPIFeature(TestCase):
         # DO LOGIN
         self.tester.auth_login("rafael@admin.com", "rafael")
 
-        ####################################################################################################
+        ##################################################
         # create a changeset to create a feature
         ##################################################
         changeset = {
@@ -196,7 +196,7 @@ class TestAPIFeature(TestCase):
 
         feature_id = feature["properties"]["id"]
 
-        ####################################################################################################
+        ##################################################
         # update the feature with user
         ##################################################
         feature["properties"]["address"] = 'Rua São José Dormindo'
@@ -256,14 +256,16 @@ class TestAPIFeature(TestCase):
         }
         self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
+        ##################################################
         # CLOSE THE CHANGESET
+        ##################################################
         close_changeset = {
             'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
 
-        ####################################################################################################
+        ##################################################
         # login with admin to delete the changesets
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -271,7 +273,7 @@ class TestAPIFeature(TestCase):
         # DELETE THE CHANGESET
         self.tester.api_changeset_delete(changeset_id=changeset_id)
 
-        ####################################################################################################
+        ##################################################
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -280,10 +282,9 @@ class TestAPIFeature(TestCase):
         # DO LOGIN
         self.tester.auth_login("fernanda@admin.com", "fernanda")
 
-        ####################################################################################################
+        ##################################################
         # create a changeset to create a feature
         ##################################################
-
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
@@ -294,7 +295,6 @@ class TestAPIFeature(TestCase):
         ##################################################
         # create a feature with user miguel
         ##################################################
-
         f_table_name = "layer_1003"
 
         feature = {
@@ -311,7 +311,7 @@ class TestAPIFeature(TestCase):
 
         feature_id = feature["properties"]["id"]
 
-        ####################################################################################################
+        ##################################################
         # update the feature with user
         ##################################################
         feature["properties"]["name"] = 'Rua treze de dezembro'
@@ -371,14 +371,16 @@ class TestAPIFeature(TestCase):
         }
         self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
+        ##################################################
         # CLOSE THE CHANGESET
+        ##################################################
         close_changeset = {
             'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
 
-        ####################################################################################################
+        ##################################################
         # login with admin to delete the changesets
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -395,10 +397,9 @@ class TestAPIFeature(TestCase):
         # DO LOGIN
         self.tester.auth_login("ana@admin.com", "ana")
 
-        ####################################################################################################
+        ##################################################
         # create a changeset to create a feature
         ##################################################
-
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1006},
             'type': 'Changeset'
@@ -409,7 +410,6 @@ class TestAPIFeature(TestCase):
         ##################################################
         # create a feature with user miguel
         ##################################################
-
         f_table_name = "layer_1006"
 
         feature = {
@@ -426,7 +426,7 @@ class TestAPIFeature(TestCase):
 
         feature_id = feature["properties"]["id"]
 
-        ####################################################################################################
+        ##################################################
         # update the feature with user
         ##################################################
         feature["properties"]["name"] = 'Hospital Rosa dos Santos'
@@ -483,7 +483,9 @@ class TestAPIFeature(TestCase):
         }
         self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
+        ##################################################
         # CLOSE THE CHANGESET
+        ##################################################
         close_changeset = {
             'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1006'},
             'type': 'ChangesetClose'
@@ -497,6 +499,151 @@ class TestAPIFeature(TestCase):
 
         # DELETE THE CHANGESET
         self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        ####################################################################################################
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_api_feature_create_update_and_delete_point_one_changeset_for_each_action(self):
+        # DO LOGIN
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # create a changeset to each action related to the feature
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id_insert = changeset["properties"]["changeset_id"]
+
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id_update = changeset["properties"]["changeset_id"]
+
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id_delete = changeset["properties"]["changeset_id"]
+
+        ##################################################
+        # create a feature with user miguel
+        ##################################################
+        f_table_name = "layer_1002"
+
+        feature = {
+            'f_table_name': f_table_name,
+            'properties': {'id': -1, 'start_date': '1870-01-01 00:00:00', 'end_date': '1870-12-31 00:00:00',
+                           'version': 1, 'address': 'R. São José', 'changeset_id': changeset_id_insert},
+            'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+            'type': 'Feature'
+        }
+        feature = self.tester.api_feature_create(feature)
+
+        feature_id = feature["properties"]["id"]
+
+        ####################################################################################################
+        # update the feature with user
+        ##################################################
+        feature["properties"]["address"] = 'Rua São José Dormindo'
+        feature["properties"]["changeset_id"] = changeset_id_update
+        self.tester.api_feature_update(feature)
+
+        ##################################################
+        # verify if the resource was modified
+        ##################################################
+        feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
+        expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name, feature_id=feature_id)
+
+        ##################################################
+        # remove the feature
+        ##################################################
+        self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id_delete)
+
+        # it is not possible to find the resource that just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
+
+        # self.maxDiff = None
+
+        # verify if in the version table has 3 records (original, updated and removed)
+        expected = {
+            'features': [
+                # the original version (inserted)
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'R. São José', 'version': 1, 'id': feature_id, 'is_removed': False,
+                        'changeset_id': changeset_id_insert, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                },
+                # the updated version
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'Rua São José Dormindo', 'version': 2, 'id': feature_id, 'is_removed': False,
+                        'changeset_id': changeset_id_update, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                },
+                # the deleted version
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'Rua São José Dormindo', 'version': 3, 'id': feature_id, 'is_removed': True,
+                        'changeset_id': changeset_id_delete, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
+
+        ##################################################
+        # CLOSE THE CHANGESETS
+        ##################################################
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id_insert, 'description': 'Inserting feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id_update, 'description': 'Updating feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        close_changeset = {
+            'properties': {'changeset_id': changeset_id_delete, 'description': 'Deleting feature in layer_1002'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        ####################################################################################################
+        # login with admin to delete the changesets
+        self.tester.auth_logout()
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # DELETE THE CHANGESETS
+        self.tester.api_changeset_delete(changeset_id=changeset_id_insert)
+
+        self.tester.api_changeset_delete(changeset_id=changeset_id_update)
+
+        self.tester.api_changeset_delete(changeset_id=changeset_id_delete)
 
         ####################################################################################################
 
