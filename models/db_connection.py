@@ -871,6 +871,16 @@ class PGSQLConnection:
 
             self.__PGSQL_CURSOR__.execute(query_text)
 
+        # add the is_removed column in version feature table
+        version_table = tables_to_create[1]
+
+        query_text = """        
+            ALTER TABLE {0}
+            ADD COLUMN is_removed BOOLEAN DEFAULT FALSE;  
+        """.format(version_table)
+
+        self.__PGSQL_CURSOR__.execute(query_text)
+
         # put the feature tables in database
         self.commit()
         # publish the features tables/layers in geoserver
@@ -882,7 +892,7 @@ class PGSQLConnection:
         EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
         properties = resource_json["properties"]
 
-        properties = remove_unnecessary_properties(properties)
+        # properties = remove_unnecessary_properties(properties)
 
         # get the attributes of the feature table
         properties_string = ""
@@ -2144,6 +2154,10 @@ class PGSQLConnection:
             if column_name_with_type["column_name"] == "id":
                 continue
 
+            # if pass the "is_removed", we can ignore
+            if column_name_with_type["column_name"] == "is_removed":
+                continue
+
             if not column_name_with_type["column_name"] in properties:
                 raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure! (error: " +
                                 str(column_name_with_type["column_name"]) + " is missing).")
@@ -2450,8 +2464,16 @@ class PGSQLConnection:
         # and insert the feature inside the version_feature_table name
         ##################################################
         feature = feature["features"][0]
+
+        # add the old version of the feature in the version table
         feature["f_table_name"] = "version_" + f_table_name
+        self.create_feature(feature, current_user_id, remove_id_and_version_from_properties=False)
+
+        # add the deleted version of the feature in the version table
+        feature["f_table_name"] = "version_" + f_table_name
+        feature["properties"]["version"] += 1  # increment 1 to add new version on version table
         feature["properties"]["changeset_id"] = int(changeset_id)
+        feature["properties"]["is_removed"] = True
         self.create_feature(feature, current_user_id, remove_id_and_version_from_properties=False)
 
     ################################################################################

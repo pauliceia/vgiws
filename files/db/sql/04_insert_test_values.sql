@@ -231,6 +231,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1001 (
   end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id, version),
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
@@ -335,6 +336,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1002 (
   end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id, version),
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
@@ -441,6 +443,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1003 (
   end_date TIMESTAMP,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id, version),
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
@@ -541,6 +544,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1004 (
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
     REFERENCES changeset (changeset_id)
@@ -636,6 +640,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1005 (
   end_date TEXT,
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id, version),
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
@@ -734,6 +739,7 @@ CREATE TABLE IF NOT EXISTS version_layer_1006 (
   version INT NOT NULL DEFAULT 1,
   changeset_id INT NOT NULL,
   PRIMARY KEY (id, version),
+  is_removed BOOLEAN NOT NULL DEFAULT FALSE,
   CONSTRAINT constraint_fk_changeset_id
     FOREIGN KEY (changeset_id)
     REFERENCES changeset (changeset_id)

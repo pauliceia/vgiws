@@ -163,7 +163,7 @@ class TestAPIFeature(TestCase):
 
         self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
         self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
-
+    
     # feature - create, update and delete
 
     def test_api_feature_create_update_and_delete_point(self):
@@ -194,6 +194,8 @@ class TestAPIFeature(TestCase):
         }
         feature = self.tester.api_feature_create(feature)
 
+        feature_id = feature["properties"]["id"]
+
         ####################################################################################################
         # update the feature with user
         ##################################################
@@ -205,21 +207,54 @@ class TestAPIFeature(TestCase):
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
-        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
-                                feature_id=feature["properties"]["id"])
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name, feature_id=feature_id)
 
         ##################################################
         # remove the feature
         ##################################################
-        # get the id of the feature to REMOVE it
-        feature_id = feature["properties"]["id"]
-
-        # remove the resource
         self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
+
+        # verify if in the version table has 3 records (original, updated and removed)
+        expected = {
+            'features': [
+                # the original version (inserted)
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'R. São José', 'version': 1, 'id': feature_id, 'is_removed': False,
+                        'changeset_id': changeset_id, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                },
+                # the updated version
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'Rua São José Dormindo', 'version': 2, 'id': feature_id, 'is_removed': False,
+                        'changeset_id': changeset_id, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                },
+                # the deleted version
+                {
+                    'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
+                    'properties': {
+                        'address': 'Rua São José Dormindo', 'version': 3, 'id': feature_id, 'is_removed': True,
+                        'changeset_id': changeset_id, 'end_date': '1870-12-31 00:00:00',
+                        'start_date': '1870-01-01 00:00:00'
+                    },
+                    'type': 'Feature'
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
         close_changeset = {
@@ -240,7 +275,7 @@ class TestAPIFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-
+    
     def test_api_feature_create_update_and_delete_line(self):
         # DO LOGIN
         self.tester.auth_login("fernanda@admin.com", "fernanda")
@@ -274,6 +309,8 @@ class TestAPIFeature(TestCase):
         }
         feature = self.tester.api_feature_create(feature)
 
+        feature_id = feature["properties"]["id"]
+
         ####################################################################################################
         # update the feature with user
         ##################################################
@@ -285,21 +322,54 @@ class TestAPIFeature(TestCase):
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
-        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
-                                feature_id=feature["properties"]["id"])
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name, feature_id=feature_id)
 
         ##################################################
         # remove the feature
         ##################################################
-        # get the id of the feature to REMOVE it
-        feature_id = feature["properties"]["id"]
-
-        # remove the resource
         self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
+
+        # verify if in the version table has 3 records (original, updated and removed)
+        expected = {
+            'features': [
+                {
+                    'geometry': {'coordinates': [[[-46.6353540826681, -23.5450950669741],
+                                                  [-46.6343109517528, -23.5458044203441]]], 'type': 'MultiLineString'},
+                    'type': 'Feature',
+                    'properties': {
+                        'is_removed': False, 'changeset_id': changeset_id, 'id': feature_id, 'version': 1,
+                        'end_date': '1930-12-31 00:00:00', 'start_date': '1920-01-01 00:00:00',
+                        'name': 'rua tres de dezembro'
+                    }
+                },
+                {
+                    'geometry': {'coordinates': [[[-46.6353540826681, -23.5450950669741],
+                                                  [-46.6343109517528, -23.5458044203441]]], 'type': 'MultiLineString'},
+                    'type': 'Feature',
+                    'properties': {
+                        'is_removed': False, 'changeset_id': changeset_id, 'id': feature_id, 'version': 2,
+                        'end_date': '1930-12-31 00:00:00', 'start_date': '1920-01-01 00:00:00',
+                        'name': 'Rua treze de dezembro'
+                    }
+                },
+                {
+                    'geometry': {'coordinates': [[[-46.6353540826681, -23.5450950669741],
+                                                  [-46.6343109517528, -23.5458044203441]]], 'type': 'MultiLineString'},
+                    'type': 'Feature',
+                    'properties': {
+                        'is_removed': True, 'changeset_id': changeset_id, 'id': feature_id, 'version': 3,
+                        'end_date': '1930-12-31 00:00:00', 'start_date': '1920-01-01 00:00:00',
+                        'name': 'Rua treze de dezembro'
+                    }
+                }
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
         close_changeset = {
@@ -354,6 +424,8 @@ class TestAPIFeature(TestCase):
         }
         feature = self.tester.api_feature_create(feature)
 
+        feature_id = feature["properties"]["id"]
+
         ####################################################################################################
         # update the feature with user
         ##################################################
@@ -365,21 +437,51 @@ class TestAPIFeature(TestCase):
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
-        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name,
-                                feature_id=feature["properties"]["id"])
+        self.tester.api_feature(expected_at_least=expected_resource, f_table_name=f_table_name, feature_id=feature_id)
 
         ##################################################
         # remove the feature
         ##################################################
-        # get the id of the feature to REMOVE it
-        feature_id = feature["properties"]["id"]
-
-        # remove the resource
         self.tester.api_feature_delete(f_table_name=f_table_name, feature_id=feature_id, changeset_id=changeset_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
+
+        # verify if in the version table has 3 records (original, updated and removed)
+        expected = {
+            'type': 'FeatureCollection',
+            'features': [
+                {
+                    'properties': {
+                        'id': feature_id, 'is_removed': False, 'version': 1, 'changeset_id': changeset_id,
+                        'start_date': 1870, 'name': '', 'end_date': None
+                    },
+                    'geometry': {'coordinates': [[[[-46.6323, -23.5316], [-46.6375, -23.529], [-46.6323, -23.5316]]]],
+                                 'type': 'MultiPolygon'},
+                    'type': 'Feature'
+                },
+                {
+                    'properties': {
+                        'id': feature_id, 'is_removed': False, 'version': 2, 'changeset_id': changeset_id,
+                        'start_date': 1870, 'name': 'Hospital Rosa dos Santos', 'end_date': None
+                    },
+                    'geometry': {'coordinates': [[[[-46.6323, -23.5316], [-46.6375, -23.529], [-46.6323, -23.5316]]]],
+                                 'type': 'MultiPolygon'},
+                    'type': 'Feature'
+                },
+                {
+                    'properties': {
+                        'id': feature_id, 'is_removed': True, 'version': 3, 'changeset_id': changeset_id,
+                        'start_date': 1870, 'name': 'Hospital Rosa dos Santos', 'end_date': None
+                    },
+                    'geometry': {'coordinates': [[[[-46.6323, -23.5316], [-46.6375, -23.529], [-46.6323, -23.5316]]]],
+                                 'type': 'MultiPolygon'},
+                    'type': 'Feature'
+                }
+            ]
+        }
+        self.tester.api_feature(expected=expected, f_table_name="version_" + f_table_name, feature_id=feature_id)
 
         # CLOSE THE CHANGESET
         close_changeset = {
