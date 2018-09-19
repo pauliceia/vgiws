@@ -180,6 +180,9 @@ class BaseHandler(RequestHandler):
     def auth_login(self, email, password):
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
 
+        if not user_in_db["features"]:  # if the list is empty
+            raise HTTPError(404, "Not found any user.")
+
         if not user_in_db["features"][0]["properties"]["is_email_valid"]:
             raise HTTPError(409, "The email is not validated.")
 
@@ -190,12 +193,9 @@ class BaseHandler(RequestHandler):
     @catch_generic_exception
     def login(self, user_json, verified_social_login_email=False):
         # looking for a user in db, if not exist user, so create a new one
-        try:
-            user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])
-        except HTTPError as error:
-            # if the error is different of 404, raise a exception...
-            if error.status_code != 404:
-                raise HTTPError(500, str(error))
+        user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])
+
+        if not user_in_db["features"]:  # if the list is empty
             # ... because I expected a 404 to create a new user
             id_in_json = self.PGSQLConn.create_user(user_json, verified_social_login_email=verified_social_login_email)
             self.PGSQLConn.commit()  # save the user in DB

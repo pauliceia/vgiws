@@ -18,6 +18,7 @@ This method do a basic login with a user.
 - Response (in Header):
     - The Authorization header has a valid Token to access the platform.
 - Error codes:
+    - 404 (Not Found): Not found any user.
     - 409 (Conflict): The email is not validated.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
@@ -48,6 +49,9 @@ This method do a social login using a Facebook account.
 - Send:
 - Response: a page to do a social login.
 - Error codes:
+    - 400 (Bad Request): Invalid token.
+    - 403 (Forbidden): Forbidden request.
+    - 409 (Conflict): It is necessary to pass a 'token' in front of URL.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
 
