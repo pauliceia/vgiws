@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  # service name
+  vgiws:
+    build:
+      context: .
+      # Create the image based on the Dockerfile cited under
+      dockerfile: ./Dockerfile
+    # Create a volume (shared folder) between the root (vgiws/) and the workdir inside the Dockerfile
+    volumes:
+      - .:/usr/src/vgiws
+    # Bind the host's port with the container's port
+    ports:
+     - "8888:8888"
+    # Give a name to the container
+    container_name: vgiws_prod
+    # Give a name to the image
+    image: vgiws_prod:latest
+

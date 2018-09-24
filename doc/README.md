@@ -1,11 +1,6 @@
 # Documentation
 
 
-## Dependencies
-
-- [Dependencies](dependencies/dependencies.md)
-
-
 ## Server Documentation:
 
 - [Server Documentation](server/README.md)

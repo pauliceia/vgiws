@@ -1,27 +1,25 @@
 ## Run the tests
 
 
-First of all, clean the DB of test. On console, go to root folder, turn on the environment and run the cleaning code:
+First of all, get into the root folder and run the container:
 
 ```
-$ workon pauliceia_webservice
-$ python tests/util/clean_db.py --debug=True
+$ cd vgiws/
+$ docker-compose -f docker-compose_debug.yml up
 ```
 
-
-After that, run the server in Debug mode:
-
-```
-$ python main.py --debug=True
-```
-
-
-On another console, go to tests folder, turn on the environment and execute the tests:
+On another console, get into the container and clean the database:
 
 ```
-$ cd tests/
-$ workon pauliceia_webservice
-$ python run_tests.py
+$ docker exec -it vgiws_debug /bin/bash
+# python tests/util/clean_db.py --debug=True
 ```
 
-Alright, the tests will be execute with a new test database.
+Go to tests/ folder and execute the tests:
+
+```
+# cd tests/
+# python run_tests.py
+```
+
+Alright, the tests will be executed with a new test database.
