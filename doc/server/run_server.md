@@ -22,22 +22,35 @@ On the terminal, get into the main folder:
 $ cd vgiws/
 ```
 
-To debug, build the image and create the container with the VGIMWS:
+Build the image:
 
 ```
-$ docker build -t vgiws -f Dockerfile
+$ docker build --no-cache -t vgiws:latest -t vgiws:v_0.0.4 -f Dockerfile .
+```
+
+To debug, create the container with the VGIMWS:
+
+```
 $ docker run --rm -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws_debug vgiws python -u main.py --debug=True --publish_layers_in_geoserver=False
 ```
 
-Or you can create the container with the VGIMWS in production:
+Or you can create the container with the VGIMWS in production mode:
 
 ```
 $ docker-compose -f docker-compose.yml up -d
 or
-$ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws_prod vgiws python -u main.py
+$ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws
+or
+$ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws python -u main.py
 ```
 
 The docker-compose will build the image of VGIMWS (if it doesn't exist) and create the container with this image.
+
+To see the logs of the production container, use:
+
+```
+$ docker logs -f vgiws
+```
 
 If it is needed to build the image again, use the commands:
 
