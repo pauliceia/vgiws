@@ -14,7 +14,11 @@ services:
     ports:
      - "8888:8888"
     # Give a name to the container
-    container_name: vgiws_prod
+    container_name: vgiws
     # Give a name to the image
-    image: vgiws_prod:latest
+    image: vgiws:latest
+    # Pass the arguments of the python -u main.py in form of environment variables
+    #environment:
+    #  - debug=True
+    #  - publish_layers_in_geoserver=False
 

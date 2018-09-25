@@ -20,4 +20,9 @@ ENV TZ=America/Sao_Paulo
 EXPOSE 8888
 
 # Run this command when the container is created. The flag "-u" is to print the "print()"
-CMD [ "python", "-u", "main.py", "--publish_layers_in_geoserver=False" ]
+CMD [ "python", "-u", "main.py"]
+
+# Declare the default values to the arguments
+#ENV debug=False
+#ENV publish_layers_in_geoserver=True
+#CMD [ "python", "-u", "main.py ${debug} ${publish_layers_in_geoserver}"]
