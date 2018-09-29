@@ -1529,14 +1529,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             remove_file(folder_with_file_name)
             raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
 
-    def import_shp_file_into_postgis(self, f_table_name, shapefile_name, folder_to_extract_zip):
+    def import_shp_file_into_postgis(self, f_table_name, shapefile_name, folder_to_extract_zip, EPSG):
         """
         :param f_table_name: name of the feature table that will be created
         :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
         :return:
         """
-
-        EPSG = get_epsg_from_shapefile(shapefile_name, folder_to_extract_zip)
 
         __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
 
@@ -1624,7 +1622,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
         self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
-        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+        EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME,
+                                          EXTRACTED_ZIP_FOLDER_NAME, EPSG)
 
         VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 
@@ -1643,7 +1643,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         # commit the feature table
         self.PGSQLConn.commit()
         # publish the feature table/layer in geoserver
-        self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"])
+        self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"], EPSG)
         # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
 
         # remove the temporary file and folder of the shapefile

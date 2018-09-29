@@ -211,13 +211,13 @@ class PGSQLConnection:
             raise HTTPError(500, str(response))
 
     @run_if_can_publish_layers_in_geoserver
-    def publish_feature_table_in_geoserver(self, f_table_name):
+    def publish_feature_table_in_geoserver(self, f_table_name, EPSG):
         request_body = {
             "workspace": self.__GEOSERVER_CONNECTION__["WORKSPACE"],
             "datastore": self.__GEOSERVER_CONNECTION__["DATASTORE"],
             "layer": f_table_name,
             "description": "Description",
-            "projection": "EPSG: 4326"
+            "projection": "EPSG: " + str(EPSG)
         }
 
         response = self.__SESSION__.post(self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body)
@@ -884,7 +884,7 @@ class PGSQLConnection:
         # put the feature tables in database
         self.commit()
         # publish the features tables/layers in geoserver
-        self.publish_feature_table_in_geoserver(f_table_name)
+        self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
     def update_feature_table(self,  resource_json, user_id):
         f_table_name = resource_json["f_table_name"]
@@ -924,7 +924,7 @@ class PGSQLConnection:
         # put the feature tables in database
         self.commit()
         # publish the features tables/layers in geoserver
-        self.publish_feature_table_in_geoserver(f_table_name)
+        self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
     def delete_feature_table(self, f_table_name):
         tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]
