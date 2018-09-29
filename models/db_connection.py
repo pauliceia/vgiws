@@ -20,6 +20,7 @@
 
 from abc import ABCMeta
 from requests import Session
+from requests.exceptions import ConnectionError
 from copy import deepcopy
 from json import dumps
 
@@ -202,8 +203,11 @@ class PGSQLConnection:
 
     @run_if_can_publish_layers_in_geoserver
     def get_layers_from_geoserver(self):
-        response = self.__SESSION__.get(self.__URL_GEOSERVER_REST__ + '/layers/{0}/{1}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
-                                                                                               self.__GEOSERVER_CONNECTION__["DATASTORE"]))
+        try:
+            response = self.__SESSION__.get(self.__URL_GEOSERVER_REST__ + '/layers/{0}/{1}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                                   self.__GEOSERVER_CONNECTION__["DATASTORE"]))
+        except ConnectionError as error:
+            raise HTTPError(500, "It was not possible to connect with the geoserver-rest \n\n" + str(error))
 
         if response.status_code == 404:
             raise HTTPError(404, str(response))
@@ -220,7 +224,10 @@ class PGSQLConnection:
             "projection": "EPSG: " + str(EPSG)
         }
 
-        response = self.__SESSION__.post(self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body)
+        try:
+            response = self.__SESSION__.post(self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body)
+        except ConnectionError as error:
+            raise HTTPError(500, "It was not possible to connect with the geoserver-rest \n\n" + str(error))
 
         if response.status_code == 404:
             raise HTTPError(404, str(response.text))
@@ -229,9 +236,12 @@ class PGSQLConnection:
 
     @run_if_can_publish_layers_in_geoserver
     def unpublish_feature_table_in_geoserver(self, f_table_name):
-        response = self.__SESSION__.delete(self.__URL_GEOSERVER_REST__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
-                                                                                                            self.__GEOSERVER_CONNECTION__["DATASTORE"],
-                                                                                                            f_table_name))
+        try:
+            response = self.__SESSION__.delete(self.__URL_GEOSERVER_REST__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                                                                                                                self.__GEOSERVER_CONNECTION__["DATASTORE"],
+                                                                                                                f_table_name))
+        except ConnectionError as error:
+            raise HTTPError(500, "It was not possible to connect with the geoserver-rest \n\n" + str(error))
 
         if response.status_code == 404:
             raise HTTPError(404, str(response.text))
