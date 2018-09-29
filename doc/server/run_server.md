@@ -16,64 +16,83 @@ Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
 
 ## Run the server
 
-On the terminal, get into the main folder:
+- Run the Geoserver:
 
-```
-$ cd vgiws/
-```
+    On the terminal, get into the Geoserver main folder and start it up:
 
-Build the image:
+    ```
+    $ cd geoserver/bin/
+    $ startup.sh
+    ```
 
-```
-$ docker build --no-cache -t vgiws:latest -t vgiws:v_0.0.4 -f Dockerfile .
-```
+- Run the geoserver-rest:
 
-To debug, create the container with the VGIMWS:
+    On the terminal, get into the geoserver-rest main folder, install the dependencies and start it up:
 
-```
-$ docker run --rm -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws_debug vgiws python -u main.py --debug=True --publish_layers_in_geoserver=False
-```
+    ```
+    $ cd geoserver-rest/
+    $ npm install
+    $ npm run dev
+    ```
 
-Or you can create the container with the VGIMWS in production mode:
+    Don't forget of passing the Geoserver connection in the _config/environment.js file.
 
-```
-$ docker-compose -f docker-compose.yml up -d
-or
-$ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws
-or
-$ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws python -u main.py
-```
+- Run the VGIMWS
 
-The docker-compose will build the image of VGIMWS (if it doesn't exist) and create the container with this image.
+    VGIMWS has two parameters that can be passed in front of the program:
+    - --debug=True: If True, so run the server in Debug mode. If False (default), run the server in production mode.
+    - --publish_layers_in_geoserver=False: If False, don't publish the layers in Geoserver. If True (default), publish the layers in Geoserver.
+    This flag can be used when you are debugging and don't want to publish the layers in Geoserver.
 
-To see the logs of the production container, use:
+    On the terminal, get into the VGIWS main folder:
 
-```
-$ docker logs -f vgiws
-```
+    ```
+    $ cd vgiws/
+    ```
 
-If it is needed to build the image again, use the commands:
+    Build the image:
 
-```
-$ docker-compose -f docker-compose.yml build
-$ docker-compose -f docker-compose_debug.yml build
-```
+    ```
+    $ docker build --no-cache -t vgiws:latest -t vgiws:v_0.0.4 -f Dockerfile .
+    ```
+
+    To debug, create the container with the VGIMWS:
+
+    ```
+    $ docker run --rm -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws_debug vgiws python -u main.py --debug=True --publish_layers_in_geoserver=False
+    ```
+
+    Or you can create the container with the VGIMWS in production mode:
+
+    ```
+    $ docker-compose -f docker-compose.yml up -d
+    or
+    $ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws
+    or
+    $ docker run --rm -d -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws vgiws python -u main.py
+    ```
+
+    The docker-compose will build the image of VGIMWS (if it doesn't exist) and create the container with this image.
+
+    To see the logs of the production container, use:
+
+    ```
+    $ docker logs -f vgiws
+    ```
+
+    If it is needed to build the image again, use the commands:
+
+    ```
+    $ docker-compose -f docker-compose.yml build
+    $ docker-compose -f docker-compose_debug.yml build
+    ```
 
 
 ## Run the first version of production system
 
-You need to run the Geoserver:
+You need to run the Geoserver and the geoserver-rest as done in the previous section.
 
-```
-$ cd geoserver/bin
-$ ./startup.sh
-```
-
-After that, you need to run the Geoserver-rest.
-For that, follow the link: https://github.com/Pauliceia/geoserver-rest .
-Don't forget to pass the Geoserver connection in the _config/environment.js file.
-
-On a console, get into the main folder and run the production container:
+Now, on a console, get into the VGIMWS main folder and run the production container:
 
 ```
 $ cd vgiws/
