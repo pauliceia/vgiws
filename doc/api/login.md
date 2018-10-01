@@ -24,18 +24,17 @@ This method do a basic login with a user.
 - Notes:
 
 
-### GET /api/auth/google/\<TOKEN>
+### GET /api/auth/google/
 
 This method do a social login using a Google account.
 - Parameters:
 - Examples:
-     - Do a social login: GET http://localhost:8888/auth/google/EXAMPLE-OF-TOKEN
+     - Do a social login: GET http://localhost:8888/auth/google/
 - Send:
 - Response: a page to do a social login.
 - Error codes:
     - 400 (Bad Request): Invalid token.
     - 403 (Forbidden): Forbidden request.
-    - 409 (Conflict): It is necessary to pass a 'token' in front of URL.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
 
@@ -51,7 +50,6 @@ This method do a social login using a Facebook account.
 - Error codes:
     - 400 (Bad Request): Invalid token.
     - 403 (Forbidden): Forbidden request.
-    - 409 (Conflict): It is necessary to pass a 'token' in front of URL.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
 
