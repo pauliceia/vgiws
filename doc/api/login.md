@@ -9,6 +9,7 @@ This method do a basic login with a user.
 - Parameters:
 - Examples:
      - Do a basic login: GET http://localhost:8888/auth/login/
+- Send (in Body):
 - Send (in Header):
     - First encrypt the password with a hash algorithm called SHA512.
     - Concatenate the email and password in one string separated by ":" (e.g. "email:encrypted_password")
@@ -22,6 +23,33 @@ This method do a basic login with a user.
     - 409 (Conflict): The email is not validated.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
+
+
+### POST /api/auth/change_password/
+
+This method change the password of a user.
+- Parameters:
+- Examples:
+     - Change the password: POST http://localhost:8888/auth/change_password/
+- Send (in Body):
+    ```javascript
+    {
+        'properties': {'current_password': 'ENCRYPTED_CURRENT_PASSWORD', 'new_password': 'ENCRYPTED_NEW_PASSWORD'},
+        'type': 'ChangePassword'
+    }
+    ```
+- Send (in Header):
+    - Send an "Authorization" header with a valid Token.
+- Response (in Header):
+- Error codes:
+    - 400 (Bad Request): It is needed to pass the encrypted current_password and new_password.
+    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 404 (Not Found): Not found any user.
+    - 409 (Conflict): Current password is invalid.
+    - 409 (Conflict): The email is not validated.
+    - 500 (Internal Server Error): Problem when changing the password. Please, contact the administrator.
+- Notes:
+    - The passwords need to be encrypted using a hash algorithm called SHA512.
 
 
 ### GET /api/auth/google/

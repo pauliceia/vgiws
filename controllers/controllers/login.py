@@ -5,23 +5,18 @@
     Responsible module to create controllers.
 """
 
-from apiclient import discovery
-from httplib2 import Http
-from oauth2client import client
-from oauth2client.client import FlowExchangeError
-
 from base64 import b64decode
-
-from ..base import BaseHandler, BaseHandlerSocialLogin
+from os import path as os_path
 
 from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
 from tornado.gen import coroutine
 from tornado.escape import json_encode
 from tornado.web import HTTPError
 
+from ..base import BaseHandler, BaseHandlerSocialLogin
 from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__
+from modules.common import auth_non_browser_based
 
-from os import path as os_path
 
 # Get the main folder (vgiws)
 PROJECT_PATH = os_path.sep.join(os_path.abspath(__file__).split(os_path.sep)[:-3])
@@ -80,6 +75,29 @@ class AuthLoginHandler(BaseHandler):
         self.set_header('Authorization', encoded_jwt_token)
 
         self.write(json_encode({}))
+
+
+class AuthChangePasswordHandler(BaseHandler):
+
+    urls = [r"/api/auth/change_password/", r"/api/auth/change_password"]
+
+    @auth_non_browser_based
+    def post(self):
+        # get the body of the request
+        resource_json = self.get_the_json_validated()
+
+        p = resource_json["properties"]
+
+        # verify is exist the parameters inside the body
+        if "current_password" not in p or "new_password" not in p:
+            raise HTTPError(400, "It is needed to pass the encrypted current_password and new_password.")
+
+        # get the email of the current user
+        current_user = self.get_current_user_()
+        email = current_user["properties"]["email"]
+
+        # try to change the password
+        self.change_password(email, p["current_password"], p["new_password"])
 
 
 # class GoogleLoginHandler(BaseHandlerSocialLogin):

@@ -191,6 +191,19 @@ class BaseHandler(RequestHandler):
         return encoded_jwt_token
 
     @catch_generic_exception
+    def change_password(self, email, current_password, new_password):
+        # try to login with the email and password, it doesn't raise an exception, so it is OK
+        try:
+            self.auth_login(email, current_password)
+        except HTTPError as error:
+            if error.status_code == 404:
+                raise HTTPError(409, "Current password is invalid.")
+
+        # try to update the user's password by id
+        current_user_id = self.get_current_user_id()
+        self.PGSQLConn.update_user_password(current_user_id, new_password)
+
+    @catch_generic_exception
     def login(self, user_json, verified_social_login_email=False):
         # looking for a user in db, if not exist user, so create a new one
         user_in_db = self.PGSQLConn.get_users(email=user_json["properties"]["email"])

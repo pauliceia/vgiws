@@ -24,6 +24,10 @@ def get_email_and_password_as_string_in_base64(email, password):
     return string_in_base64
 
 
+def get_string_as_base64(string):
+    return (b64encode(string.encode('utf-8'))).decode('utf-8')
+
+
 def get_string_in_hash_sha512(string):
     return sha512(string.encode()).hexdigest()
 
@@ -40,6 +44,10 @@ class UtilTester:
         self.ut_self = ut_self
 
         self.URL = "http://localhost:8888"
+
+    ##################################################
+    # LOGIN
+    ##################################################
 
     # login and logout
 
@@ -70,6 +78,42 @@ class UtilTester:
         headers = self.prepare_header(email, password)
 
         response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
+
+        self.ut_self.assertEqual(response.status_code, 409)
+
+    ##################################################
+    # CHANGE PASSWORD
+    ##################################################
+
+    def api_change_password(self, resource_json):
+        # encrypt the passwords
+        resource_json["properties"]["current_password"] = get_string_in_hash_sha512(resource_json["properties"]["current_password"])
+        resource_json["properties"]["new_password"] = get_string_in_hash_sha512(resource_json["properties"]["new_password"])
+
+        response = self.session.post(self.URL + '/api/auth/change_password/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 200)
+
+    def api_change_password_error_400_bad_request(self, resource_json):
+        response = self.session.post(self.URL + '/api/auth/change_password/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_change_password_error_401_unauthorized(self, resource_json):
+        response = self.session.post(self.URL + '/api/auth/change_password/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 401)
+
+    def api_change_password_error_409_conflict(self, resource_json):
+        # encrypt the passwords
+        resource_json["properties"]["current_password"] = get_string_in_hash_sha512(resource_json["properties"]["current_password"])
+        resource_json["properties"]["new_password"] = get_string_in_hash_sha512(resource_json["properties"]["new_password"])
+
+        response = self.session.post(self.URL + '/api/auth/change_password/',
+                                     data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 409)
 
