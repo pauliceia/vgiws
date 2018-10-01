@@ -14,7 +14,7 @@ The file accounts.py contains the settings of social login accounts (Google and 
 Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
 
 
-## Run the server
+## Run the server inside of a Docker container
 
 - Run the Geoserver:
 
@@ -86,6 +86,46 @@ Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
     $ docker-compose -f docker-compose.yml build
     $ docker-compose -f docker-compose_debug.yml build
     ```
+
+
+### Run the server outside of a Docker
+
+This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
+
+WARNING: It is necessary a database to run it, whether is not exist, create a new one [here](db_connection.md).
+
+If you don't have the pip, install it:
+```
+$ sudo apt-get update
+$ sudo apt-get -y install python-pip
+$ sudo apt-get -y install python3-pip
+```
+
+To create a new virtualenv with Python 3:
+
+```
+$ mkvirtualenv -p /usr/bin/python3.5 pauliceia_webservice
+```
+
+If the environment do not turn on automatically, so switch it:
+
+```
+$ workon pauliceia_webservice
+```
+
+Install the dependencies that are in requirements.txt file:
+
+```
+$ pip install -r requirements.txt
+```
+
+Run the application normally, on Debug Mode, or on Debug Mode and not publishing the layers in geoserver:
+
+```
+$ python main.py
+$ python main.py --debug=True
+$ python main.py --debug=True --publish_layers_in_geoserver=False
+```
 
 
 ## Run the first version of production system
