@@ -3,15 +3,14 @@ venv/*
 ignore/*
 files/ignore/*
 0_old/*
-files/production/*
 tests/files/shp_pesado/*
+files/db/sql/secreto/*
 
 # Ignore specific files
 settings/db_settings.py
 settings/accounts.py
 settings/client_secret*
-
-files/db/sql/secreto/*
+files/production/upload_old_db_in_new_db.py
 
 # backup file of MySQL
 *.mwb.bak
