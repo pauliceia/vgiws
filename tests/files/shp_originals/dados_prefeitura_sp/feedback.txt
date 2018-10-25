@@ -1,0 +1,15 @@
+Shapefiles de SP para teste.
+
+DEINFO_CENTRAIS_MECANIZADAS_29193 - ok
+
+DEINFO_CORTICO_2015 - dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para o console. Portanto, o VGIMWS não consegue saber que foi um erro. 
+
+DEINFO_DECLIVIDADE - a função ST_Contains diz que esse Shapefile está fora do Bounding Box de SP.
+
+
+
+
+
+
+ogr2ogr -append -f "PostgreSQL" PG:"host=localhost dbname=shp_para_testes user=postgres password=postgres" DEINFO_CENTRAIS_MECANIZADAS.shp -a_srs EPSG:29193 -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI
+

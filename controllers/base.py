@@ -18,6 +18,7 @@ from requests import Session
 from shutil import make_archive
 from string import punctuation
 from fiona import open as fiona_open
+from difflib import SequenceMatcher
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -64,6 +65,53 @@ def send_email(to_email_address, subject="", body=""):
     thread.start()
 
 
+def get_percentage_of_similarity_of_two_strings(string_01, string_02):
+    sequence = SequenceMatcher(isjunk=None, a=string_01, b=string_02)
+    percentage = sequence.ratio()*100
+    percentage = round(percentage, 1)
+
+    return percentage
+
+
+def get_first_projcs_from_prj_in_wkt(prj_wkt):
+    # find the first reference of '"'
+    position_first_quote = prj_wkt.find('"')
+
+    # get the prj starting by '"'
+    prj = prj_wkt[position_first_quote+1:]
+
+    # find the next reference of '"'
+    position_next_quote = prj.find('"')
+
+    # get the projcs
+    projcs = prj[0:position_next_quote]
+
+    return projcs
+
+
+def get_EPSG_from_list_of_possible_EPSGs_according_to_prj(list_possible_epsg, prj):
+    # put default values to EPSG and greater percentage
+    EPSG = list_possible_epsg["codes"][0]["code"]
+    greater_percentage = 0
+
+    projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
+
+    for code in list_possible_epsg["codes"]:
+
+        percentage_similarity = get_percentage_of_similarity_of_two_strings(projcs, code["name"].lower())
+
+        # print("projcs: ", projcs, " - code: ", code["code"], " - name: ", code["name"], " - percentage_similarity: ", percentage_similarity)
+
+        # get the EPSG from the code that has greater percentage of similarity
+        if percentage_similarity > greater_percentage:
+            EPSG = code["code"]
+            greater_percentage = percentage_similarity
+
+    # print("\n EPSG: ", EPSG, "\n")
+
+    return EPSG
+
+
 def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
     session = Session()
 
@@ -83,12 +131,10 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             if "codes" not in resulted:
                 raise HTTPError(409, "Invalid .prj.")
 
-            if not resulted["codes"]:  # if status_code != 200 or resulted["codes"] is empty:
+            if not resulted["codes"]:  # if resulted["codes"] is empty:
                 raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
 
-            EPSG = resulted["codes"][0]["code"]
-
-            # print("\n\n EPSG: ", EPSG, "\n\n")
+            EPSG = get_EPSG_from_list_of_possible_EPSGs_according_to_prj(resulted, prj)
 
             return EPSG
     except FileNotFoundError as error:
@@ -1562,11 +1608,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
             #                                      shapefile_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
+            # print("command_to_import_shp_into_postgis: ", command_to_import_shp_into_postgis)
+
             # call a process to execute the command to import the SHP into the PostGIS
             check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
 
         except CalledProcessError as error:
-            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import.")
+            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
 
         try:
             is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
@@ -1575,6 +1623,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             self.PGSQLConn.drop_table_by_name(f_table_name)
             raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
                                  "import again later. \nError: " + str(error))
+        except Exception as error:
+            self.PGSQLConn.rollback()
+            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
 
         if not is_shapefile_inside_default_city:
             self.PGSQLConn.drop_table_by_name(f_table_name)

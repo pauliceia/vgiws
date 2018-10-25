@@ -79,8 +79,6 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
 
-    # the under tests are with shapefile from internet
-
     def test_post_import_shp_sp_cemiterios(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -92,63 +90,169 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
                                               changeset_id=self.changeset_id)
 
+
+"""
+class TestAPIManualTests(TestCase):
+
+    def setUp(self):
+        # create a tester passing the unittest self
+        self.tester = UtilTester(self)
+
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        self.folder_name = "files/"
+        self.folder_name_shp_originals = "files/shp_originals/"
+        self.f_table_name = "points_" + str(randint(0, 100))
+
+        ##################################################
+        # create a new layer
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': self.f_table_name, 'name': 'Points',
+                           'description': '', 'source_description': '',
+                           'reference': [1050], 'keyword': [1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+        self.layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create a new changeset
+        ##################################################
+        changeset = {
+            'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
+            'type': 'Changeset'
+        }
+        changeset = self.tester.api_changeset_create(changeset)
+        self.changeset_id = changeset["properties"]["changeset_id"]
+
+    def tearDown(self):
+        ##################################################
+        # remove the layer
+        ##################################################
+        # CLOSE THE CHANGESET
+        close_changeset = {
+            'properties': {'changeset_id': self.changeset_id, 'description': 'Import points.shp'},
+            'type': 'ChangesetClose'
+        }
+        self.tester.api_changeset_close(close_changeset)
+
+        # DELETE THE CHANGESET (the changeset is automatically removed when delete a layer)
+        # self.tester.api_changeset_delete(changeset_id=changeset_id)
+
+        # REMOVE THE layer AFTER THE TESTS
+        self.tester.api_layer_delete(self.layer_id)
+
+        # it is not possible to find the layer that just deleted
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=self.layer_id)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # the tests under are manual tests
-    """
-    def test_post_import_shp_ref_urbana_2013(self):
+
+    # def test_post_import_shp_ref_urbana_2013(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "ref_urbana_2013.zip"
+    #     with open(self.folder_name_shp_originals + 'shp_pesado/' +  file_name, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+    #
+    # def test_post_import_shp_sp_mun(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "sp_mun.zip"
+    #     with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+    #
+    # def test_post_import_shp_sp_mun97_region(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "sp_mun97_region.zip"
+    #     with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+    #
+    # def test_post_import_shp_ugrhi5_base_cont(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "ugrhi5_base_cont.zip"
+    #     with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+    #
+    # def test_post_import_shp_teste_peso_file_with_98_mb(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "teste_peso.zip"
+    #     with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+
+    # the tests under are manual tests
+
+    # dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para
+    # o console. Portanto, o VGIMWS não consegue saber que foi um erro.
+    # def test_post_import_shp_DEINFO_CORTICO_2015(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "DEINFO_CORTICO_2015.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/dentro_sp/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+
+    # a função ST_Contains diz que esse Shapefile está fora do Bounding Box de SP.
+    # def test_post_import_shp_DEINFO_DECLIVIDADE(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "DEINFO_DECLIVIDADE.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/dentro_sp/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name,
+    #                                           changeset_id=self.changeset_id)
+
+    # ok
+    def test_post_import_shp_DEINFO_CENTRAIS_MECANIZADAS_29193(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
-        file_name = "ref_urbana_2013.zip"
-        with open(self.folder_name_shp_originals + 'shp_pesado/' +  file_name, mode='rb') as file:  # rb = read binary
+        file_name = "DEINFO_CENTRAIS_MECANIZADAS_29193.zip"
+        file_name_path = "shp_originals/dados_prefeitura_sp/" + file_name
+        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name,
                                               changeset_id=self.changeset_id)
-    
-    def test_post_import_shp_sp_mun(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "sp_mun.zip"
-        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-                                              changeset_id=self.changeset_id)
-
-    def test_post_import_shp_sp_mun97_region(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "sp_mun97_region.zip"
-        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-                                              changeset_id=self.changeset_id)
-    
-    def test_post_import_shp_ugrhi5_base_cont(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "ugrhi5_base_cont.zip"
-        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-                                              changeset_id=self.changeset_id)
-    
-    def test_post_import_shp_teste_peso_file_with_98_mb(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "teste_peso.zip"
-        with open(self.folder_name_shp_originals + 'shp_pesado/' + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-                                              changeset_id=self.changeset_id)
-    """
+"""
 
 
 class TestAPIImportError(TestCase):
