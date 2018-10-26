@@ -1,15 +1,59 @@
 Shapefiles de SP para teste.
 
-DEINFO_CENTRAIS_MECANIZADAS_29193 - ok
+DEINFO_CENTRAIS_MECANIZADAS_29193
+- OGR: ok
 
-DEINFO_CORTICO_2015 - dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para o console. Portanto, o VGIMWS não consegue saber que foi um erro. 
+LAYER_BACIA_HIDROGRAFIA_2012
+- OGR: ok
 
-DEINFO_DECLIVIDADE - a função ST_Contains diz que esse Shapefile está fora do Bounding Box de SP.
+LAYER_CEMITERIOS
+- OGR: ok
+
+LAYER_CENTRAL_COOPERATIVA
+- OGR: ok
+
+LAYER_DISTRITO_SP
+- OGR: ok
+
+DEINFO_CORTICO_2015
+- OGR: dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para o console. Portanto, o VGIMWS não consegue saber que foi um erro. 
+- VGIMWS: vide acima
+
+DEINFO_GEOTECNICA_PONTO
+- OGR: dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para o console. Portanto, o VGIMWS não consegue saber que foi um erro. 
+- VGIMWS: vide acima
+
+DEINFO_GEOTECNICA_LINHA - muito grande, pulei
+- OGR: dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para o console. Portanto, o VGIMWS não consegue saber que foi um erro. 
+- VGIMWS: vide acima
+
+DEINFO_LAYER_ECOPONTOS 
+- OGR: OGR diz que não foi possível importar com a lista de drives disponíveis
+
+LAYER_AREAS_CONTAMINADAS
+- OGR: OGR diz que não foi possível importar com a lista de drives disponíveis
+
+LAYER_SHOPPING_CENTER_2014
+- OGR: OGR diz que não foi possível importar com a lista de drives disponíveis
+
+LAYER_AREA_PONDERACAO_2010 - não tem prj
+
+LAYER_REFERENCIA_URBANA_2013 - não tem prj
+
+DEINFO_DECLIVIDADE - muito grande
+- OGR: ok
+- VGIMWS: a função ST_Contains diz que esse Shapefile está fora do Bounding Box de SP.
 
 
 
 
 
 
-ogr2ogr -append -f "PostgreSQL" PG:"host=localhost dbname=shp_para_testes user=postgres password=postgres" DEINFO_CENTRAIS_MECANIZADAS.shp -a_srs EPSG:29193 -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI
+
+ogr2ogr -append -f "PostgreSQL" PG:"host=localhost dbname=shp_para_testes user=postgres password=postgres" DEINFO_GEOTECNICA_LINHA.shp -a_srs EPSG:29193 -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI
+
+
+
+
+
 

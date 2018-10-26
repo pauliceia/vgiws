@@ -208,7 +208,59 @@ class TestAPIManualTests(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
     #                                           changeset_id=self.changeset_id)
 
-    # the tests under are manual tests
+    # dados_prefeitura_sp - the tests under are manual tests
+
+    # ok
+    # def test_post_import_shp_DEINFO_CENTRAIS_MECANIZADAS_29193(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "DEINFO_CENTRAIS_MECANIZADAS_29193.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
+    # ok
+    # def test_post_import_shp_LAYER_BACIA_HIDROGRAFIA_29193(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "LAYER_BACIA_HIDROGRAFIA_29193.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
+    # ok
+    # def test_post_import_shp_LAYER_CEMITERIOS_29193(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "LAYER_CEMITERIOS_29193.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
+    # testar esse
+    # def test_post_import_shp_LAYER_CENTRAL_COOPERATIVA_4326(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "LAYER_CENTRAL_COOPERATIVA_4326.zip"
+    #     file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    # 
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
 
     # dá erro de importação na OGR relacionado a encoding, porém a OGR não retorna um status de erro para
     # o console. Portanto, o VGIMWS não consegue saber que foi um erro.
@@ -238,20 +290,6 @@ class TestAPIManualTests(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
     #                                           file_name=file_name,
     #                                           changeset_id=self.changeset_id)
-
-    # ok
-    def test_post_import_shp_DEINFO_CENTRAIS_MECANIZADAS_29193(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "DEINFO_CENTRAIS_MECANIZADAS_29193.zip"
-        file_name_path = "shp_originals/dados_prefeitura_sp/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
-                                              file_name=file_name,
-                                              changeset_id=self.changeset_id)
 """
 
 
