@@ -1976,37 +1976,43 @@ class PGSQLConnection:
     def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
 
         # 1 - make the geometries valid
-        # query_text = """
-        #     UPDATE {0} SET geom = ST_MakeValid(geom)
-        #     WHERE NOT ST_IsValid(geom);
-        # """.format(f_table_name)
-        #
-        # # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
+        query_text = """
+            UPDATE {0} SET geom = ST_MakeValid(geom)
+            WHERE NOT ST_IsValid(geom);
+        """.format(f_table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
 
         # 2 - verify if the shapefile is inside the default city
+        # query_text = """
+        #     -- SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
+        #     SELECT ST_Contains(bb_default_city.geom, ST_MakeValid(union_f_table.geom)) as row_to_json
+        #     -- SELECT ST_Intersects(union_f_table.geom, bb_default_city.geom) as row_to_json
+        #     -- SELECT ST_Within(ST_Buffer(union_f_table.geom, 0), bb_default_city.geom) as row_to_json
+        #     -- SELECT ST_Within(union_f_table.geom, bb_default_city.geom) as row_to_json
+        #     FROM
+        #     (
+        #         -- get the union of a feature table (shapefile)
+        #         SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM {0}
+        #     ) union_f_table,
+        #     (
+        #         -- create a bounding box of the default city (by default is SP city)
+        #         SELECT  ST_Transform(
+        #             ST_MakeEnvelope (
+        #                 {1}, {2},
+        #                 {3}, {4},
+        #                 {5}
+        #             )
+        #         , 4326) as geom
+        #     ) bb_default_city;
+        # """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
+        #                          __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+
         query_text = """
-            SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
-            -- SELECT ST_Intersects(union_f_table.geom, bb_default_city.geom) as row_to_json
-            -- SELECT ST_Within(ST_Buffer(union_f_table.geom, 0), bb_default_city.geom) as row_to_json
-            -- SELECT ST_Within(union_f_table.geom, bb_default_city.geom) as row_to_json
-            FROM
-            (
-                -- get the union of a feature table (shapefile)
-                SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM {0}
-            ) union_f_table,
-            (
-                -- create a bounding box of the default city (by default is SP city)
-                SELECT  ST_Transform(
-                    ST_MakeEnvelope (
-                        {1}, {2},
-                        {3}, {4},
-                        {5}
-                    )	
-                , 4326) as geom
-            ) bb_default_city;      
+            SELECT verify_if_geometry_is_inside_other_geometry('{0}', {1}, {2}, {3}, {4}, {5})     
         """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
-                                 __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+                   __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
 
         # print(query_text)
 

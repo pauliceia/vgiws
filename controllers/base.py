@@ -1616,20 +1616,20 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
 
-        try:
-            is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
-        except InternalError as error:
-            self.PGSQLConn.rollback()
-            self.PGSQLConn.drop_table_by_name(f_table_name)
-            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
-                                 "import again later. \nError: " + str(error))
-        except Exception as error:
-            self.PGSQLConn.rollback()
-            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
-
-        if not is_shapefile_inside_default_city:
-            self.PGSQLConn.drop_table_by_name(f_table_name)
-            raise HTTPError(409, "Shapefile is not inside the default city of the project.")
+        # try:
+        #     is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
+        # except InternalError as error:
+        #     self.PGSQLConn.rollback()
+        #     self.PGSQLConn.drop_table_by_name(f_table_name)
+        #     raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
+        #                          "import again later. \nError: " + str(error))
+        # except Exception as error:
+        #     self.PGSQLConn.rollback()
+        #     raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
+        #
+        # if not is_shapefile_inside_default_city:
+        #     self.PGSQLConn.drop_table_by_name(f_table_name)
+        #     raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
     def get_shapefile_name(self, folder_with_file_name):
         """

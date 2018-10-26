@@ -1,4 +1,4 @@
-﻿DROP FUNCTION verify_if_geometry_is_inside_other_geometry(table_name regclass, xmin FLOAT, ymin FLOAT, xmax FLOAT, ymax FLOAT, EPSG INT);
+﻿DROP FUNCTION IF EXISTS verify_if_geometry_is_inside_other_geometry(table_name regclass, xmin FLOAT, ymin FLOAT, xmax FLOAT, ymax FLOAT, EPSG INT);
 
 CREATE or REPLACE FUNCTION verify_if_geometry_is_inside_other_geometry(table_name regclass, xmin FLOAT, ymin FLOAT, xmax FLOAT, ymax FLOAT, EPSG INT) 
 RETURNS BOOLEAN AS $$
@@ -22,11 +22,13 @@ BEGIN
 
 	-- verify if the shapefile is inside the bounding box
 	IF (LOWER(ST_GeometryType(union_f_table)) = 'geometrycollection') THEN
-		raise notice 'geometry collection';
-		result := (ST_Within(ST_Buffer(union_f_table.geom, 0), bb_default_city.geom));
+		-- result := (ST_Within(ST_Buffer(ST_MakeValid(union_f_table), 0), bb_default_city));
+		result := (ST_Within(ST_Buffer(union_f_table, 0), bb_default_city));
+		
 	ELSE
-		raise notice 'not geometry collection';
-		result := (ST_Within(union_f_table, bb_default_city));
+		--result := (ST_Within(ST_MakeValid(union_f_table), bb_default_city));
+		result := (ST_Within(ST_Buffer(ST_MakeValid(union_f_table), 0), bb_default_city));
+
 	END IF;	
 
 	raise notice 'ST_GeometryType = %s', LOWER(ST_GeometryType(union_f_table));
@@ -37,7 +39,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-SELECT verify_if_geometry_is_inside_other_geometry('deinfo_centrais_cooperativas', 313389.67, 7343788.61, 360663.23, 7416202.05, 29193);
+-- SELECT verify_if_geometry_is_inside_other_geometry('deinfo_centrais_cooperativas', 313389.67, 7343788.61, 360663.23, 7416202.05, 29193);
 
 
 
