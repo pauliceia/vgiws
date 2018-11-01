@@ -30,6 +30,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 409 (Conflict): The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.
     - 409 (Conflict): Shapefile is not inside the default city of the project.
     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
+    - 500 (Internal Server Error): Problem when to import the Shapefile. Fiona was not able to read the Shapefile. One reason can be that the Shapefile has an empty column name, so name it.
     - 500 (Internal Server Error): Some geometries of the Shapefile are with problem. Please, verify them and try to import again later.
     - 500 (Internal Server Error): Problem when to import a resource. Please, contact the administrator.
 - Notes:

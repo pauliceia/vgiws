@@ -1656,8 +1656,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(409, "File is not a zip file.")
 
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
-        layer = fiona_open(shapefile_path)
-        fields = dict(layer.schema["properties"])
+        try:
+            layer = fiona_open(shapefile_path)
+            fields = dict(layer.schema["properties"])
+        except ValueError as error:
+            raise HTTPError(500, "Problem when to import the Shapefile. Fiona was not able to read the Shapefile. \n" +
+                            "One reason can be that the Shapefile has an empty column name, so name it. \n" +
+                            str(error))
 
         # the shapefile can not have the version and changeset_id attributes
         if "version" in fields or "changeset_id" in fields:
