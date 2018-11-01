@@ -141,6 +141,7 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
+
 """
 class TestAPIManualTests(TestCase):
 

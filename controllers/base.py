@@ -1588,6 +1588,15 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             remove_file(folder_with_file_name)
             raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
 
+    # def verify_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
+    #     list_table_schema = self.PGSQLConn.get_table_schema_from_table_in_list(table_schema="public",
+    #                                                                            table_name=f_table_name)
+    #
+    #     # the shapefile can not have the version and changeset_id attributes
+    #     if "version" in list_table_schema or "changeset_id" in list_table_schema:
+    #         self.PGSQLConn.drop_table_by_name(f_table_name)
+    #         raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them!")
+
     def import_shp_file_into_postgis(self, f_table_name, shapefile_name, folder_to_extract_zip, EPSG):
         """
         :param f_table_name: name of the feature table that will be created
@@ -1615,6 +1624,8 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
+
+        # self.verify_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
         # try:
         #     is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)

@@ -1973,59 +1973,60 @@ class PGSQLConnection:
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
-    def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
-
-        # 1 - make the geometries valid
-        query_text = """
-            UPDATE {0} SET geom = ST_MakeValid(geom)
-            WHERE NOT ST_IsValid(geom);
-        """.format(f_table_name)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # 2 - verify if the shapefile is inside the default city
-        # query_text = """
-        #     -- SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
-        #     SELECT ST_Contains(bb_default_city.geom, ST_MakeValid(union_f_table.geom)) as row_to_json
-        #     -- SELECT ST_Intersects(union_f_table.geom, bb_default_city.geom) as row_to_json
-        #     -- SELECT ST_Within(ST_Buffer(union_f_table.geom, 0), bb_default_city.geom) as row_to_json
-        #     -- SELECT ST_Within(union_f_table.geom, bb_default_city.geom) as row_to_json
-        #     FROM
-        #     (
-        #         -- get the union of a feature table (shapefile)
-        #         SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM {0}
-        #     ) union_f_table,
-        #     (
-        #         -- create a bounding box of the default city (by default is SP city)
-        #         SELECT  ST_Transform(
-        #             ST_MakeEnvelope (
-        #                 {1}, {2},
-        #                 {3}, {4},
-        #                 {5}
-        #             )
-        #         , 4326) as geom
-        #     ) bb_default_city;
-        # """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
-        #                          __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
-
-        query_text = """
-            SELECT verify_if_geometry_is_inside_other_geometry('{0}', {1}, {2}, {3}, {4}, {5})     
-        """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
-                   __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
-
-        # print(query_text)
-
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        is_shapefile_inside_default_city = self.__PGSQL_CURSOR__.fetchone()
-
-        if "row_to_json" in is_shapefile_inside_default_city:
-            is_shapefile_inside_default_city = is_shapefile_inside_default_city["row_to_json"]
-
-        return is_shapefile_inside_default_city
+    # def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
+    #
+    #     # 1 - make the geometries valid
+    #     query_text = """
+    #         UPDATE {0} SET geom = ST_MakeValid(geom)
+    #         WHERE NOT ST_IsValid(geom);
+    #     """.format(f_table_name)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # 2 - verify if the shapefile is inside the default city
+    #     # query_text = """
+    #     #     -- SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
+    #     #     SELECT ST_Contains(bb_default_city.geom, ST_MakeValid(union_f_table.geom)) as row_to_json
+    #     #     -- SELECT ST_Intersects(union_f_table.geom, bb_default_city.geom) as row_to_json
+    #     #     -- SELECT ST_Within(ST_Buffer(union_f_table.geom, 0), bb_default_city.geom) as row_to_json
+    #     #     -- SELECT ST_Within(union_f_table.geom, bb_default_city.geom) as row_to_json
+    #     #     FROM
+    #     #     (
+    #     #         -- get the union of a feature table (shapefile)
+    #     #         SELECT ST_Transform(ST_Union(geom), 4326) as geom FROM {0}
+    #     #     ) union_f_table,
+    #     #     (
+    #     #         -- create a bounding box of the default city (by default is SP city)
+    #     #         SELECT  ST_Transform(
+    #     #             ST_MakeEnvelope (
+    #     #                 {1}, {2},
+    #     #                 {3}, {4},
+    #     #                 {5}
+    #     #             )
+    #     #         , 4326) as geom
+    #     #     ) bb_default_city;
+    #     # """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
+    #     #                          __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+    #
+    #     # do the clean db add the function verify_if_geometry_is_inside_other_geometry automatically
+    #     query_text = """
+    #         SELECT verify_if_geometry_is_inside_other_geometry('{0}', {1}, {2}, {3}, {4}, {5})
+    #     """.format(f_table_name, __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
+    #                __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+    #
+    #     # print(query_text)
+    #
+    #     # do the query in database
+    #     self.__PGSQL_CURSOR__.execute(query_text)
+    #
+    #     # get the result of query
+    #     is_shapefile_inside_default_city = self.__PGSQL_CURSOR__.fetchone()
+    #
+    #     if "row_to_json" in is_shapefile_inside_default_city:
+    #         is_shapefile_inside_default_city = is_shapefile_inside_default_city["row_to_json"]
+    #
+    #     return is_shapefile_inside_default_city
 
     ################################################################################
     # LAYER FOLLOWERS
@@ -2576,6 +2577,39 @@ class PGSQLConnection:
 
         # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
+
+    def get_table_schema_from_table_in_list(self, table_schema, table_name):
+        query_text = """
+            SELECT json_agg(column_name) AS row_to_json 
+            FROM 
+            (
+                -- (2) get the column names of the table
+                SELECT column_name
+                FROM information_schema.columns 
+                WHERE table_schema = '{0}' AND table_name = '{1}'
+                ORDER BY column_name
+            ) subquery;   
+        """.format(table_schema, table_name)
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query is None:
+            raise HTTPError(404, "Not found the table_name {0}.".format(table_name))
+
+        return results_of_query
 
     ################################################################################
     # ELEMENT
