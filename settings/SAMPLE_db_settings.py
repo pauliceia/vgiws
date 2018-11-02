@@ -3,7 +3,7 @@
 
 
 ############################################################
-# PostgreSQL
+# POSTGRESQL
 ############################################################
 
 # A dictionary with the settings about connection
@@ -26,23 +26,32 @@ __DEBUG_PGSQL_CONNECTION_SETTINGS__ = {
 
 
 ############################################################
-# Neo4J
+# GEOSERVER
 ############################################################
 
 # A dictionary with the settings about connection
-__NEO4J_CONNECTION_SETTINGS__ = {
+__GEOSERVER_CONNECTION_SETTINGS__ = {
     "HOSTNAME": "",
-    "USERNAME": "",
-    "PASSWORD": "",
-    "DATABASE": "",
-    "PORT": 0
+    "PORT": 0,
+    "WORKSPACE": "",
+    "DATASTORE": "",
 }
 
 # A dictionary with the settings about Test/Debug connection
-__DEBUG_NEO4J_CONNECTION_SETTINGS__ = {
+__DEBUG_GEOSERVER_CONNECTION_SETTINGS__ = {
     "HOSTNAME": "",
-    "USERNAME": "",
-    "PASSWORD": "",
-    "DATABASE": "",
-    "PORT": 0
+    "PORT": 0,
+    "WORKSPACE": "",
+    "DATASTORE": "",
+}
+
+
+############################################################
+# GEOSERVER-REST
+############################################################
+
+# A dictionary with the settings about connection
+__GEOSERVER_REST_CONNECTION_SETTINGS__ = {
+    "HOSTNAME": "",
+    "PORT": 0,
 }
