@@ -126,7 +126,8 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             resulted = loads(response.text)  # convert string to dict/JSON
 
             if response.status_code != 200:
-                raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
+                raise HTTPError(409, "Some error occurs in prj2epsg web service. Status code: " +
+                                str(response.status_code))
 
             if "codes" not in resulted:
                 raise HTTPError(409, "Invalid .prj.")
@@ -1668,6 +1669,18 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         if "version" in fields or "changeset_id" in fields:
             raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
 
+    def verify_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
+        shapefile = fiona_open(shapefile_path, 'r')
+
+        try:
+            is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(shapefile.bounds, shapefile_epsg)
+        except InternalError as error:
+            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
+                                 "import again later. \nError: " + str(error))
+
+        if not is_shapefile_intersects_default_city:
+            raise HTTPError(409, "Shapefile is not inside the default city of the project.")
+
     def import_shp(self):
         # get the arguments of the request
         arguments = self.get_aguments()
@@ -1703,8 +1716,11 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
         EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
-        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME,
-                                          EXTRACTED_ZIP_FOLDER_NAME, EPSG)
+
+        # verify if shapefile is inside default city
+        self.verify_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
+
+        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME, EPSG)
 
         VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 

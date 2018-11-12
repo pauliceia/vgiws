@@ -2028,6 +2028,37 @@ class PGSQLConnection:
     #
     #     return is_shapefile_inside_default_city
 
+    def bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(self, shapefile_bounds, shapefile_epsg):
+
+        min_x, min_y, max_x, max_y = shapefile_bounds
+
+        # verify if the shapefile intersects with the default city
+        query_text = """        
+            SELECT ST_Intersects(
+                -- create a bounding box of the shapefile
+                ST_Transform(ST_MakeEnvelope(
+                    {0}, {1}, {2}, {3}, {4}
+                ), 4326),
+                -- create a bounding box of the default city (by default is SP city)
+                ST_Transform(ST_MakeEnvelope(
+                    {5}, {6}, {7}, {8}, {9}
+                ), 4326)
+            ) as row_to_json
+        """.format(min_x, min_y, max_x, max_y, shapefile_epsg,
+                   __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
+                   __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
+
+        # do the query in database
+        self.__PGSQL_CURSOR__.execute(query_text)
+
+        # get the result of query
+        is_shapefile_intersects_default_city = self.__PGSQL_CURSOR__.fetchone()
+
+        if "row_to_json" in is_shapefile_intersects_default_city:
+            is_shapefile_intersects_default_city = is_shapefile_intersects_default_city["row_to_json"]
+
+        return is_shapefile_intersects_default_city
+
     ################################################################################
     # LAYER FOLLOWERS
     ################################################################################
