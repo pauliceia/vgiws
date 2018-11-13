@@ -140,7 +140,7 @@ class UploadOldDBInNewDB(TestCase):
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': self.f_table_name_places_pilot_area_02,
                            'name': 'Places Pilot Area 02', 'description': '', 'source_description': '',
-                           'reference': [], 'keyword': [1040]}
+                           'reference': [], 'keyword': [1041]}
         }
         layer_places_pilot_area_02 = self.tester.api_layer_create(layer_places_pilot_area_02)
         self.layer_id_places_pilot_area_02 = layer_places_pilot_area_02["properties"]["layer_id"]

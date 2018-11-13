@@ -132,26 +132,41 @@ $ python main.py --debug=True --publish_layers_in_geoserver=False
 
 You need to run the Geoserver and the geoserver-rest as done in the previous section.
 
-Now, on a console, get into the VGIMWS main folder and run the production container:
+Now, on a console, get into the VGIMWS main folder, and run the production application OR run the production container:
+
+```
+$ cd vgiws/
+$ workon pauliceia_webservice
+$ python main.py
+```
+
+or
 
 ```
 $ cd vgiws/
 $ docker-compose -f docker-compose.yml up -d
 ```
 
-On another console, get into the production container:
+Open another console (e.g. CTRL+T) and get into the VGIMWS main folder, turning on the environment OR get into the production container:
+
+```
+$ cd vgiws/
+$ workon pauliceia_webservice
+```
+
+or
 
 ```
 $ docker exec -it vgiws_prod /bin/bash
 ```
 
-Inside the container, clean the production database:
+So, inside the folder or container, clean the production database:
 
 ```
 # python tests/util/clean_db.py
 ```
 
-After that, you need to rise the old database to the new:
+After that, you need to put the old database into the new:
 
 ```
 # python files/production/upload_old_db_in_new_db.py
