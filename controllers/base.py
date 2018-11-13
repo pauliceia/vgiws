@@ -490,9 +490,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             result = self._get_resource(*args, **arguments)
         except KeyError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): get_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
@@ -502,6 +504,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
                                  "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -546,9 +549,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after create a resource
             self.PGSQLConn.commit()
         except KeyError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): create_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
@@ -588,6 +593,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after create a resource
             self.PGSQLConn.commit()
         except DataError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -620,9 +626,11 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after update a resource
             self.PGSQLConn.commit()
         except KeyError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
@@ -635,7 +643,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
-            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
@@ -656,6 +665,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             # do commit after delete the resource
             self.PGSQLConn.commit()
         except TypeError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): delete_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
@@ -666,6 +676,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
