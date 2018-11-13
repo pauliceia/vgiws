@@ -31,8 +31,7 @@ def put_extra_code(text):
 
 
 def replace_phrases(text):
-    # change the schema to public
-    text = text.replace("mydb", "public")
+    text = text.replace("mydb", "pauliceia")
     text = text.replace("`", "")
     text = text.replace("TINYINT(1)", "BOOLEAN")
     text = text.replace("DEFAULT 0", "DEFAULT FALSE")
@@ -57,7 +56,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';""", ""
     text = text.replace("USE pauliceia ;", "")
     text = text.replace(" DEFAULT CHARACTER SET utf8", "")
 
-    """
     # if the geometries are not in text, so replace them
     if "GEOMETRY(MULTIPOINT, 4326)" not in text:
         text = text.replace("MULTIPOINT", "GEOMETRY(MULTIPOINT, 4326)")
@@ -67,7 +65,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';""", ""
         text = text.replace("MULTIPOLYGON", "GEOMETRY(MULTIPOLYGON, 4326)")
     if "GEOMETRY(GEOMETRYCOLLECTION, 4326)" not in text:
         text = text.replace("GEOMETRYCOLLECTION", "GEOMETRY(GEOMETRYCOLLECTION, 4326)")
-    """
 
     return text
 
@@ -227,17 +224,20 @@ def put_delete_cascade_in_notification_table(text):
     return text
 
 def last_modifications(text):
+
+    # remove the schema
+    text = text.replace("pauliceia.", "")
+
     text = text.replace("""
 -- -----------------------------------------------------
--- Schema public
+-- Schema pauliceia
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS public CASCADE ;
+DROP SCHEMA IF EXISTS pauliceia CASCADE ;
 
 -- -----------------------------------------------------
--- Schema public
+-- Schema pauliceia
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS public ;
-USE public ;""", "")
+CREATE SCHEMA IF NOT EXISTS pauliceia ;""", "")
 
     text = text.replace("\n\n\n\n", "\n")
     text = text.replace("\n\n\n\n", "\n")
