@@ -24,8 +24,8 @@ This method imports a ShapeFile as feature table of a layer.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found .prj inside the zip.
     - 409 (Conflict): File is not a zip file.
-    - 409 (Conflict): It was not possible to find the EPSG of the Shapefile.
-    - 409 (Conflict): Invalid .prj.
+    - 409 (Conflict): It was not possible to find one EPSG from the .prj.
+    - 409 (Conflict): There is not a list of codes in the result. So it is an invalid .prj.
     - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
     - 409 (Conflict): The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.
     - 409 (Conflict): Shapefile is not inside the default city of the project.
@@ -33,6 +33,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 500 (Internal Server Error): Problem when to import the Shapefile. Fiona was not able to read the Shapefile. One reason can be that the Shapefile has an empty column name, so name it.
     - 500 (Internal Server Error): Some geometries of the Shapefile are with problem. Please, verify them and try to import again later.
     - 500 (Internal Server Error): Problem when to import a resource. Please, contact the administrator.
+    - 503 (Service Unavailable): Problem with the prj2epsg web service.
 - Notes:
     - It is necessary create a new layer without a feature table before to import the ShapeFile.
     - Inside the zip must have just the ShapeFile.

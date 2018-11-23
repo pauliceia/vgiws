@@ -86,6 +86,9 @@ def get_first_projcs_from_prj_in_wkt(prj_wkt):
     # get the projcs
     projcs = prj[0:position_next_quote]
 
+    # remove the underscore
+    projcs = projcs.replace("_", " ")
+
     return projcs
 
 
@@ -107,8 +110,6 @@ def get_EPSG_from_list_of_possible_EPSGs_according_to_prj(list_possible_epsg, pr
             EPSG = code["code"]
             greater_percentage = percentage_similarity
 
-    # print("\n EPSG: ", EPSG, "\n")
-
     return EPSG
 
 
@@ -121,19 +122,30 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
         with open(file_name_prj) as file:
             prj = file.read()
 
+            # I try to get a EPSG from a .prj
             response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
 
-            resulted = loads(response.text)  # convert string to dict/JSON
+            # if it is not possible to get a list of EPSG from a prj, so I try to search part of the .prj, the projcs
+            if response.text == "":
+                projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
+                response = session.get("http://prj2epsg.org/search.json?terms={0}".format(projcs))
+
+                # if it is not possible to get the list of EPSG from projcs, return an exception
+                if response.text == "":
+                    raise HTTPError(503, "Problem with the prj2epsg web service.")  # Service Unavailable
 
             if response.status_code != 200:
                 raise HTTPError(409, "Some error occurs in prj2epsg web service. Status code: " +
                                 str(response.status_code))
 
+            # convert string to dict/JSON
+            resulted = loads(response.text)
+
             if "codes" not in resulted:
-                raise HTTPError(409, "Invalid .prj.")
+                raise HTTPError(409, "There is not a list of codes in the result. So it is an invalid .prj.")
 
             if not resulted["codes"]:  # if resulted["codes"] is empty:
-                raise HTTPError(409, "It was not possible to find the EPSG of the Shapefile.")
+                raise HTTPError(409, "It was not possible to find one EPSG from the .prj.")
 
             EPSG = get_EPSG_from_list_of_possible_EPSGs_according_to_prj(resulted, prj)
 
@@ -1693,69 +1705,74 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
     def import_shp(self):
-        # get the arguments of the request
-        arguments = self.get_aguments()
-        # get the binary file in body of the request
-        binary_file = self.request.body
+        try:
+            # get the arguments of the request
+            arguments = self.get_aguments()
+            # get the binary file in body of the request
+            binary_file = self.request.body
 
-        # validate the arguments and binary_file
-        self.do_validation(arguments, binary_file)
+            # validate the arguments and binary_file
+            self.do_validation(arguments, binary_file)
 
-        # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
-        arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
+            # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
+            arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
-        # verify if the user has permission to import the shapefile (same permissions than the feature table)
-        current_user_id = self.get_current_user_id()
-        self.can_current_user_manage(current_user_id, arguments["f_table_name"])
+            # verify if the user has permission to import the shapefile (same permissions than the feature table)
+            current_user_id = self.get_current_user_id()
+            self.can_current_user_manage(current_user_id, arguments["f_table_name"])
 
-        # remove the extension of the file name (e.g. points)
-        FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
+            # remove the extension of the file name (e.g. points)
+            FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
 
-        # file name of the zip (e.g. /tmp/vgiws/points.zip)
-        ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
-        # folder where will extract the zip (e.g. /tmp/vgiws/points)
-        EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
+            # file name of the zip (e.g. /tmp/vgiws/points.zip)
+            ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
+            # folder where will extract the zip (e.g. /tmp/vgiws/points)
+            EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
 
-        self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
+            self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
-        # name of the SHP file (e.g. points.shp)
-        SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
+            # name of the SHP file (e.g. points.shp)
+            SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
 
-        self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+            self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-        SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
-        self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
+            SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
+            self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
-        EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-        # verify if shapefile is inside default city
-        self.verify_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
+            # verify if shapefile is inside default city
+            self.verify_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
 
-        self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME, EPSG)
+            self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME, EPSG)
 
-        VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
+            VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 
-        self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, arguments["f_table_name"])
+            self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, arguments["f_table_name"])
 
-        # arranging the feature table
-        self.PGSQLConn.add_version_column_in_table(arguments["f_table_name"])
-        self.PGSQLConn.add_changeset_id_column_in_table(arguments["f_table_name"])
-        self.PGSQLConn.update_feature_table_setting_in_all_records_a_changeset_id(arguments["f_table_name"], arguments["changeset_id"])
-        self.PGSQLConn.update_feature_table_setting_in_all_records_a_version(arguments["f_table_name"], 1)
+            # arranging the feature table
+            self.PGSQLConn.add_version_column_in_table(arguments["f_table_name"])
+            self.PGSQLConn.add_changeset_id_column_in_table(arguments["f_table_name"])
+            self.PGSQLConn.update_feature_table_setting_in_all_records_a_changeset_id(arguments["f_table_name"], arguments["changeset_id"])
+            self.PGSQLConn.update_feature_table_setting_in_all_records_a_version(arguments["f_table_name"], 1)
 
-        # arranging the version feature table
-        self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
-        self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
+            # arranging the version feature table
+            self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
+            self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
 
-        # commit the feature table
-        self.PGSQLConn.commit()
-        # publish the feature table/layer in geoserver
-        self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"], EPSG)
-        # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
+            # commit the feature table
+            self.PGSQLConn.commit()
+            # publish the feature table/layer in geoserver
+            self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"], EPSG)
+            # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
 
-        # remove the temporary file and folder of the shapefile
-        remove_file(ZIP_FILE_NAME)
-        remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
+            # remove the temporary file and folder of the shapefile
+            remove_file(ZIP_FILE_NAME)
+            remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
+        except ProgrammingError as error:
+            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
+            raise HTTPError(500, "Problem when to import the Shapefile: " + str(error))
+
 
 
 # CONVERT
