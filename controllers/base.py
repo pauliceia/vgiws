@@ -825,6 +825,12 @@ class LayerValidator(BaseHandler):
             raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
                             + "(table: " + f_table_name + ")")
 
+    def verify_if_layer_has_max_5_keywords(self, resource_json):
+        amount_of_keywords = len(resource_json["properties"]["keyword"])
+
+        if amount_of_keywords > 5:
+            raise HTTPError(409, "The maximum of keywords allowed to a layer are 5.")
+
 
 class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
@@ -840,12 +846,15 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
         self.verify_if_f_table_name_already_exist_in_db(f_table_name)
+        self.verify_if_layer_has_max_5_keywords(resource_json)
 
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.verify_if_layer_has_max_5_keywords(resource_json)
+
         self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
 
         return self.PGSQLConn.update_layer(resource_json, current_user_id)

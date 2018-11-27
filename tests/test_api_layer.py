@@ -394,6 +394,21 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_layer_create_error_409_conflict_maximum_of_keywords_are_5(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': "new_table", 'name': '',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [1001, 1002, 1003, 1004, 1005, 1006]}
+        }
+        self.tester.api_layer_create_error_409_conflict(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     # layer errors - update
 
     def test_put_api_layer_error_400_bad_request_attribute_in_JSON_is_missing(self):
@@ -495,6 +510,21 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_update_error_404_not_found(resource)
 
         # DO LOGOUT
+        self.tester.auth_logout()
+
+    def test_put_api_layer_error_409_conflict_maximum_of_keywords_are_5(self):
+        # DO LOGIN
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        resource = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': "new_table", 'name': '',
+                           'description': '', 'source_description': '',
+                           'reference': [], 'keyword': [1001, 1002, 1003, 1004, 1005, 1006]}
+        }
+        self.tester.api_layer_update_error_409_conflict(resource)
+
+        # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     # layer errors - delete
