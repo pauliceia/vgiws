@@ -796,7 +796,7 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
         :return:
         """
 
-        # if currente user is an administrator, so ok ...
+        # if current user is an administrator, so ok ...
         if self.is_current_user_an_administrator():
             return
 
@@ -1777,7 +1777,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except ProgrammingError as error:
             self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when to import the Shapefile: " + str(error))
-
 
 
 # CONVERT
