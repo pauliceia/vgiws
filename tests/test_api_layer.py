@@ -482,7 +482,7 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT
         self.tester.auth_logout()
 
-    def test_put_api_layer_error_404_not_found(self):
+    def test_put_api_layer_error_404_not_found_not_found_layer_x(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 

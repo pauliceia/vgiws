@@ -29,6 +29,8 @@ from psycopg2 import ProgrammingError, DataError, Error, InternalError
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
+# from tornado.log import gen_log
+# gen_log.info("Killing all sessions...")
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
@@ -844,7 +846,6 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        # layer_id = resource_json["properties"]["layer_id"]
         self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
 
         return self.PGSQLConn.update_layer(resource_json, current_user_id)
@@ -871,10 +872,12 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         if self.is_current_user_an_administrator():
             return
 
-        user_layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+        layers = self.PGSQLConn.get_layers(layer_id=layer_id)
 
-        if not user_layers["features"]:  # if list is empty:
-            raise HTTPError(404, "Not found users in layer {0}.".format(layer_id))
+        if not layers["features"]:  # if list is empty:
+            raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
+
+        user_layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
         for user_layer in user_layers["features"]:
             if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
