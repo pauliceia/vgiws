@@ -844,6 +844,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
+        # layer_id = resource_json["properties"]["layer_id"]
         self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
 
         return self.PGSQLConn.update_layer(resource_json, current_user_id)
@@ -870,16 +871,15 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         if self.is_current_user_an_administrator():
             return
 
-        user_layer = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+        user_layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
-        if not user_layer["features"]:  # if list is empty:
+        if not user_layers["features"]:  # if list is empty:
             raise HTTPError(404, "Not found users in layer {0}.".format(layer_id))
 
-        properties = user_layer["features"][0]["properties"]
-
-        # if the current_user_id is the creator of the layer, so ok...
-        if properties['is_the_creator'] and properties['user_id'] == current_user_id:
-            return
+        for user_layer in user_layers["features"]:
+            if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
 
         # ... else, raise an exception.
         raise HTTPError(403, "The owner of layer or administrator are who can manage a layer.")
@@ -1064,6 +1064,9 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         self.can_current_user_add_user_in_layer(current_user_id, resource_json["properties"]["layer_id"])
 
+        # the layer's creator is just who was added by create_layer function, the others are not
+        resource_json["properties"]["is_the_creator"] = False
+
         return self.PGSQLConn.create_user_layer(resource_json, current_user_id)
 
     # PUT
@@ -1092,11 +1095,10 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         if self.is_current_user_an_administrator():
             return
 
-        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+        user_layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
-        for layer in layers["features"]:
-            if layer["properties"]['is_the_creator'] and \
-                    layer["properties"]['user_id'] == current_user_id:
+        for user_layer in user_layers["features"]:
+            if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
                 # if the current_user_id is the creator of the layer, so ok...
                 return
 

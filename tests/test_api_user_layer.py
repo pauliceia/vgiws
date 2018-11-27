@@ -341,13 +341,13 @@ class TestAPIUserLayerErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to add a user in a layer (without is_the_creator)
-        user_layer = {
-            'properties': {'user_id': 1002, 'layer_id': 1003},
-            'type': 'UserLayer'
-        }
-        # try to add the user in layer again and raise an error
-        self.tester.api_user_layer_create_error_400_bad_request(user_layer)
+        # # try to add a user in a layer (without is_the_creator)
+        # user_layer = {
+        #     'properties': {'user_id': 1002, 'layer_id': 1003},
+        #     'type': 'UserLayer'
+        # }
+        # # try to add the user in layer again and raise an error
+        # self.tester.api_user_layer_create_error_400_bad_request(user_layer)
 
         # try to add a user in a layer (without user_id)
         user_layer = {

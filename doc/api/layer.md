@@ -178,7 +178,7 @@ This method adds a user in a layer described in JSON.
 - Send (in Body): a JSON describing the resource. Example:
     ```javascript
     {
-        'properties': {'is_the_creator': False, 'user_id': 1004, 'layer_id': 1003},
+        'properties': {'user_id': 1004, 'layer_id': 1003},
         'type': 'UserLayer'
     }
     ```

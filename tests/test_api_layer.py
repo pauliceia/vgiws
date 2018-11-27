@@ -125,6 +125,12 @@ class TestAPILayer(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
+        # get creator user id
+        ##################################################
+        user = self.tester.function_api_user_by_token()
+        creator_user_id = user["properties"]["user_id"]
+
+        ##################################################
         # create a layer
         ##################################################
         resource = {
@@ -134,6 +140,9 @@ class TestAPILayer(TestCase):
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
         resource = self.tester.api_layer_create(resource)
+
+        # get the id of layer
+        resource_id = resource["properties"]["layer_id"]
 
         ##################################################
         # update the layer
@@ -146,22 +155,74 @@ class TestAPILayer(TestCase):
         # verify if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
+        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource_id)
 
-        # TODO: verificar se o usuário segue aquela layer
+        ##################################################
+        # add a collaborator
+        ##################################################
+        user_id_collaborator = 1004
+
+        user_layer = {
+            'properties': {'user_id': user_id_collaborator, 'layer_id': resource_id},
+            'type': 'UserLayer'
+        }
+        self.tester.api_user_layer_create(user_layer)
+
+        ##################################################
+        # verify if the creator user started to follow the layer automatically
+        ##################################################
+        expected_at_least = {
+            'features': [
+                {
+                    'properties': {'layer_id': resource_id, 'user_id': creator_user_id},
+                    'type': 'LayerFollower'
+                },
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_layer_follower(expected_at_least=expected_at_least,
+                                       user_id=creator_user_id, layer_id=resource_id)
+
+        ##################################################
+        # verify if the collaborator user started to follow the layer automatically
+        ##################################################
+        expected_at_least = {
+            'features': [
+                {
+                    'properties': {'layer_id': resource_id, 'user_id': user_id_collaborator},
+                    'type': 'LayerFollower'
+                },
+            ],
+            'type': 'FeatureCollection'
+        }
+        self.tester.api_layer_follower(expected_at_least=expected_at_least,
+                                       user_id=user_id_collaborator, layer_id=resource_id)
 
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
-        resource_id = resource["properties"]["layer_id"]
-
         # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(resource_id)
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=resource_id)
+
+        # it is not possible to find a user in a layer that just deleted (creator user)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_user_layer(expected, user_id=creator_user_id, layer_id=resource_id)
+
+        # verify if the user stopped automatically of following the layer (creator user)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_layer_follower(expected, user_id=creator_user_id, layer_id=resource_id)
+
+        # it is not possible to find a user in a layer that just deleted (collaborator user)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_user_layer(expected, user_id=user_id_collaborator, layer_id=resource_id)
+
+        # verify if the user stopped automatically of following the layer (collaborator user)
+        expected = {'features': [], 'type': 'FeatureCollection'}
+        self.tester.api_layer_follower(expected, user_id=user_id_collaborator, layer_id=resource_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

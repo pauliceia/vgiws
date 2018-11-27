@@ -2162,6 +2162,14 @@ class UtilTester:
             self.ut_self.assertEqual(resulted["properties"][key], expected_at_least["properties"][key])
         self.ut_self.assertEqual(resulted["type"], expected_at_least["type"])
 
+    def function_api_user_by_token(self):
+        response = self.session.get(self.URL + '/api/user_by_token', headers=self.headers)
+
+        if response.status_code == 200:
+            return loads(response.text)  # convert string to dict/JSON and return
+        else:
+            raise Exception("VGIMWS API status error: " + str(response.status_code))
+
     # user_by_token - errors
 
     def api_user_by_token_400_bad_request(self, invalid_authorization):
