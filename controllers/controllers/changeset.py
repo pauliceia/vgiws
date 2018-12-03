@@ -29,6 +29,6 @@ class APIChangeset(BaseHandlerChangeset):
     #     self.put_method_api_resource(param)
 
     @auth_non_browser_based
-    @auth_just_admin_can_use
+    # @auth_just_admin_can_use
     def delete(self, param=None):
         self.delete_method_api_resource(param)
