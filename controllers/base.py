@@ -1286,7 +1286,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
             return
 
         # ... else, raise an exception.
-        # raise HTTPError(403, "The administrator is who can delete the changeset.")
+        raise HTTPError(403, "The administrator is who can delete the changeset.")
 
 
 class BaseHandlerNotification(BaseHandlerTemplateMethod):

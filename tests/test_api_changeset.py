@@ -461,18 +461,18 @@ class TestAPIChangesetErrors(TestCase):
         self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="0")
         self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="1001")
 
-    # def test_delete_api_changeset_error_403_forbidden_non_admin_user_tries_to_delete(self):
-    #     self.tester.auth_login("miguel@admin.com", "miguel")
-    #
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id="abc")
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id=0)
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id=-1)
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id="-1")
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id="0")
-    #     self.tester.api_changeset_delete_error_403_forbidden(changeset_id="1001")
-    #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    def test_delete_api_changeset_error_403_forbidden_non_admin_user_tries_to_delete(self):
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="abc")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=0)
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=-1)
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="-1")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="0")
+        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="1001")
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
 
     def test_delete_api_changeset_error_404_not_found(self):
         # DO LOGIN
