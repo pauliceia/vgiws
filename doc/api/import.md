@@ -20,6 +20,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 400 (Bad Request): It is necessary to pass one binary zip file in the body of the request.
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
+    - 400 (Bad Request): The Shapefile has an invalid attribute: <ATTRIBUTE>. It has a special character. Please, rename it.
     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a feature table or do a import.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found .prj inside the zip.

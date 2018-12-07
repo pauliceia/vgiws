@@ -19,6 +19,7 @@ from shutil import make_archive
 from string import punctuation
 from fiona import open as fiona_open
 from difflib import SequenceMatcher
+from re import compile as re_compile
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -154,6 +155,12 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             return EPSG
     except FileNotFoundError as error:
         raise HTTPError(404, "Not found .prj inside the zip.")
+
+
+def is_without_special_chars(word):
+    english_check = re_compile(r'^[a-zA-Z_]+$')
+
+    return bool(english_check.match(word))
 
 
 # BASE CLASS
@@ -1696,7 +1703,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
             layer = fiona_open(shapefile_path)
-            fields = dict(layer.schema["properties"])
+            fields = list(layer.schema["properties"].keys())
+
+            for field in fields:
+                if not is_without_special_chars(field):
+                    raise HTTPError(400, "The Shapefile has an invalid attribute: {0}. ".format(field) +
+                                    "It has a special character. Please, rename it.")
+
         except ValueError as error:
             raise HTTPError(500, "Problem when to import the Shapefile. Fiona was not able to read the Shapefile. \n" +
                             "One reason can be that the Shapefile has an empty column name, so name it. \n" +

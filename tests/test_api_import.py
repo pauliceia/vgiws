@@ -155,12 +155,24 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
+    # def test_post_import_shp_Sarah_Feldman_adaptada_4326_sem_acento_coluna(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "Sarah_Feldman_adaptada_4326_sem_acento_coluna.zip"
+    #     file_name_path = "shp_originals/ferla/" + file_name
+    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+    #
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
     """
-    def test_post_import_shp_Sarah_Feldman_adaptada_4326(self):
+    def test_post_import_shp_Area alagada_problema(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
-        file_name = "Sarah_Feldman_adaptada_4326.zip"
+        file_name = "Area alagada_problema.zip"
         file_name_path = "shp_originals/ferla/" + file_name
         with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
@@ -403,6 +415,17 @@ class TestAPIImportError(TestCase):
                 self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
                                                                         file_name="points",
                                                                         changeset_id=self.changeset_id)
+
+    def test_post_import_shp_error_400_bad_request_Sarah_Feldman_adaptada_atributos_com_acentos(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "Sarah_Feldman_adaptada_atributos_com_acentos.zip"
+        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
+                                                                    file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_403_forbidden_invalid_user_tries_to_create_a_feature_table(self):
         self.f_table_name = "layer_1002"
