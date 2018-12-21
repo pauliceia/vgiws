@@ -35,7 +35,7 @@ from tornado.escape import json_encode
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
-                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__, __PRJ2EPSG_WEB_SERVICE__
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
                                 __EMAIL_SIGNATURE__
@@ -126,12 +126,12 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             prj = file.read()
 
             # I try to get a EPSG from a .prj
-            response = session.get("http://prj2epsg.org/search.json?mode=wkt&terms={0}".format(prj))
+            response = session.get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?mode=wkt&terms={0}".format(prj))
 
             # if it is not possible to get a list of EPSG from a prj, so I try to search part of the .prj, the projcs
             if response.text == "":
                 projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
-                response = session.get("http://prj2epsg.org/search.json?terms={0}".format(projcs))
+                response = session.get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(projcs))
 
                 # if it is not possible to get the list of EPSG from projcs, return an exception
                 if response.text == "":
