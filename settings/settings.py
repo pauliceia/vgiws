@@ -49,7 +49,7 @@ __TEMP_FOLDER__ = "/tmp/vgiws/"
 ####################################################################################################
 
 # __URL_PRJ2EPSG__ = "http://127.0.0.1:8080/prj2epsg"
-__PRJ2EPSG_WEB_SERVICE__ = "http://pauliceia.dpi.inpe.br:8080/prj2epsg"
+__PRJ2EPSG_WEB_SERVICE__ = "http://www.pauliceia.dpi.inpe.br/prj2epsg"
 
 
 ####################################################################################################
