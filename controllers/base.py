@@ -41,7 +41,8 @@ from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __
                                 __EMAIL_SIGNATURE__
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
-                            get_shapefile_name_inside_zip, catch_generic_exception
+                            get_shapefile_name_inside_zip, catch_generic_exception, \
+                            exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip
 
 
 def send_email(to_email_address, subject="", body=""):
@@ -1619,6 +1620,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
         :return:
         """
+        """
+        TODO; refactor this function
+        1) extract the files inside the folder
+        2) verify if the folder contains the Shapefile files (shp, dbf, prj, shx)
+        """
+
         remove_and_raise_exception = False
 
         # extract the zip in a folder
@@ -1627,13 +1634,15 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # if exist one shapefile inside the zip, so extract the zip, else raise an exception
             if exist_shapefile_inside_zip(zip_reference):
                 zip_reference.extractall(folder_to_extract_zip)
+
+                self.verify_if_there_are_shapefile_files_inside_the_zip_file(folder_with_file_name)
             else:
                 remove_and_raise_exception = True
 
         if remove_and_raise_exception:
             # remove the created file after close the file (out of with ZipFile)
             remove_file(folder_with_file_name)
-            raise HTTPError(400, "Invalid ZIP! It is necessary to exist a ShapeFile (.shp) inside de ZIP.")
+            raise HTTPError(404, "2) Invalid ZIP! Not found a ShapeFile (.shp) inside de ZIP.")
 
     # def verify_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
     #     list_table_schema = self.PGSQLConn.get_table_schema_from_table_in_list(table_schema="public",
@@ -1702,6 +1711,16 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file.")
 
+    def verify_if_there_are_shapefile_files_inside_the_zip_file(self, folder_with_file_name):
+
+        try:
+            # try to open the zip
+            with ZipFile(folder_with_file_name, "r") as zip_reference:
+                # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
+                exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference)
+        except BadZipFile as error:
+            raise HTTPError(409, "File is not a zip file.")
+
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
             layer = fiona_open(shapefile_path)
@@ -1760,10 +1779,24 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
             self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
+
+
+
+
+
             # name of the SHP file (e.g. points.shp)
             SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
 
+            # self.verify_if_there_are_shapefile_files_inside_the_zip_file(ZIP_FILE_NAME)
+
             self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+
+
+
+
+
+
+
 
             SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
             self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
