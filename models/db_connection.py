@@ -961,8 +961,13 @@ class PGSQLConnection:
 
             self.__PGSQL_CURSOR__.execute(query_text)
 
-        # unpublish the features table in geoserver
-        self.unpublish_feature_table_in_geoserver(f_table_name)
+        try:
+            # unpublish the features table in geoserver
+            self.unpublish_feature_table_in_geoserver(f_table_name)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+
         # remove the feature table from database
         self.commit()
 
