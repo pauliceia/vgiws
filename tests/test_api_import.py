@@ -491,20 +491,6 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=f_table_name,
                                                                   file_name=file_name, changeset_id=self.changeset_id)
 
-    # def test_post_import_shp_error_400_bad_request_zip_without_shapefile(self):
-    #     ##################################################
-    #     # try to import the shapefile, but the zip doesn't have a shapefile
-    #     ##################################################
-    #     # it raises: 3) Invalid ZIP!Not found a ShapeFile (.shp) inside de ZIP.
-    #     file_name = "folder_with_nothing.zip"
-    #
-    #     with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
-    #         binary_file_content = file.read()
-    #
-    #         self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
-    #                                                                 file_name=file_name, changeset_id=self.changeset_id)
-
-    # not ok refactor functions
     def test_post_import_shp_error_404_not_found_not_found_shp(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)

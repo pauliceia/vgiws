@@ -135,23 +135,32 @@ def get_shapefile_name_inside_zip(zip_reference):
         if file_name_in_zip.endswith(".shp"):
             return file_name_in_zip
 
-    raise HTTPError(404, "3) Invalid ZIP!Not found a ShapeFile (.shp) inside de ZIP.")  # 400 - Bad request
+    raise HTTPError(404, "3) Invalid ZIP! Not found a ShapeFile (.shp) inside de ZIP.")  # 400 - Bad request
 
 
 def exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference):
+    status = 200  # it is expected that it will work OK
+    file_extension = ""
+
     list_file_names_of_zip = zip_reference.namelist()
 
     if not any("shp" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
-        raise HTTPError(404, "Invalid ZIP! Not found a ShapeFile (.shp) inside de ZIP.")  # 400 - Bad request
+        status = 404
+        file_extension = ".shp"
 
     if not any("prj" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
-        raise HTTPError(404, "Invalid ZIP! Not found a ShapeFile (.prj) inside de ZIP.")  # 400 - Bad request
+        status = 404
+        file_extension = ".prj"
 
     if not any("dbf" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
-        raise HTTPError(404, "Invalid ZIP! Not found a ShapeFile (.dbf) inside de ZIP.")  # 400 - Bad request
+        status = 404
+        file_extension = ".dbf"
 
     if not any("shx" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
-        raise HTTPError(404, "Invalid ZIP! Not found a ShapeFile (.shx) inside de ZIP.")  # 400 - Bad request
+        status = 404
+        file_extension = ".shx"
+
+    return status, "Invalid ZIP! Not found a ShapeFile ({0}) inside de ZIP.".format(file_extension)
 
 
 # OTHERS

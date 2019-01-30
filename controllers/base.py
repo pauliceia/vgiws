@@ -1626,23 +1626,22 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         2) verify if the folder contains the Shapefile files (shp, dbf, prj, shx)
         """
 
-        remove_and_raise_exception = False
-
-        # extract the zip in a folder
-        with ZipFile(folder_with_file_name, "r") as zip_reference:
-
-            # if exist one shapefile inside the zip, so extract the zip, else raise an exception
-            if exist_shapefile_inside_zip(zip_reference):
+        try:
+            with ZipFile(folder_with_file_name, "r") as zip_reference:
+                # extract the zip in a folder
                 zip_reference.extractall(folder_to_extract_zip)
 
-                self.verify_if_there_are_shapefile_files_inside_the_zip_file(folder_with_file_name)
-            else:
-                remove_and_raise_exception = True
+                # verify if there are the shapefile files inside the zip, if ok, so returns a 200 status,
+                # else it returns a 404 with a message
+                status, message = exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference)
 
-        if remove_and_raise_exception:
-            # remove the created file after close the file (out of with ZipFile)
-            remove_file(folder_with_file_name)
-            raise HTTPError(404, "2) Invalid ZIP! Not found a ShapeFile (.shp) inside de ZIP.")
+                # if it is not success, remove the files and raise a message
+                if status != 200:
+                    remove_file(folder_with_file_name)
+                    raise HTTPError(status, message)
+
+        except BadZipFile as error:
+            raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
     # def verify_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
     #     list_table_schema = self.PGSQLConn.get_table_schema_from_table_in_list(table_schema="public",
@@ -1709,17 +1708,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                 # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
                 return get_shapefile_name_inside_zip(zip_reference)
         except BadZipFile as error:
-            raise HTTPError(409, "File is not a zip file.")
-
-    def verify_if_there_are_shapefile_files_inside_the_zip_file(self, folder_with_file_name):
-
-        try:
-            # try to open the zip
-            with ZipFile(folder_with_file_name, "r") as zip_reference:
-                # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
-                exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference)
-        except BadZipFile as error:
-            raise HTTPError(409, "File is not a zip file.")
+            raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
@@ -1779,24 +1768,11 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
             self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
 
-
-
-
-
-
-            # name of the SHP file (e.g. points.shp)
-            SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
-
-            # self.verify_if_there_are_shapefile_files_inside_the_zip_file(ZIP_FILE_NAME)
-
+            # extract the zip in a folder
             self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
 
-
-
-
-
-
-
+            # get the SHP name (e.g. points.shp)
+            SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
 
             SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
             self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
