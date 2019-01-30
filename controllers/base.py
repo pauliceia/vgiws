@@ -158,6 +158,8 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
 
 
 def is_without_special_chars(word):
+    word = word.replace(" ", "_")  # white space is a special char, so change to underscore
+
     english_check = re_compile(r'^[a-zA-Z_]+$')
 
     return bool(english_check.match(word))

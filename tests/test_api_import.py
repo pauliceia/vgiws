@@ -65,7 +65,7 @@ class TestAPIImport(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    """
+
     # import - create
 
     def test_post_import_shp_places_5_points_4326(self):
@@ -154,7 +154,19 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
-    """
+
+    def test_post_import_shp_SF_4326(self):
+        ##################################################
+        # the Shapefile has an empty column name and fiona and OGR don't understand it
+        ##################################################
+        file_name = "SF.zip"
+        file_name_path = "shp_originals/apresentacao_emory_31_01_19/ferla/" + file_name
+        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+
     # def test_post_import_shp_Sarah_Feldman_adaptada_4326_sem_acento_coluna(self):
     #     ##################################################
     #     # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -340,11 +352,6 @@ class TestAPIImportError(TestCase):
 
         self.folder_name = "files/"
         self.folder_name_shp_originals = "files/shp_originals/"
-        # self.f_table_name = "layer_1003"
-        # self.changeset_id = 1005
-
-
-        #
 
         self.f_table_name = "layer_test"
 
