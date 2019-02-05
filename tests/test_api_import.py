@@ -160,7 +160,7 @@ class TestAPIImport(TestCase):
         # the Shapefile has an empty column name and fiona and OGR don't understand it
         ##################################################
         file_name = "SF.zip"
-        file_name_path = "shp_originals/apresentacao_emory_31_01_19/ferla/" + file_name
+        file_name_path = "shp_originals/ferla/" + file_name
         with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
