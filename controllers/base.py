@@ -19,7 +19,6 @@ from shutil import make_archive
 from string import punctuation
 from fiona import open as fiona_open
 from difflib import SequenceMatcher
-from re import compile as re_compile
 from time import sleep
 
 from smtplib import SMTP
@@ -42,9 +41,9 @@ from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EM
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
                                 __EMAIL_SIGNATURE__
 
-from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, exist_shapefile_inside_zip, \
-                            get_shapefile_name_inside_zip, catch_generic_exception, \
-                            exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip
+from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, get_shapefile_name_inside_zip, \
+                            catch_generic_exception, exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip, \
+                            is_without_special_chars
 
 
 def send_email(to_email_address, subject="", body=""):
@@ -161,14 +160,6 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             return EPSG
     except FileNotFoundError as error:
         raise HTTPError(404, "Not found .prj inside the zip.")
-
-
-def is_without_special_chars(word):
-    word = word.replace(" ", "_")  # white space is a special char, so change to underscore
-
-    english_check = re_compile(r'^[a-zA-Z_]+$')
-
-    return bool(english_check.match(word))
 
 
 # BASE CLASS

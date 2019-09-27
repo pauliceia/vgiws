@@ -7,6 +7,7 @@ from base64 import b64encode
 from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError, InvalidAlgorithmError
 from string import ascii_uppercase, digits
 from random import choice
+from re import compile as re_compile
 
 from psycopg2 import Error, ProgrammingError
 from tornado.web import HTTPError
@@ -188,3 +189,10 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
     """
     return ''.join(choice(chars) for _ in range(size))
 
+
+def is_without_special_chars(word):
+    word = word.replace(" ", "_")  # white space is a special char, so change to underscore
+
+    english_check = re_compile(r'^[a-zA-Z_]+$')
+
+    return bool(english_check.match(word))
