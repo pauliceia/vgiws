@@ -38,70 +38,21 @@ class TestModuleCommonIsWithoutSpecialChars(TestCase):
         self.assertFalse(is_without_special_chars(")_special_character_at_the_beginning"))
         self.assertFalse(is_without_special_chars("special_character_*_in_the_center"))
 
-        self.assertFalse(is_without_special_chars("special_character_&"))
-        self.assertFalse(is_without_special_chars("special_character_¨"))
-        self.assertFalse(is_without_special_chars("special_character_%"))
-        self.assertFalse(is_without_special_chars("special_character_$"))
-        self.assertFalse(is_without_special_chars("special_character_#"))
-        self.assertFalse(is_without_special_chars("special_character_@"))
-        self.assertFalse(is_without_special_chars("special_character_!"))
-        self.assertFalse(is_without_special_chars("special_character_'"))
-        self.assertFalse(is_without_special_chars("special_character_\""))
-        self.assertFalse(is_without_special_chars("special_character_|"))
-        self.assertFalse(is_without_special_chars("special_character_\\"))
+        special_characters = ["&", "¨", "%", "$", "#", "@", "!", "'", "\"", "|", "\\", "-", "+", "=", "§", "`", "´",
+                              "^", "~", "{", "}", "[", "]", "ª", "º", "<", ">", ",", ".", ":", ";", "/", "?", "°"]
 
-        self.assertFalse(is_without_special_chars("special_character_-"))
-        self.assertFalse(is_without_special_chars("special_character_+"))
-        self.assertFalse(is_without_special_chars("special_character_="))
-        self.assertFalse(is_without_special_chars("special_character_§"))
-        self.assertFalse(is_without_special_chars("special_character_`"))
-        self.assertFalse(is_without_special_chars("special_character_´"))
-        self.assertFalse(is_without_special_chars("special_character_^"))
-        self.assertFalse(is_without_special_chars("special_character_~"))
-        self.assertFalse(is_without_special_chars("special_character_{"))
-        self.assertFalse(is_without_special_chars("special_character_}"))
-
-        self.assertFalse(is_without_special_chars("special_character_["))
-        self.assertFalse(is_without_special_chars("special_character_]"))
-        self.assertFalse(is_without_special_chars("special_character_ª"))
-        self.assertFalse(is_without_special_chars("special_character_º"))
-        self.assertFalse(is_without_special_chars("special_character_<"))
-        self.assertFalse(is_without_special_chars("special_character_>"))
-        self.assertFalse(is_without_special_chars("special_character_,"))
-        self.assertFalse(is_without_special_chars("special_character_."))
-
-        self.assertFalse(is_without_special_chars("special_character_:"))
-        self.assertFalse(is_without_special_chars("special_character_;"))
-        self.assertFalse(is_without_special_chars("special_character_/"))
-        self.assertFalse(is_without_special_chars("special_character_?"))
-        self.assertFalse(is_without_special_chars("special_character_°"))
+        for character in special_characters:
+            self.assertFalse(is_without_special_chars("special_character_" + character))
 
     def test_module_common_is_without_special_chars__accent(self):
-        self.assertFalse(is_without_special_chars("character_with_accent_à"))
-        self.assertFalse(is_without_special_chars("character_with_accent_è"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ì"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ò"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ù"))
+        special_characters = ["à", "è", "ì", "ò", "ù",
+                              "á", "é", "í", "ó", "ú",
+                              "â", "ê", "î", "ô", "û",
+                              "ã", "ẽ", "ĩ", "õ", "ũ",
+                              "ç"]
 
-        self.assertFalse(is_without_special_chars("character_with_accent_á"))
-        self.assertFalse(is_without_special_chars("character_with_accent_é"))
-        self.assertFalse(is_without_special_chars("character_with_accent_í"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ó"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ú"))
-
-        self.assertFalse(is_without_special_chars("character_with_accent_â"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ê"))
-        self.assertFalse(is_without_special_chars("character_with_accent_î"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ô"))
-        self.assertFalse(is_without_special_chars("character_with_accent_û"))
-
-        self.assertFalse(is_without_special_chars("character_with_accent_ã"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ẽ"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ĩ"))
-        self.assertFalse(is_without_special_chars("character_with_accent_õ"))
-        self.assertFalse(is_without_special_chars("character_with_accent_ũ"))
-
-        self.assertFalse(is_without_special_chars("character_with_accent_ç"))
+        for character in special_characters:
+            self.assertFalse(is_without_special_chars("special_character_" + character))
 
     def test_module_common_is_without_special_chars__number_at_the_beginning(self):
         # 'number' is a number from 0 to 9
