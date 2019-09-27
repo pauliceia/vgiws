@@ -191,8 +191,18 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
 
 
 def is_without_special_chars(word):
+    """
+    To be a valid word, it must:
+    - start with a character without number (i.e. '^[a-zA-Z_]')
+    - end with a character that can have numbers (i.e. '[a-zA-Z0-9_]+$')
+    - have one or more occurrences of that letter (i.e. '+')
+    - not have special characters (i.e. '^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+    :param word:
+    :return: boolean
+    """
+
     word = word.replace(" ", "_")  # white space is a special char, so change to underscore
 
-    english_check = re_compile(r'^[a-zA-Z_]+$')
+    english_check = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
 
     return bool(english_check.match(word))
