@@ -20,6 +20,7 @@ from string import punctuation
 from fiona import open as fiona_open
 from difflib import SequenceMatcher
 from re import compile as re_compile
+from time import sleep
 
 from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
@@ -36,7 +37,8 @@ from tornado.escape import json_encode
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
                                 __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__, __PRJ2EPSG_WEB_SERVICE__
-from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__
+from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__, \
+                                __TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
                                 __EMAIL_SIGNATURE__
 
@@ -67,6 +69,9 @@ def send_email(to_email_address, subject="", body=""):
 
     thread = Thread(target=__thread_send_email__, args=(to_email_address, subject, body,))
     thread.start()
+
+    # wait X second(s) after sending an e-mail in order to avoid blocking the SMTP server
+    sleep(__TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__)
 
 
 def get_percentage_of_similarity_of_two_strings(string_01, string_02):

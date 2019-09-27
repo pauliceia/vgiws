@@ -81,6 +81,9 @@ __VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/email"  # pr
 # __VALIDATE_EMAIL__ = "http://localhost/portal/valid/email"  # test the platform offline
 __VALIDATE_EMAIL_DEBUG__ = "http://localhost:8081/portal/valid/email"  # debug VGIMWS
 
+# wait X second(s) after sending an e-mail in order to avoid blocking the SMTP server
+__TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__ = 1
+
 
 ####################################################################################################
 # SPATIAL BOUNDING BOX
