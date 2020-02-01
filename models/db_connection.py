@@ -183,23 +183,21 @@ class PGSQLConnection:
 
             query = query.lower()
 
-            # print('\n\n query: ', query, '\n')
-            # print(' is_transaction: ', is_transaction, '\n\n')
-
-            # if this query was a SELECT clause, then return all features
+            # if this query was a SELECT/INSERT clause
             if 'select' in query or 'insert' in query:
-                # print('\n select \n')
-                return self.__PGSQL_CURSOR__.fetchone()
-            # if this query was a UPDATE clause, then return the number of rows affected
+                try:
+                    return self.__PGSQL_CURSOR__.fetchone()
+                except ProgrammingError:
+                    return None
+            # if this query was a UPDATE/DELETE clause
             elif 'update' in query or 'delete' in query:
-                # print('\n update delete \n')
                 return self.__PGSQL_CURSOR__.rowcount
             else:
                 return None
 
         except ProgrammingError as error:
             self.rollback()
-            print('An error occurred during query execution: %s', error)
+            print('An error occurred during query execution: ', error)
             raise ProgrammingError(error)
 
         # finally is always executed (both at try and except)
@@ -270,7 +268,7 @@ class PGSQLConnection:
                                            email=email, password=password)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -296,8 +294,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # get the result of query
-        results_of_query = self.execute(query_text)
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -402,7 +399,7 @@ class PGSQLConnection:
         subquery = get_subquery_curator_table(user_id=user_id, keyword_id=keyword_id, region=region)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -419,10 +416,7 @@ class PGSQLConnection:
             {0}            
         """.format(subquery)
 
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -441,24 +435,22 @@ class PGSQLConnection:
     def create_curator(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        query_text = """
-                    INSERT INTO curator (user_id, keyword_id, region, created_at)
-                    VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
-                """.format(p["user_id"], p["keyword_id"], p["region"])
+        query = """
+            INSERT INTO curator (user_id, keyword_id, region, created_at)
+            VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
+        """.format(p["user_id"], p["keyword_id"], p["region"])
 
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def update_curator(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             UPDATE curator SET region = LOWER('{2}')
             WHERE user_id = {0} AND keyword_id = {1};
         """.format(p["user_id"], p["keyword_id"], p["region"])
 
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -469,21 +461,19 @@ class PGSQLConnection:
 
         # delete the curator
         if user_id is None:
-            query_text = """
+            query = """
                 DELETE FROM curator WHERE keyword_id = {0};
             """.format(keyword_id)
         elif keyword_id is None:
-            query_text = """
+            query = """
                 DELETE FROM curator WHERE user_id = {0};
             """.format(user_id)
         else:
-            query_text = """
+            query = """
                 DELETE FROM curator WHERE user_id = {0} AND keyword_id = {1};
             """.format(user_id, keyword_id)
 
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
