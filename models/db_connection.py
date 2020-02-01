@@ -83,45 +83,40 @@ class PGSQLConnection:
         self.PUBLISH_LAYERS_IN_GEOSERVER = publish_layers_in_geoserver
 
         if self.DEBUG_MODE:
-            self.__DO_CONNECTION__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
+            # self.__connect__(__DEBUG_PGSQL_CONNECTION_SETTINGS__)
             self.__DB_CONNECTION__ = __DEBUG_PGSQL_CONNECTION_SETTINGS__
             self.__GEOSERVER_CONNECTION__ = __DEBUG_GEOSERVER_CONNECTION_SETTINGS__
         else:
-            self.__DO_CONNECTION__(__PGSQL_CONNECTION_SETTINGS__)
+            # self.__connect__(__PGSQL_CONNECTION_SETTINGS__)
             self.__DB_CONNECTION__ = __PGSQL_CONNECTION_SETTINGS__
             self.__GEOSERVER_CONNECTION__ = __GEOSERVER_CONNECTION_SETTINGS__
 
         self.__GEOSERVER_REST_CONNECTION_SETTINGS__ = __GEOSERVER_REST_CONNECTION_SETTINGS__
-
-        # cursor_factory=RealDictCursor means that the "row" of the table will be
-        # represented by a dictionary in python
-        self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
 
         # create a browser simulator to connect with geoserver
         self.__SESSION__ = Session()
         self.__URL_GEOSERVER_REST__ = "http://{0}:{1}".format(self.__GEOSERVER_REST_CONNECTION_SETTINGS__["HOSTNAME"],
                                                               self.__GEOSERVER_REST_CONNECTION_SETTINGS__["PORT"])
 
-    def __DO_CONNECTION__(self, __connection_settings__):
+    def __connect__(self, __connection_settings__):
         """
         Do the DB connection with the '__pgsql_connection_settings__'
         :param __connection_settings__: the connection settings of PostgreSQL.
         It can be for the normal DB or test DB
         :return:
         """
-        if self.DEBUG_MODE:
-            print("\nConnecting in PostgreSQL with:"
-                  "\n- hostname: ", __connection_settings__["HOSTNAME"],
-                  "\n- port: ", __connection_settings__["PORT"],
-                  "\n- database: ", __connection_settings__["DATABASE"], "\n")
-
         try:
             self.__PGSQL_CONNECTION__ = connect(host=__connection_settings__["HOSTNAME"],
                                                 port=__connection_settings__["PORT"],
                                                 user=__connection_settings__["USERNAME"],
                                                 password=__connection_settings__["PASSWORD"],
                                                 dbname=__connection_settings__["DATABASE"])
-            print("PostgreSQL's connection was successful!")
+            
+            # cursor_factory=RealDictCursor means that the "row" of the table will be
+            # represented by a dictionary in python
+            self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
+            
+            # print("PostgreSQL's connection was successful!")
             self.set_connection_status(status=True)
         except (DatabaseError, Exception) as error:
             print("PostgreSQL's connection was failed! \n")
@@ -173,29 +168,47 @@ class PGSQLConnection:
         """
 
         self.__PGSQL_CONNECTION__.rollback()
-
-    def execute(self, query_text, modify_information=False):
+    
+    def execute(self, query, is_transaction=False, is_sql_file=False):
+        # open database connection
+        self.__connect__(self.__DB_CONNECTION__)
+        # print('Database connection was created.')
 
         try:
-            # do the query in database
-            self.__PGSQL_CURSOR__.execute(query_text)
+            self.__PGSQL_CURSOR__.execute(query)
+
+            # if query is a transaction statement, then commit the changes
+            if is_transaction:
+                self.commit()
+            
+            if is_sql_file:
+                return None
+
+            query = query.lower()
+
+            # print('\n\n query: ', query, '\n')
+            # print(' is_transaction: ', is_transaction, '\n\n')
+
+            # if this query was a SELECT clause, then return all features
+            if 'select' in query or 'insert' in query:
+                # print('\n select \n')
+                return self.__PGSQL_CURSOR__.fetchall()
+            # if this query was a UPDATE clause, then return the number of rows affected
+            elif 'update' in query or 'delete' in query:
+                # print('\n update delete \n')
+                return self.__PGSQL_CURSOR__.rowcount
+            else:
+                return None
+
         except ProgrammingError as error:
-            print("Error when executing the query text")
-            print("Error: ", error, "\n")
+            self.rollback()
+            print('An error occurred during query execution: %s', error)
             raise ProgrammingError(error)
 
-        try:
-            # get the result of query
-            results_of_query = self.__PGSQL_CURSOR__.fetchall()
-        except ProgrammingError:
-            return None
-
-        # if modify some information, so do commit
-        if modify_information:
-            # commit the modifications
-            self.commit()
-
-        return results_of_query
+        # finally is always executed (both at try and except)
+        finally:
+            self.close()
+            # print('Database connection was closed.')
 
     ################################################################################
     # GEOSERVER
@@ -287,15 +300,15 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
         # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query_text)
 
         ######################################################################
         # POST-PROCESSING
         ######################################################################
+
+        if results_of_query is not None:
+            results_of_query = results_of_query[0]
 
         # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
         if "row_to_json" in results_of_query:
@@ -322,7 +335,7 @@ class PGSQLConnection:
         if "social_account" not in p:
             p["social_account"] = ""
 
-        query_text = """
+        query = """
             INSERT INTO pauliceia_user (email, username, name, password, created_at, 
                                         terms_agreed, receive_notification_by_email, is_email_valid,
                                         picture, social_id, social_account) 
@@ -332,38 +345,34 @@ class PGSQLConnection:
                    p["terms_agreed"], p["receive_notification_by_email"], p["is_email_valid"],
                    p["picture"], p["social_id"], p["social_account"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
         # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
+        result = self.execute(query, is_transaction=True)
+
+        if result is not None:
+            result = result[0]
 
         return result
 
     def update_user_email_is_valid(self, user_id, is_email_valid=True):
-        query_text = """
+        query = """
             UPDATE pauliceia_user SET is_email_valid = {1} 
             WHERE user_id = {0};
         """.format(user_id, is_email_valid)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # do the query in the database
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
     def update_user_password(self, user_id, new_password):
-        query_text = """
+        query = """
             UPDATE pauliceia_user SET password = '{1}' 
             WHERE user_id = {0};
         """.format(user_id, new_password)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # do the query in the database
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -371,17 +380,15 @@ class PGSQLConnection:
     def update_user(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
                                         terms_agreed = {4}, receive_notification_by_email = {5} 
             WHERE user_id = {0};
         """.format(p["user_id"], p["email"], p["username"], p["name"],
                    p["terms_agreed"], p["receive_notification_by_email"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # do the query in the database
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -390,14 +397,12 @@ class PGSQLConnection:
         if is_a_invalid_id(feature_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        query_text = """
+        query = """
             DELETE FROM pauliceia_user WHERE user_id={0};
         """.format(feature_id)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # do the query in the database
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -791,7 +796,6 @@ class PGSQLConnection:
         try:
             self.delete_feature_table(f_table_name)
         except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, str(error))
 
     def delete_layer(self, layer_id):

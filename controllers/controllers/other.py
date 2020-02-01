@@ -35,7 +35,6 @@ class APIValidateEmailToken(BaseHandler):
 
         # change the status of is_email_valid of the user for TRUE
         self.PGSQLConn.update_user_email_is_valid(decoded_token["user_id"])
-        self.PGSQLConn.commit()
 
 
 class APIUpdateUserIsEmailValid(BaseHandler):
@@ -49,7 +48,6 @@ class APIUpdateUserIsEmailValid(BaseHandler):
 
         # change the status of is_email_valid of the user for FALSE
         self.PGSQLConn.update_user_email_is_valid(arguments["user_id"], arguments["is_email_valid"])
-        self.PGSQLConn.commit()
 
 
 # MASK

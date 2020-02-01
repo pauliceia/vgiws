@@ -278,7 +278,6 @@ class BaseHandler(RequestHandler):
         if not user_in_db["features"]:  # if the list is empty
             # ... because I expected a 404 to create a new user
             id_in_json = self.PGSQLConn.create_user(user_json, verified_social_login_email=verified_social_login_email)
-            self.PGSQLConn.commit()  # save the user in DB
             user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
 
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
@@ -510,21 +509,17 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             result = self._get_resource(*args, **arguments)
         except KeyError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): get_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "22007":  # 22007 - invalid_datetime_format
                 raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
                                  "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -565,25 +560,18 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             json_with_id = self._create_resource(resource_json, current_user_id, **arguments)
-
-            # do commit after create a resource
-            self.PGSQLConn.commit()
         except KeyError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): create_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column
                 raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
         except Error as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
                 raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
@@ -592,7 +580,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -609,11 +596,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             self._close_resource(resource_json, current_user_id)
-
-            # do commit after create a resource
-            self.PGSQLConn.commit()
         except DataError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when close a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -642,19 +625,13 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             self._put_resource(resource_json, current_user_id, **arguments)
-
-            # do commit after update a resource
-            self.PGSQLConn.commit()
         except KeyError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
                 raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
@@ -663,7 +640,6 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -681,22 +657,16 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             self._delete_resource(current_user_id, *args, **arguments)
-
-            # do commit after delete the resource
-            self.PGSQLConn.commit()
         except TypeError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             # example: - 400 (Bad Request): delete_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             if error.pgcode == "42703":  # 42703 - undefined_column
                 error = str(error).replace("\n", " ")
                 raise HTTPError(404, "Not found the specified column. (error: " + str(error) + ")")
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when delete a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
@@ -1681,12 +1651,10 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         # try:
         #     is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
         # except InternalError as error:
-        #     self.PGSQLConn.rollback()
         #     self.PGSQLConn.drop_table_by_name(f_table_name)
         #     raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
         #                          "import again later. \nError: " + str(error))
         # except Exception as error:
-        #     self.PGSQLConn.rollback()
         #     raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
         #
         # if not is_shapefile_inside_default_city:
@@ -1794,8 +1762,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
             self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
 
-            # commit the feature table
-            self.PGSQLConn.commit()
             # publish the feature table/layer in geoserver
             self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"], EPSG)
             # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
@@ -1804,7 +1770,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             remove_file(ZIP_FILE_NAME)
             remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
         except ProgrammingError as error:
-            self.PGSQLConn.rollback()  # do a rollback to comeback in a safe state of DB
             raise HTTPError(500, "Problem when to import the Shapefile: " + str(error))
 
 

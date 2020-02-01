@@ -112,7 +112,7 @@ def start_application():
 def stop_application():
     # Get the instance of the DB connection
     PGSQLConn = PGSQLConnection.get_instance()
-    PGSQLConn.close()
+    # PGSQLConn.close()
 
     print("Closing the web service! \n\n")
     IOLoop.instance().stop()

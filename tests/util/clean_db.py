@@ -109,19 +109,19 @@ def prepare_test_db_before_tests(arguments):
 
         # executing the SQL files
         print("\nCleaning and creating the schema of DB.")
-        PGSQLConn.execute(schema_data, modify_information=True)
+        PGSQLConn.execute(schema_data, is_transaction=True, is_sql_file=True)
 
         # print("Inserting the triggers in DB.")
-        # PGSQLConn.execute(trigger_data, modify_information=True)
+        # PGSQLConn.execute(trigger_data, is_transaction=True, is_sql_file=True)
 
         print("Inserting the data in DB.\n")
-        PGSQLConn.execute(insert_data, modify_information=True)
+        PGSQLConn.execute(insert_data, is_transaction=True, is_sql_file=True)
 
         # send modifications to DB
-        PGSQLConn.commit()
+        # PGSQLConn.commit()
 
     # close DB
-    PGSQLConn.close()
+    # PGSQLConn.close()
 
 
 def are_you_sure_to_clean_database(arguments):

@@ -25,7 +25,7 @@ $ python main.py --debug=True --publish_layers_in_geoserver=False
 On another console, get into the test folder and turn the environment on:
 
 ```
-$ cd vgiws/tests/
+$ cd vgiws/
 $ workon pauliceia_webservice
 ```
 
@@ -38,6 +38,7 @@ python tests/util/clean_db.py --debug=True
 Run the tests:
 
 ```
+& cd tests/
 $ python run_tests.py
 ```
 

@@ -54,12 +54,12 @@ def arrange_the_relationship_of_feature_tables():
         relationship_file = remove_comments_from_sql_file(relationship_file)
         relationship_file = remove_special_characters(relationship_file)
 
-        PGSQLConn.execute(relationship_file, modify_information=True)
+        PGSQLConn.execute(relationship_file, is_transaction=True)
 
         PGSQLConn.commit()
 
     # close DB
-    PGSQLConn.close()
+    # PGSQLConn.close()
 
 
 class UploadOldDBInNewDB(TestCase):
