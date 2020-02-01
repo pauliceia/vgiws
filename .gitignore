@@ -84,8 +84,14 @@ coverage.xml
 # Pycharm
 .idea/
 
+# VisualStudioCode
+.vscode/
+
 # PyBuilder
 target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# Trash
+.trash/

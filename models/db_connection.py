@@ -153,8 +153,6 @@ class PGSQLConnection:
         # close the connection
         self.__PGSQL_CONNECTION__.close()
 
-        print("\nClosed the PostgreSQL's connection!\n")
-
     def commit(self):
         """
             Just do the COMMIT operator in DB
@@ -172,7 +170,6 @@ class PGSQLConnection:
     def execute(self, query, is_transaction=False, is_sql_file=False):
         # open database connection
         self.__connect__(self.__DB_CONNECTION__)
-        # print('Database connection was created.')
 
         try:
             self.__PGSQL_CURSOR__.execute(query)
@@ -192,7 +189,7 @@ class PGSQLConnection:
             # if this query was a SELECT clause, then return all features
             if 'select' in query or 'insert' in query:
                 # print('\n select \n')
-                return self.__PGSQL_CURSOR__.fetchall()
+                return self.__PGSQL_CURSOR__.fetchone()
             # if this query was a UPDATE clause, then return the number of rows affected
             elif 'update' in query or 'delete' in query:
                 # print('\n update delete \n')
@@ -208,7 +205,6 @@ class PGSQLConnection:
         # finally is always executed (both at try and except)
         finally:
             self.close()
-            # print('Database connection was closed.')
 
     ################################################################################
     # GEOSERVER
@@ -307,9 +303,6 @@ class PGSQLConnection:
         # POST-PROCESSING
         ######################################################################
 
-        if results_of_query is not None:
-            results_of_query = results_of_query[0]
-
         # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
         if "row_to_json" in results_of_query:
             results_of_query = results_of_query["row_to_json"]
@@ -345,13 +338,7 @@ class PGSQLConnection:
                    p["terms_agreed"], p["receive_notification_by_email"], p["is_email_valid"],
                    p["picture"], p["social_id"], p["social_account"])
 
-        # get the result of query
-        result = self.execute(query, is_transaction=True)
-
-        if result is not None:
-            result = result[0]
-
-        return result
+        return self.execute(query, is_transaction=True)
 
     def update_user_email_is_valid(self, user_id, is_email_valid=True):
         query = """
@@ -359,7 +346,6 @@ class PGSQLConnection:
             WHERE user_id = {0};
         """.format(user_id, is_email_valid)
 
-        # do the query in the database
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
@@ -371,7 +357,6 @@ class PGSQLConnection:
             WHERE user_id = {0};
         """.format(user_id, new_password)
 
-        # do the query in the database
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
@@ -387,7 +372,6 @@ class PGSQLConnection:
         """.format(p["user_id"], p["email"], p["username"], p["name"],
                    p["terms_agreed"], p["receive_notification_by_email"])
 
-        # do the query in the database
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
@@ -401,7 +385,6 @@ class PGSQLConnection:
             DELETE FROM pauliceia_user WHERE user_id={0};
         """.format(feature_id)
 
-        # do the query in the database
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
@@ -436,7 +419,6 @@ class PGSQLConnection:
             {0}            
         """.format(subquery)
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
         # get the result of query
@@ -464,7 +446,6 @@ class PGSQLConnection:
                     VALUES ({0}, {1}, LOWER('{2}'), LOCALTIMESTAMP);
                 """.format(p["user_id"], p["keyword_id"], p["region"])
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
     def update_curator(self, resource_json, user_id):
@@ -475,7 +456,6 @@ class PGSQLConnection:
             WHERE user_id = {0} AND keyword_id = {1};
         """.format(p["user_id"], p["keyword_id"], p["region"])
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
@@ -501,7 +481,6 @@ class PGSQLConnection:
                 DELETE FROM curator WHERE user_id = {0} AND keyword_id = {1};
             """.format(user_id, keyword_id)
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
 
         rows_affected = self.__PGSQL_CURSOR__.rowcount
@@ -567,10 +546,7 @@ class PGSQLConnection:
             ) AS keyword
         """.format(subquery)
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
         results_of_query = self.__PGSQL_CURSOR__.fetchone()
 
         ######################################################################
@@ -595,10 +571,7 @@ class PGSQLConnection:
             VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id;
         """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
 
-        # do the query in database
         self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
         result = self.__PGSQL_CURSOR__.fetchone()
 
         return result
@@ -1621,7 +1594,7 @@ class PGSQLConnection:
                                                 user_id_creator=user_id_creator, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1640,11 +1613,8 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
         # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -1666,18 +1636,13 @@ class PGSQLConnection:
 
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             INSERT INTO changeset (created_at, layer_id, user_id_creator)
             VALUES (LOCALTIMESTAMP, {0}, {1}) RETURNING changeset_id;
         """.format(p["layer_id"], p["user_id_creator"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
         # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+        return self.execute(query, is_transaction=True)
 
     def close_changeset(self, resource_json, current_user_id):
         changeset_id = resource_json["properties"]["changeset_id"]
@@ -1702,13 +1667,12 @@ class PGSQLConnection:
             raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
 
         description = resource_json["properties"]["description"]
-        query_text = """
+        query = """
             UPDATE changeset SET closed_at=LOCALTIMESTAMP, description='{1}'
             WHERE changeset_id={0};
         """.format(changeset_id, description)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def delete_changeset(self, changeset_id=None, layer_id=None):
         if is_a_invalid_id(changeset_id) or is_a_invalid_id(layer_id):
@@ -1716,21 +1680,18 @@ class PGSQLConnection:
 
         if changeset_id is not None:
             # delete the reference
-            query_text = """
+            query = """
                 DELETE FROM changeset WHERE changeset_id={0};
             """.format(changeset_id)
         elif layer_id is not None:
             # delete the reference
-            query_text = """
+            query = """
                 DELETE FROM changeset WHERE layer_id={0};
             """.format(layer_id)
         else:
             raise HTTPError(400, "Invalid parameter.")
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
