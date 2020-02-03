@@ -27,7 +27,12 @@ if __name__ == '__main__':
     # tests = TestLoader().discover(ROOT_PATH, "*.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_changeset.py")
-    tests = TestLoader().discover(ROOT_PATH, "test_api_curator.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_curator.py")
+
+    # doing this one again
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
+
+    tests = TestLoader().discover(ROOT_PATH, "test_api_feature.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

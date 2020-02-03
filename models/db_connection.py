@@ -111,12 +111,11 @@ class PGSQLConnection:
                                                 user=__connection_settings__["USERNAME"],
                                                 password=__connection_settings__["PASSWORD"],
                                                 dbname=__connection_settings__["DATABASE"])
-            
+
             # cursor_factory=RealDictCursor means that the "row" of the table will be
             # represented by a dictionary in python
             self.__PGSQL_CURSOR__ = self.__PGSQL_CONNECTION__.cursor(cursor_factory=RealDictCursor)
-            
-            # print("PostgreSQL's connection was successful!")
+
             self.set_connection_status(status=True)
         except (DatabaseError, Exception) as error:
             print("PostgreSQL's connection was failed! \n")
@@ -166,7 +165,7 @@ class PGSQLConnection:
         """
 
         self.__PGSQL_CONNECTION__.rollback()
-    
+
     def execute(self, query, is_transaction=False, is_sql_file=False):
         # open database connection
         self.__connect__(self.__DB_CONNECTION__)
@@ -177,7 +176,7 @@ class PGSQLConnection:
             # if query is a transaction statement, then commit the changes
             if is_transaction:
                 self.commit()
-            
+
             if is_sql_file:
                 return None
 
@@ -280,17 +279,17 @@ class PGSQLConnection:
                         'name',           name,
                         'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'is_email_valid', is_email_valid,
-                        'terms_agreed',   terms_agreed,                        
+                        'terms_agreed',   terms_agreed,
                         'login_date',     login_date,
                         'is_the_admin',   is_the_admin,
-                        'receive_notification_by_email',   receive_notification_by_email,                        
-                        'picture',        picture,                        
+                        'receive_notification_by_email',   receive_notification_by_email,
+                        'picture',        picture,
                         'social_id',      social_id,
-                        'social_account', social_account 
+                        'social_account', social_account
                     )
                 ))
             ) AS row_to_json
-            FROM 
+            FROM
             {0}
         """.format(subquery)
 
@@ -326,9 +325,9 @@ class PGSQLConnection:
             p["social_account"] = ""
 
         query = """
-            INSERT INTO pauliceia_user (email, username, name, password, created_at, 
+            INSERT INTO pauliceia_user (email, username, name, password, created_at,
                                         terms_agreed, receive_notification_by_email, is_email_valid,
-                                        picture, social_id, social_account) 
+                                        picture, social_id, social_account)
             VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP, {4}, {5}, {6}, '{7}', '{8}', '{9}')
             RETURNING user_id;
         """.format(p["email"], p["username"], p["name"], p["password"],
@@ -339,7 +338,7 @@ class PGSQLConnection:
 
     def update_user_email_is_valid(self, user_id, is_email_valid=True):
         query = """
-            UPDATE pauliceia_user SET is_email_valid = {1} 
+            UPDATE pauliceia_user SET is_email_valid = {1}
             WHERE user_id = {0};
         """.format(user_id, is_email_valid)
 
@@ -350,7 +349,7 @@ class PGSQLConnection:
 
     def update_user_password(self, user_id, new_password):
         query = """
-            UPDATE pauliceia_user SET password = '{1}' 
+            UPDATE pauliceia_user SET password = '{1}'
             WHERE user_id = {0};
         """.format(user_id, new_password)
 
@@ -364,7 +363,7 @@ class PGSQLConnection:
 
         query = """
             UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
-                                        terms_agreed = {4}, receive_notification_by_email = {5} 
+                                        terms_agreed = {4}, receive_notification_by_email = {5}
             WHERE user_id = {0};
         """.format(p["user_id"], p["email"], p["username"], p["name"],
                    p["terms_agreed"], p["receive_notification_by_email"])
@@ -412,8 +411,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         results_of_query = self.execute(query)
@@ -491,7 +490,7 @@ class PGSQLConnection:
                                             is_published=is_published, keyword_id=keyword_id)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -508,36 +507,38 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
+            FROM
             {0}
-            CROSS JOIN LATERAL (                
+            CROSS JOIN LATERAL (
                 -- (3) get the references of some resource on JSON format
-                SELECT json_agg(reference_id) AS jsontags 
-                FROM 
+                SELECT json_agg(reference_id) AS jsontags
+                FROM
                 (
-                    -- (2) get the references of some resource                    
-                    SELECT reference_id 
-                    FROM layer_reference 
-                    WHERE layer_id = layer.layer_id                    
+                    -- (2) get the references of some resource
+                    SELECT reference_id
+                    FROM layer_reference
+                    WHERE layer_id = layer.layer_id
                     ORDER BY reference_id
                 ) subquery
             ) AS reference_
-            CROSS JOIN LATERAL (                
-                -- (3) get the keywords of some resource on JSON format   
-                SELECT json_agg(keyword_id) AS jsontags 
-                FROM 
+            CROSS JOIN LATERAL (
+                -- (3) get the keywords of some resource on JSON format
+                SELECT json_agg(keyword_id) AS jsontags
+                FROM
                 (
                     -- (2) get the keywords of some resource
                     SELECT keyword_id
-                    FROM layer_keyword 
+                    FROM layer_keyword
                     WHERE layer_id = layer.layer_id
                     ORDER BY keyword_id
-                ) subquery      
+                ) subquery
             ) AS keyword
         """.format(subquery)
 
-        self.__PGSQL_CURSOR__.execute(query_text)
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # self.__PGSQL_CURSOR__.execute(query_text)
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -556,15 +557,15 @@ class PGSQLConnection:
     def add_layer_in_db(self, properties):
         p = properties
 
-        query_text = """
-            INSERT INTO layer (f_table_name, name, description, source_description, created_at) 
+        query = """
+            INSERT INTO layer (f_table_name, name, description, source_description, created_at)
             VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id;
         """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
 
-        self.__PGSQL_CURSOR__.execute(query_text)
-        result = self.__PGSQL_CURSOR__.fetchone()
+        # self.__PGSQL_CURSOR__.execute(query_text)
+        # result = self.__PGSQL_CURSOR__.fetchone()
 
-        return result
+        return self.execute(query, is_transaction=True)
 
     def create_layer(self, resource_json, user_id):
 
@@ -616,26 +617,30 @@ class PGSQLConnection:
         return id_in_json
 
     def update_table_name(self, old_table_name, new_table_name):
-        query_text = """
+        query = """
             ALTER TABLE IF EXISTS {0}
             RENAME TO {1};
         """.format(old_table_name, new_table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
     def update_layer_in_db(self, properties):
         p = properties
 
-        query_text = """
+        query = """
             UPDATE layer SET name = '{1}', description = '{2}', source_description = '{3}'
             WHERE layer_id = {0};
         """.format(p["layer_id"], p["name"], p["description"], p["source_description"])
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -769,14 +774,16 @@ class PGSQLConnection:
         self.delete_layer_dependencies(layer_id)
 
         # delete the layer
-        query_text = """
+        query = """
             DELETE FROM layer WHERE layer_id={0};
         """.format(layer_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -789,7 +796,7 @@ class PGSQLConnection:
         subquery = get_subquery_feature_table(f_table_name=f_table_name)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -797,23 +804,25 @@ class PGSQLConnection:
                     'properties',   dict,
                     'f_table_name', f_table_name,
                     'geometry',  json_build_object(
-                        'type',      type, 
+                        'type',      type,
                         'crs',  json_build_object(
-                            'type',      'name', 
+                            'type',      'name',
                             'properties', json_build_object('name', 'EPSG:' || srid)
                         )
                     )
                 ))
             ) AS row_to_json
-            FROM 
+            FROM
             {0}
         """.format(subquery)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -844,11 +853,11 @@ class PGSQLConnection:
 
         for table_to_create in tables_to_create:
             # create the feature table
-            query_text = """        
+            query = """
                 CREATE TABLE {0} (
-                  id SERIAL,              
-                  geom GEOMETRY({1}, {2}) NOT NULL,              
-                  {3}              
+                  id SERIAL,
+                  geom GEOMETRY({1}, {2}) NOT NULL,
+                  {3}
                   version INT NOT NULL DEFAULT 1,
                   changeset_id INT NOT NULL,
                   PRIMARY KEY (id),
@@ -857,23 +866,28 @@ class PGSQLConnection:
                     REFERENCES changeset (changeset_id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
-                );        
+                );
             """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-            self.__PGSQL_CURSOR__.execute(query_text)
+            # self.__PGSQL_CURSOR__.execute(query_text)
+
+            self.execute(query, is_transaction=True)
 
         # add the is_removed column in version feature table
         version_table = tables_to_create[1]
 
-        query_text = """        
+        query = """
             ALTER TABLE {0}
-            ADD COLUMN is_removed BOOLEAN DEFAULT FALSE;  
+            ADD COLUMN is_removed BOOLEAN DEFAULT FALSE;
         """.format(version_table)
 
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # put the feature tables in database
-        self.commit()
+        # # put the feature tables in database
+        # self.commit()
+
+        self.execute(query, is_transaction=True)
+
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
@@ -894,11 +908,11 @@ class PGSQLConnection:
 
         for table_to_create in tables_to_create:
             # create the feature table
-            query_text = """        
+            query = """
                 CREATE TABLE {0} (
-                  id SERIAL,              
-                  geom GEOMETRY({1}, {2}) NOT NULL,              
-                  {3}              
+                  id SERIAL,
+                  geom GEOMETRY({1}, {2}) NOT NULL,
+                  {3}
                   version INT NOT NULL DEFAULT 1,
                   changeset_id INT NOT NULL,
                   PRIMARY KEY (id),
@@ -907,13 +921,15 @@ class PGSQLConnection:
                     REFERENCES changeset (changeset_id)
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
-                );        
+                );
             """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-            self.__PGSQL_CURSOR__.execute(query_text)
+            # self.__PGSQL_CURSOR__.execute(query_text)
+            self.execute(query, is_transaction=True)
 
         # put the feature tables in database
-        self.commit()
+        # self.commit()
+
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
@@ -922,11 +938,12 @@ class PGSQLConnection:
 
         for table_to_drop in tables_to_drop:
             # delete the feature table
-            query_text = """        
+            query = """
                 DROP TABLE IF EXISTS {0} CASCADE ;
             """.format(table_to_drop)
 
-            self.__PGSQL_CURSOR__.execute(query_text)
+            # self.__PGSQL_CURSOR__.execute(query_text)
+            self.execute(query, is_transaction=True)
 
         try:
             # unpublish the features table in geoserver
@@ -936,7 +953,7 @@ class PGSQLConnection:
                 raise error
 
         # remove the feature table from database
-        self.commit()
+        # self.commit()
 
     ################################################################################
     # FEATURE TABLE COLUMN
@@ -945,8 +962,8 @@ class PGSQLConnection:
     def create_feature_table_column(self, resource_json):
 
         query_text = """
-            ALTER TABLE {0} 
-            ADD COLUMN {1} {2};   
+            ALTER TABLE {0}
+            ADD COLUMN {1} {2};
         """.format(resource_json["f_table_name"], resource_json["column_name"], resource_json["column_type"])
 
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -956,8 +973,8 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         query_text = """
-            ALTER TABLE {0} 
-            DROP COLUMN {1} CASCADE;   
+            ALTER TABLE {0}
+            DROP COLUMN {1} CASCADE;
         """.format(f_table_name, column_name)
 
         self.__PGSQL_CURSOR__.execute(query_text)
@@ -983,9 +1000,9 @@ class PGSQLConnection:
                     'properties', json_build_object(
                         'f_table_name',            f_table_name,
                         'start_date_column_name',  start_date_column_name,
-                        'end_date_column_name',    end_date_column_name,                      
+                        'end_date_column_name',    end_date_column_name,
                         'start_date',              to_char(start_date, 'YYYY-MM-DD'),
-                        'end_date',                to_char(end_date, 'YYYY-MM-DD'),                        
+                        'end_date',                to_char(end_date, 'YYYY-MM-DD'),
                         'start_date_mask_id',      start_date_mask_id,
                         'end_date_mask_id',        end_date_mask_id
                     )
@@ -1036,7 +1053,7 @@ class PGSQLConnection:
 
     def update_temporal_columns_f_table_name(self, old_f_table_name, new_f_table_name):
         query_text = """
-            UPDATE temporal_columns SET f_table_name='{1}'                                
+            UPDATE temporal_columns SET f_table_name='{1}'
             WHERE f_table_name = '{0}';
         """.format(old_f_table_name, new_f_table_name)
 
@@ -1054,7 +1071,7 @@ class PGSQLConnection:
 
         query_text = """
             UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
-                                        start_date_mask_id={5}, end_date_mask_id={6}                                    
+                                        start_date_mask_id={5}, end_date_mask_id={6}
             WHERE f_table_name = '{0}';
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
                    p["start_date_mask_id"], p["end_date_mask_id"])
@@ -1072,14 +1089,16 @@ class PGSQLConnection:
         #     raise HTTPError(400, "Invalid parameter.")
 
         # delete the temporal_columns
-        query_text = """
+        query = """
             DELETE FROM temporal_columns WHERE f_table_name = '{0}';
         """.format(f_table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1099,7 +1118,7 @@ class PGSQLConnection:
                                                  is_the_creator=is_the_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1112,15 +1131,17 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
+            FROM
             {0}
         """.format(subquery)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
         # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -1139,13 +1160,15 @@ class PGSQLConnection:
     def create_user_layer(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        query_text = """
-            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator) 
+        query = """
+            INSERT INTO user_layer (layer_id, user_id, created_at, is_the_creator)
             VALUES ({0}, {1}, LOCALTIMESTAMP, {2});
         """.format(p["layer_id"], p["user_id"], p["is_the_creator"])
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
         ##################################################
         # do the user follows the layer
@@ -1180,22 +1203,24 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         if user_id is None:
-            query_text = """
+            query = """
                 DELETE FROM user_layer WHERE layer_id={0};
             """.format(layer_id)
         elif layer_id is None:
-            query_text = """
+            query = """
                 DELETE FROM user_layer WHERE user_id={0};
             """.format(user_id)
         else:
-            query_text = """
+            query = """
                 DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
             """.format(user_id, layer_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1225,8 +1250,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -1356,31 +1381,35 @@ class PGSQLConnection:
     def create_layer_reference(self, resource_json):
         p = resource_json["properties"]
 
-        query_text = """
-            INSERT INTO layer_reference (layer_id, reference_id) 
+        query = """
+            INSERT INTO layer_reference (layer_id, reference_id)
             VALUES ({0}, {1});
         """.format(p["layer_id"], p["reference_id"])
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
     def delete_layer_reference(self, layer_id=None, reference_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
             raise HTTPError(400, "Invalid parameter.")
 
         if reference_id is None:
-            query_text = """
+            query = """
                 DELETE FROM layer_reference WHERE layer_id={0};
             """.format(layer_id)
         else:
-            query_text = """
+            query = """
                 DELETE FROM layer_reference WHERE layer_id={0} AND reference_id={1};
             """.format(layer_id, reference_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1411,8 +1440,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -1542,31 +1571,35 @@ class PGSQLConnection:
     def create_layer_keyword(self, resource_json):
         p = resource_json["properties"]
 
-        query_text = """
-            INSERT INTO layer_keyword (layer_id, keyword_id) 
+        query = """
+            INSERT INTO layer_keyword (layer_id, keyword_id)
             VALUES ({0}, {1});
         """.format(p["layer_id"], p["keyword_id"])
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
     def delete_layer_keyword(self, layer_id=None, keyword_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
             raise HTTPError(400, "Invalid parameter.")
 
         if keyword_id is None:
-            query_text = """
+            query = """
                 DELETE FROM layer_keyword WHERE layer_id={0};
             """.format(layer_id)
         else:
-            query_text = """
+            query = """
                 DELETE FROM layer_keyword WHERE layer_id={0} AND keyword_id={1};
             """.format(layer_id, keyword_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1719,8 +1752,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -1759,7 +1792,7 @@ class PGSQLConnection:
             p["notification_id_parent"] = "NULL"
 
         query_text = """
-            INSERT INTO notification (description, created_at, is_denunciation, user_id_creator, 
+            INSERT INTO notification (description, created_at, is_denunciation, user_id_creator,
                                       layer_id, keyword_id, notification_id_parent)
             VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}, {3}, {4}, {5}) RETURNING notification_id;
         """.format(p["description"], p["is_denunciation"], p["user_id_creator"], p["layer_id"],
@@ -1849,8 +1882,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -1887,7 +1920,7 @@ class PGSQLConnection:
 
     def add_version_column_in_table(self, table_name):
         query_text = """
-            ALTER TABLE {0} 
+            ALTER TABLE {0}
             ADD COLUMN version INT NOT NULL DEFAULT 1
         """.format(table_name)
 
@@ -1993,7 +2026,7 @@ class PGSQLConnection:
         min_x, min_y, max_x, max_y = shapefile_bounds
 
         # verify if the shapefile intersects with the default city
-        query_text = """        
+        query_text = """
             SELECT ST_Intersects(
                 -- create a bounding box of the shapefile
                 ST_Transform(ST_MakeEnvelope(
@@ -2043,8 +2076,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -2073,13 +2106,15 @@ class PGSQLConnection:
 
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             INSERT INTO layer_followers (layer_id, user_id, created_at)
             VALUES ({0}, {1}, LOCALTIMESTAMP);
         """.format(p["layer_id"], p["user_id"])
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
         # get the result of query
         # result = self.__PGSQL_CURSOR__.fetchone()
@@ -2107,22 +2142,24 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         if user_id is None:
-            query_text = """
+            query = """
                 DELETE FROM layer_followers WHERE layer_id={0};
             """.format(layer_id)
         elif layer_id is None:
-            query_text = """
+            query = """
                 DELETE FROM layer_followers WHERE user_id={0};
             """.format(user_id)
         else:
-            query_text = """
+            query = """
                 DELETE FROM layer_followers WHERE user_id={0} AND layer_id={1};
             """.format(user_id, layer_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -2150,8 +2187,8 @@ class PGSQLConnection:
                     )
                 ))
             ) AS row_to_json
-            FROM 
-            {0}            
+            FROM
+            {0}
         """.format(subquery)
 
         # do the query in database
@@ -2201,15 +2238,17 @@ class PGSQLConnection:
 
     def get_srid_from_table_name(self, table_name):
 
-        query_text = """
-            SELECT srid FROM geometry_columns WHERE f_table_name='{0}';        
+        query = """
+            SELECT srid FROM geometry_columns WHERE f_table_name='{0}';
         """.format(table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # result = self.__PGSQL_CURSOR__.fetchone()
+
+        result = self.execute(query)
 
         return result["srid"]
 
@@ -2329,17 +2368,19 @@ class PGSQLConnection:
         return column_names
 
     def get_columns_from_table(self, table_name):
-        query_text = """
+        query = """
             SELECT jsonb_agg(json_build_object('column_name', column_name::TEXT, 'type', udt_name::regtype::TEXT)) as row_to_json
             FROM information_schema.columns
             WHERE table_schema = 'public' AND table_name = '{0}';
         """.format(table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -2379,7 +2420,7 @@ class PGSQLConnection:
         #     {0}
         # """.format(subquery)
 
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -2395,10 +2436,12 @@ class PGSQLConnection:
         """.format(subquery, columns_of_table_string)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -2415,16 +2458,16 @@ class PGSQLConnection:
         return results_of_query
 
     def create_feature(self, resource_json, current_user_id, remove_id_and_version_from_properties=True):
-        query_text = self.get_insert_statement_from_geojson(resource_json,
+        query = self.get_insert_statement_from_geojson(resource_json,
                                                             remove_id_and_version_from_properties=remove_id_and_version_from_properties)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # result = self.__PGSQL_CURSOR__.fetchone()
 
-        return result
+        return self.execute(query, is_transaction=True)
 
     def update_feature(self, resource_json, current_user_id):
         ##################################################
@@ -2453,12 +2496,14 @@ class PGSQLConnection:
         ##################################################
         # create the update statement
         ##################################################
-        query_text = self.get_update_statement_from_geojson(resource_json)
+        query = self.get_update_statement_from_geojson(resource_json)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -2484,14 +2529,16 @@ class PGSQLConnection:
         ##################################################
         # try to delete the feature from feature table
         ##################################################
-        query_text = """
+        query = """
             DELETE FROM {0} WHERE id={1};
         """.format(f_table_name, feature_id)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        # rows_affected = self.__PGSQL_CURSOR__.rowcount
+
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -2518,16 +2565,18 @@ class PGSQLConnection:
     ################################################################################
 
     def get_table_names_that_already_exist_in_db(self):
-        query_text = """        
+        query = """
             SELECT jsonb_agg(table_name) AS row_to_json
             FROM information_schema.tables WHERE table_schema = 'public';
         """
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -2540,16 +2589,18 @@ class PGSQLConnection:
         return results_of_query
 
     def get_reserved_words_of_postgresql(self):
-        query_text = """        
-            SELECT jsonb_agg(word) AS row_to_json 
+        query = """
+            SELECT jsonb_agg(word) AS row_to_json
             FROM pg_get_keywords();
         """
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -2562,31 +2613,35 @@ class PGSQLConnection:
         return results_of_query
 
     def drop_table_by_name(self, table_name):
-        query_text = """            
-            DROP TABLE IF EXISTS {0};   
+        query = """
+            DROP TABLE IF EXISTS {0};
         """.format(table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
+
+        self.execute(query, is_transaction=True)
 
     def get_table_schema_from_table_in_list(self, table_schema, table_name):
-        query_text = """
-            SELECT json_agg(column_name) AS row_to_json 
-            FROM 
+        query = """
+            SELECT json_agg(column_name) AS row_to_json
+            FROM
             (
                 -- (2) get the column names of the table
                 SELECT column_name
-                FROM information_schema.columns 
+                FROM information_schema.columns
                 WHERE table_schema = '{0}' AND table_name = '{1}'
                 ORDER BY column_name
-            ) subquery;   
+            ) subquery;
         """.format(table_schema, table_name)
 
         # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        # self.__PGSQL_CURSOR__.execute(query_text)
 
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        # # get the result of query
+        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
+
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING

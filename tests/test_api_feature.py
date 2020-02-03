@@ -163,7 +163,7 @@ class TestAPIFeature(TestCase):
 
         self.tester.api_feature_error_404_not_found(f_table_name="layer_999")
         self.tester.api_feature_error_404_not_found(f_table_name="layer_998")
-    
+
     # feature - create, update and delete
 
     def test_api_feature_create_update_and_delete_point(self):
@@ -277,7 +277,7 @@ class TestAPIFeature(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_api_feature_create_update_and_delete_line(self):
         # DO LOGIN
         self.tester.auth_login("fernanda@admin.com", "fernanda")

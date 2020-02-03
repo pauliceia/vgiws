@@ -540,7 +540,7 @@ class TestAPIFeatureTableErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_feature_table_column_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'type': 'FeatureTableColumn',
