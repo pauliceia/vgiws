@@ -37,17 +37,15 @@ if __name__ == '__main__':
     # tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
 
     # tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_layer_follower.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_layer.py")
+    # -
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
 
     # TODO
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_layer.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_integration.py")
 
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_login.py")
-    # -
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_temporal_columns.py")
-    tests = TestLoader().discover(ROOT_PATH, "test_api_user_layer.py")
-
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_invalid_urls.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_module_common.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

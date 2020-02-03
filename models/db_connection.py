@@ -616,9 +616,6 @@ class PGSQLConnection:
             RENAME TO {1};
         """.format(old_table_name, new_table_name)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
         self.execute(query, is_transaction=True)
 
     def update_layer_in_db(self, properties):
@@ -628,11 +625,6 @@ class PGSQLConnection:
             UPDATE layer SET name = '{1}', description = '{2}', source_description = '{3}'
             WHERE layer_id = {0};
         """.format(p["layer_id"], p["name"], p["description"], p["source_description"])
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -771,11 +763,6 @@ class PGSQLConnection:
         query = """
             DELETE FROM layer WHERE layer_id={0};
         """.format(layer_id)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
