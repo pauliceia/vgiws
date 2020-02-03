@@ -108,20 +108,16 @@ def prepare_test_db_before_tests(arguments):
             insert_data = remove_special_characters(insert_data)
 
         # executing the SQL files
-        print("\nCleaning and creating the schema of DB.")
+        print('\nCleaning and creating the schema of DB.')
         PGSQLConn.execute(schema_data, is_transaction=True, is_sql_file=True)
 
         # print("Inserting the triggers in DB.")
         # PGSQLConn.execute(trigger_data, is_transaction=True, is_sql_file=True)
 
-        print("Inserting the data in DB.\n")
+        print('Inserting the data in DB.')
         PGSQLConn.execute(insert_data, is_transaction=True, is_sql_file=True)
 
-        # send modifications to DB
-        # PGSQLConn.commit()
-
-    # close DB
-    # PGSQLConn.close()
+    print('\nCleaning the database was done successfully.\n')
 
 
 def are_you_sure_to_clean_database(arguments):

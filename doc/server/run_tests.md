@@ -38,7 +38,7 @@ python tests/util/clean_db.py --debug=True
 Run the tests:
 
 ```
-& cd tests/
+$ cd tests/
 $ python run_tests.py
 ```
 
