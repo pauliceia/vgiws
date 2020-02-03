@@ -535,9 +535,6 @@ class PGSQLConnection:
             ) AS keyword
         """.format(subquery)
 
-        # self.__PGSQL_CURSOR__.execute(query_text)
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -561,9 +558,6 @@ class PGSQLConnection:
             INSERT INTO layer (f_table_name, name, description, source_description, created_at)
             VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id;
         """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
-
-        # self.__PGSQL_CURSOR__.execute(query_text)
-        # result = self.__PGSQL_CURSOR__.fetchone()
 
         return self.execute(query, is_transaction=True)
 
@@ -1709,7 +1703,7 @@ class PGSQLConnection:
                                                    keyword_id=keyword_id, notification_id_parent=notification_id_parent)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1730,11 +1724,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -1765,20 +1755,14 @@ class PGSQLConnection:
         if p["notification_id_parent"] is None:
             p["notification_id_parent"] = "NULL"
 
-        query_text = """
+        query = """
             INSERT INTO notification (description, created_at, is_denunciation, user_id_creator,
                                       layer_id, keyword_id, notification_id_parent)
             VALUES ('{0}', LOCALTIMESTAMP, {1}, {2}, {3}, {4}, {5}) RETURNING notification_id;
         """.format(p["description"], p["is_denunciation"], p["user_id_creator"], p["layer_id"],
                    p["keyword_id"], p["notification_id_parent"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+        return self.execute(query, is_transaction=True)
 
     def update_notification(self, resource_json, user_id):
         p = resource_json["properties"]
@@ -1792,15 +1776,12 @@ class PGSQLConnection:
         if p["notification_id_parent"] is None:
             p["notification_id_parent"] = "NULL"
 
-        query_text = """
+        query = """
             UPDATE notification SET description = '{1}', layer_id = {2}, keyword_id = {3}, notification_id_parent = {4}
             WHERE notification_id={0};
         """.format(p["notification_id"], p["description"], p["layer_id"], p["keyword_id"], p["notification_id_parent"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1810,21 +1791,14 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         # delete the reference
-        query_text = """
+        query = """
             DELETE FROM notification WHERE notification_id={0};
         """.format(notification_id)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
-
-    ################################################################################
-    # NOTIFICATION
-    ################################################################################
 
     def get_notification_related_to_user(self, user_id=None):
         # the id have to be a int
@@ -1839,7 +1813,7 @@ class PGSQLConnection:
         subquery = get_subquery_notification_table_related_to_user(user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1860,11 +1834,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
