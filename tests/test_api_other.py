@@ -285,14 +285,6 @@ class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
                                                                                         file_name=file_name)
 
 
-
-
-
-
-
-
-
-
 """
 class TestAPICapabilities(TestCase):
 

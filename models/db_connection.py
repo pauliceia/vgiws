@@ -2087,7 +2087,7 @@ class PGSQLConnection:
         subquery = get_subquery_mask_table(mask_id=mask_id)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -2102,11 +2102,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
