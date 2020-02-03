@@ -986,7 +986,7 @@ class PGSQLConnection:
                                                        start_date_gte=start_date_gte, end_date_lte=end_date_lte)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1006,11 +1006,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -1035,24 +1031,22 @@ class PGSQLConnection:
         if p["end_date_mask_id"] is None:
             p["end_date_mask_id"] = "NULL"
 
-        query_text = """
+        query = """
             INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date,
                                           start_date_mask_id, end_date_mask_id)
             VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6});
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
                    p["start_date_mask_id"], p["end_date_mask_id"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def update_temporal_columns_f_table_name(self, old_f_table_name, new_f_table_name):
-        query_text = """
+        query = """
             UPDATE temporal_columns SET f_table_name='{1}'
             WHERE f_table_name = '{0}';
         """.format(old_f_table_name, new_f_table_name)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def update_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
@@ -1063,17 +1057,14 @@ class PGSQLConnection:
         if p["end_date_mask_id"] is None:
             p["end_date_mask_id"] = "NULL"
 
-        query_text = """
+        query = """
             UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
                                         start_date_mask_id={5}, end_date_mask_id={6}
             WHERE f_table_name = '{0}';
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
                    p["start_date_mask_id"], p["end_date_mask_id"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1086,11 +1077,6 @@ class PGSQLConnection:
         query = """
             DELETE FROM temporal_columns WHERE f_table_name = '{0}';
         """.format(f_table_name)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
