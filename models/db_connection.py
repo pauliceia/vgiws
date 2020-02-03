@@ -1223,7 +1223,7 @@ class PGSQLConnection:
                                                 user_id_creator=user_id_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1239,11 +1239,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -1265,31 +1261,22 @@ class PGSQLConnection:
 
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             INSERT INTO reference (description, user_id_creator)
             VALUES ('{0}', {1}) RETURNING reference_id;
         """.format(p["description"], p["user_id"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        result = self.__PGSQL_CURSOR__.fetchone()
-
-        return result
+        return self.execute(query, is_transaction=True)
 
     def update_reference(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        query_text = """
+        query = """
             UPDATE reference SET description = '{1}'
             WHERE reference_id={0};
         """.format(p["reference_id"], p["description"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
@@ -1299,14 +1286,11 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         # delete the reference
-        query_text = """
+        query = """
             DELETE FROM reference WHERE reference_id={0};
         """.format(resource_id)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        rows_affected = self.__PGSQL_CURSOR__.rowcount
+        rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")

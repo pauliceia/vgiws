@@ -45,7 +45,8 @@ if __name__ == '__main__':
 
     # tests = TestLoader().discover(ROOT_PATH, "test_api_login.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_notification.py")
-    tests = TestLoader().discover(ROOT_PATH, "test_api_other.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_other.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_reference.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)
