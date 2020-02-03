@@ -29,10 +29,15 @@ if __name__ == '__main__':
     # tests = TestLoader().discover(ROOT_PATH, "test_api_changeset.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_curator.py")
 
-    # doing this one again
+    # TODO
     # tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
 
-    tests = TestLoader().discover(ROOT_PATH, "test_api_feature.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_feature.py")
+
+    # TODO
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
+
+    tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)
@@ -40,3 +45,6 @@ if __name__ == '__main__':
     # If it has happened a problem, close the program
     if not result.wasSuccessful():
         sys_exit(1)
+
+# do the query in database
+# self.__PGSQL_CURSOR__.execute(query_text)

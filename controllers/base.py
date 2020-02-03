@@ -1421,11 +1421,8 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        print('\n _create_resource (1)')
         self.can_user_uses_the_changeset(current_user_id, resource_json["properties"]["changeset_id"])
         self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
-
-        print('\n _create_resource (2)')
 
         return self.PGSQLConn.create_feature(resource_json, current_user_id)
 
