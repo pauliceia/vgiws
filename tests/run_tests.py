@@ -27,11 +27,10 @@ if __name__ == '__main__':
     # tests = TestLoader().discover(ROOT_PATH, "*.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_changeset.py")
     # -
-    tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_feature.py")
 
     # TODO
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
 
     # tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
     # -

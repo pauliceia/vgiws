@@ -1769,32 +1769,29 @@ class PGSQLConnection:
     ################################################################################
 
     def create_new_table_with_the_schema_of_old_table(self, new_table_name, old_table_name):
-        query_text = """
+        query = """
             CREATE TABLE {0} ( like {1} including all )
         """.format(new_table_name, old_table_name)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def add_version_column_in_table(self, table_name):
-        query_text = """
+        query = """
             ALTER TABLE {0}
             ADD COLUMN version INT NOT NULL DEFAULT 1
         """.format(table_name)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def add_changeset_id_column_in_table(self, table_name):
         # create the column
-        query_text = """
+        query = """
             ALTER TABLE {0} ADD COLUMN changeset_id INT
         """.format(table_name)
 
-        # put the column as FK
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
-        query_text = """
+        query = """
             ALTER TABLE {0}
             ADD CONSTRAINT constraint_changeset_id
             FOREIGN KEY (changeset_id)
@@ -1803,26 +1800,23 @@ class PGSQLConnection:
                 ON UPDATE CASCADE
         """.format(table_name)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def update_feature_table_setting_in_all_records_a_version(self, f_table_name, version):
         # create the column
-        query_text = """
+        query = """
             UPDATE {0} SET version = {1};
         """.format(f_table_name, version)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def update_feature_table_setting_in_all_records_a_changeset_id(self, f_table_name, changeset_id):
         # create the column
-        query_text = """
+        query = """
             UPDATE {0} SET changeset_id = {1};
         """.format(f_table_name, changeset_id)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     # def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
     #
@@ -1884,7 +1878,7 @@ class PGSQLConnection:
         min_x, min_y, max_x, max_y = shapefile_bounds
 
         # verify if the shapefile intersects with the default city
-        query_text = """
+        query = """
             SELECT ST_Intersects(
                 -- create a bounding box of the shapefile
                 ST_Transform(ST_MakeEnvelope(
@@ -1899,11 +1893,7 @@ class PGSQLConnection:
                    __SPATIAL_BB__["xmin"], __SPATIAL_BB__["ymin"],
                    __SPATIAL_BB__["xmax"], __SPATIAL_BB__["ymax"], __SPATIAL_BB__["EPSG"])
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        is_shapefile_intersects_default_city = self.__PGSQL_CURSOR__.fetchone()
+        is_shapefile_intersects_default_city = self.execute(query)
 
         if "row_to_json" in is_shapefile_intersects_default_city:
             is_shapefile_intersects_default_city = is_shapefile_intersects_default_city["row_to_json"]
