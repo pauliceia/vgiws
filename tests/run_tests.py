@@ -37,7 +37,8 @@ if __name__ == '__main__':
     # TODO
     # tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
 
-    tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_layer_follower.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

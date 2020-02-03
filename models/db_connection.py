@@ -2038,7 +2038,7 @@ class PGSQLConnection:
         subquery = get_subquery_layer_follower_table(layer_id=layer_id, user_id=user_id)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query_text = """
+        query = """
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -2054,11 +2054,7 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        self.__PGSQL_CURSOR__.execute(query_text)
-
-        # get the result of query
-        results_of_query = self.__PGSQL_CURSOR__.fetchone()
+        results_of_query = self.execute(query)
 
         ######################################################################
         # POST-PROCESSING
@@ -2085,31 +2081,7 @@ class PGSQLConnection:
             VALUES ({0}, {1}, LOCALTIMESTAMP);
         """.format(p["layer_id"], p["user_id"])
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
         self.execute(query, is_transaction=True)
-
-        # get the result of query
-        # result = self.__PGSQL_CURSOR__.fetchone()
-        #
-        # return result
-
-    # def update_layer_follower(self, resource_json, user_id):
-    #     p = resource_json["properties"]
-    #
-    #     query_text = """
-    #         UPDATE reference SET description = '{1}'
-    #         WHERE reference_id={0};
-    #     """.format(p["reference_id"], p["description"])
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     rows_affected = self.__PGSQL_CURSOR__.rowcount
-    #
-    #     if rows_affected == 0:
-    #         raise HTTPError(404, "Not found any resource.")
 
     def delete_layer_follower(self, layer_id=None, user_id=None):
         if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id):
@@ -2127,11 +2099,6 @@ class PGSQLConnection:
             query = """
                 DELETE FROM layer_followers WHERE user_id={0} AND layer_id={1};
             """.format(user_id, layer_id)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 

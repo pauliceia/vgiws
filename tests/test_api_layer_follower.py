@@ -238,14 +238,14 @@ class TestAPIUserLayerErrors(TestCase):
     #     # DO LOGIN
     #     # login with gabriel and he tries to add a user in the layer of admin
     #     self.tester.auth_login("miguel@admin.com", "miguel")
-    # 
+    #
     #     # add a user in a layer
     #     user_layer = {
     #         'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1002},
     #         'type': 'UserLayer'
     #     }
     #     self.tester.api_user_layer_create_error_403_forbidden(user_layer)
-    # 
+    #
     #     # DO LOGOUT AFTER THE TESTS
     #     self.tester.auth_logout()
 
