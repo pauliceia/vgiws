@@ -25,7 +25,6 @@ if __name__ == '__main__':
 
     # Get all the files on current folder that has .py in the final
     # tests = TestLoader().discover(ROOT_PATH, "*.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_changeset.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_curator.py")
 
@@ -44,11 +43,11 @@ if __name__ == '__main__':
     # tests = TestLoader().discover(ROOT_PATH, "test_api_layer.py")
 
     # tests = TestLoader().discover(ROOT_PATH, "test_api_login.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_notification.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_other.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_reference.py")
+    # -
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_temporal_columns.py")
+    tests = TestLoader().discover(ROOT_PATH, "test_api_user_layer.py")
 
-    tests = TestLoader().discover(ROOT_PATH, "test_api_temporal_columns.py")
+    # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
 
     # Run the tests - verbosity=2 increases the level of detail of output
     result = TextTestRunner(verbosity=2).run(tests)

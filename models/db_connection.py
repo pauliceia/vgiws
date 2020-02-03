@@ -1186,11 +1186,6 @@ class PGSQLConnection:
                 DELETE FROM user_layer WHERE user_id={0} AND layer_id={1};
             """.format(user_id, layer_id)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
-
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
