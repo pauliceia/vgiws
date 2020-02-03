@@ -26,18 +26,14 @@ if __name__ == '__main__':
     # Get all the files on current folder that has .py in the final
     # tests = TestLoader().discover(ROOT_PATH, "*.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_changeset.py")
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_curator.py")
-
-    # TODO
-    # tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
-
+    # -
+    tests = TestLoader().discover(ROOT_PATH, "test_api_feature_table.py")
     # tests = TestLoader().discover(ROOT_PATH, "test_api_feature.py")
 
     # TODO
     # tests = TestLoader().discover(ROOT_PATH, "test_api_import.py")
 
     # tests = TestLoader().discover(ROOT_PATH, "test_api_keyword.py")
-    tests = TestLoader().discover(ROOT_PATH, "test_api_layer.py")
     # -
     # tests = TestLoader().discover(ROOT_PATH, "test_api_user.py")
 
@@ -56,3 +52,4 @@ if __name__ == '__main__':
 
 # do the query in database
 # self.__PGSQL_CURSOR__.execute(query_text)
+# rows_affected = self.__PGSQL_CURSOR__.rowcount

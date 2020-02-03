@@ -197,7 +197,7 @@ class PGSQLConnection:
         except ProgrammingError as error:
             self.rollback()
             print('An error occurred during query execution: ', error)
-            raise ProgrammingError(error)
+            raise error
 
         # finally is always executed (both at try and except)
         finally:
@@ -797,12 +797,6 @@ class PGSQLConnection:
             {0}
         """.format(subquery)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -850,8 +844,6 @@ class PGSQLConnection:
                 );
             """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-            # self.__PGSQL_CURSOR__.execute(query_text)
-
             self.execute(query, is_transaction=True)
 
         # add the is_removed column in version feature table
@@ -861,11 +853,6 @@ class PGSQLConnection:
             ALTER TABLE {0}
             ADD COLUMN is_removed BOOLEAN DEFAULT FALSE;
         """.format(version_table)
-
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # put the feature tables in database
-        # self.commit()
 
         self.execute(query, is_transaction=True)
 
@@ -905,11 +892,7 @@ class PGSQLConnection:
                 );
             """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-            # self.__PGSQL_CURSOR__.execute(query_text)
             self.execute(query, is_transaction=True)
-
-        # put the feature tables in database
-        # self.commit()
 
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name, EPSG)
@@ -923,7 +906,6 @@ class PGSQLConnection:
                 DROP TABLE IF EXISTS {0} CASCADE ;
             """.format(table_to_drop)
 
-            # self.__PGSQL_CURSOR__.execute(query_text)
             self.execute(query, is_transaction=True)
 
         try:
@@ -933,32 +915,28 @@ class PGSQLConnection:
             if error.status_code != 404:
                 raise error
 
-        # remove the feature table from database
-        # self.commit()
-
     ################################################################################
     # FEATURE TABLE COLUMN
     ################################################################################
 
     def create_feature_table_column(self, resource_json):
-
-        query_text = """
+        query = """
             ALTER TABLE {0}
             ADD COLUMN {1} {2};
         """.format(resource_json["f_table_name"], resource_json["column_name"], resource_json["column_type"])
 
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     def delete_feature_table_column(self, f_table_name, column_name):
         if column_name in ["id", "geom", "changeset_id", "version"]:
             raise HTTPError(400, "Invalid parameter.")
 
-        query_text = """
+        query = """
             ALTER TABLE {0}
             DROP COLUMN {1} CASCADE;
         """.format(f_table_name, column_name)
 
-        self.__PGSQL_CURSOR__.execute(query_text)
+        self.execute(query, is_transaction=True)
 
     ################################################################################
     # TEMPORAL COLUMNS
@@ -1323,9 +1301,6 @@ class PGSQLConnection:
             VALUES ({0}, {1});
         """.format(p["layer_id"], p["reference_id"])
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
         self.execute(query, is_transaction=True)
 
     def delete_layer_reference(self, layer_id=None, reference_id=None):
@@ -1340,11 +1315,6 @@ class PGSQLConnection:
             query = """
                 DELETE FROM layer_reference WHERE layer_id={0} AND reference_id={1};
             """.format(layer_id, reference_id)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -1496,9 +1466,6 @@ class PGSQLConnection:
             VALUES ({0}, {1});
         """.format(p["layer_id"], p["keyword_id"])
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
         self.execute(query, is_transaction=True)
 
     def delete_layer_keyword(self, layer_id=None, keyword_id=None):
@@ -1513,11 +1480,6 @@ class PGSQLConnection:
             query = """
                 DELETE FROM layer_keyword WHERE layer_id={0} AND keyword_id={1};
             """.format(layer_id, keyword_id)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -2096,16 +2058,9 @@ class PGSQLConnection:
                                 str(column_name_with_type["column_name"]) + " is missing).")
 
     def get_srid_from_table_name(self, table_name):
-
         query = """
             SELECT srid FROM geometry_columns WHERE f_table_name='{0}';
         """.format(table_name)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # result = self.__PGSQL_CURSOR__.fetchone()
 
         result = self.execute(query)
 
@@ -2233,12 +2188,6 @@ class PGSQLConnection:
             WHERE table_schema = 'public' AND table_name = '{0}';
         """.format(table_name)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -2294,12 +2243,6 @@ class PGSQLConnection:
             {0}
         """.format(subquery, columns_of_table_string)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -2319,12 +2262,6 @@ class PGSQLConnection:
     def create_feature(self, resource_json, current_user_id, remove_id_and_version_from_properties=True):
         query = self.get_insert_statement_from_geojson(resource_json,
                                                             remove_id_and_version_from_properties=remove_id_and_version_from_properties)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # result = self.__PGSQL_CURSOR__.fetchone()
 
         return self.execute(query, is_transaction=True)
 
@@ -2357,11 +2294,6 @@ class PGSQLConnection:
         ##################################################
         query = self.get_update_statement_from_geojson(resource_json)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
-
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
@@ -2391,11 +2323,6 @@ class PGSQLConnection:
         query = """
             DELETE FROM {0} WHERE id={1};
         """.format(f_table_name, feature_id)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # rows_affected = self.__PGSQL_CURSOR__.rowcount
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -2429,12 +2356,6 @@ class PGSQLConnection:
             FROM information_schema.tables WHERE table_schema = 'public';
         """
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -2453,12 +2374,6 @@ class PGSQLConnection:
             FROM pg_get_keywords();
         """
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
-
         results_of_query = self.execute(query)
 
         ######################################################################
@@ -2476,9 +2391,6 @@ class PGSQLConnection:
             DROP TABLE IF EXISTS {0};
         """.format(table_name)
 
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
         self.execute(query, is_transaction=True)
 
     def get_table_schema_from_table_in_list(self, table_schema, table_name):
@@ -2493,12 +2405,6 @@ class PGSQLConnection:
                 ORDER BY column_name
             ) subquery;
         """.format(table_schema, table_name)
-
-        # do the query in database
-        # self.__PGSQL_CURSOR__.execute(query_text)
-
-        # # get the result of query
-        # results_of_query = self.__PGSQL_CURSOR__.fetchone()
 
         results_of_query = self.execute(query)
 
