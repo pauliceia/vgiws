@@ -141,6 +141,18 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
+    def test_post_import_shp_shopping_2014_29193(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "shopping_2014_29193.zip"
+        file_name_path = "shp_originals/dados_prefeitura_sp/" + file_name
+        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+
     # ferla
 
     def test_post_import_shp_Area_alagada_4326(self):
@@ -160,7 +172,7 @@ class TestAPIImport(TestCase):
         # the Shapefile has an empty column name and fiona and OGR don't understand it
         ##################################################
         file_name = "SF.zip"
-        file_name_path = "shp_originals/ferla/" + file_name
+        file_name_path = "shp_originals/ferla/with_myshapes_folder/" + file_name
         with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
@@ -191,8 +203,22 @@ class TestAPIImport(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
     #                                           file_name=file_name, changeset_id=self.changeset_id)
 
+    # cintia
+
+    def test_post_import_shp_Recenseamento_Demographico_do_Estado_de_Sao_Paulo_4326(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "Recenseamento Demographico do Estado de Sao Paulo.zip"
+        file_name_path = "shp_originals/cintia/" + file_name
+        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+
     """
-    def test_post_import_shp_Area alagada_problema(self):
+    def test_post_import_shp_Area_alagada_problema(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
@@ -622,18 +648,6 @@ class TestAPIImportError(TestCase):
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=file_name, changeset_id=self.changeset_id)
-
-    def test_post_import_shp_error_500_internal_server_error_OGR_was_not_able_to_import(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "shopping_2014.zip"
-
-        with open(self.folder_name_shp_originals + file_name, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create_error_500_internal_server_error(binary_file_content, f_table_name=self.f_table_name,
-                                                                              file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_500_internal_server_error_fiona_was_not_able_to_import(self):
         ##################################################

@@ -41,7 +41,7 @@ PUBLISH_LAYERS_IN_GEOSERVER = True
 # HOSTS_ALLOWED = ["http://localhost:8888", "http://localhost:8080"]
 
 # temporary folder where will be save the import files temporarily
-__TEMP_FOLDER__ = "/tmp/vgiws/"
+__TEMP_FOLDER__ = "/tmp/vgiws"
 
 
 ####################################################################################################

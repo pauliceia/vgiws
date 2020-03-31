@@ -5,10 +5,11 @@
     Responsible module to create base handlers.
 """
 
+from os import makedirs, remove as remove_file
+from os.path import exists, join, isdir
+
 from json import loads
 from abc import ABCMeta
-from os import makedirs, remove as remove_file
-from os.path import exists
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from zipfile import ZipFile, BadZipFile
@@ -41,9 +42,9 @@ from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EM
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
                                 __EMAIL_SIGNATURE__
 
-from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, get_shapefile_name_inside_zip, \
-                            catch_generic_exception, exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip, \
-                            is_without_special_chars
+from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, get_shapefile_file_name_inside_folder, \
+                            catch_generic_exception, is_there_shapefile_files_inside_folder, \
+                            is_without_special_chars, rename_files_names_inside_folder, move_files_from_src_to_dist
 
 
 def send_email(to_email_address, subject="", body=""):
@@ -1581,10 +1582,10 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         output_file.write(binary_file)
         output_file.close()
 
-    def extract_zip_in_folder(self, folder_with_file_name, folder_to_extract_zip):
+    def extract_zip_in_folder(self, full_path_zip_file, path_to_extract_zip_file):
         """
-        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
-        :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
+        :param full_path_zip_file: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :param path_to_extract_zip_file: folder where will extract the zip (e.g. /tmp/vgiws/points)
         :return:
         """
         """
@@ -1594,17 +1595,33 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         """
 
         try:
-            with ZipFile(folder_with_file_name, "r") as zip_reference:
+            with ZipFile(full_path_zip_file, "r") as zip_reference:
                 # extract the zip in a folder
-                zip_reference.extractall(folder_to_extract_zip)
+                zip_reference.extractall(path_to_extract_zip_file)
 
-                # verify if there are the shapefile files inside the zip, if ok, so returns a 200 status,
-                # else it returns a 404 with a message
-                status, message = exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference)
+                # check if there are the shapefile files inside the folder where the zip was extracted,
+                # if ok, then it returns a 200 status code, else it returns a 404 status code and an error message
+                status, message = is_there_shapefile_files_inside_folder(path_to_extract_zip_file)
 
-                # if it is not success, remove the files and raise a message
+                # if there is not shapefile files inside the folder for the first time,
+                # then I try to check if there is the files inside `myshapes` folder
                 if status != 200:
-                    remove_file(folder_with_file_name)
+                    path_myshapes = join(path_to_extract_zip_file, 'myshapes')
+
+                    # check if there is `myshapes` folder inside the root folder
+                    if isdir(path_myshapes):
+                        # if there is `myshapes` folder, then I move all files inside it to the previous folder
+                        move_files_from_src_to_dist(path_myshapes, path_to_extract_zip_file)
+
+                # check again if the shapefile files are inside the correct folder
+                # if they are not, in other words, `status != 200`, then raise an exception
+                status, message = is_there_shapefile_files_inside_folder(path_to_extract_zip_file)
+
+                # if there is not shapefile files inside the folder, then remove the files and raise an exception
+                if status != 200:
+                    # remove the temporary file and folder of the shapefile
+                    remove_file(full_path_zip_file)
+                    remove_folder_with_contents(path_to_extract_zip_file)
                     raise HTTPError(status, message)
 
         except BadZipFile as error:
@@ -1662,19 +1679,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         #     self.PGSQLConn.drop_table_by_name(f_table_name)
         #     raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
-    def get_shapefile_name(self, folder_with_file_name):
-        """
-        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
-        :return:
-        """
-        try:
-            # try to open the zip
-            with ZipFile(folder_with_file_name, "r") as zip_reference:
-                # if exist one shapefile inside the zip, so return the shapefile name, else raise an exception
-                return get_shapefile_name_inside_zip(zip_reference)
-        except BadZipFile as error:
-            raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
-
     def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
             layer = fiona_open(shapefile_path)
@@ -1716,38 +1720,40 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # validate the arguments and binary_file
             self.do_validation(arguments, binary_file)
 
-            # arrange the f_table_name: remove the lateral spaces and change the internal spaces by _
+            # fix the f_table_name: remove the lateral spaces and change the internal spaces by _
             arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
-            # verify if the user has permission to import the shapefile (same permissions than the feature table)
-            current_user_id = self.get_current_user_id()
-            self.can_current_user_manage(current_user_id, arguments["f_table_name"])
+            # check if the user has permission to import the shapefile (same permissions than the feature table)
+            self.can_current_user_manage(self.get_current_user_id(), arguments["f_table_name"])
 
             # remove the extension of the file name (e.g. points)
             FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
 
             # file name of the zip (e.g. /tmp/vgiws/points.zip)
-            ZIP_FILE_NAME = __TEMP_FOLDER__ + arguments["file_name"]
-            # folder where will extract the zip (e.g. /tmp/vgiws/points)
-            EXTRACTED_ZIP_FOLDER_NAME = __TEMP_FOLDER__ + FILE_NAME_WITHOUT_EXTENSION
+            FULL_PATH_ZIP_FILE = join(__TEMP_FOLDER__, arguments["file_name"])
 
-            self.save_binary_file_in_folder(binary_file, ZIP_FILE_NAME)
+            self.save_binary_file_in_folder(binary_file, FULL_PATH_ZIP_FILE)
+
+            # folder where will extract the zip (e.g. /tmp/vgiws/points)
+            PATH_TO_EXTRACT_ZIP_FILE = join(__TEMP_FOLDER__, FILE_NAME_WITHOUT_EXTENSION)
 
             # extract the zip in a folder
-            self.extract_zip_in_folder(ZIP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+            self.extract_zip_in_folder(FULL_PATH_ZIP_FILE, PATH_TO_EXTRACT_ZIP_FILE)
 
-            # get the SHP name (e.g. points.shp)
-            SHP_FILE_NAME = self.get_shapefile_name(ZIP_FILE_NAME)
+            # rename the files names inside the folder where the zip was extracted, in order to fix them
+            rename_files_names_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
 
-            SHAPEFILE_PATH = EXTRACTED_ZIP_FOLDER_NAME + "/" + SHP_FILE_NAME
+            # get the shapefile file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
+            SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
+
             self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
-            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME)
+            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE)
 
             # verify if shapefile is inside default city
             self.verify_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
 
-            self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, EXTRACTED_ZIP_FOLDER_NAME, EPSG)
+            self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE, EPSG)
 
             VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 
@@ -1768,8 +1774,8 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
 
             # remove the temporary file and folder of the shapefile
-            remove_file(ZIP_FILE_NAME)
-            remove_folder_with_contents(EXTRACTED_ZIP_FOLDER_NAME)
+            remove_file(FULL_PATH_ZIP_FILE)
+            remove_folder_with_contents(PATH_TO_EXTRACT_ZIP_FILE)
         except ProgrammingError as error:
             raise HTTPError(500, "Problem when to import the Shapefile: " + str(error))
 
@@ -1778,7 +1784,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
 class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
 
-    __TEMP_FOLDER_TO_CONVERT__ = __TEMP_FOLDER__ + "geojson_to_shapefile/"
+    __TEMP_FOLDER_TO_CONVERT__ = join(__TEMP_FOLDER__, "geojson_to_shapefile/")
 
     def do_validation(self, arguments, binary_file):
         if "file_name" not in arguments:
@@ -1793,6 +1799,7 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
         # if do not exist the temp folders, create them
         if not exists(__TEMP_FOLDER__):
             makedirs(__TEMP_FOLDER__)
+
         if not exists(self.__TEMP_FOLDER_TO_CONVERT__):
             makedirs(self.__TEMP_FOLDER_TO_CONVERT__)
 
@@ -1846,7 +1853,7 @@ class BaseHandlerConvertGeoJSONToShapefile(BaseHandler):
         # delete the file (it is not needed anymore and because it doesn't have to appear inside the zip)
         remove_file(FILE_NAME_WITH_FOLDER)
 
-        ZIP_FILE_NAME_WITH_FOLDER = __TEMP_FOLDER__ + arguments["file_name"].replace(".geojson", "")
+        ZIP_FILE_NAME_WITH_FOLDER = join(__TEMP_FOLDER__, arguments["file_name"].replace(".geojson", ""))
 
         self.create_zip_with_shapefile(ZIP_FILE_NAME_WITH_FOLDER, self.__TEMP_FOLDER_TO_CONVERT__)
 

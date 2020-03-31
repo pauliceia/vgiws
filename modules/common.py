@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+from os import listdir, rename
+from os.path import isfile, join
 from datetime import datetime
 from base64 import b64encode
 from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError, InvalidAlgorithmError
 from string import ascii_uppercase, digits
 from random import choice
 from re import compile as re_compile
+from unidecode import unidecode
 
 from psycopg2 import Error, ProgrammingError
 from tornado.web import HTTPError
@@ -126,40 +128,75 @@ def exist_shapefile_inside_zip(zip_reference):
     return False
 
 
-def get_shapefile_name_inside_zip(zip_reference):
-    list_file_names_of_zip = zip_reference.namelist()
+def get_shapefile_file_name_inside_folder(directory):
+    files = get_just_files_inside_directory(directory)
 
-    for file_name_in_zip in list_file_names_of_zip:
-        # if exist a SHP file inside the zip, return true
-        if file_name_in_zip.endswith(".shp"):
-            return file_name_in_zip
+    for file_name in files:
+        if file_name.endswith(".shp"):
+            # return the file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
+            return file_name, join(directory, file_name)
 
-    raise HTTPError(404, "3) Invalid ZIP! Not found a ShapeFile (.shp) inside de ZIP.")  # 400 - Bad request
+    raise HTTPError(404, "3) Invalid ZIP! Not found a ShapeFile (.shp) inside the ZIP.")  # 400 - Bad request
 
 
-def exist_prj_shx_dbf_and_prj_files_inside_shapefile_name_inside_zip(zip_reference):
+def rename_file_name(file_name):
+    # PS: `unidecode` removes the accent from letters
+    return unidecode(file_name.replace(' ', '_').lower())
+
+
+def rename_files_names_inside_folder(directory):
+    files = get_just_files_inside_directory(directory)
+
+    for old_file_name in files:
+        new_file_name = rename_file_name(old_file_name)
+
+        # get the full path to one file name (e.g. /tmp/vgiws/point/point.shx)
+        full_path_for_old_file_name = join(directory, old_file_name)
+        full_path_for_new_file_name = join(directory, new_file_name)
+
+        # rename the old file name to the new file name
+        rename(full_path_for_old_file_name, full_path_for_new_file_name)
+
+
+def move_files_from_src_to_dist(src, dist):
+    files = get_just_files_inside_directory(src)
+
+    for _file in files:
+        # where the file is in this moment (e.g. /tmp/vgiws/point/myshapes/point.shx)
+        _from = join(src, _file)
+        # where I would like the file goes (e.g. /tmp/vgiws/point/point.shx)
+        _to = join(dist, _file)
+
+        # move ("rename") the file from `_from` to `_to`
+        rename(_from, _to)
+
+
+def is_there_shapefile_files_inside_folder(path_to_extract_zip_file):
     status = 200  # it is expected that it will work OK
     file_extension = ""
 
-    list_file_names_of_zip = zip_reference.namelist()
+    files_and_folders = listdir(path_to_extract_zip_file)
 
-    if not any("shp" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
+    if not any("shp" in file_or_folder for file_or_folder in files_and_folders):
         status = 404
         file_extension = ".shp"
 
-    if not any("prj" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
+    if not any("prj" in file_or_folder for file_or_folder in files_and_folders):
         status = 404
         file_extension = ".prj"
 
-    if not any("dbf" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
+    if not any("dbf" in file_or_folder for file_or_folder in files_and_folders):
         status = 404
         file_extension = ".dbf"
 
-    if not any("shx" in file_name_in_zip for file_name_in_zip in list_file_names_of_zip):
+    if not any("shx" in file_or_folder for file_or_folder in files_and_folders):
         status = 404
         file_extension = ".shx"
 
-    return status, "Invalid ZIP! Not found a ShapeFile ({0}) inside de ZIP.".format(file_extension)
+    if status == 200:
+        return status, ""
+
+    return status, "Invalid ZIP! Not found a ShapeFile ({0}) inside the ZIP.".format(file_extension)
 
 
 # OTHERS
@@ -204,3 +241,8 @@ def is_without_special_chars(word):
     english_check = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
 
     return bool(english_check.match(word))
+
+
+def get_just_files_inside_directory(directory):
+    # this method just returns the files inside the directory and not the folders, if there is any
+    return [f for f in listdir(directory) if isfile(join(directory, f))]
