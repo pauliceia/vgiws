@@ -50,11 +50,7 @@ Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
     $ cd vgiws/
     ```
 
-    Build the image:
-
-    ```
-    $ docker build --no-cache -t vgiws:latest -t vgiws:v_0.0.4 -f Dockerfile .
-    ```
+    Instructions of how to build the new Docker image can be found [here](https://hub.docker.com/r/pauliceia/api-vgiws).
 
     To debug, create the container with the VGIMWS:
 
