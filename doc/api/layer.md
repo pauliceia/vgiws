@@ -100,7 +100,7 @@ This method updated a reference described in a JSON.
 - Error codes:
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): The owner of layer or administrator are who can manage a layer.
+     - 403 (Forbidden): The layer owner or administrator user are who can update a layer.
      - 404 (Not Found): Not found the layer \<ID\>.
      - 409 (Conflict): The maximum of keywords allowed to a layer are 5.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
@@ -123,7 +123,7 @@ This method deletes one layer by id = #id.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): The owner of layer or administrator are who can delete a layer.
+    - 403 (Forbidden): The layer owner or administrator user are who can delete a layer.
     - 404 (Not Found): Not found the layer \<ID\>.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

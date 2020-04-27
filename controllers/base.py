@@ -833,7 +833,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     def _put_resource(self, resource_json, current_user_id, **kwargs):
         self.check_if_layer_has_max_5_keywords(resource_json)
 
-        self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
+        self.can_current_user_update(current_user_id, resource_json["properties"]["layer_id"])
 
         return self.PGSQLConn.update_layer(resource_json, current_user_id)
 
@@ -841,15 +841,15 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         layer_id = args[0]
-        self.can_current_user_manage(current_user_id, layer_id)
+        self.can_current_user_delete(current_user_id, layer_id)
 
         self.PGSQLConn.delete_layer(*args)
 
     # VALIDATION
 
-    def can_current_user_manage(self, current_user_id, layer_id):
+    def can_current_user_update(self, current_user_id, layer_id):
         """
-        Check if the user has manager permission to a layer
+        Check if the user has permission to update a layer
         :param current_user_id: current user id
         :param layer_id: layer id
         :return:
@@ -872,7 +872,34 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of layer or administrator are who can manage a layer.")
+        raise HTTPError(403, "The layer owner or administrator user are who can update a layer.")
+
+    def can_current_user_delete(self, current_user_id, layer_id):
+        """
+        Check if the user has permission to delete a layer
+        :param current_user_id: current user id
+        :param layer_id: layer id
+        :return:
+        """
+
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
+            return
+
+        layers = self.PGSQLConn.get_layers(layer_id=layer_id)
+
+        if not layers["features"]:  # if list is empty:
+            raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
+
+        user_layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
+
+        for user_layer in user_layers["features"]:
+            if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, so ok...
+                return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The layer owner or administrator user are who can delete a layer.")
 
 
 class FeatureTableValidator(BaseHandler):

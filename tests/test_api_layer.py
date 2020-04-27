@@ -121,7 +121,9 @@ class TestAPILayer(TestCase):
     # layer - create, update and delete
 
     def test_api_layer_create_update_and_delete(self):
-        # DO LOGIN
+        ##################################################
+        # log in with a normal user
+        ##################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
@@ -131,7 +133,7 @@ class TestAPILayer(TestCase):
         creator_user_id = user["properties"]["user_id"]
 
         ##################################################
-        # create a layer
+        # create a layer with a normal user
         ##################################################
         resource = {
             'type': 'Layer',
@@ -141,19 +143,17 @@ class TestAPILayer(TestCase):
         }
         resource = self.tester.api_layer_create(resource)
 
-        # get the id of layer
+        # get the layer id
         resource_id = resource["properties"]["layer_id"]
 
         ##################################################
-        # update the layer
+        # creator user updates the layer
         ##################################################
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)
 
-        ##################################################
         # check if the resource was modified
-        ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource_id)
 
@@ -169,8 +169,9 @@ class TestAPILayer(TestCase):
         self.tester.api_user_layer_create(user_layer)
 
         ##################################################
-        # check if the creator user started to follow the layer automatically
+        # check if the creator and collaborator users have started to follow the created layer automatically
         ##################################################
+        # creator user
         expected_at_least = {
             'features': [
                 {
@@ -183,9 +184,7 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_follower(expected_at_least=expected_at_least,
                                        user_id=creator_user_id, layer_id=resource_id)
 
-        ##################################################
-        # check if the collaborator user started to follow the layer automatically
-        ##################################################
+        # collaborator user
         expected_at_least = {
             'features': [
                 {
@@ -199,42 +198,68 @@ class TestAPILayer(TestCase):
                                        user_id=user_id_collaborator, layer_id=resource_id)
 
         ##################################################
-        # delete the layer
+        # check if the collaborator user cannot update and delete the layer
         ##################################################
-        # REMOVE THE layer AFTER THE TESTS
+        # log in with the collaborator user
+        self.tester.auth_logout()
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        # collaborator user tries to updates the layer, but a 403 error is raised
+        resource["properties"]["name"] = "New addresses"
+        resource["properties"]["description"] = "New addresses"
+        self.tester.api_layer_update_error_403_forbidden(resource)
+
+        # collaborator user tries to deletes the layer, but a 403 error is raised
+        self.tester.api_layer_delete_error_403_forbidden(resource_id)
+
+        # log out the collaborator user
+        self.tester.auth_logout()
+
+        ##################################################
+        # delete the layer in the final with the creator user
+        ##################################################
+        # log in the creator user again
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
         self.tester.api_layer_delete(resource_id)
 
-        # it is not possible to find the layer that just deleted
+        ##################################################
+        # final validations
+        ##################################################
+
+        # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=resource_id)
 
-        # it is not possible to find a user in a layer that just deleted (creator user)
+        # finding a user in a layer that just deleted (creator user) is not possible
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=creator_user_id, layer_id=resource_id)
 
-        # check if the user stopped automatically of following the layer (creator user)
+        # check if the creator user stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=creator_user_id, layer_id=resource_id)
 
-        # it is not possible to find a user in a layer that just deleted (collaborator user)
+        # finding a user in a layer that just deleted (collaborator user) is not possible
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=user_id_collaborator, layer_id=resource_id)
 
-        # check if the user stopped automatically of following the layer (collaborator user)
+        # check if the collaborator user has stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=user_id_collaborator, layer_id=resource_id)
 
-        # DO LOGOUT AFTER THE TESTS
+        ##################################################
+        # log out the user after the test case be executed
+        ##################################################
         self.tester.auth_logout()
 
     def test_api_layer_create_but_update_and_delete_with_admin(self):
-        # DO LOGIN
+        # login a normal user
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
         ##################################################
-        # create a layer
+        # create a layer with a normal user
         ##################################################
         resource = {
             'type': 'Layer',
@@ -244,37 +269,36 @@ class TestAPILayer(TestCase):
         }
         resource = self.tester.api_layer_create(resource)
 
-        # update and delete with admin user
+        # get the layer id
+        resource_id = resource["properties"]["layer_id"]
+
+        ##################################################
+        # log in with an admin user in order to check if he can update and delete the layer
+        ##################################################
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
-        # update the layer
+        # admin user updates the layer
         ##################################################
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)
 
-        ##################################################
         # check if the resource was modified
-        ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
+        self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource_id)
 
         ##################################################
-        # delete the layer
+        # admin user deletes the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
-        resource_id = resource["properties"]["layer_id"]
-
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(resource_id)
 
-        # it is not possible to find the layer that just deleted
+        # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=resource_id)
 
-        # DO LOGOUT AFTER THE TESTS
+        # log out the admin user
         self.tester.auth_logout()
 
 
@@ -480,11 +504,10 @@ class TestAPILayerErrors(TestCase):
         self.tester.api_layer_update_error_401_unauthorized(feature)
 
     def test_put_api_layer_error_403_forbidden_invalid_user_tries_to_manage(self):
-        # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
-        # gabriel tries to update one reference that doesn't belong to him
+        # miguel tries to update one reference that doesn't belong to him
         ##################################################
         resource = {
             'properties': {'layer_id': 1001, 'f_table_name': 'layer_1001', 'name': 'Streets in 1930',
@@ -494,7 +517,6 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_update_error_403_forbidden(resource)
 
-        # DO LOGOUT
         self.tester.auth_logout()
 
     def test_put_api_layer_error_404_not_found_not_found_layer_x(self):
@@ -557,13 +579,10 @@ class TestAPILayerErrors(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         ########################################
-        # try to delete a layer with user miguel
+        # miguel tries to delete a layer that does not belong to him
         ########################################
-
-        # TRY TO REMOVE THE LAYER
         self.tester.api_layer_delete_error_403_forbidden(1001)
 
-        # logout with user rodrigo
         self.tester.auth_logout()
 
     def test_delete_api_layer_error_404_not_found(self):
