@@ -159,7 +159,7 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             EPSG = get_EPSG_from_list_of_possible_EPSGs_according_to_prj(resulted, prj)
 
             return EPSG
-    except FileNotFoundError as error:
+    except FileNotFoundError:
         raise HTTPError(404, "Not found .prj inside the zip.")
 
 
@@ -306,7 +306,7 @@ class BaseHandler(RequestHandler):
         try:
             current_user = self.get_current_user_()
             return current_user["properties"]["user_id"]
-        except KeyError as error:
+        except KeyError:
             return None
             # raise HTTPError(500, "Problem when get the current user. Please, contact the administrator.")
 
@@ -1334,7 +1334,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         :return:
         """
 
-        # if currente user is an administrator, so ok ...
+        # if current user is an administrator, so ok ...
         if self.is_current_user_an_administrator():
             return
 
@@ -1388,7 +1388,7 @@ class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
     #     :return:
     #     """
     #
-    #     # if currente user is an administrator, so ok ...
+    #     # if current user is an administrator, so ok ...
     #     if self.is_current_user_an_administrator():
     #         return
     #

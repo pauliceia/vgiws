@@ -38,8 +38,7 @@ python tests/util/clean_db.py --debug=True
 Run the tests:
 
 ```
-$ cd tests/
-$ python run_tests.py
+$ python tests/run_tests.py
 ```
 
 
@@ -59,11 +58,10 @@ $ docker exec -it vgiws_debug /bin/bash
 # python tests/util/clean_db.py --debug=True
 ```
 
-Go to tests/ folder and execute the tests:
+Run the tests:
 
 ```
-# cd tests/
-# python run_tests.py
+# python tests/run_tests.py
 ```
 
-Alright, the tests will be executed with a new test database.
+The tests will be executed with a new test database.
