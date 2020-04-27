@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from random import randint
+from os import path as os_path
 
+from random import randint
 from unittest import TestCase
+
 from util.tester import UtilTester
+from util.common import FILES_PATH
+
+
+os_path_sep_join = os_path.sep.join
 
 
 class TestAPIImport(TestCase):
@@ -16,8 +22,6 @@ class TestAPIImport(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        self.folder_name = "files/"
-        self.folder_name_shp_originals = "files/shp_originals/"
         self.f_table_name = "points_" + str(randint(0, 100))
 
         ##################################################
@@ -73,7 +77,7 @@ class TestAPIImport(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "places_5_points_4326.zip"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
@@ -87,7 +91,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "DEINFO_CENTRAIS_MECANIZADAS_29193.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -99,7 +103,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "LAYER_BACIA_HIDROGRAFIA_29193.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -111,7 +115,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "LAYER_CEMITERIOS_29193.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -123,7 +127,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "LAYER_CENTRAL_COOPERATIVA_4326.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -135,7 +139,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "LAYER_DISTRITO_SP_29193.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -147,7 +151,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "shopping_2014_29193.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -161,7 +165,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "Area alagada_4326.zip"
         file_name_path = "shp_originals/ferla/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -173,7 +177,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "SF.zip"
         file_name_path = "shp_originals/ferla/with_myshapes_folder/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -185,7 +189,7 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "2019_09_26_cn_original.zip"
         file_name_path = "shp_originals/ferla/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -197,7 +201,7 @@ class TestAPIImport(TestCase):
     #     ##################################################
     #     file_name = "Sarah_Feldman_adaptada_4326_sem_acento_coluna.zip"
     #     file_name_path = "shp_originals/ferla/" + file_name
-    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #     with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
     #         binary_file_content = file.read()
     #
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -211,25 +215,24 @@ class TestAPIImport(TestCase):
         ##################################################
         file_name = "Recenseamento Demographico do Estado de Sao Paulo.zip"
         file_name_path = "shp_originals/cintia/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
-    """
-    def test_post_import_shp_Area_alagada_problema(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "Area alagada_problema.zip"
-        file_name_path = "shp_originals/ferla/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
+    # def test_post_import_shp_Area_alagada_problema(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "Area alagada_problema.zip"
+    #     file_name_path = "shp_originals/ferla/" + file_name
+    #     with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
 
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
-                                              file_name=file_name, changeset_id=self.changeset_id)
-    """
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
 
 """
 class TestAPIManualTests(TestCase):
@@ -241,7 +244,6 @@ class TestAPIManualTests(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        self.folder_name = "files/"
         self.folder_name_shp_originals = "files/shp_originals/"
         self.f_table_name = "points_" + str(randint(0, 100))
 
@@ -356,7 +358,7 @@ class TestAPIManualTests(TestCase):
     #     ##################################################
     #     file_name = "DEINFO_CORTICO_2015.zip"
     #     file_name_path = "shp_originals/dados_prefeitura_sp/dentro_sp/" + file_name
-    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #     with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
     #         binary_file_content = file.read()
     #
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -370,7 +372,7 @@ class TestAPIManualTests(TestCase):
     #     ##################################################
     #     file_name = "DEINFO_DECLIVIDADE.zip"
     #     file_name_path = "shp_originals/dados_prefeitura_sp/dentro_sp/" + file_name
-    #     with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+    #     with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
     #         binary_file_content = file.read()
     #
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
@@ -387,9 +389,6 @@ class TestAPIImportError(TestCase):
 
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
-
-        self.folder_name = "files/"
-        self.folder_name_shp_originals = "files/shp_originals/"
 
         self.f_table_name = "layer_test"
 
@@ -447,7 +446,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "folder_with_nothing.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
@@ -460,7 +459,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             # try to import without binary_file_content
@@ -489,7 +488,7 @@ class TestAPIImportError(TestCase):
 
         for f_table_name in list_f_table_name:
 
-            with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
                 binary_file_content = file.read()
 
                 self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=f_table_name,
@@ -501,7 +500,7 @@ class TestAPIImportError(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "Sarah_Feldman_adaptada_atributos_com_acentos.zip"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
@@ -512,7 +511,7 @@ class TestAPIImportError(TestCase):
 
         file_name = "points.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_403_forbidden(binary_file_content, f_table_name=f_table_name,
@@ -523,7 +522,7 @@ class TestAPIImportError(TestCase):
 
         file_name = "points.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=f_table_name,
@@ -535,7 +534,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points_without_shp.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
@@ -547,7 +546,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points_without_prj.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
@@ -559,7 +558,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points_without_dbf.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
@@ -571,7 +570,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points_without_shx.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_404_not_found(binary_file_content, f_table_name=self.f_table_name,
@@ -583,7 +582,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         wrong_file_name = "points.zip"
 
-        with open(self.folder_name + 'text.txt', mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, 'text.txt']), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
@@ -595,7 +594,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points_bad_prj.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
@@ -609,7 +608,7 @@ class TestAPIImportError(TestCase):
         list_invalid_f_table_name = ["abort", "access"]
 
         for invalid_f_table_name in list_invalid_f_table_name:
-            with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+            with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
                 binary_file_content = file.read()
 
                 self.tester.api_import_shp_create_error_409_conflict(binary_file_content, file_name=file_name,
@@ -621,7 +620,7 @@ class TestAPIImportError(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "layer_with_version_and_changeset_id.zip"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
@@ -632,7 +631,7 @@ class TestAPIImportError(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "points.zip"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
@@ -643,7 +642,7 @@ class TestAPIImportError(TestCase):
         # the Shapefile has an empty column name and fiona and OGR don't understand it
         ##################################################
         file_name = "places_5_points_with_bad_prj.zip"
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
@@ -655,7 +654,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "SarahFeldman_completa_arrumada.zip"
         file_name_path = "other/" + file_name
-        with open(self.folder_name + file_name_path, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_500_internal_server_error(binary_file_content, f_table_name=self.f_table_name,
@@ -723,7 +722,6 @@ class TestAPIImportErrorWithoutLogin(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-        self.folder_name = "files/"
         self.f_table_name = "points"
         self.changeset_id = 1005
 
@@ -735,12 +733,12 @@ class TestAPIImportErrorWithoutLogin(TestCase):
         ##################################################
         file_name = "points.zip"
 
-        with open(self.folder_name + file_name, mode='rb') as file:  # rb = read binary
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
             self.tester.api_import_shp_create_error_401_unauthorized(binary_file_content, f_table_name=self.f_table_name,
                                                                      file_name=file_name, changeset_id=self.changeset_id)
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

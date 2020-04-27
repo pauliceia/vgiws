@@ -70,7 +70,7 @@ class TestAPIIntegration(TestCase):
         self.tester.api_layer_update(layer)
 
         ##################################################
-        # verify if the layer, feature table and the temporal columns were modified
+        # check if the layer, feature table and the temporal columns were modified
         ##################################################
         expected_layer = {'type': 'FeatureCollection', 'features': [layer]}
         self.tester.api_layer(expected_at_least=expected_layer, f_table_name=f_table_name)
@@ -103,5 +103,5 @@ class TestAPIIntegration(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

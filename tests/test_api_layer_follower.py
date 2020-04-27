@@ -299,5 +299,5 @@ class TestAPIUserLayerErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

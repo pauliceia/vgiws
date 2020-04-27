@@ -291,7 +291,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -334,7 +334,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -355,7 +355,7 @@ class TestAPINotification(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_api_notification_create_update_and_delete_keyword(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -377,7 +377,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -420,7 +420,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -463,7 +463,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -510,7 +510,7 @@ class TestAPINotification(TestCase):
         self.tester.api_notification_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -561,14 +561,14 @@ class TestAPINotification(TestCase):
         reply_id = reply["properties"]["notification_id"]
 
         ##################################################
-        # verify if the notification was added
+        # check if the notification was added
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [notification]}
         self.tester.api_notification(expected_at_least=expected_resource,
                                      notification_id=notification_id)
 
         ##################################################
-        # verify if the reply was added
+        # check if the reply was added
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [reply]}
         self.tester.api_notification(expected_at_least=expected_resource,
@@ -916,5 +916,5 @@ class TestAPINotificationRelatedToUserErrors(TestCase):
         self.tester.api_notification_related_to_user_error_404_not_found(user_id="998")
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

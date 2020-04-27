@@ -205,7 +205,7 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_create(user_layer)
 
         ##################################################
-        # verify if the user started to follow the layer automatically
+        # check if the user started to follow the layer automatically
         ##################################################
         expected_at_least = {
             'features': [
@@ -232,7 +232,7 @@ class TestAPIUserLayer(TestCase):
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=user_id, layer_id=layer_id)
 
-        # verify if the user stopped automatically of following the layer
+        # check if the user stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=user_id, layer_id=layer_id)
 
@@ -253,7 +253,7 @@ class TestAPIUserLayer(TestCase):
         self.tester.api_user_layer_create(user_layer)
 
         ##################################################
-        # verify if the user started to follow the layer automatically
+        # check if the user started to follow the layer automatically
         ##################################################
         expected_at_least = {
             'features': [
@@ -285,7 +285,7 @@ class TestAPIUserLayer(TestCase):
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=user_id, layer_id=layer_id)
 
-        # verify if the user stopped automatically of following the layer
+        # check if the user stopped automatically of following the layer
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=user_id, layer_id=layer_id)
 
@@ -367,7 +367,7 @@ class TestAPIUserLayerErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_user_layer_create_error_401_unauthorized_without_authorization_header(self):
         resource = {
             'properties': {'is_the_creator': True, 'user_id': 1004, 'layer_id': 1001},
@@ -440,5 +440,5 @@ class TestAPIUserLayerErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

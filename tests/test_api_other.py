@@ -4,7 +4,10 @@
 from os import remove as remove_file
 
 from unittest import TestCase
+
 from util.tester import UtilTester
+from util.common import FILES_PATH
+
 
 
 class TestAPICurrentUser(TestCase):
@@ -162,7 +165,7 @@ class TestAPIConvertGeoJSONToShapefile(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-        self.folder_name = "files/geojson/"
+        self.folder_name = "{}/geojson/".format(FILES_PATH)
 
     # import - create
 
@@ -215,7 +218,7 @@ class TestAPIConvertGeoJSONToShapefileErrors(TestCase):
         # create a tester passing the unittest self
         self.tester = UtilTester(self)
 
-        self.folder_name = "files/geojson/"
+        self.folder_name = "{}/geojson/".format(FILES_PATH)
 
     # import - create
 
@@ -317,5 +320,5 @@ class TestAPICurrentUserError(TestCase):
         self.tester.api_user_by_token_401_unauthorized()
 """
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

@@ -1266,7 +1266,7 @@ class UtilTester:
         #     __set__ = resulted["features"]  # set returned
         #     __subset__ = expected_at_least["features"]  # subset expected
         #
-        #     # verify if the elements of a subset is in a set, if OK, return True, else False
+        #     # check if the elements of a subset is in a set, if OK, return True, else False
         #     resulted_bool = all(element in __set__ for element in __subset__)
         #
         #     self.ut_self.assertTrue(resulted_bool)
@@ -1645,7 +1645,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-        # verify if the error message is the correct
+        # check if the error message is the correct
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
@@ -1663,7 +1663,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 400)
 
-        # verify if the error message is the correct
+        # check if the error message is the correct
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
@@ -1679,7 +1679,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 403)
 
-        # verify if the error message is the correct
+        # check if the error message is the correct
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
@@ -1689,7 +1689,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 404)
 
-        # verify if the error message is the correct
+        # check if the error message is the correct
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
@@ -1699,7 +1699,7 @@ class UtilTester:
 
         self.ut_self.assertEqual(response.status_code, 409)
 
-        # verify if the error message is the correct
+        # check if the error message is the correct
         if string_to_compare_error is not None:
             self.ut_self.assertIn(string_to_compare_error.lower(), response.text.lower())
 
@@ -2041,9 +2041,9 @@ class UtilTester:
     #
     #     self.ut_self.assertEqual(response.status_code, 200)
     #
-    # # elements - verify
+    # # elements - check
     #
-    # def verify_if_element_was_add_in_db(self, element_json_expected):
+    # def check_if_element_was_add_in_db(self, element_json_expected):
     #     element_id = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
     #
     #     multi_element = element_json_expected["features"][0]["geometry"]["type"]
@@ -2052,7 +2052,7 @@ class UtilTester:
     #
     #     self.api_element(element, element_json_expected, element_id=element_id)
     #
-    # def verify_if_element_was_not_add_in_db(self, element_json_expected):
+    # def check_if_element_was_not_add_in_db(self, element_json_expected):
     #     element_id = element_json_expected["features"][0]["properties"]["id"]  # get the id of element
     #
     #     multi_element = element_json_expected["features"][0]["geometry"]["type"]

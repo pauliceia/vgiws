@@ -228,7 +228,7 @@ class TestAPIUser(TestCase):
         self.tester.api_user_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         del resource["properties"]["password"]  # remove the password, because it is not needed to compare
 
@@ -259,7 +259,7 @@ class TestAPIUser(TestCase):
         # remove the created user
         self.tester.api_user_delete(resource_id)
 
-        # verify if the user was deleted
+        # check if the user was deleted
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_user(expected, user_id=resource_id)
 
@@ -323,7 +323,7 @@ class TestAPIUserErrors(TestCase):
         self.tester.api_user_error_create_400_bad_request(resource)
 
     # user errors - update
-    
+
     def test_put_api_user_error_400_bad_request_attribute_already_exist(self):
         # login with gabriel
         self.tester.auth_login("admin@admin.com", "admin")
@@ -467,5 +467,5 @@ class TestAPIUserErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

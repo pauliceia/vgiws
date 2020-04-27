@@ -4,7 +4,7 @@
 
 def is_a_invalid_id(feature_id):
     """
-    Verify if the id of some feature is valid or not.
+    Check if the id of some feature is valid or not.
     For a id to be valid, it needs to be:
         (1) not None; (2) a integer (a digit); (3) if is a integer, so different of 0.
     IDs are integer numbers greater than zero.

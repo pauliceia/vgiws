@@ -203,7 +203,7 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_update(feature)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
@@ -218,7 +218,7 @@ class TestAPIFeature(TestCase):
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
 
-        # verify if in the version table has 3 records (original, updated and removed)
+        # check if in the version table has 3 records (original, updated and removed)
         expected = {
             'features': [
                 # the original version (inserted)
@@ -318,7 +318,7 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_update(feature)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
@@ -333,7 +333,7 @@ class TestAPIFeature(TestCase):
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
 
-        # verify if in the version table has 3 records (original, updated and removed)
+        # check if in the version table has 3 records (original, updated and removed)
         expected = {
             'features': [
                 {
@@ -433,7 +433,7 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_update(feature)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
@@ -448,7 +448,7 @@ class TestAPIFeature(TestCase):
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_feature(expected, f_table_name=f_table_name, feature_id=feature_id)
 
-        # verify if in the version table has 3 records (original, updated and removed)
+        # check if in the version table has 3 records (original, updated and removed)
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -557,7 +557,7 @@ class TestAPIFeature(TestCase):
         self.tester.api_feature_update(feature)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         feature["properties"]["version"] += 1  # increment 1 in the version (new version of the feature)
         expected_resource = {'type': 'FeatureCollection', 'features': [feature]}
@@ -574,7 +574,7 @@ class TestAPIFeature(TestCase):
 
         # self.maxDiff = None
 
-        # verify if in the version table has 3 records (original, updated and removed)
+        # check if in the version table has 3 records (original, updated and removed)
         expected = {
             'features': [
                 # the original version (inserted)
@@ -1394,5 +1394,5 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

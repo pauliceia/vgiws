@@ -248,7 +248,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
@@ -317,7 +317,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
@@ -388,7 +388,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
@@ -430,7 +430,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.api_temporal_columns_error_400_bad_request(end_date="1910-01/01")
         self.tester.api_temporal_columns_error_400_bad_request(start_date_gte="1910/01=01")
         self.tester.api_temporal_columns_error_400_bad_request(end_date_lte="1910-01)01")
-    
+
     # temporal_columns errors - create
 
     def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
@@ -448,7 +448,7 @@ class TestAPITemporalColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_temporal_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -505,7 +505,7 @@ class TestAPITemporalColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_temporal_columns_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
@@ -524,7 +524,7 @@ class TestAPITemporalColumnsErrors(TestCase):
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
-    
+
     def test_post_api_temporal_columns_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
@@ -533,7 +533,7 @@ class TestAPITemporalColumnsErrors(TestCase):
             'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
-    
+
     def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_manage(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -586,7 +586,7 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.auth_logout()
 
     # temporal_columns errors - update
-    
+
     def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -686,5 +686,5 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

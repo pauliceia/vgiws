@@ -65,5 +65,5 @@ class TestModuleCommonIsWithoutSpecialChars(TestCase):
             self.assertFalse(is_without_special_chars(str(randint(1, 1001)) + "_random_number_at_the_beginning"))
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

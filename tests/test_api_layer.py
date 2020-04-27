@@ -152,7 +152,7 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource_id)
@@ -169,7 +169,7 @@ class TestAPILayer(TestCase):
         self.tester.api_user_layer_create(user_layer)
 
         ##################################################
-        # verify if the creator user started to follow the layer automatically
+        # check if the creator user started to follow the layer automatically
         ##################################################
         expected_at_least = {
             'features': [
@@ -184,7 +184,7 @@ class TestAPILayer(TestCase):
                                        user_id=creator_user_id, layer_id=resource_id)
 
         ##################################################
-        # verify if the collaborator user started to follow the layer automatically
+        # check if the collaborator user started to follow the layer automatically
         ##################################################
         expected_at_least = {
             'features': [
@@ -212,7 +212,7 @@ class TestAPILayer(TestCase):
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=creator_user_id, layer_id=resource_id)
 
-        # verify if the user stopped automatically of following the layer (creator user)
+        # check if the user stopped automatically of following the layer (creator user)
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=creator_user_id, layer_id=resource_id)
 
@@ -220,7 +220,7 @@ class TestAPILayer(TestCase):
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_user_layer(expected, user_id=user_id_collaborator, layer_id=resource_id)
 
-        # verify if the user stopped automatically of following the layer (collaborator user)
+        # check if the user stopped automatically of following the layer (collaborator user)
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.tester.api_layer_follower(expected, user_id=user_id_collaborator, layer_id=resource_id)
 
@@ -256,7 +256,7 @@ class TestAPILayer(TestCase):
         self.tester.api_layer_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_layer(expected_at_least=expected_resource, layer_id=resource["properties"]["layer_id"])
@@ -580,5 +580,5 @@ class TestAPILayerErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

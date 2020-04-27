@@ -88,7 +88,7 @@ class AuthChangePasswordHandler(BaseHandler):
 
         p = resource_json["properties"]
 
-        # verify is exist the parameters inside the body
+        # check is exist the parameters inside the body
         if "current_password" not in p or "new_password" not in p:
             raise HTTPError(400, "It is needed to pass the encrypted current_password and new_password.")
 

@@ -367,7 +367,7 @@ class TestAPIChangesetErrors(TestCase):
             'type': 'Changeset'
         }
         self.tester.api_changeset_create_error_401_unauthorized(resource)
-    
+
     # changeset errors - close
 
     def test_put_api_changeset_close_error_400_bad_request(self):
@@ -375,7 +375,7 @@ class TestAPIChangesetErrors(TestCase):
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         list_invalid_changeset_id = ["abc", 0, -1, "-1", "0"]
-        
+
         for invalid_changeset_id in list_invalid_changeset_id:
             close_changeset = {
                 'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
@@ -485,5 +485,5 @@ class TestAPIChangesetErrors(TestCase):
         self.tester.auth_logout()
 
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

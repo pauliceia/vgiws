@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from os import path as os_path
+
+
+# Get the `tests` folder path
+TESTS_PATH = os_path.sep.join(os_path.abspath(__file__).split(os_path.sep)[:-2])
+# Get the `files` folder path
+FILES_PATH = '{}/files'.format(TESTS_PATH)
+
 
 def by_multi_element_get_url_name(multi_element):
     if multi_element == "MultiPoint":

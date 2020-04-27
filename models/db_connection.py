@@ -1555,7 +1555,7 @@ class PGSQLConnection:
         if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        # verify if the changeset is closed or not, if it is closed, raise 409 exception
+        # check if the changeset is closed or not, if it is closed, raise 409 exception
         list_changesets = self.get_changesets(changeset_id=changeset_id)
 
         # if the list is empty, so raise an exception
@@ -1566,7 +1566,7 @@ class PGSQLConnection:
         if closed_at is not None:
             raise HTTPError(409, "Changeset {0} has already been closed at {1}.".format(changeset_id, closed_at))
 
-        # verify if the user created the changeset
+        # check if the user created the changeset
         user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
         if user_id_creator != current_user_id:
             raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
@@ -1818,7 +1818,7 @@ class PGSQLConnection:
 
         self.execute(query, is_transaction=True)
 
-    # def verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
+    # def check_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(self, f_table_name):
     #
     #     # 1 - make the geometries valid
     #     query_text = """
@@ -1829,7 +1829,7 @@ class PGSQLConnection:
     #     # do the query in database
     #     self.__PGSQL_CURSOR__.execute(query_text)
     #
-    #     # 2 - verify if the shapefile is inside the default city
+    #     # 2 - check if the shapefile is inside the default city
     #     # query_text = """
     #     #     -- SELECT ST_Contains(bb_default_city.geom, union_f_table.geom) as row_to_json
     #     #     SELECT ST_Contains(bb_default_city.geom, ST_MakeValid(union_f_table.geom)) as row_to_json
@@ -1877,7 +1877,7 @@ class PGSQLConnection:
 
         min_x, min_y, max_x, max_y = shapefile_bounds
 
-        # verify if the shapefile intersects with the default city
+        # check if the shapefile intersects with the default city
         query = """
             SELECT ST_Intersects(
                 -- create a bounding box of the shapefile
@@ -2026,7 +2026,7 @@ class PGSQLConnection:
     # FEATURE
     ################################################################################
 
-    def verify_if_the_properties_are_valid(self, f_table_name, properties):
+    def check_if_the_properties_are_valid(self, f_table_name, properties):
         list_of_column_name_with_type = self.get_columns_from_table(f_table_name)
 
         # if one column of the feature table is not specified in properties, so it is an invalid GeoJSON
@@ -2063,7 +2063,7 @@ class PGSQLConnection:
         properties = resource_json["properties"]
         f_table_name = resource_json["f_table_name"]
 
-        self.verify_if_the_properties_are_valid(f_table_name, properties)
+        self.check_if_the_properties_are_valid(f_table_name, properties)
 
         # it is not possible to set the id and version when create the feature in feature table,
         # however, it is possible to add these fields when we add the feature in the version table
@@ -2109,7 +2109,7 @@ class PGSQLConnection:
         properties = resource_json["properties"]
         f_table_name = resource_json["f_table_name"]
 
-        self.verify_if_the_properties_are_valid(f_table_name, properties)
+        self.check_if_the_properties_are_valid(f_table_name, properties)
 
         # increment 1 in version attribute, to indicate the new version
         properties["version"] += 1
@@ -2548,7 +2548,7 @@ class PGSQLConnection:
     #     self.__PGSQL_CURSOR__.execute(query_text)
 
     # def create_element(self, element, feature):
-    #     # TODO: before to add, verify if the user is valid. If the user that is adding, is really the correct user
+    #     # TODO: before to add, check if the user is valid. If the user that is adding, is really the correct user
     #     # searching if the changeset is its by fk_user_id. If the user is the owner of the changeset
     #
     #     validate_feature_json(feature)

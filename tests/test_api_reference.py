@@ -152,7 +152,7 @@ class TestAPIReference(TestCase):
         self.tester.api_reference_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_reference(expected_at_least=expected_resource,
@@ -198,7 +198,7 @@ class TestAPIReference(TestCase):
         self.tester.api_reference_update(resource)
 
         ##################################################
-        # verify if the resource was modified
+        # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_reference(expected_at_least=expected_resource,
@@ -406,5 +406,6 @@ class TestAPIReferenceErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-# It is not necessary to pyt the main() of unittest here,
-# because this file will be call by run_tests.py
+
+# Putting the unittest main() function here is not necessary,
+# because this file will be called by run_tests.py

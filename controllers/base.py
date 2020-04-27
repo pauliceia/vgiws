@@ -227,7 +227,7 @@ class BaseHandler(RequestHandler):
                 - HTTPError (400 - Bad request): if the JSON received is empty or is None.
         """
 
-        # Verify if the type of the content is JSON
+        # Check if the type of the content is JSON
         if self.request.headers["Content-Type"].startswith("application/json"):
             # Convert string to unicode in Python 2 or convert bytes to string in Python 3
             # How string in Python 3 is unicode, so independent of version, both are converted in unicode
@@ -312,7 +312,7 @@ class BaseHandler(RequestHandler):
 
     def is_current_user_an_administrator(self):
         """
-        Verify if the current user is an administrator
+        Check if the current user is an administrator
         :return: True or False
         """
 
@@ -714,7 +714,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     def can_current_user_update(self, current_user_id, resource_json):
         """
-        Verify if a user is himself/herself or an administrator, who are can update another user.
+        Check if a user is himself/herself or an administrator, who are can update another user.
         :return:
         """
 
@@ -728,7 +728,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
 
     def can_current_user_delete(self):
         """
-        Verify if a user is administrator to delete another user.
+        Check if a user is administrator to delete another user.
         Just administrators can delete users.
         :return:
         """
@@ -769,7 +769,7 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
 
     def can_current_user_create_update_or_delete_curator(self):
         """
-        Verify if the current user is an administrator to create, update or delete a curator user
+        Check if the current user is an administrator to create, update or delete a curator user
         :return:
         """
 
@@ -783,8 +783,8 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
 
 class LayerValidator(BaseHandler):
 
-    def verify_if_f_table_name_starts_with_number_or_it_has_special_chars(self, f_table_name):
-        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
+    def check_if_f_table_name_starts_with_number_or_it_has_special_chars(self, f_table_name):
+        # get the invalid chars (special chars) and check if exist ANY invalid char inside the f_table_name
         invalid_chars = set(punctuation.replace("_", ""))
         if any(char in invalid_chars for char in f_table_name):
             raise HTTPError(400, "f_table_name can not have special characters. (table: " + f_table_name + ")")
@@ -792,17 +792,17 @@ class LayerValidator(BaseHandler):
         if f_table_name[0].isdigit():
             raise HTTPError(400, "f_table_name can not start with number. (table: " + f_table_name + ")")
 
-    def verify_if_f_table_name_already_exist_in_db(self, f_table_name):
+    def check_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
             raise HTTPError(409, "Conflict of f_table_name. The table name already exist. Please, rename it. "
                             + "(table: " + f_table_name + ")")
 
-    def verify_if_f_table_name_is_a_reserved_word(self, f_table_name):
+    def check_if_f_table_name_is_a_reserved_word(self, f_table_name):
         if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
             raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
                             + "(table: " + f_table_name + ")")
 
-    def verify_if_layer_has_max_5_keywords(self, resource_json):
+    def check_if_layer_has_max_5_keywords(self, resource_json):
         amount_of_keywords = len(resource_json["properties"]["keyword"])
 
         if amount_of_keywords > 5:
@@ -821,17 +821,17 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
 
-        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
-        self.verify_if_f_table_name_already_exist_in_db(f_table_name)
-        self.verify_if_layer_has_max_5_keywords(resource_json)
+        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
+        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.check_if_f_table_name_already_exist_in_db(f_table_name)
+        self.check_if_layer_has_max_5_keywords(resource_json)
 
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.verify_if_layer_has_max_5_keywords(resource_json)
+        self.check_if_layer_has_max_5_keywords(resource_json)
 
         self.can_current_user_manage(current_user_id, resource_json["properties"]["layer_id"])
 
@@ -849,7 +849,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
     def can_current_user_manage(self, current_user_id, layer_id):
         """
-        Verify if the user has permission of managing a layer
+        Check if the user has manager permission to a layer
         :param current_user_id: current user id
         :param layer_id: layer id
         :return:
@@ -914,10 +914,10 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["f_table_name"]
-        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
+        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
-        self.verify_if_fields_of_f_table_are_invalids(resource_json)
+        self.check_if_fields_of_f_table_are_invalids(resource_json)
 
         self.can_current_user_manage(current_user_id, f_table_name)
 
@@ -941,9 +941,9 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
     # It is in FeatureTableValidator
 
-    def verify_if_fields_of_f_table_are_invalids(self, resource_json):
+    def check_if_fields_of_f_table_are_invalids(self, resource_json):
 
-        # get the invalid chars (special chars) and verify if exist ANY invalid char inside the f_table_name
+        # get the invalid chars (special chars) and check if exist ANY invalid char inside the f_table_name
         invalid_chars = set(punctuation.replace("_", ""))
 
         list_invalid_words = ["id", "geom", "version", "changeset_id"]
@@ -1016,8 +1016,8 @@ class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidato
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
-        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
+        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
         self.can_current_user_manage(current_user_id, f_table_name)
 
@@ -1075,7 +1075,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
     def can_current_user_add_user_in_layer(self, current_user_id, layer_id):
         """
-        Verify if the user has permission of adding a user in a layer
+        Check if the user has permission of adding a user in a layer
         :param current_user_id: current user id
         :param layer_id: layer id
         :return:
@@ -1097,7 +1097,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
 
     def can_current_user_delete_user_in_layer(self, current_user_id, layer_id):
         """
-        Verify if the user has permission of deleting a user from a layer
+        Check if the user has permission of deleting a user from a layer
         :param current_user_id: current user id
         :param layer_id: layer id
         :return:
@@ -1150,7 +1150,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
 
     def can_current_user_update_or_delete(self, current_user_id, reference_id):
         """
-        Verify if the user has permission of deleting a reference
+        Check if the user has permission of deleting a reference
         :param current_user_id: current user id
         :param reference_id: reference id
         :return:
@@ -1205,7 +1205,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
 
     def can_current_user_update_or_delete(self, current_user_id, keyword_id):
         """
-        Verify if the user has permission of deleting a keyword
+        Check if the user has permission of deleting a keyword
         :param current_user_id: current user id
         :param keyword_id: keyword id
         :return:
@@ -1255,7 +1255,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 
     def can_current_user_delete(self):
         """
-        Verify if the user has permission of deleting a resource
+        Check if the user has permission of deleting a resource
         :return:
         """
 
@@ -1303,7 +1303,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
 
     def can_current_user_update_or_delete_notification(self, current_user_id, notification_id):
         """
-        Verify if the current user can update or delete a notification
+        Check if the current user can update or delete a notification
         :return:
         """
 
@@ -1357,7 +1357,7 @@ class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
     #
     # def can_current_user_update_or_delete_notification(self, current_user_id, notification_id):
     #     """
-    #     Verify if the current user can update or delete a notification
+    #     Check if the current user can update or delete a notification
     #     :return:
     #     """
     #
@@ -1557,8 +1557,8 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
 
         f_table_name = arguments["f_table_name"]
-        self.verify_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.verify_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
+        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
         if binary_file == b'':
             raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
@@ -1591,7 +1591,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         """
         TODO; refactor this function
         1) extract the files inside the folder
-        2) verify if the folder contains the Shapefile files (shp, dbf, prj, shx)
+        2) check if the folder contains the Shapefile files (shp, dbf, prj, shx)
         """
 
         try:
@@ -1627,7 +1627,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
-    # def verify_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
+    # def check_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
     #     list_table_schema = self.PGSQLConn.get_table_schema_from_table_in_list(table_schema="public",
     #                                                                            table_name=f_table_name)
     #
@@ -1664,13 +1664,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
 
-        # self.verify_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
+        # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
         # try:
-        #     is_shapefile_inside_default_city = self.PGSQLConn.verify_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
+        #     is_shapefile_inside_default_city = self.PGSQLConn.check_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
         # except InternalError as error:
         #     self.PGSQLConn.drop_table_by_name(f_table_name)
-        #     raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
+        #     raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " +
         #                          "import again later. \nError: " + str(error))
         # except Exception as error:
         #     raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
@@ -1679,7 +1679,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         #     self.PGSQLConn.drop_table_by_name(f_table_name)
         #     raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
-    def verify_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
+    def check_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
             layer = fiona_open(shapefile_path)
             fields = list(layer.schema["properties"].keys())
@@ -1698,13 +1698,13 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         if "version" in fields or "changeset_id" in fields:
             raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
 
-    def verify_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
+    def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
         shapefile = fiona_open(shapefile_path, 'r')
 
         try:
             is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(shapefile.bounds, shapefile_epsg)
         except InternalError as error:
-            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, verify them and try to " +
+            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " +
                                  "import again later. \nError: " + str(error))
 
         if not is_shapefile_intersects_default_city:
@@ -1746,12 +1746,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # get the shapefile file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
             SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
 
-            self.verify_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
+            self.check_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
 
             EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE)
 
-            # verify if shapefile is inside default city
-            self.verify_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
+            # check if shapefile is inside default city
+            self.check_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
 
             self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE, EPSG)
 

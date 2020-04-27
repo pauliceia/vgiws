@@ -33,7 +33,3 @@ if __name__ == '__main__':
     # If it has happened a problem, close the program
     if not result.wasSuccessful():
         sys_exit(1)
-
-# do the query in database
-# self.__PGSQL_CURSOR__.execute(query_text)
-# rows_affected = self.__PGSQL_CURSOR__.rowcount
