@@ -198,18 +198,18 @@ class TestAPILayer(TestCase):
                                        user_id=user_id_collaborator, layer_id=resource_id)
 
         ##################################################
-        # check if the collaborator user cannot update and delete the layer
+        # check if the collaborator user can update the layer, but he can not delete it
         ##################################################
         # log in with the collaborator user
         self.tester.auth_logout()
         self.tester.auth_login("rafael@admin.com", "rafael")
 
-        # collaborator user tries to updates the layer, but a 403 error is raised
+        # collaborator user updates the layer
         resource["properties"]["name"] = "New addresses"
         resource["properties"]["description"] = "New addresses"
-        self.tester.api_layer_update_error_403_forbidden(resource)
+        self.tester.api_layer_update(resource)
 
-        # collaborator user tries to deletes the layer, but a 403 error is raised
+        # collaborator user tries to delete the layer, but a 403 error is raised
         self.tester.api_layer_delete_error_403_forbidden(resource_id)
 
         # log out the collaborator user

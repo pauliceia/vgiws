@@ -855,7 +855,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         :return:
         """
 
-        # if the current user is admin, so ok...
+        # if the `current_user_id` belongs to the admin user, then ok...
         if self.is_current_user_an_administrator():
             return
 
@@ -867,12 +867,12 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         user_layers = self.PGSQLConn.get_user_layers(layer_id=layer_id)
 
         for user_layer in user_layers["features"]:
-            if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
+            if user_layer["properties"]['user_id'] == current_user_id:
+                # if the `current_user_id` belongs to the layer creator or collaborator user, then ok...
                 return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The layer owner or administrator user are who can update a layer.")
+        raise HTTPError(403, "The layer owner or collaborator user, or administrator one are who can update a layer.")
 
     def can_current_user_delete(self, current_user_id, layer_id):
         """
@@ -882,7 +882,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         :return:
         """
 
-        # if the current user is admin, so ok...
+        # if the `current_user_id` belongs to the admin user, then ok...
         if self.is_current_user_an_administrator():
             return
 
@@ -895,7 +895,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
         for user_layer in user_layers["features"]:
             if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
+                # if the `current_user_id` belongs to the layer creator user, then ok...
                 return
 
         # ... else, raise an exception.
