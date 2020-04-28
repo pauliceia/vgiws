@@ -67,7 +67,7 @@ This method creates a new feature table described in a JSON.
     - 400 (Bad Request): There is a field with white spaces. Please, rename it. (field: X)
     - 400 (Bad Request): There is a field that is a reserved word. Please, rename it. (field: X)
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): Just the owner of the layer or administrator can create/update a resource.
+    - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 409 (Bad Request): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -76,7 +76,7 @@ This method creates a new feature table described in a JSON.
 
 ### DELETE
 
-A feature table is automatically removed when a layer is deleted.
+A feature table is removed automatically when a layer is deleted.
 
 
 ### POST /api/feature_table_column/create/
@@ -100,7 +100,7 @@ This method creates a new column in a feature table described in a JSON.
 - Error codes:
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): Just the owner of the layer or administrator can create/update a resource.
+     - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update this resource.
      - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -121,7 +121,7 @@ This method deletes one column of a feature table.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): Just the owner of the layer or administrator can create/update a resource.
+    - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found the specified column.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

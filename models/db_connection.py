@@ -859,43 +859,43 @@ class PGSQLConnection:
         # publish the features tables/layers in geoserver
         self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
-    def update_feature_table(self,  resource_json, user_id):
-        f_table_name = resource_json["f_table_name"]
-        geometry_type = resource_json["geometry"]["type"]
-        EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
-        properties = resource_json["properties"]
+    # def update_feature_table(self,  resource_json, user_id):
+    #     f_table_name = resource_json["f_table_name"]
+    #     geometry_type = resource_json["geometry"]["type"]
+    #     EPSG = resource_json["geometry"]["crs"]["properties"]["name"].split(":")[1]
+    #     properties = resource_json["properties"]
 
-        # properties = remove_unnecessary_properties(properties)
+    #     # properties = remove_unnecessary_properties(properties)
 
-        # get the attributes of the feature table
-        properties_string = ""
-        for property in properties:
-            properties_string += property + " " + properties[property] + ", \n"
+    #     # get the attributes of the feature table
+    #     properties_string = ""
+    #     for property in properties:
+    #         properties_string += property + " " + properties[property] + ", \n"
 
-        tables_to_create = [f_table_name, "version_{0}".format(f_table_name)]
+    #     tables_to_create = [f_table_name, "version_{0}".format(f_table_name)]
 
-        for table_to_create in tables_to_create:
-            # create the feature table
-            query = """
-                CREATE TABLE {0} (
-                  id SERIAL,
-                  geom GEOMETRY({1}, {2}) NOT NULL,
-                  {3}
-                  version INT NOT NULL DEFAULT 1,
-                  changeset_id INT NOT NULL,
-                  PRIMARY KEY (id),
-                  CONSTRAINT constraint_changeset_id
-                    FOREIGN KEY (changeset_id)
-                    REFERENCES changeset (changeset_id)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE
-                );
-            """.format(table_to_create, geometry_type, EPSG, properties_string)
+    #     for table_to_create in tables_to_create:
+    #         # create the feature table
+    #         query = """
+    #             CREATE TABLE {0} (
+    #               id SERIAL,
+    #               geom GEOMETRY({1}, {2}) NOT NULL,
+    #               {3}
+    #               version INT NOT NULL DEFAULT 1,
+    #               changeset_id INT NOT NULL,
+    #               PRIMARY KEY (id),
+    #               CONSTRAINT constraint_changeset_id
+    #                 FOREIGN KEY (changeset_id)
+    #                 REFERENCES changeset (changeset_id)
+    #                 ON DELETE CASCADE
+    #                 ON UPDATE CASCADE
+    #             );
+    #         """.format(table_to_create, geometry_type, EPSG, properties_string)
 
-            self.execute(query, is_transaction=True)
+    #         self.execute(query, is_transaction=True)
 
-        # publish the features tables/layers in geoserver
-        self.publish_feature_table_in_geoserver(f_table_name, EPSG)
+    #     # publish the features tables/layers in geoserver
+    #     self.publish_feature_table_in_geoserver(f_table_name, EPSG)
 
     def delete_feature_table(self, f_table_name):
         tables_to_drop = [f_table_name, "version_{0}".format(f_table_name)]

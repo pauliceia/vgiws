@@ -64,7 +64,7 @@ This method creates a new record in time columns table described in a JSON.
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): Just the owner of layer or administrator can create/update a time columns.
+    - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 409 (Bad Request): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -91,7 +91,7 @@ This method updates a record in time columns table described in a JSON.
 - Error codes:
     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
     - 401 (Unauthorized): It is necessary an Authorization header valid.
-    - 403 (Forbidden): Just the owner of layer or administrator can create/update a time columns.
+    - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -99,4 +99,4 @@ This method updates a record in time columns table described in a JSON.
 
 ### DELETE
 
-A temporal columns is automatically removed when a layer is deleted.
+A temporal column is removed automatically when the layer is deleted.

@@ -116,7 +116,9 @@ class TestAPIFeatureTable(TestCase):
     # feature table - create and update
 
     def test_api_feature_table_create_and_update(self):
-        # DO LOGIN
+        ####################################################################################################
+        # login with a normal user
+        ####################################################################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
@@ -147,7 +149,6 @@ class TestAPIFeatureTable(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-
         self.tester.api_feature_table_create(feature_table)
 
         ##################################################
@@ -159,11 +160,10 @@ class TestAPIFeatureTable(TestCase):
             'column_type': 'text',
         }
         self.tester.api_feature_table_column_create(feature_table_column)
-
         self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
 
         ##################################################
-        # the feature_table is automatically removed when delete its layer
+        # the feature_table is removed automatically when the layer is deleted
         ##################################################
 
         ####################################################################################################
@@ -171,21 +171,131 @@ class TestAPIFeatureTable(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
         layer_id = layer["properties"]["layer_id"]
 
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer that just deleted
+        # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
 
-        # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_api_feature_table_create_and_update_with_admin(self):
-        # DO LOGIN
+    def test_api_feature_table_create_and_update_with_collaborator_user(self):
+        ####################################################################################################
+        # login with a normal user
+        ####################################################################################################
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'addresses_1930'
+
+        ##################################################
+        # create a layer
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # add a collaborator to the layer above
+        ##################################################
+        user_id_collaborator = 1004
+
+        user_layer = {
+            'properties': {'user_id': user_id_collaborator, 'layer_id': layer_id},
+            'type': 'UserLayer'
+        }
+        self.tester.api_user_layer_create(user_layer)
+
+        ####################################################################################################
+        # login with a collaborator user in order to try to create the feature table
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # only the creator user can create the feature_table for the layer above
+        ##################################################
+        feature_table = {
+            'type': 'FeatureTable',
+            'f_table_name': f_table_name,
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create_error_403_forbidden(feature_table)
+
+        ####################################################################################################
+        # login with the creator user in order to create the feature table
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # create the feature_table for the layer above
+        ##################################################
+        feature_table = {
+            'type': 'FeatureTable',
+            'f_table_name': f_table_name,
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                           'address': 'text'},
+            'geometry': {
+                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                'type': 'MULTIPOINT'
+            }
+        }
+        self.tester.api_feature_table_create(feature_table)
+
+        ####################################################################################################
+        # login with a collaborator user again in order to update the feature table
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # update the feature_table with the collaborator user
+        ##################################################
+        feature_table_column = {
+            'f_table_name': f_table_name,
+            'column_name': 'name',
+            'column_type': 'text',
+        }
+        self.tester.api_feature_table_column_create(feature_table_column)
+        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
+
+        ##################################################
+        # the feature_table is removed automatically when the layer is deleted
+        ##################################################
+
+        ####################################################################################################
+        # login with a normal user again in order to delete the layer
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        self.tester.api_layer_delete(layer_id)
+
+        # finding the layer that just deleted is not possible
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=layer_id)
+
+        self.tester.auth_logout()
+
+    def test_api_feature_table_create_and_update_with_admin_user(self):
+        ####################################################################################################
+        # login with a normal user
+        ####################################################################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'

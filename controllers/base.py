@@ -904,8 +904,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
 class FeatureTableValidator(BaseHandler):
 
-    def can_current_user_manage(self, current_user_id, f_table_name):
-
+    def can_current_user_update(self, current_user_id, f_table_name):
         layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
 
         if not layers["features"]:  # if list is empty
@@ -914,20 +913,42 @@ class FeatureTableValidator(BaseHandler):
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
-        layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+        layer = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
-        for layer in layers["features"]:
-            if layer["properties"]['is_the_creator'] and \
-                    layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
+        for feature in layer["features"]:
+            if feature["properties"]['user_id'] == current_user_id:
+                # if the current user is the creator user or a collaborator one, then ok...
                 return
 
-        # if current user is an administrator, so ok ...
+        # if current user is an administrator one, then ok ...
         if self.is_current_user_an_administrator():
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "Just the owner of the layer or administrator can manage a resource.")
+        raise HTTPError(403, "The layer owner or collaborator user, or administrator one are who can update this resource.")
+
+    def can_current_user_create_or_delete(self, current_user_id, f_table_name):
+        layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
+
+        if not layers["features"]:  # if list is empty
+            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
+                            "It is needed to create a layer with the f_table_name before of using this function.")
+
+        layer_id = layers["features"][0]["properties"]["layer_id"]
+
+        layer = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+        for feature in layer["features"]:
+            if feature["properties"]['is_the_creator'] and feature["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of this layer, then ok...
+                return
+
+        # if `current_user_id` is an administrator user, then ok ...
+        if self.is_current_user_an_administrator():
+            return
+
+        # ... else, raise an exception.
+        raise HTTPError(403, "The layer owner or administrator user are who can create or delete this resource.")
 
 
 class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
@@ -946,27 +967,21 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
         self.check_if_fields_of_f_table_are_invalids(resource_json)
 
-        self.can_current_user_manage(current_user_id, f_table_name)
+        self.can_current_user_create_or_delete(current_user_id, f_table_name)
 
         return self.PGSQLConn.create_feature_table(resource_json, current_user_id, **kwargs)
 
     # PUT
 
-    def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
-
-        return self.PGSQLConn.update_feature_table(resource_json, current_user_id, **kwargs)
+    # BaseHandlerFeatureTableColumn class below is the `PUT` method for this class
 
     # DELETE
 
-    # def _delete_resource(self, current_user_id, *args, **kwargs):
-    #     self.can_current_user_create_update_or_delete(current_user_id, kwargs["f_table_name"])
-    #
-    #     self.PGSQLConn.delete_temporal_columns(**kwargs)
+    # A feature table is deleted automatically when its layer is deleted
 
     # VALIDATION
 
-    # It is in FeatureTableValidator
+    # The validator methods of this class are inherited by its super classes
 
     def check_if_fields_of_f_table_are_invalids(self, resource_json):
 
@@ -1000,36 +1015,30 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
 
 class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValidator):
+    '''This class is the `PUT` method for the BaseHandlerFeatureTable class.
+    A feature table is updated when a column is added or deleted by this class.'''
 
     # GET
-
-    # def _get_resource(self, *args, **kwargs):
-    #     return self.PGSQLConn.get_feature_table(**kwargs)
 
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_manage(current_user_id, resource_json["f_table_name"])
+        self.can_current_user_update(current_user_id, resource_json["f_table_name"])
 
         return self.PGSQLConn.create_feature_table_column(resource_json)
 
     # PUT
 
-    # def _put_resource(self, resource_json, current_user_id, **kwargs):
-    #     self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
-    #
-    #     return self.PGSQLConn.update_feature_table(resource_json, current_user_id, **kwargs)
-
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.can_current_user_manage(current_user_id, kwargs["f_table_name"])
+        self.can_current_user_update(current_user_id, kwargs["f_table_name"])
 
         self.PGSQLConn.delete_feature_table_column(**kwargs)
 
     # VALIDATION
 
-    # It is in FeatureTableValidator
+    # The validator methods of this class are inherited by its super class
 
 
 class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
@@ -1046,27 +1055,24 @@ class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidato
         self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
-        self.can_current_user_manage(current_user_id, f_table_name)
+        self.can_current_user_create_or_delete(current_user_id, f_table_name)
 
         return self.PGSQLConn.create_temporal_columns(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_manage(current_user_id, resource_json["properties"]["f_table_name"])
+        self.can_current_user_update(current_user_id, resource_json["properties"]["f_table_name"])
 
         return self.PGSQLConn.update_temporal_columns(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
-    # def _delete_resource(self, current_user_id, *args, **kwargs):
-    #     self.can_current_user_create_update_or_delete_temporal_columns(current_user_id, kwargs["f_table_name"])
-    #
-    #     self.PGSQLConn.delete_temporal_columns(**kwargs)
+    # A temporal columns table is deleted automatically when its layer is deleted
 
     # VALIDATION
 
-    # It is in FeatureTableValidator
+    # The validator methods of this class are inherited by its super classes
 
 
 class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
@@ -1488,6 +1494,9 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
             raise HTTPError(409, "The changeset_id {0} was already closed at {1}.".format(changeset_id, str(closed_at)))
 
     def can_current_user_manage(self, current_user_id, f_table_name):
+        # if current user is an administrator one, then ok...
+        if self.is_current_user_an_administrator():
+            return
 
         layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
 
@@ -1501,12 +1510,8 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
         for layer in layers["features"]:
             if layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is collaborator of the layer, so ok...
+                # if the current user is a collaborator one of this layer, then ok...
                 return
-
-        # if current user is an administrator, so ok ...
-        if self.is_current_user_an_administrator():
-            return
 
         # ... else, raise an exception.
         raise HTTPError(403, "Just the collaborator of the layer or administrator can manage a resource.")
@@ -1575,7 +1580,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
     # VALIDATION
 
-    # It is in FeatureTableValidator
+    # The validator methods of this class are inherited by its super classes
 
     # POST - IMPORT
 
@@ -1751,7 +1756,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
             # check if the user has permission to import the shapefile (same permissions than the feature table)
-            self.can_current_user_manage(self.get_current_user_id(), arguments["f_table_name"])
+            self.can_current_user_create_or_delete(self.get_current_user_id(), arguments["f_table_name"])
 
             # remove the extension of the file name (e.g. points)
             FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")

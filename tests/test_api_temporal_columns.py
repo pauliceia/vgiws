@@ -211,7 +211,9 @@ class TestAPITemporalColumns(TestCase):
     # temporal_columns - create and update
 
     def test_api_temporal_columns_create_and_update(self):
-        # DO LOGIN
+        ####################################################################################################
+        # log in with a normal user
+        ####################################################################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
@@ -238,7 +240,6 @@ class TestAPITemporalColumns(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-
         self.tester.api_temporal_columns_create(temporal_columns)
 
         ##################################################
@@ -254,7 +255,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
-        # the time columns is automatically removed when delete its layer
+        # the temporal columns table is removed automatically when its layer is deleted
         ##################################################
 
         ####################################################################################################
@@ -262,28 +263,110 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
         layer_id = layer["properties"]["layer_id"]
 
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer and temporal columns that just deleted
+        # finding the layer and temporal columns that just deleted are not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
         self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
 
-        # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
-    def test_api_temporal_columns_create_and_update_with_admin(self):
-        # DO LOGIN
+    def test_api_temporal_columns_create_and_update_with_collaborator_user(self):
+        ####################################################################################################
+        # log in with a normal user
+        ####################################################################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
         ##################################################
-        # create a layer
+        # create a layer with the normal user
+        ##################################################
+        layer = {
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+        }
+        layer = self.tester.api_layer_create(layer)
+        layer_id = layer["properties"]["layer_id"]
+
+        ##################################################
+        # create the temporal columns for the layer above with the normal user
+        ##################################################
+        temporal_columns = {
+            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+            'type': 'TemporalColumns'
+        }
+        self.tester.api_temporal_columns_create(temporal_columns)
+
+        ##################################################
+        # add a collaborator to the layer
+        ##################################################
+        user_id_collaborator = 1004
+
+        self.tester.api_user_layer_create({
+            'properties': {'user_id': user_id_collaborator, 'layer_id': layer_id},
+            'type': 'UserLayer'
+        })
+
+        ####################################################################################################
+        # log in with the collaborator user in order to update the temporal columns
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("rafael@admin.com", "rafael")
+
+        ##################################################
+        # update the temporal columns with the collaborator user
+        ##################################################
+        temporal_columns["properties"]["start_date"] = '1920-01-01'
+        self.tester.api_temporal_columns_update(temporal_columns)
+
+        ##################################################
+        # check if the resource was modified
+        ##################################################
+        expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
+        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+
+        ##################################################
+        # the temporal columns table is removed automatically when its layer is deleted
+        ##################################################
+
+        # log out the collaborator user
+        self.tester.auth_logout()
+
+        ####################################################################################################
+        # log in with the normal user again in order to delete the layer
+        ####################################################################################################
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # delete the layer
+        ##################################################
+        self.tester.api_layer_delete(layer_id)
+
+        # finding the layer and temporal columns that just deleted are not possible
+        expected = {'type': 'FeatureCollection', 'features': []}
+        self.tester.api_layer(expected, layer_id=layer_id)
+        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
+
+        self.tester.auth_logout()
+
+    def test_api_temporal_columns_create_and_update_with_admin_user(self):
+        ####################################################################################################
+        # log in with a normal user
+        ####################################################################################################
+        self.tester.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'addresses_1930'
+
+        ##################################################
+        # create a layer with a normal user
         ##################################################
         layer = {
             'type': 'Layer',
@@ -294,8 +377,8 @@ class TestAPITemporalColumns(TestCase):
         layer = self.tester.api_layer_create(layer)
 
         ####################################################################################################
-
-        # create the time columns with an admin user
+        # log in with an admin user in order to create and update the time columns
+        ####################################################################################################
         self.tester.auth_logout()
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
@@ -317,32 +400,29 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns_update(temporal_columns)
 
         ##################################################
-        # check if the resource was modified
+        # check if the resource has been modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
         ##################################################
-        # the time columns is automatically removed when delete its layer
+        # the temporal columns table is removed automatically when its layer is deleted
         ##################################################
 
         ####################################################################################################
+        # log in with the normal user again in order to delete the layer
+        ####################################################################################################
+        self.tester.auth_logout()
+        self.tester.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
         layer_id = layer["properties"]["layer_id"]
 
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer and temporal columns that just deleted
+        # finding the layer and temporal columns that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
         self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
@@ -351,7 +431,9 @@ class TestAPITemporalColumns(TestCase):
         self.tester.auth_logout()
 
     def test_api_temporal_columns_create_and_update_not_fill_all_fields(self):
-        # DO LOGIN
+        ####################################################################################################
+        # log in with a normal user
+        ####################################################################################################
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930_12'
@@ -378,7 +460,6 @@ class TestAPITemporalColumns(TestCase):
                            'start_date_mask_id': None, 'end_date_mask_id': None},
             'type': 'TemporalColumns'
         }
-
         self.tester.api_temporal_columns_create(temporal_columns)
 
         ##################################################
@@ -394,7 +475,7 @@ class TestAPITemporalColumns(TestCase):
         self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
-        # the time columns is automatically removed when delete its layer
+        # the temporal columns table is removed automatically when its layer is deleted
         ##################################################
 
         ####################################################################################################
@@ -402,18 +483,15 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
         layer_id = layer["properties"]["layer_id"]
 
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
-        # it is not possible to find the layer and temporal columns that just deleted
+        # finding the layer and temporal columns that just deleted are not possible
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=layer_id)
         self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
 
-        # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
 

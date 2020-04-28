@@ -212,13 +212,11 @@ class TestAPILayer(TestCase):
         # collaborator user tries to delete the layer, but a 403 error is raised
         self.tester.api_layer_delete_error_403_forbidden(resource_id)
 
-        # log out the collaborator user
-        self.tester.auth_logout()
-
         ##################################################
         # delete the layer in the final with the creator user
         ##################################################
         # log in the creator user again
+        self.tester.auth_logout()
         self.tester.auth_login("miguel@admin.com", "miguel")
 
         self.tester.api_layer_delete(resource_id)
