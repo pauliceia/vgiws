@@ -26,11 +26,11 @@ def get_subquery_layer_table(**kwargs):
     # if is searching by keyword_id, so do a subquery with layer_keyword, putting the
     # keyword_id and the where_clause...
     if "keyword_id" in kwargs and kwargs["keyword_id"] is not None:
-        subquery_table = """        
+        subquery_table = """
             (
                 SELECT * FROM
                 (
-                    SELECT layer_id as lk_layer_id, keyword_id 
+                    SELECT layer_id as lk_layer_id, keyword_id
                     FROM layer_keyword WHERE keyword_id = {0}
                 ) lk
                 LEFT JOIN layer l
@@ -79,6 +79,33 @@ def get_subquery_layer_follower_table(**kwargs):
 
     return subquery_table
 
+
+def get_subquery_layer_reference_table(**kwargs):
+    # DEFAULT WHERE
+    conditions_of_where = []
+
+    # conditions of WHERE CLAUSE
+    if "layer_id" in kwargs and kwargs["layer_id"] is not None:
+        conditions_of_where.append("layer_id = {0}".format(kwargs["layer_id"]))
+
+    if "reference_id" in kwargs and kwargs["reference_id"] is not None:
+        conditions_of_where.append("reference_id = '{0}'".format(kwargs["reference_id"]))
+
+    # default get all features, without where clause
+    where_clause = ""
+
+    # if there is some conditions, put in where_clause
+    if conditions_of_where:
+        where_clause = "WHERE " + " AND ".join(conditions_of_where)
+
+    # default get all features
+    subquery_table = """
+        (
+            SELECT * FROM layer_reference {0} ORDER BY layer_id, reference_id
+        ) AS layer_reference
+    """.format(where_clause)
+
+    return subquery_table
 
 # def get_subquery_user_layer_table(**kwargs):
 #     # DEFAULT WHERE

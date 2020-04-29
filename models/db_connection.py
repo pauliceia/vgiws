@@ -1245,53 +1245,43 @@ class PGSQLConnection:
     # LAYER REFERENCE
     ################################################################################
 
-    # def get_layer_references(self, layer_id=None, user_id=None, is_the_creator=None):
-    #     # the id has to be an int
-    #     # if is_the_creator is not None and is not instance of boolean, so is invalid
-    #     if is_a_invalid_id(layer_id) or is_a_invalid_id(user_id) or \
-    #             (is_the_creator is not None and not isinstance(is_the_creator, bool)):
-    #         raise HTTPError(400, "Invalid parameter.")
-    #
-    #     subquery = get_subquery_user_layer_table(layer_id=layer_id, user_id=user_id,
-    #                                              is_the_creator=is_the_creator)
-    #
-    #     # CREATE THE QUERY AND EXECUTE IT
-    #     query_text = """
-    #         SELECT jsonb_build_object(
-    #             'type', 'FeatureCollection',
-    #             'features',   jsonb_agg(jsonb_build_object(
-    #                 'type',       'UserLayer',
-    #                 'properties', json_build_object(
-    #                     'layer_id',        layer_id,
-    #                     'user_id',         user_id,
-    #                     'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-    #                     'is_the_creator',  is_the_creator
-    #                 )
-    #             ))
-    #         ) AS row_to_json
-    #         FROM
-    #         {0}
-    #     """.format(subquery)
-    #
-    #     # do the query in database
-    #     self.__PGSQL_CURSOR__.execute(query_text)
-    #
-    #     # get the result of query
-    #     results_of_query = self.__PGSQL_CURSOR__.fetchone()
-    #
-    #     ######################################################################
-    #     # POST-PROCESSING
-    #     ######################################################################
-    #
-    #     # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
-    #     if "row_to_json" in results_of_query:
-    #         results_of_query = results_of_query["row_to_json"]
-    #
-    #     # if there is not feature
-    #     if results_of_query["features"] is None:
-    #         raise HTTPError(404, "Not found any resource.")
-    #
-    #     return results_of_query
+    def get_layer_reference(self, layer_id=None, reference_id=None):
+        if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
+            raise HTTPError(400, "Invalid parameter.")
+
+        subquery = get_subquery_layer_reference_table(layer_id=layer_id, reference_id=reference_id)
+
+        # CREATE THE QUERY AND EXECUTE IT
+        query_text = """
+            SELECT jsonb_build_object(
+                'type', 'FeatureCollection',
+                'features',   jsonb_agg(jsonb_build_object(
+                    'type',       'LayerReference',
+                    'properties', json_build_object(
+                        'layer_id',        layer_id,
+                        'reference_id',    reference_id
+                    )
+                ))
+            ) AS row_to_json
+            FROM
+            {0}
+        """.format(subquery)
+
+        results_of_query = self.execute(query_text)
+
+        ######################################################################
+        # POST-PROCESSING
+        ######################################################################
+
+        # if key "row_to_json" in results_of_query, remove it, putting the result inside the variable
+        if "row_to_json" in results_of_query:
+            results_of_query = results_of_query["row_to_json"]
+
+        # if there is not feature
+        if results_of_query["features"] is None:
+            raise HTTPError(404, "Not found any resource.")
+
+        return results_of_query
 
     def create_layer_reference(self, resource_json):
         p = resource_json["properties"]
@@ -1307,10 +1297,14 @@ class PGSQLConnection:
         if is_a_invalid_id(layer_id) or is_a_invalid_id(reference_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        if reference_id is None:
+        if layer_id is not None and reference_id is None:
             query = """
                 DELETE FROM layer_reference WHERE layer_id={0};
             """.format(layer_id)
+        elif reference_id is not None and layer_id is None:
+            query = """
+                DELETE FROM layer_reference WHERE reference_id={0};
+            """.format(reference_id)
         else:
             query = """
                 DELETE FROM layer_reference WHERE layer_id={0} AND reference_id={1};

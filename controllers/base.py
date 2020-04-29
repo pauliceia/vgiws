@@ -1177,7 +1177,15 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         reference_id = args[0]
         self.can_current_user_update_or_delete(current_user_id, reference_id)
 
-        self.PGSQLConn.delete_reference(*args)
+        try:
+            self.PGSQLConn.delete_layer_reference(reference_id=reference_id)
+        except HTTPError:
+            # `delete_layer_reference` method has raised an HTTPError exception,
+            # because this reference id does not belong to an existing layer yet.
+            # Hence, the statement above is ignored.
+            pass
+
+        self.PGSQLConn.delete_reference(resource_id=reference_id)
 
     # VALIDATION
 
@@ -1198,12 +1206,29 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         if not references["features"]:  # if the list is empty
             raise HTTPError(404, "Not found the reference {0}.".format(reference_id))
 
-        # if the current_user_id is the creator of the reference, so ok...
+        # if the current_user_id is the creator of the reference, then ok...
         if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
             return
 
+        try:
+            # get the layer id of the layer that has the reference id
+            layer_reference = self.PGSQLConn.get_layer_reference(reference_id=str(reference_id))
+            layer_id = layer_reference["features"][0]["properties"]['layer_id']
+
+            layer = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
+
+            for feature in layer["features"]:
+                if feature["properties"]['user_id'] == current_user_id:
+                    # if the current user is the creator user or a collaborator one, then ok...
+                    return
+        except HTTPError:
+            # `get_layer_reference` method has raised an HTTPError exception,
+            # because this reference id does not belong to an existing layer yet.
+            # Hence, the statements above are ignored.
+            pass
+
         # ... else, raise an exception.
-        raise HTTPError(403, "The creator of the reference and the administrator are who can update/delete the reference.")
+        raise HTTPError(403, "The layer owner or collaborator user, or administrator one are who can update or delete a reference.")
 
 
 class BaseHandlerKeyword(BaseHandlerTemplateMethod):

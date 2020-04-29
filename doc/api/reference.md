@@ -79,7 +79,7 @@ This method updates a reference described in a JSON.
 - Error codes:
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
+     - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update or delete a reference.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
@@ -99,7 +99,7 @@ This method deletes one reference by id = #id.
 - Error codes:
      - 400 (Bad Request): Invalid parameter.
      - 401 (Unauthorized): It is necessary an Authorization header valid.
-     - 403 (Forbidden): The creator of the reference and the administrator are who can update/delete the reference.
+     - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update or delete a reference.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
