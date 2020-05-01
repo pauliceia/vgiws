@@ -641,6 +641,18 @@ class PGSQLConnection:
         if (not isinstance(new_layer_properties["reference"], list)) or (not isinstance(new_layer_properties["keyword"], list)):
             raise HTTPError(400, "The parameters reference and keyword need to be a list.")
 
+        # check if the references exist in the database before updating the layer
+        for reference_id in new_layer_properties['reference']:
+            reference = self.get_references(reference_id)
+            if not reference['features']:
+                raise HTTPError(404, "Not found the reference `{0}`.".format(reference_id))
+
+        # check if the keywords exist in the database before updating the layer
+        for keyword_id in new_layer_properties['keyword']:
+            keyword = self.get_keywords(keyword_id)
+            if not keyword['features']:
+                raise HTTPError(404, "Not found the keyword `{0}`.".format(keyword_id))
+
         # get the old layer properties
         old_layer_properties = self.get_layers(layer_id=new_layer_properties["layer_id"])["features"][0]["properties"]
 
@@ -704,7 +716,7 @@ class PGSQLConnection:
         layer = self.get_layers(layer_id=layer_id)
 
         if not layer["features"]:  # if list is empty
-            raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
+            raise HTTPError(404, "Not found the layer `{0}`.".format(layer_id))
 
         f_table_name = layer["features"][0]["properties"]["f_table_name"]
 

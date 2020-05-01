@@ -101,7 +101,9 @@ This method updated a reference described in a JSON.
      - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
      - 401 (Unauthorized): It is necessary an Authorization header valid.
      - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update a layer.
-     - 404 (Not Found): Not found the layer \<ID\>.
+     - 404 (Not Found): Not found the layer \`\<ID\>\`.
+     - 404 (Not Found): Not found the reference \`\<ID\>\`.
+     - 404 (Not Found): Not found the keyword \`\<ID\>\`.
      - 409 (Conflict): The maximum of keywords allowed to a layer are 5.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
