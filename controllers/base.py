@@ -6,7 +6,7 @@
 """
 
 from os import makedirs, remove as remove_file
-from os.path import exists, join, isdir
+from os.path import exists, join, isdir, sep as os_separator
 
 from abc import ABCMeta
 from copy import deepcopy
@@ -1685,21 +1685,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
-    # def check_if_there_is_some_invalid_attribute_in_feature_table(self, f_table_name):
-    #     list_table_schema = self.PGSQLConn.get_table_schema_from_table_in_list(table_schema="public",
-    #                                                                            table_name=f_table_name)
-    #
-    #     # the shapefile can not have the version and changeset_id attributes
-    #     if "version" in list_table_schema or "changeset_id" in list_table_schema:
-    #         self.PGSQLConn.drop_table_by_name(f_table_name)
-    #         raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them!")
+    def import_shp_file_into_postgis(self, f_table_name, shapefile_path, EPSG):
+        # Splitting `shapefile_path` in order to extract the `directory` and `file_name`
+        splitted = shapefile_path.split(os_separator)
 
-    def import_shp_file_into_postgis(self, f_table_name, shapefile_name, folder_to_extract_zip, EPSG):
-        """
-        :param f_table_name: name of the feature table that will be created
-        :param folder_to_extract_zip: folder where will extract the zip (e.g. /tmp/vgiws/points)
-        :return:
-        """
+        directory = os_separator.join(splitted[:-1])  # get the first element until the last one and join them, in other words, the directory
+        file_name = splitted[-1]  # get the last element, in other words, the file name
 
         __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
 
@@ -1708,34 +1699,21 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         try:
             # FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
-                                                 shapefile_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(EPSG) + \
+                                                 file_name + ' -nln ' + f_table_name + ' -a_srs EPSG:' + str(EPSG) + \
                                                  ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
             # command_to_import_shp_into_postgis = 'PGCLIENTENCODING=LATIN1 ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \
-            #                                      shapefile_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
+            #                                      file_name + ' -nln ' + f_table_name + ' -skipfailures -lco FID=id -lco GEOMETRY_NAME=geom -nlt PROMOTE_TO_MULTI'
 
             # print("command_to_import_shp_into_postgis: ", command_to_import_shp_into_postgis)
 
             # call a process to execute the command to import the SHP into the PostGIS
-            check_call(command_to_import_shp_into_postgis, cwd=folder_to_extract_zip, shell=True)
+            check_call(command_to_import_shp_into_postgis, cwd=directory, shell=True)
 
         except CalledProcessError as error:
             raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
 
         # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
-
-        # try:
-        #     is_shapefile_inside_default_city = self.PGSQLConn.check_if_the_inserted_shapefile_is_inside_the_spatial_bounding_box(f_table_name)
-        # except InternalError as error:
-        #     self.PGSQLConn.drop_table_by_name(f_table_name)
-        #     raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " +
-        #                          "import again later. \nError: " + str(error))
-        # except Exception as error:
-        #     raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
-        #
-        # if not is_shapefile_inside_default_city:
-        #     self.PGSQLConn.drop_table_by_name(f_table_name)
-        #     raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
     def check_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
@@ -1744,6 +1722,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
             # get the Shapefile file columns
             columns = gdf.columns.values.tolist()
+
+            # print('\n gdf.head(): ', gdf.head(), '\n')
+            # print('\n columns: ', columns, '\n')
 
             for column in columns:
                 if not is_without_special_chars(column):
@@ -1755,8 +1736,17 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                             "One reason can be that the Shapefile has an empty column name, so name it. \n" + str(error))
 
         # the shapefile can not have the version and changeset_id attributes
-        if "version" in columns or "changeset_id" in columns:
-            raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
+        # if "version" in columns or "changeset_id" in columns:
+        #     raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
+
+        # If the Shapefile file has private column names, than remove them
+        if "version" in columns:
+            del gdf['version']
+            gdf.to_file(shapefile_path)  # save editions
+
+        if "changeset_" in columns:
+            del gdf['changeset_']
+            gdf.to_file(shapefile_path)  # save editions
 
     def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
         # gdf - geopandas data frame
@@ -1817,7 +1807,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # check if shapefile is inside default city
             self.check_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
 
-            self.import_shp_file_into_postgis(arguments["f_table_name"], SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE, EPSG)
+            self.import_shp_file_into_postgis(arguments["f_table_name"], SHAPEFILE_PATH, EPSG)
 
             VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
 

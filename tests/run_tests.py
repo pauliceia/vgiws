@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from sys import exit as sys_exit, path as sys_path
 from os import path as os_path
+
 from unittest import TestLoader, TextTestRunner
+
 
 # get the references to use faster
 os_path_sep = os_path.sep
