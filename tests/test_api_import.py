@@ -208,6 +208,33 @@ class TestAPIImport(TestCase):
     #                                           file_name=file_name, changeset_id=self.changeset_id)
 
     # cintia
+    '''
+    # it works
+    def test_post_import_shp_homosp_4326(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "homosp.zip"
+        file_name_path = "shp_originals/cintia/" + file_name
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+    '''
+    '''
+    def test_post_import_shp_industrias_do_bom_retiro_4326(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "industrias_do_bom_retiro.zip"
+        file_name_path = "shp_originals/cintia/" + file_name
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+    '''
 
     def test_post_import_shp_Recenseamento_Demographico_do_Estado_de_Sao_Paulo_4326(self):
         ##################################################
@@ -221,6 +248,19 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
+    '''
+    def test_post_import_shp_Teste_boletins_4326(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "Teste boletins.zip"
+        file_name_path = "shp_originals/cintia/" + file_name
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+    '''
     # def test_post_import_shp_Area_alagada_problema(self):
     #     ##################################################
     #     # import the shapefile with the created layer (the feature table will be the shapefile)

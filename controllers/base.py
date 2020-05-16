@@ -8,23 +8,24 @@
 from os import makedirs, remove as remove_file
 from os.path import exists, join, isdir
 
-from json import loads
 from abc import ABCMeta
+from copy import deepcopy
+from difflib import SequenceMatcher
+from fiona import open as fiona_open
+from geopandas import read_file as gp_read_file
+from json import loads
+from requests import Session
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
-from zipfile import ZipFile, BadZipFile
-from copy import deepcopy
-from threading import Thread
-from requests import Session
 from shutil import make_archive
 from string import punctuation
-from fiona import open as fiona_open
-from difflib import SequenceMatcher
+from threading import Thread
 from time import sleep
+from zipfile import ZipFile, BadZipFile
 
-from smtplib import SMTP
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from smtplib import SMTP
 
 from psycopg2 import ProgrammingError, DataError, Error, InternalError
 # from psycopg2._psycopg import DataError
@@ -1738,30 +1739,36 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
     def check_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
         try:
-            layer = fiona_open(shapefile_path)
-            fields = list(layer.schema["properties"].keys())
+            # gdf - geopandas data frame
+            gdf = gp_read_file(shapefile_path)
 
-            for field in fields:
-                if not is_without_special_chars(field):
-                    raise HTTPError(400, "The Shapefile has an invalid attribute: {0}. ".format(field) +
+            # get the Shapefile file columns
+            columns = gdf.columns.values.tolist()
+
+            for column in columns:
+                if not is_without_special_chars(column):
+                    raise HTTPError(400, "The Shapefile file has an invalid column: {0}. ".format(column) + \
                                     "It has a special character. Please, rename it.")
 
         except ValueError as error:
-            raise HTTPError(500, "Problem when to import the Shapefile. Fiona was not able to read the Shapefile. \n" +
-                            "One reason can be that the Shapefile has an empty column name, so name it. \n" +
-                            str(error))
+            raise HTTPError(500, "Problem when to import the Shapefile. Fiona was not able to read the Shapefile. \n" + \
+                            "One reason can be that the Shapefile has an empty column name, so name it. \n" + str(error))
 
         # the shapefile can not have the version and changeset_id attributes
-        if "version" in fields or "changeset_id" in fields:
+        if "version" in columns or "changeset_id" in columns:
             raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
 
     def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
-        shapefile = fiona_open(shapefile_path, 'r')
+        # gdf - geopandas data frame
+        gdf = gp_read_file(shapefile_path)
+
+        # get the Shapefile file bounding box
+        bbox = gdf.total_bounds.tolist()
 
         try:
-            is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(shapefile.bounds, shapefile_epsg)
+            is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(bbox, shapefile_epsg)
         except InternalError as error:
-            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " +
+            raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " + \
                                  "import again later. \nError: " + str(error))
 
         if not is_shapefile_intersects_default_city:

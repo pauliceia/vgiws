@@ -1,0 +1,1 @@
+http://www.pauliceia.dpi.inpe.br/geoserver/pauliceia/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pauliceia:industrias_do_bom_retiro&outputFormat=SHAPE-ZIP
