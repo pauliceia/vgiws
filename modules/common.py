@@ -8,7 +8,7 @@ from base64 import b64encode
 from jwt import encode as jwt_encode, decode as jwt_decode, DecodeError, InvalidAlgorithmError
 from string import ascii_uppercase, digits
 from random import choice
-from re import compile as re_compile
+from re import compile as re_compile, sub as re_sub
 from unidecode import unidecode
 
 from psycopg2 import Error, ProgrammingError
@@ -225,24 +225,36 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
     return ''.join(choice(chars) for _ in range(size))
 
 
-def is_without_special_chars(word):
-    """
-    To be a valid word, it must:
-    - start with a character without number (i.e. '^[a-zA-Z_]')
-    - end with a character that can have numbers (i.e. '[a-zA-Z0-9_]+$')
-    - have one or more occurrences of that letter (i.e. '+')
-    - not have special characters (i.e. '^[a-zA-Z_]+[a-zA-Z0-9_]+$')
-    :param word:
-    :return: boolean
-    """
+def remove_special_chars_from_string(string):
+    string = string.replace(' ', '_')
 
-    word = word.replace(" ", "_")  # white space is a special char, so change to underscore
+    # replace accent letter to ascii representation
+    string = unidecode(string)
 
-    english_check = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+    # remove special chars from string, minus the underscore
+    string = re_sub('[^A-Za-z0-9_]+', '', string)
 
-    return bool(english_check.match(word))
+    return string
 
 
 def get_just_files_inside_directory(directory):
     # this method just returns the files inside the directory and not the folders, if there is any
     return [f for f in listdir(directory) if isfile(join(directory, f))]
+
+
+# def is_without_special_chars(word):
+#     """
+#     To be a valid word, it must:
+#     - start with a character without number (i.e. '^[a-zA-Z_]')
+#     - end with a character that can have numbers (i.e. '[a-zA-Z0-9_]+$')
+#     - have one or more occurrences of that letter (i.e. '+')
+#     - not have special characters (i.e. '^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+#     :param word:
+#     :return: boolean
+#     """
+
+#     word = word.replace(" ", "_")  # white space is a special char, so change to underscore
+
+#     english_check = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+
+#     return bool(english_check.match(word))

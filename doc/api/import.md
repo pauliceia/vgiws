@@ -19,7 +19,6 @@ This method imports a ShapeFile as feature table of a layer.
     - 400 (Bad Request): It is necessary to pass one binary zip file in the body of the request.
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
-    - 400 (Bad Request): The Shapefile has an invalid attribute: <ATTRIBUTE>. It has a special character. Please, rename it.
     - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found .prj inside the zip.
@@ -33,7 +32,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
     - 409 (Conflict): Shapefile is not inside the default city of the project.
     - 500 (Internal Server Error): Problem when to import the Shapefile. OGR was not able to import.
-    - 500 (Internal Server Error): Problem when to import the Shapefile. Fiona was not able to read the Shapefile. One reason can be that the Shapefile has an empty column name, so name it.
+    - 500 (Internal Server Error): Problem when importing the Shapefile. Fiona was not able to read the Shapefile. One reason can be that the Shapefile has an empty column name, so name it.
     - 500 (Internal Server Error): Some geometries of the Shapefile are with problem. Please, check them and try to import again later.
     - 500 (Internal Server Error): Problem when to import a resource. Please, contact the administrator.
     - 503 (Service Unavailable): Problem with the prj2epsg web service.

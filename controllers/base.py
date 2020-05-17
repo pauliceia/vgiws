@@ -5,13 +5,12 @@
     Responsible module to create base handlers.
 """
 
-from os import makedirs, remove as remove_file
-from os.path import exists, join, isdir, sep as os_separator
+from os import listdir, makedirs, remove as remove_file
+from os.path import exists, isdir, isfile, getsize as get_file_size, join, sep as os_separator
 
 from abc import ABCMeta
 from copy import deepcopy
 from difflib import SequenceMatcher
-from fiona import open as fiona_open
 from geopandas import read_file as gp_read_file
 from json import loads
 from requests import Session
@@ -21,6 +20,7 @@ from shutil import make_archive
 from string import punctuation
 from threading import Thread
 from time import sleep
+from unidecode import unidecode
 from zipfile import ZipFile, BadZipFile
 
 from email.mime.multipart import MIMEMultipart
@@ -44,8 +44,8 @@ from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __
                                 __EMAIL_SIGNATURE__
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, get_shapefile_file_name_inside_folder, \
-                            catch_generic_exception, is_there_shapefile_files_inside_folder, \
-                            is_without_special_chars, rename_files_names_inside_folder, move_files_from_src_to_dist
+                            catch_generic_exception, is_there_shapefile_files_inside_folder, remove_special_chars_from_string, \
+                            rename_files_names_inside_folder, move_files_from_src_to_dist
 
 
 def send_email(to_email_address, subject="", body=""):
@@ -1685,6 +1685,23 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
+    def check_if_the_shapefile_files_are_empty(self, shapefile_directory, zip_file_path):
+        # get only the files inside the directory
+        files = [f for f in listdir(shapefile_directory) if isfile(join(shapefile_directory, f))]
+
+        for file in files:
+            if 'prj' in file:
+                file_path = join(shapefile_directory, file)
+
+                if get_file_size(file_path) <= 0:
+                    # remove the temporary zip file and folder
+                    remove_file(zip_file_path)
+                    remove_folder_with_contents(shapefile_directory)
+
+                    raise HTTPError(400, '.prj file is empty!')
+
+                break
+
     def import_shp_file_into_postgis(self, f_table_name, shapefile_path, EPSG):
         # Splitting `shapefile_path` in order to extract the `directory` and `file_name`
         splitted = shapefile_path.split(os_separator)
@@ -1715,7 +1732,32 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
-    def check_if_there_is_some_shapefile_attribute_that_is_invalid(self, shapefile_path):
+    def remove_special_chars_from_columns(self, shapefile_path):
+        try:
+            new_column_names = {}
+
+            # gdf - geopandas data frame
+            gdf = gp_read_file(shapefile_path)
+
+            # get the Shapefile file columns
+            columns = gdf.columns.values.tolist()
+
+            for old_column in columns:
+                column = remove_special_chars_from_string(old_column.lower())
+
+                # save the new column name in a dict to rename inside the gdf afterwards
+                new_column_names[old_column] = column
+
+            # rename the columns names in place
+            gdf.rename(columns=new_column_names, inplace=True)
+
+            gdf.to_file(shapefile_path)  # save editions
+
+        except ValueError as error:
+            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read the Shapefile. \n" + \
+                            "One reason can be that the Shapefile has an empty column name, then name it. Hint: \n" + str(error))
+
+    def remove_invalid_columns(self, shapefile_path):
         try:
             # gdf - geopandas data frame
             gdf = gp_read_file(shapefile_path)
@@ -1723,30 +1765,17 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # get the Shapefile file columns
             columns = gdf.columns.values.tolist()
 
-            # print('\n gdf.head(): ', gdf.head(), '\n')
-            # print('\n columns: ', columns, '\n')
+            # If the Shapefile file has private column names, than remove them
+            if "version" in columns:
+                del gdf['version']
+                gdf.to_file(shapefile_path)  # save editions
 
-            for column in columns:
-                if not is_without_special_chars(column):
-                    raise HTTPError(400, "The Shapefile file has an invalid column: {0}. ".format(column) + \
-                                    "It has a special character. Please, rename it.")
-
+            if "changeset_" in columns:
+                del gdf['changeset_']
+                gdf.to_file(shapefile_path)  # save editions
         except ValueError as error:
-            raise HTTPError(500, "Problem when to import the Shapefile. Fiona was not able to read the Shapefile. \n" + \
-                            "One reason can be that the Shapefile has an empty column name, so name it. \n" + str(error))
-
-        # the shapefile can not have the version and changeset_id attributes
-        # if "version" in columns or "changeset_id" in columns:
-        #     raise HTTPError(409, "The Shapefile has the 'version' or 'changeset_id' attribute. Please, rename them.")
-
-        # If the Shapefile file has private column names, than remove them
-        if "version" in columns:
-            del gdf['version']
-            gdf.to_file(shapefile_path)  # save editions
-
-        if "changeset_" in columns:
-            del gdf['changeset_']
-            gdf.to_file(shapefile_path)  # save editions
+            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read the Shapefile. \n" + \
+                            "One reason can be that the Shapefile has an empty column name, then name it. Hint: \n" + str(error))
 
     def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
         # gdf - geopandas data frame
@@ -1794,13 +1823,17 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # extract the zip in a folder
             self.extract_zip_in_folder(FULL_PATH_ZIP_FILE, PATH_TO_EXTRACT_ZIP_FILE)
 
+            self.check_if_the_shapefile_files_are_empty(PATH_TO_EXTRACT_ZIP_FILE, FULL_PATH_ZIP_FILE)
+
             # rename the files names inside the folder where the zip was extracted, in order to fix them
             rename_files_names_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
 
             # get the shapefile file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
             SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
 
-            self.check_if_there_is_some_shapefile_attribute_that_is_invalid(SHAPEFILE_PATH)
+            self.remove_special_chars_from_columns(SHAPEFILE_PATH)
+
+            self.remove_invalid_columns(SHAPEFILE_PATH)
 
             EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE)
 

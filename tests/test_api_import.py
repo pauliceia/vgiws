@@ -157,7 +157,7 @@ class TestAPIImport(TestCase):
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
 
-    # ferla
+    # Ferla's Shapefile files
 
     def test_post_import_shp_Area_alagada_4326(self):
         ##################################################
@@ -172,9 +172,6 @@ class TestAPIImport(TestCase):
                                               file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_SF_4326(self):
-        ##################################################
-        # the Shapefile has an empty column name and fiona and OGR don't understand it
-        ##################################################
         file_name = "SF.zip"
         file_name_path = "shp_originals/ferla/with_myshapes_folder/" + file_name
         with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
@@ -184,10 +181,19 @@ class TestAPIImport(TestCase):
                                               file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_2019_09_26_cn_original(self):
-        ##################################################
-        # the Shapefile has an empty column name and fiona and OGR don't understand it
-        ##################################################
         file_name = "2019_09_26_cn_original.zip"
+        file_name_path = "shp_originals/ferla/" + file_name
+        with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
+
+    def test_post_import_shp_Sarah_Feldman_adaptada_atributos_com_acentos_4326(self):
+        ##################################################
+        # import the shapefile with the created layer (the feature table will be the shapefile)
+        ##################################################
+        file_name = "Sarah_Feldman_adaptada_atributos_com_acentos_4326.zip"
         file_name_path = "shp_originals/ferla/" + file_name
         with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
@@ -207,7 +213,8 @@ class TestAPIImport(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
     #                                           file_name=file_name, changeset_id=self.changeset_id)
 
-    # cintia
+    # Cintia's Shapefile files
+
     def test_post_import_shp_homosp_4326(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -243,7 +250,7 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
-    '''
+
     def test_post_import_shp_Teste_boletins_4326(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -255,7 +262,7 @@ class TestAPIImport(TestCase):
 
             self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
                                               file_name=file_name, changeset_id=self.changeset_id)
-    '''
+
     # def test_post_import_shp_Area_alagada_problema(self):
     #     ##################################################
     #     # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -530,11 +537,12 @@ class TestAPIImportError(TestCase):
                                                                         file_name="points",
                                                                         changeset_id=self.changeset_id)
 
-    def test_post_import_shp_error_400_bad_request_Sarah_Feldman_adaptada_atributos_com_acentos(self):
+    def test_post_import_shp_error_400_bad_request_prj_is_empty(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
-        file_name = "Sarah_Feldman_adaptada_atributos_com_acentos.zip"
+        file_name = "points__prj_is_empty.zip"
+
         with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
@@ -623,18 +631,6 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=wrong_file_name, changeset_id=self.changeset_id)
 
-    def test_post_import_shp_error_409_conflict_invalid_prj(self):
-        ##################################################
-        # import the shapefile with the created layer (the feature table will be the shapefile)
-        ##################################################
-        file_name = "points_bad_prj.zip"
-
-        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
-                                                                 file_name=file_name, changeset_id=self.changeset_id)
-
     def test_post_import_shp_error_409_conflict_f_table_name_is_reserved_name(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -650,17 +646,6 @@ class TestAPIImportError(TestCase):
                                                                      f_table_name=invalid_f_table_name,
                                                                      changeset_id=self.changeset_id)
 
-    # def test_post_import_shp_error_409_conflict_shapefile_has_version_and_changeset_id_attribute(self):
-    #     ##################################################
-    #     # import the shapefile with the created layer (the feature table will be the shapefile)
-    #     ##################################################
-    #     file_name = "layer_with_version_and_changeset_id.zip"
-    #     with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
-    #         binary_file_content = file.read()
-
-    #         self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
-    #                                                              file_name=file_name, changeset_id=self.changeset_id)
-
     def test_post_import_shp_error_409_conflict_shapefile_is_not_inside_default_city(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -673,9 +658,6 @@ class TestAPIImportError(TestCase):
                                                                  file_name=file_name, changeset_id=self.changeset_id)
 
     def test_post_import_shp_error_409_conflict_it_was_not_possible_to_find_one_EPSG_from_the_prj(self):
-        ##################################################
-        # the Shapefile has an empty column name and fiona and OGR don't understand it
-        ##################################################
         file_name = "places_5_points_with_bad_prj.zip"
         with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
@@ -683,11 +665,11 @@ class TestAPIImportError(TestCase):
             self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
                                                                  file_name=file_name, changeset_id=self.changeset_id)
 
-    def test_post_import_shp_error_500_internal_server_error_fiona_was_not_able_to_import(self):
+    def test_post_import_shp_error_500_internal_server_error_dbf_file_has_an_empty_column(self):
         ##################################################
         # the Shapefile has an empty column name and fiona and OGR don't understand it
         ##################################################
-        file_name = "SarahFeldman_completa_arrumada.zip"
+        file_name = "SarahFeldman_completa_arrumada__dbf_has_an_empty_column.zip"
         file_name_path = "other/" + file_name
         with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()

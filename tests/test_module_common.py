@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+'''
 from unittest import TestCase
 
 from random import randint
@@ -63,7 +63,7 @@ class TestModuleCommonIsWithoutSpecialChars(TestCase):
         for i in range(0, 10):
             # 'randint(1, 1001)' generates a number between 1 and 1000
             self.assertFalse(is_without_special_chars(str(randint(1, 1001)) + "_random_number_at_the_beginning"))
-
+'''
 
 # Putting the unittest main() function here is not necessary,
 # because this file will be called by run_tests.py
