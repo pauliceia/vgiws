@@ -80,8 +80,8 @@ class TestAPIImport(TestCase):
         with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 
-            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name, file_name=file_name,
-                                              changeset_id=self.changeset_id)
+            self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+                                              file_name=file_name, changeset_id=self.changeset_id)
 
     # dados_prefeitura_sp
 
@@ -526,10 +526,12 @@ class TestAPIImportError(TestCase):
         ##################################################
         file_name = "points.zip"
 
-        list_f_table_name = ["*+-_point", "po=-)int", "point/", "23920_point", "0_point"]
+        list_f_table_name = [
+            "*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer",
+            " new_layer", "new_layer ", "new layer"
+        ]
 
         for f_table_name in list_f_table_name:
-
             with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
                 binary_file_content = file.read()
 

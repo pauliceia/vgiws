@@ -377,7 +377,11 @@ class TestAPILayerErrors(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer with invalid f_table_name
-        list_invalid_f_table_name = ["*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer"]
+        list_invalid_f_table_name = [
+            "*)new_layer", "new_lay+-er", "new_layer_(/", "837_new_layer", "0_new_layer",
+            " new_layer", "new_layer ", "new layer"
+        ]
+
         for invalid_f_table_name in list_invalid_f_table_name:
             resource = {
                 'properties': {'f_table_name': invalid_f_table_name, 'description': '', 'name': 'Addresses in 1869',

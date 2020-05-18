@@ -589,7 +589,11 @@ class TestAPITemporalColumnsErrors(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer with invalid f_table_name
-        list_invalid_f_table_name = ["*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer"]
+        list_invalid_f_table_name = [
+            "*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer",
+            " new_layer", "new_layer ", "new layer"
+        ]
+
         for invalid_f_table_name in list_invalid_f_table_name:
             resource = {
                 'properties': {'f_table_name': invalid_f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',

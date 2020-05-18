@@ -225,36 +225,34 @@ def generate_random_string(size=6, chars=ascii_uppercase + digits):
     return ''.join(choice(chars) for _ in range(size))
 
 
-def remove_special_chars_from_string(string):
-    string = string.replace(' ', '_')
-
-    # replace accent letter to ascii representation
-    string = unidecode(string)
-
-    # remove special chars from string, minus the underscore
-    string = re_sub('[^A-Za-z0-9_]+', '', string)
-
-    return string
-
-
 def get_just_files_inside_directory(directory):
     # this method just returns the files inside the directory and not the folders, if there is any
     return [f for f in listdir(directory) if isfile(join(directory, f))]
 
 
-# def is_without_special_chars(word):
-#     """
-#     To be a valid word, it must:
-#     - start with a character without number (i.e. '^[a-zA-Z_]')
-#     - end with a character that can have numbers (i.e. '[a-zA-Z0-9_]+$')
-#     - have one or more occurrences of that letter (i.e. '+')
-#     - not have special characters (i.e. '^[a-zA-Z_]+[a-zA-Z0-9_]+$')
-#     :param word:
-#     :return: boolean
-#     """
+def remove_special_chars_from_string(string):
+    # replace accent letter to ascii representation
+    string = unidecode(string.strip().replace(' ', '_').lower())
 
-#     word = word.replace(" ", "_")  # white space is a special char, so change to underscore
+    # remove special chars from string, minus the underscore
+    return re_sub('[^A-Za-z0-9_]+', '', string)
 
-#     english_check = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
 
-#     return bool(english_check.match(word))
+def does_the_string_have_special_chars(string):
+    """
+    To be a valid string, it must:
+    - start with a character without number (i.e. '^[a-zA-Z_]')
+    - end with a character that can have numbers (i.e. '[a-zA-Z0-9_]+$')
+    - have one or more occurrences of that letter (i.e. '+')
+    - not have special characters (i.e. '^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+
+    Return: `True` if the string has some special character, else it returns `False`
+    """
+
+    # create an english checker
+    # this checker returns True if the string does NOT have a special character,
+    # because of that, I return a `not bool(...)`, because I want it returns
+    # `True` if the string has a special character
+    english_checker = re_compile(r'^[a-zA-Z_]+[a-zA-Z0-9_]+$')
+
+    return not bool(english_checker.match(string))

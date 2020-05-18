@@ -17,7 +17,6 @@ from requests import Session
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from shutil import make_archive
-from string import punctuation
 from threading import Thread
 from time import sleep
 from unidecode import unidecode
@@ -45,7 +44,7 @@ from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __
 
 from modules.common import generate_encoded_jwt_token, get_decoded_jwt_token, get_shapefile_file_name_inside_folder, \
                             catch_generic_exception, is_there_shapefile_files_inside_folder, remove_special_chars_from_string, \
-                            rename_files_names_inside_folder, move_files_from_src_to_dist
+                            rename_files_names_inside_folder, move_files_from_src_to_dist, does_the_string_have_special_chars
 
 
 def send_email(to_email_address, subject="", body=""):
@@ -785,13 +784,11 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
 class LayerValidator(BaseHandler):
 
     def check_if_f_table_name_starts_with_number_or_it_has_special_chars(self, f_table_name):
-        # get the invalid chars (special chars) and check if exist ANY invalid char inside the f_table_name
-        invalid_chars = set(punctuation.replace("_", ""))
-        if any(char in invalid_chars for char in f_table_name):
-            raise HTTPError(400, "f_table_name can not have special characters. (table: " + f_table_name + ")")
+        if does_the_string_have_special_chars(f_table_name):
+            raise HTTPError(400, "f_table_name can not have special characters. (f_table_name: `" + f_table_name + "`)")
 
         if f_table_name[0].isdigit():
-            raise HTTPError(400, "f_table_name can not start with number. (table: " + f_table_name + ")")
+            raise HTTPError(400, "f_table_name can not start with number. (f_table_name: " + f_table_name + ")")
 
     def check_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
@@ -933,7 +930,7 @@ class FeatureTableValidator(BaseHandler):
 
         if not layers["features"]:  # if list is empty
             raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "It is needed to create a layer with the f_table_name before of using this function.")
+                            "It is needed to create a layer with the f_table_name before using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -963,9 +960,9 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["f_table_name"]
+
         self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
-
         self.check_if_fields_of_f_table_are_invalids(resource_json)
 
         self.can_current_user_create_or_delete(current_user_id, f_table_name)
@@ -985,10 +982,6 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
     # The validator methods of this class are inherited by its super classes
 
     def check_if_fields_of_f_table_are_invalids(self, resource_json):
-
-        # get the invalid chars (special chars) and check if exist ANY invalid char inside the f_table_name
-        invalid_chars = set(punctuation.replace("_", ""))
-
         list_invalid_words = ["id", "geom", "version", "changeset_id"]
         list_db_reserved_words = self.PGSQLConn.get_reserved_words_of_postgresql()
 
@@ -996,7 +989,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
         list_reserved_words = list_invalid_words + list_db_reserved_words
 
         for field in resource_json["properties"]:
-            if any(char in invalid_chars for char in field):
+            if does_the_string_have_special_chars(field):
                 raise HTTPError(400, "There is a field with have special characters. " +
                                      "Please, rename it. (field: " + str(field) + ")")
 
@@ -1053,6 +1046,7 @@ class BaseHandlerTemporalColumns(BaseHandlerTemplateMethod, FeatureTableValidato
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
+
         self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
@@ -1615,6 +1609,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
 
         f_table_name = arguments["f_table_name"]
+
         self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
@@ -1743,7 +1738,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             columns = gdf.columns.values.tolist()
 
             for old_column in columns:
-                column = remove_special_chars_from_string(old_column.lower())
+                column = remove_special_chars_from_string(old_column)
 
                 # save the new column name in a dict to rename inside the gdf afterwards
                 new_column_names[old_column] = column
@@ -1797,14 +1792,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         try:
             # get the arguments of the request
             arguments = self.get_aguments()
+
             # get the binary file in body of the request
             binary_file = self.request.body
 
             # validate the arguments and binary_file
             self.do_validation(arguments, binary_file)
-
-            # fix the f_table_name: remove the lateral spaces and change the internal spaces by _
-            arguments["f_table_name"] = arguments["f_table_name"].strip().replace(" ", "_")
 
             # check if the user has permission to import the shapefile (same permissions than the feature table)
             self.can_current_user_create_or_delete(self.get_current_user_id(), arguments["f_table_name"])
