@@ -1598,11 +1598,19 @@ class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
 
 class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidator, LayerValidator):
 
+    PATH_ZIP_FILE = ''
+    PATH_EXTRACTED_ZIP_FILE = ''
+
     # VALIDATION
 
     # The validator methods of this class are inherited by its super classes
 
     # POST - IMPORT
+
+    def remove_temporary_file_and_folder(self):
+        # remove the temporary file and folder of the shapefile
+        remove_file(self.PATH_ZIP_FILE)
+        remove_folder_with_contents(self.PATH_EXTRACTED_ZIP_FILE)
 
     def do_validation(self, arguments, binary_file):
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
@@ -1624,75 +1632,58 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         if not arguments["file_name"].endswith(".zip"):
             raise HTTPError(400, "Invalid file name: " + str(arguments["file_name"]) + ". It is necessary to be a zip.")
 
-    def save_binary_file_in_folder(self, binary_file, folder_with_file_name):
+    def save_binary_file_in_folder(self, binary_file):
         """
-        :param binary_file: a file in binary
-        :param folder_with_file_name: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
+        :param binary_file: a binary file
         :return:
         """
-        # save the zip with the shp inside the temp folder
-        output_file = open(folder_with_file_name, 'wb')  # wb - write binary
+        # save the zip file with the Shapefile files inside the temporary folder
+        output_file = open(self.PATH_ZIP_FILE, 'wb')  # wb - write binary
         output_file.write(binary_file)
         output_file.close()
 
-    def extract_zip_in_folder(self, full_path_zip_file, path_to_extract_zip_file):
-        """
-        :param full_path_zip_file: file name of the zip with the path (e.g. /tmp/vgiws/points.zip)
-        :param path_to_extract_zip_file: folder where will extract the zip (e.g. /tmp/vgiws/points)
-        :return:
-        """
-        """
-        TODO; refactor this function
-        1) extract the files inside the folder
-        2) check if the folder contains the Shapefile files (shp, dbf, prj, shx)
-        """
-
+    def extract_zip_in_folder(self):
         try:
-            with ZipFile(full_path_zip_file, "r") as zip_reference:
+            with ZipFile(self.PATH_ZIP_FILE, "r") as zip_reference:
                 # extract the zip in a folder
-                zip_reference.extractall(path_to_extract_zip_file)
+                zip_reference.extractall(self.PATH_EXTRACTED_ZIP_FILE)
 
                 # check if there are the shapefile files inside the folder where the zip was extracted,
                 # if ok, then it returns a 200 status code, else it returns a 404 status code and an error message
-                status, message = is_there_shapefile_files_inside_folder(path_to_extract_zip_file)
+                status, message = is_there_shapefile_files_inside_folder(self.PATH_EXTRACTED_ZIP_FILE)
 
                 # if there is not shapefile files inside the folder for the first time,
                 # then I try to check if there is the files inside `myshapes` folder
                 if status != 200:
-                    path_myshapes = join(path_to_extract_zip_file, 'myshapes')
+                    path_myshapes = join(self.PATH_EXTRACTED_ZIP_FILE, 'myshapes')
 
                     # check if there is `myshapes` folder inside the root folder
                     if isdir(path_myshapes):
                         # if there is `myshapes` folder, then I move all files inside it to the previous folder
-                        move_files_from_src_to_dist(path_myshapes, path_to_extract_zip_file)
+                        move_files_from_src_to_dist(path_myshapes, self.PATH_EXTRACTED_ZIP_FILE)
 
                 # check again if the shapefile files are inside the correct folder
                 # if they are not, in other words, `status != 200`, then raise an exception
-                status, message = is_there_shapefile_files_inside_folder(path_to_extract_zip_file)
+                status, message = is_there_shapefile_files_inside_folder(self.PATH_EXTRACTED_ZIP_FILE)
 
                 # if there is not shapefile files inside the folder, then remove the files and raise an exception
                 if status != 200:
-                    # remove the temporary file and folder of the shapefile
-                    remove_file(full_path_zip_file)
-                    remove_folder_with_contents(path_to_extract_zip_file)
+                    self.remove_temporary_file_and_folder()
                     raise HTTPError(status, message)
 
         except BadZipFile as error:
             raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
 
-    def check_if_the_shapefile_files_are_empty(self, shapefile_directory, zip_file_path):
+    def check_if_the_shapefile_files_are_empty(self):
         # get only the files inside the directory
-        files = [f for f in listdir(shapefile_directory) if isfile(join(shapefile_directory, f))]
+        files = [f for f in listdir(self.PATH_EXTRACTED_ZIP_FILE) if isfile(join(self.PATH_EXTRACTED_ZIP_FILE, f))]
 
         for file in files:
             if 'prj' in file:
-                file_path = join(shapefile_directory, file)
+                file_path = join(self.PATH_EXTRACTED_ZIP_FILE, file)
 
                 if get_file_size(file_path) <= 0:
-                    # remove the temporary zip file and folder
-                    remove_file(zip_file_path)
-                    remove_folder_with_contents(shapefile_directory)
-
+                    self.remove_temporary_file_and_folder()
                     raise HTTPError(400, '.prj file is empty!')
 
                 break
@@ -1789,6 +1780,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
     def import_shp(self):
+
         try:
             # get the arguments of the request
             arguments = self.get_aguments()
@@ -1799,63 +1791,63 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # validate the arguments and binary_file
             self.do_validation(arguments, binary_file)
 
+            f_table_name = arguments["f_table_name"]
+
             # check if the user has permission to import the shapefile (same permissions than the feature table)
-            self.can_current_user_create_or_delete(self.get_current_user_id(), arguments["f_table_name"])
+            self.can_current_user_create_or_delete(self.get_current_user_id(), f_table_name)
+
+            # absolute path where I'm going to save my zip file (e.g. /tmp/vgiws/points.zip)
+            self.PATH_ZIP_FILE = join(__TEMP_FOLDER__, arguments["file_name"])
+
+            self.save_binary_file_in_folder(binary_file)
 
             # remove the extension of the file name (e.g. points)
             FILE_NAME_WITHOUT_EXTENSION = arguments["file_name"].replace(".zip", "")
 
-            # file name of the zip (e.g. /tmp/vgiws/points.zip)
-            FULL_PATH_ZIP_FILE = join(__TEMP_FOLDER__, arguments["file_name"])
-
-            self.save_binary_file_in_folder(binary_file, FULL_PATH_ZIP_FILE)
-
-            # folder where will extract the zip (e.g. /tmp/vgiws/points)
-            PATH_TO_EXTRACT_ZIP_FILE = join(__TEMP_FOLDER__, FILE_NAME_WITHOUT_EXTENSION)
+            # absolute path where I'm going to extract the zip file (e.g. /tmp/vgiws/points)
+            self.PATH_EXTRACTED_ZIP_FILE = join(__TEMP_FOLDER__, FILE_NAME_WITHOUT_EXTENSION)
 
             # extract the zip in a folder
-            self.extract_zip_in_folder(FULL_PATH_ZIP_FILE, PATH_TO_EXTRACT_ZIP_FILE)
+            self.extract_zip_in_folder()
 
-            self.check_if_the_shapefile_files_are_empty(PATH_TO_EXTRACT_ZIP_FILE, FULL_PATH_ZIP_FILE)
+            self.check_if_the_shapefile_files_are_empty()
 
             # rename the files names inside the folder where the zip was extracted, in order to fix them
-            rename_files_names_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
+            rename_files_names_inside_folder(self.PATH_EXTRACTED_ZIP_FILE)
 
             # get the shapefile file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
-            SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(PATH_TO_EXTRACT_ZIP_FILE)
+            SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(self.PATH_EXTRACTED_ZIP_FILE)
 
             self.remove_special_chars_from_columns(SHAPEFILE_PATH)
 
             self.remove_invalid_columns(SHAPEFILE_PATH)
 
-            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, PATH_TO_EXTRACT_ZIP_FILE)
+            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, self.PATH_EXTRACTED_ZIP_FILE)
 
             # check if shapefile is inside default city
             self.check_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
 
-            self.import_shp_file_into_postgis(arguments["f_table_name"], SHAPEFILE_PATH, EPSG)
+            self.import_shp_file_into_postgis(f_table_name, SHAPEFILE_PATH, EPSG)
 
-            VERSION_TABLE_NAME = "version_" + arguments["f_table_name"]
+            VERSION_TABLE_NAME = "version_{}".format(f_table_name)
 
-            self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, arguments["f_table_name"])
+            self.PGSQLConn.create_new_table_with_the_schema_of_old_table(VERSION_TABLE_NAME, f_table_name)
 
             # arranging the feature table
-            self.PGSQLConn.add_version_column_in_table(arguments["f_table_name"])
-            self.PGSQLConn.add_changeset_id_column_in_table(arguments["f_table_name"])
-            self.PGSQLConn.update_feature_table_setting_in_all_records_a_changeset_id(arguments["f_table_name"], arguments["changeset_id"])
-            self.PGSQLConn.update_feature_table_setting_in_all_records_a_version(arguments["f_table_name"], 1)
+            self.PGSQLConn.add_version_column_in_table(f_table_name)
+            self.PGSQLConn.add_changeset_id_column_in_table(f_table_name)
+            self.PGSQLConn.update_feature_table_setting_in_all_records_a_changeset_id(f_table_name, arguments["changeset_id"])
+            self.PGSQLConn.update_feature_table_setting_in_all_records_a_version(f_table_name, 1)
 
             # arranging the version feature table
             self.PGSQLConn.add_version_column_in_table(VERSION_TABLE_NAME)
             self.PGSQLConn.add_changeset_id_column_in_table(VERSION_TABLE_NAME)
 
             # publish the feature table/layer in geoserver
-            self.PGSQLConn.publish_feature_table_in_geoserver(arguments["f_table_name"], EPSG)
-            # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + arguments["f_table_name"])
+            self.PGSQLConn.publish_feature_table_in_geoserver(f_table_name, EPSG)
+            # self.PGSQLConn.publish_feature_table_in_geoserver("version_" + f_table_name)
 
-            # remove the temporary file and folder of the shapefile
-            remove_file(FULL_PATH_ZIP_FILE)
-            remove_folder_with_contents(PATH_TO_EXTRACT_ZIP_FILE)
+            self.remove_temporary_file_and_folder()
         except ProgrammingError as error:
             raise HTTPError(500, "Problem when to import the Shapefile: " + str(error))
 
