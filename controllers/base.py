@@ -1780,7 +1780,6 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             raise HTTPError(409, "Shapefile is not inside the default city of the project.")
 
     def import_shp(self):
-
         try:
             # get the arguments of the request
             arguments = self.get_aguments()
