@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+from base64 import b64encode
+from copy import deepcopy
+from hashlib import sha512
 from json import loads, dumps
 from requests import Session
 
-from .common import *
-
-from copy import deepcopy
-
-
+from .common import by_multi_element_get_url_name, get_url_arguments
 # from modules.common import get_username_and_password_as_string_in_base64
 
-from base64 import b64encode
-from hashlib import sha512
+from modules.common import generate_encoded_jwt_token
 
 
 def get_email_and_password_as_string_in_base64(email, password):
@@ -71,6 +68,13 @@ class UtilTester:
         self.headers["Authorization"] = response.headers["Authorization"]
 
         self.ut_self.assertEqual(response.status_code, 200)
+
+    def auth_login_non_existing_user(self):
+        # create an `Authorization` header to a non-existing user
+        self.headers["Authorization"] = generate_encoded_jwt_token({
+            'type': 'User',
+            'properties': {'name': 'Non-existing user', 'email': 'no_user@admin.com', 'picture': '', 'user_id': 543, 'username': 'no_user', 'social_id': '', 'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00', 'is_the_admin': False, 'terms_agreed': False, 'is_email_valid': True, 'social_account': '', 'receive_notification_by_email': True}
+        })
 
     # auth_login error
 
@@ -491,6 +495,12 @@ class UtilTester:
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
+
+    def api_layer_create_error_404_not_found(self, resource_json):
+        response = self.session.post(self.URL + '/api/layer/create/',
+                                     data=dumps(resource_json), headers=self.headers)
+
+        self.ut_self.assertEqual(response.status_code, 404)
 
     def api_layer_create_error_401_unauthorized(self, feature_json):
         response = self.session.post(self.URL + '/api/layer/create/',

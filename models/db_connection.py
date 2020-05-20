@@ -562,7 +562,6 @@ class PGSQLConnection:
         return self.execute(query, is_transaction=True)
 
     def create_layer(self, resource_json, user_id):
-
         ##################################################
         # pre-processing
         ##################################################

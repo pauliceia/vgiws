@@ -401,6 +401,24 @@ class TestAPILayerErrors(TestCase):
         }
         self.tester.api_layer_create_error_401_unauthorized(feature)
 
+    def test_post_api_layer_create_error_404_not_found_non_existing_user(self):
+        ##################################################
+        # fake log in with a non-existing user
+        ##################################################
+        self.tester.auth_login_non_existing_user()
+
+        ##################################################
+        # try to handle the layer with the fake user
+        ##################################################
+        self.tester.api_layer_create_error_404_not_found({
+            'type': 'Layer',
+            'properties': {'layer_id': -1, 'f_table_name': 'addresses_1930', 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '',
+                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+        })
+
+        self.tester.auth_logout()
+
     def test_post_api_layer_create_error_409_conflict_f_table_name_already_exist_or_reserved_name(self):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
