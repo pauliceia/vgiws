@@ -86,30 +86,33 @@ Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
 
 ### Run the server outside of a Docker
 
-This project has made in Python 3 and use [VirtualEnvWrapper](http://www.arruda.blog.br/programacao/python/usando-virtualenvwrapper/) to facilitate the environment.
+Make sure you have the following packages installed:
 
-WARNING: It is necessary a database to run it, whether is not exist, create a new one [here](db_connection.md).
+- [`Python 3`](https://www.python.org/downloads/)
+- [`pyenv`](https://github.com/pyenv/pyenv#basic-github-checkout)
+- [`pyenv-virtualenv`](https://github.com/pyenv/pyenv-virtualenv#installing-as-a-pyenv-plugin).
 
-If you don't have the pip, install it:
-```
-$ sudo apt-get update
-$ sudo apt-get -y install python-pip
-$ sudo apt-get -y install python3-pip
-```
+WARNING: you should create a [new database](db_connection.md) before running the service.
 
-To create a new virtualenv with Python 3:
+Install a specific Python version using `pyenv`:
 
 ```
-$ mkvirtualenv -p /usr/bin/python3.5 pauliceia_webservice
+$ pyenv install 3.7.4
 ```
 
-If the environment do not turn on automatically, so switch it:
+Create a Python environment with the Python version above through `pyenv-virtualenv`:
 
 ```
-$ workon pauliceia_webservice
+$ pyenv virtualenv 3.7.4 pauliceia-vgimws
 ```
 
-Install the dependencies that are in requirements.txt file:
+Activate the virtual environment:
+
+```
+$ pyenv activate pauliceia-vgimws
+```
+
+Install the requirements:
 
 ```
 $ pip install -r requirements.txt
