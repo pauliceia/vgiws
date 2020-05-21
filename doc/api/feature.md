@@ -57,9 +57,9 @@ This method creates a new feature described in a JSON.
     {'id': 10}
     ```
 - Error codes:
-     - 400 (Bad Request): Some attribute in JSON is missing. Look the feature table structure!
+     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the feature table structure!
      - 400 (Bad Request): One specified attribute is invalid.
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 401 (Unauthorized): A valid `Authorization` header is necessary!
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
      - 403 (Forbidden): The changeset_id \<ID\> was not created by current user.
      - 404 (Not Found): Not found the changeset_id \<ID\>.
@@ -94,10 +94,10 @@ This method updates a feature described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 400 (Bad Request): One specified attribute is invalid.
     - 400 (Bad Request): Invalid feature id \<ID\>.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
     - 403 (Forbidden): The changeset_id \<ID\> was not created by current user.
     - 404 (Not Found): Not found feature \<ID\>.
@@ -126,7 +126,7 @@ This method deletes one feature by id.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
     - 403 (Forbidden): The specified changeset_id was not created by current user.
     - 404 (Not Found): Not found any resource.

@@ -42,8 +42,8 @@ def catch_generic_exception(method):
 def auth_non_browser_based(method):
     """
     Authentication to non browser based service
-    :param method: the method decorated
-    :return: the method wrapped
+    :param method: the decorated method
+    :return: the wrapped method
     """
 
     def wrapper(self, *args, **kwargs):
@@ -71,7 +71,7 @@ def auth_non_browser_based(method):
 
             return method(self, *args, **kwargs)
         else:
-            raise HTTPError(401, "It is necessary an Authorization header valid.")
+            raise HTTPError(401, "A valid `Authorization` header is necessary!")
 
     return wrapper
 
@@ -79,8 +79,8 @@ def auth_non_browser_based(method):
 def auth_just_admin_can_use(method):
     """
     Authentication to non browser based service
-    :param method: the method decorated
-    :return: the method wrapped
+    :param method: the decorated method
+    :return: the wrapped method
     """
 
     def wrapper(self, *args, **kwargs):
@@ -96,8 +96,8 @@ def auth_just_admin_can_use(method):
 def just_run_on_debug_mode(method):
     """
     Just run the method on Debug Mode
-    :param method: the method decorated
-    :return: the method wrapped
+    :param method: the decorated method
+    :return: the wrapped method
     """
     def wrapper(self, *args, **kwargs):
 

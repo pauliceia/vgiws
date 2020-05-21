@@ -57,7 +57,7 @@ This method create a new user described in a JSON.
     {'user_id': 7}
     ```
 - Error codes:
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 400 (Bad Request): Attribute already exists.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -84,8 +84,8 @@ This method updates a user described in a JSON.
 - Response:
 - Error codes:
      - 400 (Bad Request): Attribute already exists.
-     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+     - 401 (Unauthorized): A valid `Authorization` header is necessary!
      - 403 (Forbidden): Just the own user or an administrator can update a user.
      - 404 (Not Found): Not found any resource.
      - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
@@ -103,7 +103,7 @@ This method delete one user by id = #id.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): Just administrator can delete other user.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

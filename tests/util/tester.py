@@ -29,10 +29,6 @@ def get_string_in_base64(string):
     return (b64encode(string.encode('utf-8'))).decode('utf-8')
 
 
-def byte_to_dict(text):
-    return loads(text.decode('utf-8'))
-
-
 class RequestTester(TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -144,21 +140,46 @@ class RequestTester(TestCase):
     # GET, POST, DELETE METHODS
     ######################################################################
 
-    def get(self, expected, query_string=""):
-        response = self.app.get(self.get_uri(), query_string=query_string, headers=self.__headers__)
+    def get(self, expected={}, status_code=200, text_message="", **params):
+        response = self.app.get(self.get_uri(), params=params, headers=self.__headers__)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(byte_to_dict(response.text), expected)
+        self.assertEqual(response.status_code, status_code)
 
-    def post(self, body):
+        # if I expect a `text_message` instead of a JSON
+        if text_message != "":
+            self.assertEqual(response.text, text_message)
+
+        # if the response constains curly brackets, then it is a JSON
+        elif "{" in response.text and "}" in response.text:
+            self.assertEqual(loads(response.text), expected)
+
+    def post(self, body, status_code=200, text_message=""):
         response = self.app.post(self.get_uri(), data=dumps(body), headers=self.__headers__)
 
-        id = int(response.text.decode("utf-8"))
+        self.assertEqual(response.status_code, status_code)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(id, b"")
+        if response.text.isdigit():
+            id = int(response.text)
 
-        return id
+            self.assertGreater(id, 0)
+
+            return id
+        else:
+            self.assertEqual(response.text, text_message)
+
+    def post_create(self, body, status_code=200, text_message=""):
+        response = self.app.post(self.get_uri() + '/create', data=dumps(body), headers=self.__headers__)
+
+        self.assertEqual(response.status_code, status_code)
+
+        if response.text.isdigit():
+            id = int(response.text)
+
+            self.assertGreater(id, 0)
+
+            return id
+        else:
+            self.assertEqual(response.text, text_message)
 
     def put(self, body, status_code=200, text_message=""):
         response = self.app.put(self.get_uri(), data=dumps(body), headers=self.__headers__)
@@ -166,10 +187,10 @@ class RequestTester(TestCase):
         self.assertEqual(response.status_code, status_code)
         self.assertEqual(response.text, text_message)
 
-    def delete(self, query_string="", text_message=""):
-        response = self.app.delete(self.get_uri(), query_string=query_string, headers=self.__headers__)
+    def delete(self, status_code=200, text_message="", **params):
+        response = self.app.delete(self.get_uri(), params=params, headers=self.__headers__)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status_code)
         self.assertEqual(response.text, text_message)
 
     ######################################################################
@@ -204,6 +225,7 @@ class RequestTester(TestCase):
 
         self.error_asserts(response, status_code, error_message)
     '''
+
 
 class UtilTester:
 
@@ -1462,17 +1484,12 @@ class UtilTester:
         response = self.session.post(self.URL + '/api/changeset/create',
                                      data=dumps(resource_json), headers=self.headers)
 
+        id = int(response.text)
+
         self.ut_self.assertEqual(response.status_code, 200)
+        self.ut_self.assertGreater(id, 0)
 
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertIn("changeset_id", resulted)
-        self.ut_self.assertNotEqual(resulted["changeset_id"], -1)
-
-        # post the id received in the original JSON of changeset
-        resource_json["properties"]["changeset_id"] = resulted["changeset_id"]
-
-        return resource_json
+        return id
 
     def api_changeset_close(self, resource_json):
         response = self.session.post(self.URL + '/api/changeset/close',

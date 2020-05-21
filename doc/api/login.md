@@ -46,7 +46,7 @@ This method change the password of a user.
 - Response (in Header):
 - Error codes:
     - 400 (Bad Request): It is needed to pass the encrypted current_password and new_password.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 404 (Not Found): Not found any user.
     - 409 (Conflict): Current password is invalid.
     - 409 (Conflict): The email has not been validated.

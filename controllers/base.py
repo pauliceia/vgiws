@@ -24,7 +24,6 @@ from unidecode import unidecode
 from traceback import format_exception
 from zipfile import ZipFile, BadZipFile
 
-
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from smtplib import SMTP
@@ -217,7 +216,6 @@ class BaseHandler(RequestHandler):
 
             if len(kwargs["exc_info"]) >= 2:
                 http_error = kwargs["exc_info"][1]
-                # logging.warning(http_error)
 
                 track_message = ''.join(format_exception(*kwargs["exc_info"]))
                 # error_message = format_exception(*kwargs["exc_info"])[-1]
@@ -621,7 +619,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             json_with_id = self._create_resource(resource_json, current_user_id, **arguments)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+            raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): create_keywords() got an unexpected keyword argument 'parent_id'
@@ -686,7 +684,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             self._put_resource(resource_json, current_user_id, **arguments)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (error: " +
+            raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
@@ -1347,7 +1345,8 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_changeset(resource_json, current_user_id)
+        changeset = self.PGSQLConn.create_changeset(resource_json, current_user_id)
+        return changeset['changeset_id']
 
     def _close_resource(self, resource_json, current_user_id):
         self.PGSQLConn.close_changeset(resource_json, current_user_id)
@@ -1503,7 +1502,7 @@ class BaseHandlerMask(BaseHandlerTemplateMethod):
 
     # def _put_resource(self, resource_json, current_user_id, **kwargs):
     #     if "reference_id" not in resource_json["properties"]:
-    #         raise HTTPError(400, "Some attribute in JSON is missing. Look the documentation! (Hint: reference_id)")
+    #         raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation! (Hint: reference_id)")
     #
     #     reference_id = resource_json["properties"]["reference_id"]
     #     self.can_current_user_update_or_delete(current_user_id, reference_id)
@@ -1561,7 +1560,7 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
         changeset = self.PGSQLConn.get_changesets(changeset_id)
 
         if not changeset["features"]:  # if the list is empty
-            raise HTTPError(404, "Not found the changeset_id {0}.".format(changeset_id))
+            raise HTTPError(404, "Not found the changeset `{0}`.".format(changeset_id))
 
         changeset = changeset["features"][0]["properties"]
 

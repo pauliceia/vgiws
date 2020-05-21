@@ -182,17 +182,31 @@ class PGSQLConnection:
 
             query = query.lower()
 
-            # if this query was a SELECT/INSERT clause
-            if 'select' in query or 'insert' in query:
-                try:
+            try:
+                # if this query was a SELECT clause
+                if 'select' in query:
                     return self.__PGSQL_CURSOR__.fetchone()
-                except ProgrammingError:
+
+                # if this query was a INSERT clause
+                if 'insert' in query:
+                    # id_in_a_dict = self.__PGSQL_CURSOR__.fetchone()
+
+                    # # get the only one key inside the returned dict
+                    # key = list(id_in_a_dict.keys())[0]
+
+                    # # return the id of the inserted resource
+                    # return id_in_a_dict[key]
+
+                    return self.__PGSQL_CURSOR__.fetchone()
+
+                # if this query was a UPDATE/DELETE clause
+                elif 'update' in query or 'delete' in query:
+                    return self.__PGSQL_CURSOR__.rowcount
+
+                else:
                     return None
-            # if this query was a UPDATE/DELETE clause
-            elif 'update' in query or 'delete' in query:
-                return self.__PGSQL_CURSOR__.rowcount
-            else:
-                return None
+            except ProgrammingError:
+                    return None
 
         except ProgrammingError as error:
             self.rollback()
@@ -1565,16 +1579,16 @@ class PGSQLConnection:
 
         # if the list is empty, so raise an exception
         if not list_changesets['features']:
-            raise HTTPError(404, "Not found the changeset {0}.".format(changeset_id))
+            raise HTTPError(404, "Not found the changeset `{0}`.".format(changeset_id))
 
         closed_at = list_changesets['features'][0]['properties']['closed_at']
         if closed_at is not None:
-            raise HTTPError(409, "Changeset {0} has already been closed at {1}.".format(changeset_id, closed_at))
+            raise HTTPError(409, "Changeset `{0}` has already been closed at `{1}`.".format(changeset_id, closed_at))
 
         # check if the user created the changeset
         user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
         if user_id_creator != current_user_id:
-            raise HTTPError(409, "The user {0} didn't create the changeset {1}.".format(current_user_id, changeset_id))
+            raise HTTPError(409, "The user `{0}` didn't create the changeset `{1}`.".format(current_user_id, changeset_id))
 
         description = resource_json["properties"]["description"]
         query = """
@@ -2049,7 +2063,7 @@ class PGSQLConnection:
                 continue
 
             if not column_name_with_type["column_name"] in properties:
-                raise HTTPError(400, "Some attribute in JSON is missing. Look the feature table structure! (error: " +
+                raise HTTPError(400, "Some attribute in the JSON is missing. Look at the feature table structure! (error: " +
                                 str(column_name_with_type["column_name"]) + " is missing).")
 
     def get_srid_from_table_name(self, table_name):

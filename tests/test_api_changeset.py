@@ -1,22 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
-class TestAPIChangeset(TestCase):
+class TestAPIChangeset(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/changeset')
 
     # changeset - get
 
-    def test_get_api_changeset_return_all_changesets(self):
+    def test__get_api_changeset__return_all_changesets(self):
         expected = {
             'features': [
                 {
@@ -74,9 +69,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected)
+        self.get(expected)
 
-    def test_get_api_changeset_return_changeset_by_changeset_id(self):
+    def test__get_api_changeset__return_changeset_by_changeset_id(self):
         expected = {
             'features': [
                 {
@@ -89,9 +84,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, changeset_id="1003")
+        self.get(expected, changeset_id="1003")
 
-    def test_get_api_changeset_return_changeset_by_layer_id(self):
+    def test__get_api_changeset__return_changeset_by_layer_id(self):
         expected = {
             'features': [
                 {
@@ -104,9 +99,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, layer_id="1004")
+        self.get(expected, layer_id="1004")
 
-    def test_get_api_changeset_return_changeset_by_user_id(self):
+    def test__get_api_changeset__return_changeset_by_user_id(self):
         expected = {
             'features': [
                 {
@@ -130,9 +125,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, user_id_creator="1005")
+        self.get(expected, user_id_creator="1005")
 
-    def test_get_api_changeset_return_all_open_changesets(self):
+    def test__get_api_changeset__return_all_open_changesets(self):
         expected = {
             'features': [
                 {
@@ -154,9 +149,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, open=True)
+        self.get(expected, open=True)
 
-    def test_get_api_changeset_return_all_closed_changesets(self):
+    def test__get_api_changeset__return_all_closed_changesets(self):
         expected = {
             'features': [
                 {
@@ -199,9 +194,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, closed=True)
+        self.get(expected, closed=True)
 
-    def test_get_api_changeset_return_all_open_changesets_by_layer_id(self):
+    def test__get_api_changeset__return_all_open_changesets_by_layer_id(self):
         expected = {
             'features': [
                 {
@@ -213,9 +208,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, open=True, layer_id="1003")
+        self.get(expected, open=True, layer_id="1003")
 
-    def test_get_api_changeset_return_all_closed_changesets_by_layer_id(self):
+    def test__get_api_changeset__return_all_closed_changesets_by_layer_id(self):
         expected = {
             'features': [
                 {
@@ -228,9 +223,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, closed=True, layer_id="1004")
+        self.get(expected, closed=True, layer_id="1004")
 
-    def test_get_api_changeset_return_all_open_changesets_by_user_id(self):
+    def test__get_api_changeset__return_all_open_changesets_by_user_id(self):
         expected = {
             'features': [
                 {
@@ -242,9 +237,9 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, open=True, user_id_creator="1001")
+        self.get(expected, open=True, user_id_creator="1001")
 
-    def test_get_api_changeset_return_all_closed_changesets_by_user_id(self):
+    def test__get_api_changeset__return_all_closed_changesets_by_user_id(self):
         expected = {
             'features': [
                 {
@@ -263,226 +258,364 @@ class TestAPIChangeset(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_changeset(expected, closed=True, user_id_creator="1005")
+        self.get(expected, closed=True, user_id_creator="1005")
 
-    def test_get_api_changeset_return_zero_resources(self):
+    def test__get_api_changeset__return_zero_resources(self):
         expected = {'features': [], 'type': 'FeatureCollection'}
 
-        self.tester.api_changeset(expected, changeset_id="999")
-        self.tester.api_changeset(expected, changeset_id="998")
+        self.get(expected, changeset_id="999")
+        self.get(expected, changeset_id="998")
 
     # changeset - create, close and delete
 
-    def test_get_api_changeset_create_and_close_but_delete_with_admin(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_delete_api_changeset_create_and_close__delete_with_admin(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
+        ##################################################
+        # Create the changeset
+        ##################################################
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = self.post_create(changeset)
+        changeset["properties"]["changeset_id"] = changeset_id
 
-        # get the id of changeset to CLOSE the changeset
-        changeset_id = changeset["properties"]["changeset_id"]
+        ##################################################
+        # Close the changeset
+        ##################################################
+        self.set_urn('/api/changeset/close')
 
-        # CLOSE THE CHANGESET
         close_changeset = {
             'properties': {'changeset_id': changeset_id, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
-        self.tester.api_changeset_close(close_changeset)
+        self.post(close_changeset)
 
-        # login with admin to delete the changeset
-        self.tester.auth_logout()
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
 
-        # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        ##################################################
+        # Delete the changeset
+        ##################################################
+        # login with an admin user to delete the changeset
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.set_urn('/api/changeset')
 
-    def test_get_api_changeset_create_close_and_delete_with_admin(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.delete(changeset_id=changeset_id)
 
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
+
+    def test__post_delete_api_changeset_create_close_and_delete__with_admin(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("rodrigo@admin.com", "rodrigo")
+
+        ##################################################
+        # Create the changeset
+        ##################################################
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
+        changeset_id = self.post_create(changeset)
+        changeset["properties"]["changeset_id"] = changeset_id
 
-        # get the id of changeset to CLOSE the changeset
-        changeset_id = changeset["properties"]["changeset_id"]
+        ##################################################
+        # Close the changeset
+        ##################################################
+        self.set_urn('/api/changeset/close')
 
-        # CLOSE THE CHANGESET
         close_changeset = {
             'properties': {'changeset_id': changeset_id, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
-        self.tester.api_changeset_close(close_changeset)
+        self.post(close_changeset)
 
-        # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        ##################################################
+        # Delete the changeset
+        ##################################################
+        self.set_urn('/api/changeset')
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.delete(changeset_id=changeset_id)
+
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
 
-class TestAPIChangesetErrors(TestCase):
+class TestAPIChangesetErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/changeset')
 
     # changeset errors - get
 
-    def test_get_api_changeset_error_400_bad_request(self):
-        self.tester.api_changeset_error_400_bad_request(changeset_id="abc")
-        self.tester.api_changeset_error_400_bad_request(changeset_id=0)
-        self.tester.api_changeset_error_400_bad_request(changeset_id=-1)
-        self.tester.api_changeset_error_400_bad_request(changeset_id="-1")
-        self.tester.api_changeset_error_400_bad_request(changeset_id="0")
+    def test__get_api_changeset__400_bad_request(self):
+        changesets_ids = ["abc", 0, -1, "-1", "0"]
+
+        for changeset_id in changesets_ids:
+            self.get(
+                status_code=400, text_message="Invalid parameter.",
+                changeset_id=changeset_id
+            )
 
     # changeset errors - create
 
-    def test_put_api_changeset_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_changeset_create__400_bad_request(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a changeset (without layer_id)
+        ##################################################
+        # Try to create a changeset without an attribute
+        ##################################################
         resource = {
             'properties': {'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
-        self.tester.api_changeset_create_error_400_bad_request(resource)
+        self.post_create(
+            resource,
+            status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'layer_id' is missing)"
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
-    def test_put_api_changeset_create_error_401_unauthorized(self):
+    def test__post_api_changeset_create__401_unauthorized(self):
+        ##################################################
+        # Try to create a changeset without a logged user
+        ##################################################
         resource = {
             'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
-        self.tester.api_changeset_create_error_401_unauthorized(resource)
+        self.post_create(
+            resource,
+            status_code=401,
+            text_message="A valid `Authorization` header is necessary!"
+        )
+
+    # changeset errors - delete
+
+    def test__delete_api_changeset__400_bad_request(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("rodrigo@admin.com", "rodrigo")
+
+        ##################################################
+        # Try to delete changesets
+        ##################################################
+        changesets_ids = ["abc", 0, -1, "-1", "0"]
+
+        for changeset_id in changesets_ids:
+            self.delete(
+                status_code=400,
+                text_message="Invalid parameter.",
+                changeset_id=changeset_id
+            )
+
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
+
+    def test__delete_api_changeset__401_unauthorized(self):
+        ##################################################
+        # Try to delete changesets
+        ##################################################
+        changesets_ids = ["abc", 0, -1, "-1", "0", "1001"]
+
+        for changeset_id in changesets_ids:
+            self.delete(
+                status_code=401,
+                text_message="A valid `Authorization` header is necessary!",
+                changeset_id=changeset_id
+            )
+
+    def test__delete_api_changeset__403_forbidden(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
+
+        ##################################################
+        # Try to delete changesets
+        ##################################################
+        changesets_ids = ["abc", 0, -1, "-1", "0", "1001"]
+
+        for changeset_id in changesets_ids:
+            self.delete(
+                status_code=403,
+                text_message="The administrator is who can use this resource.",
+                changeset_id=changeset_id
+            )
+
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
+
+    def test__delete_api_changeset__404_not_found(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("rodrigo@admin.com", "rodrigo")
+
+        ##################################################
+        # Try to delete changesets
+        ##################################################
+        changesets_ids = ["5000", "5001"]
+
+        for changeset_id in changesets_ids:
+            self.delete(
+                status_code=404,
+                text_message="Not found any resource.",
+                changeset_id=changeset_id
+            )
+
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
+
+
+class TestAPIChangesetCloseErrors(RequestTester):
+
+    def setUp(self):
+        self.set_urn('/api/changeset/close')
 
     # changeset errors - close
 
-    def test_put_api_changeset_close_error_400_bad_request(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_changeset_close__400_bad_request(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
-        list_invalid_changeset_id = ["abc", 0, -1, "-1", "0"]
+        ##################################################
+        # Try to close changesets
+        ##################################################
+        invalid_changesets_ids = ["abc", 0, -1, "-1", "0"]
 
-        for invalid_changeset_id in list_invalid_changeset_id:
+        for invalid_changeset_id in invalid_changesets_ids:
             close_changeset = {
                 'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
                 'type': 'ChangesetClose'
             }
-            self.tester.api_changeset_close_error_400_bad_request(close_changeset)
+            self.post(close_changeset, status_code=400, text_message="Invalid parameter.")
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
-    def test_put_api_changeset_close_error_401_unauthorized(self):
-        list_invalid_changeset_id = ["abc", 0, -1, "-1", "0", "1001", 1001]
+    def test__post_api_changeset_close__401_unauthorized(self):
+        ##################################################
+        # Try to close changesets
+        ##################################################
+        invalid_changesets_ids = ["abc", 0, -1, "-1", "0", "1001", 1001]
 
-        for invalid_changeset_id in list_invalid_changeset_id:
+        for invalid_changeset_id in invalid_changesets_ids:
             close_changeset = {
                 'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
                 'type': 'ChangesetClose'
             }
-            self.tester.api_changeset_close_error_401_unauthorized(close_changeset)
+            self.post(close_changeset,
+                      status_code=401, text_message="A valid `Authorization` header is necessary!")
 
-    def test_put_api_changeset_close_error_404_not_found(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_changeset_close__404_not_found(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
-        list_invalid_changeset_id = ["5000", "5001"]
+        ##################################################
+        # Try to close changesets
+        ##################################################
+        invalid_changesets_ids = [
+            {
+                "changeset_id": "5000",
+                "error_message": "Not found the changeset `5000`."
+            },
+            {
+                "changeset_id": "5001",
+                "error_message": "Not found the changeset `5001`."
+            }
+        ]
 
-        for invalid_changeset_id in list_invalid_changeset_id:
+        for invalid_changeset in invalid_changesets_ids:
             close_changeset = {
-                'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
+                'properties': {
+                    'changeset_id': invalid_changeset["changeset_id"],
+                    'description': 'Creating layer_1003'
+                },
                 'type': 'ChangesetClose'
             }
-            self.tester.api_changeset_close_error_404_not_found(close_changeset)
+            self.post(close_changeset,
+                      status_code=404, text_message=invalid_changeset["error_message"])
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
-    def test_put_api_changeset_close_error_409_conflict_changeset_is_closed(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_changeset_close__409_conflict__changeset_has_already_been_closed(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
+        ##################################################
+        # Try to close a changeset
+        ##################################################
         close_changeset = {
             'properties': {'changeset_id': 1002, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
-        self.tester.api_changeset_close_error_409_conflict(close_changeset)
+        self.post(close_changeset,
+                  status_code=409,
+                  text_message="Changeset `1002` has already been closed at `2017-03-05 00:00:00`.")
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
-    def test_put_api_changeset_close_error_409_conflict_user_didnt_create_the_changeset(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_changeset_close__409_conflict__user_didnt_create_the_changeset(self):
+        ##################################################
+        # Login
+        ##################################################
+        self.auth_login("miguel@admin.com", "miguel")
 
+        ##################################################
+        # Try to close a changeset
+        ##################################################
         close_changeset = {
             'properties': {'changeset_id': 1011, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
-        self.tester.api_changeset_close_error_409_conflict(close_changeset)
+        self.post(close_changeset,
+                  status_code=409,
+                  text_message="The user `1003` didn't create the changeset `1011`.")
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    # changeset errors - delete
-
-    def test_delete_api_changeset_error_400_bad_request(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="abc")
-        self.tester.api_changeset_delete_error_400_bad_request(changeset_id=0)
-        self.tester.api_changeset_delete_error_400_bad_request(changeset_id=-1)
-        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="-1")
-        self.tester.api_changeset_delete_error_400_bad_request(changeset_id="0")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_delete_api_changeset_error_401_unauthorized(self):
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="abc")
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id=0)
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id=-1)
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="-1")
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="0")
-        self.tester.api_changeset_delete_error_401_unauthorized(changeset_id="1001")
-
-    def test_delete_api_changeset_error_403_forbidden_non_admin_user_tries_to_delete(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
-
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="abc")
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=0)
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id=-1)
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="-1")
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="0")
-        self.tester.api_changeset_delete_error_403_forbidden(changeset_id="1001")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_delete_api_changeset_error_404_not_found(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        self.tester.api_changeset_delete_error_404_not_found(changeset_id="5000")
-        self.tester.api_changeset_delete_error_404_not_found(changeset_id="5001")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        ##################################################
+        # Logout
+        ##################################################
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,

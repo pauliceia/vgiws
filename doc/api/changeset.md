@@ -60,8 +60,8 @@ This method create a new changeset described in a JSON.
     {'changeset_id': 7}
     ```
 - Error codes:
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 500 (Internal Server Error): Problem when create a feature. Please, contact the administrator.
 - Notes: The key "id", when send a JSON, is indifferent. It is just there to know where the key "id" have to be.
 
@@ -84,7 +84,7 @@ This method close a changeset.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 404 (Not Found): Not found the changeset \<ID\>.
     - 409 (Conflict): Changeset \<ID\> has already been closed at <datetime>.
     - 409 (Conflict): The user \<ID\> didn't create the changeset \<ID\>.
@@ -108,7 +108,7 @@ This method delete one changeset.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The administrator is who can use this resource.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.

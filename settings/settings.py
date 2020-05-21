@@ -5,9 +5,7 @@
     Responsible module to put the configurations of the system.
 """
 
-
-# import os
-from os import environ
+from os import getenv
 from datetime import datetime
 
 
@@ -21,7 +19,7 @@ TITLE_APP = "VGI Web Service for Historical Data"
 
 # All public IP
 IP_APP = "0.0.0.0"
-PORT_APP = int(environ.get("PORT", 8888))
+PORT_APP = int(getenv("PORT", 8888))
 
 URL_APP = "http://" + IP_APP + ":" + str(PORT_APP)
 

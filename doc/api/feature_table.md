@@ -59,14 +59,14 @@ This method creates a new feature table described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
     - 400 (Bad Request): There is a field with have special characters. Please, rename it. (field: X)
     - 400 (Bad Request): There is a field that starts with number. Please, rename it. (field: X)
     - 400 (Bad Request): There is a field with white spaces. Please, rename it. (field: X)
     - 400 (Bad Request): There is a field that is a reserved word. Please, rename it. (field: X)
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 409 (Bad Request): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
@@ -98,8 +98,8 @@ This method creates a new column in a feature table described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+     - 401 (Unauthorized): A valid `Authorization` header is necessary!
      - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update this resource.
      - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -120,7 +120,7 @@ This method deletes one column of a feature table.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found the specified column.

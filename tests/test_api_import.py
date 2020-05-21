@@ -43,8 +43,7 @@ class TestAPIImport(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        self.changeset_id = changeset["properties"]["changeset_id"]
+        self.changeset_id = self.tester.api_changeset_create(changeset)
 
     def tearDown(self):
         ##################################################
@@ -308,8 +307,7 @@ class TestAPIManualTests(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        self.changeset_id = changeset["properties"]["changeset_id"]
+        self.changeset_id = self.tester.api_changeset_create(changeset)
 
     def tearDown(self):
         ##################################################
@@ -449,12 +447,11 @@ class TestAPIImportError(TestCase):
         ##################################################
         # create a new changeset
         ##################################################
-        self.changeset = {
+        changeset = {
             'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
-        self.changeset = self.tester.api_changeset_create(self.changeset)
-        self.changeset_id = self.changeset["properties"]["changeset_id"]
+        self.changeset_id = self.tester.api_changeset_create(changeset)
 
     def tearDown(self):
         ##################################################
@@ -701,8 +698,7 @@ class TestAPIImportError(TestCase):
     #         'properties': {'changeset_id': -1, 'layer_id': layer_id},
     #         'type': 'Changeset'
     #     }
-    #     changeset = self.tester.api_changeset_create(changeset)
-    #     changeset_id = changeset["properties"]["changeset_id"]
+    #     self.changeset_id = self.tester.api_changeset_create(changeset)
     #
     #     ##################################################
     #     # import the shapefile with the created layer (the feature table will be the shapefile)

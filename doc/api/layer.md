@@ -64,10 +64,10 @@ This method creates a new layer described in a JSON.
     ```
 - Error codes:
     - 400 (Bad Request): The parameters reference and keyword need to be a list.
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 409 (Conflict): Conflict of f_table_name. The table name already exist. Please, rename it.
     - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
     - 409 (Conflict): The maximum of keywords allowed to a layer are 5.
@@ -98,8 +98,8 @@ This method updated a reference described in a JSON.
     - Send an "Authorization" header with a valid Token.
 - Response:
 - Error codes:
-     - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-     - 401 (Unauthorized): It is necessary an Authorization header valid.
+     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+     - 401 (Unauthorized): A valid `Authorization` header is necessary!
      - 403 (Forbidden): The layer owner or collaborator user, or administrator one are who can update a layer.
      - 404 (Not Found): Not found the layer \`\<ID\>\`.
      - 404 (Not Found): Not found the reference \`\<ID\>\`.
@@ -124,7 +124,7 @@ This method deletes one layer by id = #id.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The layer owner or administrator user are who can delete a layer.
     - 404 (Not Found): Not found the layer \<ID\>.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
@@ -189,8 +189,8 @@ This method adds a user in a layer described in JSON.
 - Response:
 - Error codes:
     - 400 (Bad Request): Attribute already exists.
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The creator of the layer is the unique who can add user in layer.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -214,7 +214,7 @@ This method remove a user from a layer.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 403 (Forbidden): The creator of the layer is the unique who can delete a user from a layer.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
@@ -277,8 +277,8 @@ This method follow a user in a layer described in JSON.
 - Response:
 - Error codes:
     - 400 (Bad Request): Attribute already exists.
-    - 400 (Bad Request): Some attribute in JSON is missing. Look the documentation!
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 409 (Bad Request): The user can't follow a layer, because he/she already follow it.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
@@ -302,7 +302,7 @@ This method do a user stop following a layer.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
-    - 401 (Unauthorized): It is necessary an Authorization header valid.
+    - 401 (Unauthorized): A valid `Authorization` header is necessary!
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:

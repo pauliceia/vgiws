@@ -330,10 +330,7 @@ class TestAPIElement(TestCase):
             'properties': {'id': -1, "fk_layer_id": 1004},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-
-        # get the id of changeset to use in ADD element and CLOSE changeset
-        changeset_id = changeset["properties"]["id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         # ADD ELEMENTS
         point = {

@@ -177,8 +177,7 @@ class TestAPIFeature(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # create a feature with user miguel
@@ -289,8 +288,7 @@ class TestAPIFeature(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # create a feature with user miguel
@@ -404,8 +402,7 @@ class TestAPIFeature(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1006},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # create a feature with user miguel
@@ -516,22 +513,19 @@ class TestAPIFeature(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id_insert = changeset["properties"]["changeset_id"]
+        changeset_id_insert = self.tester.api_changeset_create(changeset)
 
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id_update = changeset["properties"]["changeset_id"]
+        changeset_id_update = self.tester.api_changeset_create(changeset)
 
         changeset = {
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id_delete = changeset["properties"]["changeset_id"]
+        changeset_id_delete = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # create a feature with user miguel
@@ -842,8 +836,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         # try to create a layer with invalid f_table_name
         resource = {
@@ -887,7 +880,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # try to create a layer (without properties)
         resource = {
@@ -895,7 +888,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # try to create a layer (without geometry)
         resource = {
@@ -904,7 +897,7 @@ class TestAPIFeatureError(TestCase):
                            'address': 'R. São José', 'changeset_id': 1014},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # try to create a layer (without start_date)
         resource = {
@@ -914,7 +907,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # try to create a layer (without address)
         resource = {
@@ -924,7 +917,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # try to create a layer (without changeset_id)
         resource = {
@@ -934,7 +927,7 @@ class TestAPIFeatureError(TestCase):
             'geometry': {'coordinates': [[-46.6375790530164, -23.5290461960682]], 'type': 'MultiPoint'},
             'type': 'Feature'
         }
-        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in JSON")
+        self.tester.api_feature_update_error_400_bad_request(resource, string_to_compare_error="Some attribute in the JSON")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -950,8 +943,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # try to update a layer with an invalid geometry
@@ -995,8 +987,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # try to update a layer with an invalid geometry
@@ -1050,8 +1041,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ####################################################################################################
         # miguel tries to update one feature that doesn't belong to him
@@ -1112,8 +1102,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ####################################################################################################
         # rafael tries to update one feature that doesn't exist
@@ -1176,8 +1165,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # rafael tries to update one feature with invalid f_table_name
@@ -1240,8 +1228,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         ##################################################
         # rafael tries to update one feature with invalid version
@@ -1354,8 +1341,7 @@ class TestAPIFeatureError(TestCase):
             'properties': {'changeset_id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
-        changeset = self.tester.api_changeset_create(changeset)
-        changeset_id = changeset["properties"]["changeset_id"]
+        changeset_id = self.tester.api_changeset_create(changeset)
 
         # try to delete a feature with an invalid f_table_name
         self.tester.api_feature_delete_error_404_not_found(f_table_name="layer_100X", feature_id="1006",

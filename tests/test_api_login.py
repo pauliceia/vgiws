@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase
 from util.tester import RequestTester, get_string_in_hash_sha512
 
 
@@ -98,7 +97,7 @@ class TestAPIAuthChangePasswordErrors(RequestTester):
         }
 
         self.put(resource, status_code=401,
-                 text_message="It is necessary an Authorization header valid.")
+                 text_message="A valid `Authorization` header is necessary!")
 
     # def test_post_api_change_password_error_409_conflict_email_is_not_validated(self):
     #     # the 409 is raised when try to log in the system
