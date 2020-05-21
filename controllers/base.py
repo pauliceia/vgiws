@@ -13,6 +13,7 @@ from copy import deepcopy
 from difflib import SequenceMatcher
 from geopandas import read_file as gp_read_file
 from json import loads
+import logging
 from requests import Session
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
@@ -20,7 +21,9 @@ from shutil import make_archive
 from threading import Thread
 from time import sleep
 from unidecode import unidecode
+from traceback import format_exception
 from zipfile import ZipFile, BadZipFile
+
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -191,7 +194,56 @@ class BaseHandler(RequestHandler):
             self.__REDIRECT_URI_FACEBOOK__ = __REDIRECT_URI_FACEBOOK__
             self.__AFTER_LOGIN_REDIRECT_TO__ = __AFTER_LOGIN_REDIRECT_TO__
 
+    ##################################################
+    # OVERRIDED METHODS
+    ##################################################
+
+    def write_error(self, status_code, **kwargs):
+        """Override to implement custom error pages.
+
+        ``write_error`` may call `write`, `render`, `set_header`, etc
+        to produce output as usual.
+
+        If this error was caused by an uncaught exception (including
+        HTTPError), an ``exc_info`` triple will be available as
+        ``kwargs["exc_info"]``.  Note that this exception may not be
+        the "current" exception for purposes of methods like
+        ``sys.exc_info()`` or ``traceback.format_exc``.
+        """
+
+        if self.settings.get("serve_traceback") and "exc_info" in kwargs:
+            # in debug mode, try to send a traceback
+            self.set_header("Content-Type", "text/plain")
+
+            if len(kwargs["exc_info"]) >= 2:
+                http_error = kwargs["exc_info"][1]
+                # logging.warning(http_error)
+
+                track_message = ''.join(format_exception(*kwargs["exc_info"]))
+                # error_message = format_exception(*kwargs["exc_info"])[-1]
+
+                # the track message just will be logged then a 50X error occurs
+                if status_code >= 500:
+                    logging.error(track_message)
+
+                self.write(http_error.log_message)
+                self.finish()
+            else:
+                # original behavior
+                for line in format_exception(*kwargs["exc_info"]):
+                    self.write(line)
+                self.finish()
+
+        else:
+            self.finish(
+                "<html><title>%(code)d: %(message)s</title>"
+                "<body>%(code)d: %(message)s</body></html>"
+                % {"code": status_code, "message": self._reason}
+            )
+
+    ##################################################
     # HEADERS
+    ##################################################
 
     def set_default_headers(self):
         # self.set_header('Content-Type', 'application/json; charset="utf-8"')
@@ -243,7 +295,10 @@ class BaseHandler(RequestHandler):
 
         return search
 
-    # LOGIN AND LOGOUT
+    ##################################################
+    # LOGIN
+    ##################################################
+
     @catch_generic_exception
     def auth_login(self, email, password):
         user_in_db = self.PGSQLConn.get_users(email=email, password=password)
@@ -252,7 +307,7 @@ class BaseHandler(RequestHandler):
             raise HTTPError(404, "Not found any user.")
 
         if not user_in_db["features"][0]["properties"]["is_email_valid"]:
-            raise HTTPError(409, "The email is not validated.")
+            raise HTTPError(409, "The email has not been validated.")
 
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
@@ -295,7 +350,9 @@ class BaseHandler(RequestHandler):
     #
     #     # self.redirect(self.__AFTER_LOGGED_OUT_REDIRECT_TO__)
 
+    ##################################################
     # CURRENT USER
+    ##################################################
 
     def get_current_user_(self):
         token = self.request.headers["Authorization"]
@@ -320,7 +377,9 @@ class BaseHandler(RequestHandler):
 
         return current_user["properties"]["is_the_admin"]
 
+    ##################################################
     # MAIL
+    ##################################################
 
     def send_validation_email_to(self, to_email_address, user_id):
         if self.DEBUG_MODE:

@@ -5,11 +5,11 @@ from base64 import b64encode
 from copy import deepcopy
 from hashlib import sha512
 from json import loads, dumps
+import requests
 from requests import Session
+from unittest import TestCase
 
 from .common import by_multi_element_get_url_name, get_url_arguments
-# from modules.common import get_username_and_password_as_string_in_base64
-
 from modules.common import generate_encoded_jwt_token
 
 
@@ -21,13 +21,189 @@ def get_email_and_password_as_string_in_base64(email, password):
     return string_in_base64
 
 
-def get_string_as_base64(string):
-    return (b64encode(string.encode('utf-8'))).decode('utf-8')
-
-
 def get_string_in_hash_sha512(string):
     return sha512(string.encode()).hexdigest()
 
+
+def get_string_in_base64(string):
+    return (b64encode(string.encode('utf-8'))).decode('utf-8')
+
+
+def byte_to_dict(text):
+    return loads(text.decode('utf-8'))
+
+
+class RequestTester(TestCase):
+
+    def __init__(self, *args, **kwargs):
+        # This is necessary to extend from TestCase and override `__init__` method correctly
+        TestCase.__init__(self, *args, **kwargs)
+
+        # Create a session, in order to simulate a browser.
+        # This is necessary to create cookies on the server
+        # self.app = Session()
+
+        self.app = requests
+
+        # Default values. They can be override by the setters methods
+        self.__url__ = "http://localhost:8888"
+        self.__urn__ = "/api/user"
+
+        self.__urn__login__ = '/api/auth/login/'
+
+        self.__headers__ = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json; charset=UTF-8'
+        }
+
+    ######################################################################
+    # GETTERS AND SETTERS
+    ######################################################################
+
+    def get_url(self):
+        return self.__url__
+
+    def set_url(self, url):
+        self.__url__ = url
+
+    def get_urn(self):
+        return self.__urn__
+
+    def set_urn(self, urn):
+        self.__urn__ = urn
+
+    def get_uri(self):
+        return self.__url__ + self.__urn__
+
+    def get_uri_login(self):
+        return self.__url__ + self.__urn__login__
+
+    def set_urn_login(self, urn_login):
+        self.__urn__login__ = urn_login
+
+    ######################################################################
+    # UTILS
+    ######################################################################
+
+    def get_headers(self, headers=None):
+        # if 'headers' is empty, then add the cached 'self.__headers__'
+        if headers is None:
+	        headers = self.__headers__
+        # else it returns the passed 'headers'
+        return headers
+
+    def error_asserts(self, response, status_code, error_message):
+        # method to encapsulate the error asserts
+
+        self.assertEqual(response.status_code, status_code)
+        self.assertEqual(response.data, error_message)
+
+    ######################################################################
+    # LOGIN
+    ######################################################################
+
+    def auth_login(self, email="gabriel@admin.com", password="gabriel", status_code=200, text_message=""):
+        # method to sign the user on the app
+
+        password = get_string_in_hash_sha512(password)
+
+        headers = {
+            # 'Access-Control-Allow-Origin': '*',
+            # 'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + get_string_in_base64(email + ":" + password)
+        }
+
+        response = self.app.get(self.get_uri_login(), headers=headers)
+
+        self.assertEqual(response.status_code, status_code)
+        self.assertEqual(response.text, text_message)
+
+        # just save the token if the login was successfull (i.e. status_code == 200)
+        if status_code == 200:
+            # save the JWT token of the server in Authorization header
+            self.__headers__["Authorization"] = response.headers["Authorization"]
+
+            # self.__headers__ = {
+            #     'Access-Control-Allow-Origin': '*',
+            #     'Content-Type': 'application/json',
+            #     'Authorization': 'Basic ' + self.authorization
+            # }
+
+    def login_error(self, status_code=500, text_message="", headers=None):
+        headers = self.get_headers(headers=headers)
+
+        response = self.app.post(self.get_uri_login(), headers=headers)
+
+        self.error_asserts(response, status_code, text_message)
+
+    def auth_logout(self):
+        # remove the JWT Token from the header
+        del self.__headers__["Authorization"]
+
+    ######################################################################
+    # GET, POST, DELETE METHODS
+    ######################################################################
+
+    def get(self, expected, query_string=""):
+        response = self.app.get(self.get_uri(), query_string=query_string, headers=self.__headers__)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(byte_to_dict(response.text), expected)
+
+    def post(self, body):
+        response = self.app.post(self.get_uri(), data=dumps(body), headers=self.__headers__)
+
+        id = int(response.text.decode("utf-8"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(id, b"")
+
+        return id
+
+    def put(self, body, status_code=200, text_message=""):
+        response = self.app.put(self.get_uri(), data=dumps(body), headers=self.__headers__)
+
+        self.assertEqual(response.status_code, status_code)
+        self.assertEqual(response.text, text_message)
+
+    def delete(self, query_string="", text_message=""):
+        response = self.app.delete(self.get_uri(), query_string=query_string, headers=self.__headers__)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, text_message)
+
+    ######################################################################
+    # GET, POST, DELETE ERROR METHODS
+    ######################################################################
+    '''
+    def get_error(self, query_string="", status_code=500, error_message="", headers=None):
+        headers = self.get_headers(headers=headers)
+
+        response = self.app.get(self.get_uri(), query_string=query_string, headers=headers)
+
+        self.error_asserts(response, status_code, error_message)
+
+    def post_error(self, body, status_code=500, error_message="", headers=None):
+        headers = self.get_headers(headers=headers)
+
+        response = self.app.post(self.get_uri(), data=dumps(body), headers=headers)
+
+        self.error_asserts(response, status_code, error_message)
+
+    def put_error(self, body, status_code=500, error_message="", headers=None):
+        headers = self.get_headers(headers=headers)
+
+        response = self.app.put(self.get_uri(), data=dumps(body), headers=headers)
+
+        self.error_asserts(response, status_code, error_message)
+
+    def delete_error(self, query_string="", status_code=500, error_message="", headers=None):
+        headers = self.get_headers(headers=headers)
+
+        response = self.app.delete(self.get_uri(), query_string=query_string, headers=headers)
+
+        self.error_asserts(response, status_code, error_message)
+    '''
 
 class UtilTester:
 

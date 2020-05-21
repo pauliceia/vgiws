@@ -3,7 +3,7 @@
 This section describes the functions to do a login.
 
 
-### GET /api/auth/login/
+### GET /api/auth/login
 
 This method do a basic login with a user.
 - Parameters:
@@ -20,21 +20,24 @@ This method do a basic login with a user.
     - The Authorization header has a valid Token to access the platform.
 - Error codes:
     - 404 (Not Found): Not found any user.
-    - 409 (Conflict): The email is not validated.
+    - 409 (Conflict): The email has not been validated.
     - 500 (Internal Server Error): Problem when do a login. Please, contact the administrator.
 - Notes:
 
 
-### POST /api/auth/change_password/
+### PUT /api/auth/change_password
 
 This method change the password of a user.
 - Parameters:
 - Examples:
-     - Change the password: POST http://localhost:8888/auth/change_password/
+     - Change the password: PUT http://localhost:8888/api/auth/change_password
 - Send (in Body):
     ```javascript
     {
-        'properties': {'current_password': 'ENCRYPTED_CURRENT_PASSWORD', 'new_password': 'ENCRYPTED_NEW_PASSWORD'},
+        'properties': {
+            'current_password': 'ENCRYPTED_CURRENT_PASSWORD',
+            'new_password': 'ENCRYPTED_NEW_PASSWORD'
+        },
         'type': 'ChangePassword'
     }
     ```
@@ -46,7 +49,7 @@ This method change the password of a user.
     - 401 (Unauthorized): It is necessary an Authorization header valid.
     - 404 (Not Found): Not found any user.
     - 409 (Conflict): Current password is invalid.
-    - 409 (Conflict): The email is not validated.
+    - 409 (Conflict): The email has not been validated.
     - 500 (Internal Server Error): Problem when changing the password. Please, contact the administrator.
 - Notes:
     - The passwords need to be encrypted using a hash algorithm called SHA512.

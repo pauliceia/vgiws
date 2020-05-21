@@ -74,15 +74,13 @@ class AuthLoginHandler(BaseHandler):
         encoded_jwt_token = self.auth_login(email, password)
         self.set_header('Authorization', encoded_jwt_token)
 
-        self.write(json_encode({}))
-
 
 class AuthChangePasswordHandler(BaseHandler):
 
     urls = [r"/api/auth/change_password/", r"/api/auth/change_password"]
 
     @auth_non_browser_based
-    def post(self):
+    def put(self):
         # get the body of the request
         resource_json = self.get_the_json_validated()
 

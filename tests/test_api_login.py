@@ -1,126 +1,128 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester, get_string_in_hash_sha512
 
 
+class TestAPIAuthLogin(RequestTester):
 
-class TestAPIAuthLogin(TestCase):
+    def test__get_api_auth_login__user_admin(self):
+        self.auth_login("admin@admin.com", "admin")
+        self.auth_logout()
 
-    def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test__get_api_auth_login__user_rodrigo(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
 
-    def test_get_api_auth_login_admin(self):
-        self.tester.auth_login("admin@admin.com", "admin")
-        self.tester.auth_logout()
+    def test__get_api_auth_login__user_miguel(self):
+        self.auth_login("miguel@admin.com", "miguel")
+        self.auth_logout()
 
-    def test_get_api_auth_login_rodrigo(self):
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-        self.tester.auth_logout()
-
-    def test_get_api_auth_login_miguel(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
-        self.tester.auth_logout()
-
-    def test_get_api_auth_login_rafael(self):
-        self.tester.auth_login("rafael@admin.com", "rafael")
-        self.tester.auth_logout()
+    def test__get_api_auth_login__user_rafael(self):
+        self.auth_login("rafael@admin.com", "rafael")
+        self.auth_logout()
 
 
-class TestAPIAuthLoginError(TestCase):
+class TestAPIAuthLoginError(RequestTester):
 
-    def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-    def test_get_api_auth_login_409_conflict(self):
-        self.tester.auth_login_409_conflict("gabriel@admin.com", "gabriel")
+    def test__get_api_auth_login__409_conflict__the_email_was_not_validated(self):
+        self.auth_login("gabriel@admin.com", "gabriel",
+                   status_code=409, text_message="The email has not been validated.")
 
 
-class TestAPIAuthChangePassword(TestCase):
+class TestAPIAuthChangePassword(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/auth/change_password')
 
-    def test_post_change_the_password(self):
-        self.tester.auth_login("ana@admin.com", "ana")
+    def test__post_api_auth_change_password(self):
+        self.auth_login("ana@admin.com", "ana")
 
+        # update the passaword
         resource = {
-            'properties': {'current_password': 'ana', 'new_password': 'anabbb'},
+            'properties': {
+                'current_password': get_string_in_hash_sha512('ana'),
+                'new_password': get_string_in_hash_sha512('anabbb')
+            },
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password(resource)
+        self.put(resource)
 
-        self.tester.auth_logout()
+        self.auth_logout()
 
         # try to login with the new password
-        self.tester.auth_login("ana@admin.com", "anabbb")
+        self.auth_login("ana@admin.com", "anabbb")
 
+        # update the password again with the previous version
         resource = {
-            'properties': {'current_password': 'anabbb', 'new_password': 'ana'},
+            'properties': {
+                'current_password': get_string_in_hash_sha512('anabbb'),
+                'new_password': get_string_in_hash_sha512('ana')
+            },
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password(resource)
+        self.put(resource)
 
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
-class TestAPIAuthChangePasswordErrors(TestCase):
+class TestAPIAuthChangePasswordErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/auth/change_password')
 
-    def test_post_api_change_password_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        self.tester.auth_login("ana@admin.com", "ana")
+    def test__post_api_auth_change_password__400_bad_request__attribute_in_JSON_is_missing(self):
+        self.auth_login("ana@admin.com", "ana")
 
         resource = {
             'properties': {'new_password': 'anabbb'},
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password_error_400_bad_request(resource)
+        self.put(resource, status_code=400,
+                 text_message="It is needed to pass the encrypted current_password and new_password.")
 
         resource = {
             'properties': {'current_password': 'ana'},
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password_error_400_bad_request(resource)
+        self.put(resource, status_code=400,
+                 text_message="It is needed to pass the encrypted current_password and new_password.")
 
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_change_password_error_401_unauthorized(self):
+    def test__post_api_auth_change_password__401_unauthorized(self):
         resource = {
             'properties': {'current_password': 'ana', 'new_password': 'anabbb'},
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password_error_401_unauthorized(resource)
+
+        self.put(resource, status_code=401,
+                 text_message="It is necessary an Authorization header valid.")
 
     # def test_post_api_change_password_error_409_conflict_email_is_not_validated(self):
     #     # the 409 is raised when try to log in the system
-    #     self.tester.auth_login("gabriel@admin.com", "gabriel")
+    #     self.auth_login("gabriel@admin.com", "gabriel")
     #
     #     resource = {
     #         'properties': {'current_password': 'gabriel', 'new_password': 'joao'},
     #         'type': 'ChangePassword'
     #     }
-    #     self.tester.api_change_password_error_409_conflict(resource)
+    #     self.api_change_password_error_409_conflict(resource)
     #
-    #     self.tester.auth_logout()
+    #     self.auth_logout()
 
-    def test_post_api_change_password_error_409_conflict_current_password_is_invalid(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_auth_change_password__409_conflict__current_password_is_invalid(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         resource = {
             'properties': {'current_password': 'senha_errada', 'new_password': 'joao'},
             'type': 'ChangePassword'
         }
-        self.tester.api_change_password_error_409_conflict(resource)
 
-        self.tester.auth_logout()
+        self.put(resource, status_code=409, text_message="Current password is invalid.")
+
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,
