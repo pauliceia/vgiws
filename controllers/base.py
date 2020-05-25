@@ -1772,7 +1772,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             check_call(command_to_import_shp_into_postgis, cwd=directory, shell=True)
 
         except CalledProcessError as error:
-            raise HTTPError(500, "Problem when to import the Shapefile. OGR was not able to import. \n" + str(error))
+            raise HTTPError(500, "Problem when importing the Shapefile file. OGR was not able to import it. \n" + str(error))
 
         # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
@@ -1798,8 +1798,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             gdf.to_file(shapefile_path)  # save editions
 
         except ValueError as error:
-            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read the Shapefile. \n" + \
-                            "One reason can be that the Shapefile has an empty column name, then name it. Hint: \n" + str(error))
+            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
+                            "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
+                            "Hint: " + str(error))
 
     def remove_invalid_columns(self, shapefile_path):
         try:
@@ -1818,8 +1819,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                 del gdf['changeset_']
                 gdf.to_file(shapefile_path)  # save editions
         except ValueError as error:
-            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read the Shapefile. \n" + \
-                            "One reason can be that the Shapefile has an empty column name, then name it. Hint: \n" + str(error))
+            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
+                            "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
+                            "Hint: " + str(error))
 
     def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
         # gdf - geopandas data frame

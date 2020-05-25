@@ -147,7 +147,7 @@ def get_shapefile_file_name_inside_folder(directory):
             # return the file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
             return file_name, join(directory, file_name)
 
-    raise HTTPError(404, "3) Invalid ZIP! Not found a ShapeFile (.shp) inside the ZIP.")  # 400 - Bad request
+    raise HTTPError(404, "3) Invalid zip file! Not found a ShapeFile file (i.e. .shp) inside the zip file.")  # 400 - Bad request
 
 
 def rename_file_name(file_name):
@@ -207,7 +207,7 @@ def is_there_shapefile_files_inside_folder(path_to_extract_zip_file):
     if status == 200:
         return status, ""
 
-    return status, "Invalid ZIP! Not found a ShapeFile ({0}) inside the ZIP.".format(file_extension)
+    return status, "Invalid zip file! Not found a ShapeFile file (i.e. {0}) inside the zip file.".format(file_extension)
 
 
 # OTHERS
