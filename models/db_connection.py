@@ -1015,18 +1015,18 @@ class PGSQLConnection:
     def create_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        if p["start_date_mask_id"] is None:
-            p["start_date_mask_id"] = "NULL"
+        p["start_date_column_name"] = p["start_date_column_name"] if p["start_date_column_name"] is not None else ""
+        p["end_date_column_name"] = p["end_date_column_name"] if p["end_date_column_name"] is not None else ""
 
-        if p["end_date_mask_id"] is None:
-            p["end_date_mask_id"] = "NULL"
+        p["start_date_mask_id"] = p["start_date_mask_id"] if p["start_date_mask_id"] is not None else "NULL"
+        p["end_date_mask_id"] = p["end_date_mask_id"] if p["end_date_mask_id"] is not None else "NULL"
 
         query = """
-            INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name, start_date, end_date,
-                                          start_date_mask_id, end_date_mask_id)
+            INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name,
+                                          start_date, end_date, start_date_mask_id, end_date_mask_id)
             VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6});
-        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
-                   p["start_date_mask_id"], p["end_date_mask_id"])
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
+                   p["start_date"], p["end_date"], p["start_date_mask_id"], p["end_date_mask_id"])
 
         self.execute(query, is_transaction=True)
 
