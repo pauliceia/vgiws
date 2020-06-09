@@ -124,6 +124,38 @@ def get_EPSG_from_list_of_possible_EPSGs_according_to_prj(list_possible_epsg, pr
     return EPSG
 
 
+def remove_special_chars_from_gdf_columns(gdf):
+    new_column_names = {}
+
+    # get the Shapefile file columns
+    columns = gdf.columns.values.tolist()
+
+    for old_column in columns:
+        column = remove_special_chars_from_string(old_column)
+
+        # save the new column name in a dict to rename inside the gdf afterwards
+        new_column_names[old_column] = column
+
+    # rename the columns names in place
+    gdf.rename(columns=new_column_names, inplace=True)
+
+    return gdf
+
+
+def remove_invalid_columns_from_gdf_columns(gdf):
+    # get the Shapefile file columns
+    columns = gdf.columns.values.tolist()
+
+    # If the Shapefile file has private column names, than remove them
+    if "version" in columns:
+        del gdf['version']
+
+    if "changeset_" in columns:
+        del gdf['changeset_']
+
+    return gdf
+
+
 def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
     file_name_prj = folder_to_extract_zip + "/" + file_name.replace("shp", "prj")
 
@@ -1774,57 +1806,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
-    def remove_special_chars_from_columns(self, shapefile_path):
-        try:
-            new_column_names = {}
-
-            # gdf - geopandas data frame
-            gdf = gp_read_file(shapefile_path)
-
-            # get the Shapefile file columns
-            columns = gdf.columns.values.tolist()
-
-            for old_column in columns:
-                column = remove_special_chars_from_string(old_column)
-
-                # save the new column name in a dict to rename inside the gdf afterwards
-                new_column_names[old_column] = column
-
-            # rename the columns names in place
-            gdf.rename(columns=new_column_names, inplace=True)
-
-            gdf.to_file(shapefile_path)  # save editions
-
-        except ValueError as error:
-            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
-                            "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
-                            "Hint: " + str(error))
-
-    def remove_invalid_columns(self, shapefile_path):
-        try:
-            # gdf - geopandas data frame
-            gdf = gp_read_file(shapefile_path)
-
-            # get the Shapefile file columns
-            columns = gdf.columns.values.tolist()
-
-            # If the Shapefile file has private column names, than remove them
-            if "version" in columns:
-                del gdf['version']
-                gdf.to_file(shapefile_path)  # save editions
-
-            if "changeset_" in columns:
-                del gdf['changeset_']
-                gdf.to_file(shapefile_path)  # save editions
-        except ValueError as error:
-            raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
-                            "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
-                            "Hint: " + str(error))
-
-    def check_if_shapefile_is_inside_default_city(self, shapefile_path, shapefile_epsg):
-        # gdf - geopandas data frame
-        gdf = gp_read_file(shapefile_path)
-
+    def check_if_the_gdf_is_inside_the_default_city(self, gdf, shapefile_epsg):
         # get the Shapefile file bounding box
         bbox = gdf.total_bounds.tolist()
 
@@ -1875,14 +1857,24 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             # get the shapefile file_name (e.g. points.shp) and the full path (e.g. tmp/vgiws/points.shp)
             SHP_FILE_NAME, SHAPEFILE_PATH = get_shapefile_file_name_inside_folder(self.PATH_EXTRACTED_ZIP_FILE)
 
-            self.remove_special_chars_from_columns(SHAPEFILE_PATH)
+            try:
+                # gdf - read the Shapefile file as a GeoDataFrame
+                gdf = gp_read_file(SHAPEFILE_PATH)
 
-            self.remove_invalid_columns(SHAPEFILE_PATH)
+                gdf = remove_special_chars_from_gdf_columns(gdf)
+                gdf = remove_invalid_columns_from_gdf_columns(gdf)
 
-            EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, self.PATH_EXTRACTED_ZIP_FILE)
+                gdf.to_file(SHAPEFILE_PATH)  # save the editions
 
-            # check if shapefile is inside default city
-            self.check_if_shapefile_is_inside_default_city(SHAPEFILE_PATH, EPSG)
+                EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, self.PATH_EXTRACTED_ZIP_FILE)
+
+                # check if shapefile is inside default city
+                self.check_if_the_gdf_is_inside_the_default_city(gdf, EPSG)
+
+            except ValueError as error:
+                raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
+                                "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
+                                "Hint: " + str(error))
 
             self.import_shp_file_into_postgis(f_table_name, SHAPEFILE_PATH, EPSG)
 
