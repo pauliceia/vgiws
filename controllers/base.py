@@ -14,7 +14,7 @@ from difflib import SequenceMatcher
 from geopandas import read_file as gp_read_file
 from json import loads
 import logging
-from requests import Session
+from requests import get as requests_get
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from shutil import make_archive
@@ -125,8 +125,6 @@ def get_EPSG_from_list_of_possible_EPSGs_according_to_prj(list_possible_epsg, pr
 
 
 def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
-    session = Session()
-
     file_name_prj = folder_to_extract_zip + "/" + file_name.replace("shp", "prj")
 
     try:
@@ -134,12 +132,12 @@ def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
             prj = file.read()
 
             # I try to get a EPSG from a .prj
-            response = session.get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?mode=wkt&terms={0}".format(prj))
+            response = requests_get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(prj))
 
             # if it is not possible to get a list of EPSG from a prj, so I try to search part of the .prj, the projcs
             if response.text == "":
                 projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
-                response = session.get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(projcs))
+                response = requests_get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(projcs))
 
                 # if it is not possible to get the list of EPSG from projcs, return an exception
                 if response.text == "":
