@@ -84,11 +84,11 @@ class TestAPIImport(TestCase):
 
     # dados_prefeitura_sp
 
-    def test_post_import_shp_DEINFO_CENTRAIS_MECANIZADAS_29193(self):
+    def test_post_import_shp_DEINFO_CENTRAIS_MECANIZADAS_5533(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
-        file_name = "DEINFO_CENTRAIS_MECANIZADAS_29193.zip"
+        file_name = "DEINFO_CENTRAIS_MECANIZADAS_5533.zip"
         file_name_path = "shp_originals/dados_prefeitura_sp/ok/" + file_name
         with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
@@ -548,6 +548,14 @@ class TestAPIImportError(TestCase):
                                                                         file_name="points",
                                                                         changeset_id=self.changeset_id)
 
+    def test_post_import_shp_error_400_bad_request_invalid_prj_file_epsg_not_found(self):
+        file_name = "places_5_points_with_bad_prj.zip"
+        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
+            binary_file_content = file.read()
+
+            self.tester.api_import_shp_create_error_400_bad_request(binary_file_content, f_table_name=self.f_table_name,
+                                                                    file_name=file_name, changeset_id=self.changeset_id)
+
     def test_post_import_shp_error_400_bad_request_prj_is_empty(self):
         ##################################################
         # import the shapefile with the created layer (the feature table will be the shapefile)
@@ -662,14 +670,6 @@ class TestAPIImportError(TestCase):
         # import the shapefile with the created layer (the feature table will be the shapefile)
         ##################################################
         file_name = "points.zip"
-        with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
-            binary_file_content = file.read()
-
-            self.tester.api_import_shp_create_error_409_conflict(binary_file_content, f_table_name=self.f_table_name,
-                                                                 file_name=file_name, changeset_id=self.changeset_id)
-
-    def test_post_import_shp_error_409_conflict_it_was_not_possible_to_find_one_EPSG_from_the_prj(self):
-        file_name = "places_5_points_with_bad_prj.zip"
         with open(os_path_sep_join([FILES_PATH, file_name]), mode='rb') as file:  # rb = read binary
             binary_file_content = file.read()
 

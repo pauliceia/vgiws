@@ -33,12 +33,10 @@ from psycopg2 import ProgrammingError, DataError, Error, InternalError
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
-# from tornado.log import gen_log
-# gen_log.info("Killing all sessions...")
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
-                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__, __PRJ2EPSG_WEB_SERVICE__
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__, \
                                 __TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
@@ -76,54 +74,6 @@ def send_email(to_email_address, subject="", body=""):
     sleep(__TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__)
 
 
-def get_percentage_of_similarity_of_two_strings(string_01, string_02):
-    sequence = SequenceMatcher(isjunk=None, a=string_01, b=string_02)
-    percentage = sequence.ratio()*100
-    percentage = round(percentage, 1)
-
-    return percentage
-
-
-def get_first_projcs_from_prj_in_wkt(prj_wkt):
-    # find the first reference of '"'
-    position_first_quote = prj_wkt.find('"')
-
-    # get the prj starting by '"'
-    prj = prj_wkt[position_first_quote+1:]
-
-    # find the next reference of '"'
-    position_next_quote = prj.find('"')
-
-    # get the projcs
-    projcs = prj[0:position_next_quote]
-
-    # remove the underscore
-    projcs = projcs.replace("_", " ")
-
-    return projcs
-
-
-def get_EPSG_from_list_of_possible_EPSGs_according_to_prj(list_possible_epsg, prj):
-    # put default values to EPSG and greater percentage
-    EPSG = list_possible_epsg["codes"][0]["code"]
-    greater_percentage = 0
-
-    projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
-
-    for code in list_possible_epsg["codes"]:
-
-        percentage_similarity = get_percentage_of_similarity_of_two_strings(projcs, code["name"].lower())
-
-        # print("projcs: ", projcs, " - code: ", code["code"], " - name: ", code["name"], " - percentage_similarity: ", percentage_similarity)
-
-        # get the EPSG from the code that has greater percentage of similarity
-        if percentage_similarity > greater_percentage:
-            EPSG = code["code"]
-            greater_percentage = percentage_similarity
-
-    return EPSG
-
-
 def remove_special_chars_from_gdf_columns(gdf):
     new_column_names = {}
 
@@ -154,45 +104,6 @@ def remove_invalid_columns_from_gdf_columns(gdf):
         del gdf['changeset_']
 
     return gdf
-
-
-def get_epsg_from_shapefile(file_name, folder_to_extract_zip):
-    file_name_prj = folder_to_extract_zip + "/" + file_name.replace("shp", "prj")
-
-    try:
-        with open(file_name_prj) as file:
-            prj = file.read()
-
-            # I try to get a EPSG from a .prj
-            response = requests_get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(prj))
-
-            # if it is not possible to get a list of EPSG from a prj, so I try to search part of the .prj, the projcs
-            if response.text == "":
-                projcs = get_first_projcs_from_prj_in_wkt(prj).lower()
-                response = requests_get(__PRJ2EPSG_WEB_SERVICE__ + "/search.json?terms={0}".format(projcs))
-
-                # if it is not possible to get the list of EPSG from projcs, return an exception
-                if response.text == "":
-                    raise HTTPError(503, "Problem with the prj2epsg web service.")  # Service Unavailable
-
-            if response.status_code != 200:
-                raise HTTPError(409, "Some error occurs in prj2epsg web service. Status code: " +
-                                str(response.status_code))
-
-            # convert string to dict/JSON
-            resulted = loads(response.text)
-
-            if "codes" not in resulted:
-                raise HTTPError(409, "There is not a list of codes in the result. So it is an invalid .prj.")
-
-            if not resulted["codes"]:  # if resulted["codes"] is empty:
-                raise HTTPError(409, "It was not possible to find one EPSG from the .prj.")
-
-            EPSG = get_EPSG_from_list_of_possible_EPSGs_according_to_prj(resulted, prj)
-
-            return EPSG
-    except FileNotFoundError:
-        raise HTTPError(404, "Not found .prj inside the zip.")
 
 
 # BASE CLASS
@@ -1806,12 +1717,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         # self.check_if_there_is_some_invalid_attribute_in_feature_table(f_table_name)
 
-    def check_if_the_gdf_is_inside_the_default_city(self, gdf, shapefile_epsg):
+    def check_if_the_gdf_is_inside_the_default_city(self, gdf, EPSG):
         # get the Shapefile file bounding box
         bbox = gdf.total_bounds.tolist()
 
         try:
-            is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(bbox, shapefile_epsg)
+            is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(bbox, EPSG)
         except InternalError as error:
             raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " + \
                                  "import again later. \nError: " + str(error))
@@ -1866,7 +1777,11 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
                 gdf.to_file(SHAPEFILE_PATH)  # save the editions
 
-                EPSG = get_epsg_from_shapefile(SHP_FILE_NAME, self.PATH_EXTRACTED_ZIP_FILE)
+                EPSG = gdf.crs.to_epsg()
+
+                # if EPSG is None, then I raise an exception
+                if EPSG is None:
+                    raise HTTPError(400, "Invalid .prj file. The EPSG could not be found from the .prj file.")
 
                 # check if shapefile is inside default city
                 self.check_if_the_gdf_is_inside_the_default_city(gdf, EPSG)
