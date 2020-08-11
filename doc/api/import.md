@@ -15,8 +15,8 @@ This method imports a ShapeFile as feature table of a layer.
 - Response:
 - Error codes:
     - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
-    - 400 (Bad Request): It is necessary to pass the f_table_name, file_name and changeset_id in request.
-    - 400 (Bad Request): It is necessary to pass one binary zip file in the body of the request.
+    - 400 (Bad Request): `f_table_name`, `file_name` and `changeset_id` are required parameters in request.
+    - 400 (Bad Request): A binary zip file is required in the body of the request.
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
     - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.

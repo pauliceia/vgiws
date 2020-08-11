@@ -788,15 +788,28 @@ class LayerValidator(BaseHandler):
         if f_table_name[0].isdigit():
             raise HTTPError(400, "f_table_name can not start with number. (f_table_name: " + f_table_name + ")")
 
+    def check_if_f_table_name_is_a_reserved_word(self, f_table_name):
+        if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
+            raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
+                            + "(table: " + f_table_name + ")")
+
     def check_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
             raise HTTPError(409, "Conflict of f_table_name. The table name already exist. Please, rename it. "
                             + "(table: " + f_table_name + ")")
 
-    def check_if_f_table_name_is_a_reserved_word(self, f_table_name):
-        if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
-            raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
-                            + "(table: " + f_table_name + ")")
+    def check_f_table_name_length(self, f_table_name):
+        if len(f_table_name) < 5:
+            raise HTTPError(400, "The minimum length for the f_table_name attribute is 5 characters.")
+
+        if len(f_table_name) > 63:
+            raise HTTPError(400, "The maximum length for the f_table_name attribute is 63 characters.")
+
+    def validate_f_table_name_attribute(self, f_table_name):
+        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
+        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
+        self.check_if_f_table_name_already_exist_in_db(f_table_name)
+        self.check_f_table_name_length(f_table_name)
 
     def check_if_layer_has_max_5_keywords(self, resource_json):
         amount_of_keywords = len(resource_json["properties"]["keyword"])
@@ -817,9 +830,8 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         f_table_name = resource_json["properties"]["f_table_name"]
 
-        self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
-        self.check_if_f_table_name_is_a_reserved_word(f_table_name)
-        self.check_if_f_table_name_already_exist_in_db(f_table_name)
+        self.validate_f_table_name_attribute(f_table_name)
+
         self.check_if_layer_has_max_5_keywords(resource_json)
 
         return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
@@ -1613,7 +1625,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
     def do_validation(self, arguments, binary_file):
         if ("f_table_name" not in arguments) or ("file_name" not in arguments) or ("changeset_id" not in arguments):
-            raise HTTPError(400, "It is necessary to pass the f_table_name, file_name and changeset_id in request.")
+            raise HTTPError(400, "`f_table_name`, `file_name` and `changeset_id` are required parameters in request.")
 
         f_table_name = arguments["f_table_name"]
 
@@ -1621,7 +1633,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
 
         if binary_file == b'':
-            raise HTTPError(400, "It is necessary to pass one binary zip file in the body of the request.")
+            raise HTTPError(400, "A binary zip file is required in the body of the request.")
 
         # if do not exist the temp folder, create it
         if not exists(__TEMP_FOLDER__):

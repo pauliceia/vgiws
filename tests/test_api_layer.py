@@ -393,6 +393,35 @@ class TestAPILayerErrors(TestCase):
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
+    def test_post_api_layer_create_error__400_bad_request__f_table_name_is_less_than_5_chars(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        resource = {
+            'properties': {'f_table_name': 'abcd', 'description': '', 'name': 'Addresses in 1869',
+                            'reference': [1001, 1002], 'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
+    def test_post_api_layer_create_error__400_bad_request__f_table_name_is_greater_than_63_chars(self):
+        # DO LOGIN
+        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+
+        resource = {
+            'properties': {'f_table_name': 'lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit__sed_do_e',
+                            'description': '', 'name': 'Addresses in 1869',
+                            'reference': [1001, 1002], 'source_description': '', 'keyword': [1001, 1041]},
+            'type': 'Layer'
+        }
+        self.tester.api_layer_create_error_400_bad_request(resource)
+
+        # DO LOGOUT AFTER THE TESTS
+        self.tester.auth_logout()
+
     def test_post_api_layer_create_error_401_unauthorized(self):
         feature = {
             'properties': {'name': 'Addresses in 1869', 'table_name': 'new_layer', 'source': '',

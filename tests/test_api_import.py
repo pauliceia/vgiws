@@ -509,9 +509,6 @@ class TestAPIImportError(TestCase):
         expected = {'type': 'FeatureCollection', 'features': []}
         self.tester.api_layer(expected, layer_id=self.layer_id)
 
-
-
-
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
