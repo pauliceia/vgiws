@@ -917,7 +917,7 @@ class FeatureTableValidator(BaseHandler):
 
         if not layers["features"]:  # if list is empty
             raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "It is needed to create a layer with the f_table_name before of using this function.")
+                            "You need to create a layer with the f_table_name before of using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -940,7 +940,7 @@ class FeatureTableValidator(BaseHandler):
 
         if not layers["features"]:  # if list is empty
             raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "It is needed to create a layer with the f_table_name before using this function.")
+                            "You need to create a layer with the f_table_name before using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -973,6 +973,7 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
         self.check_if_f_table_name_starts_with_number_or_it_has_special_chars(f_table_name)
         self.check_if_f_table_name_is_a_reserved_word(f_table_name)
+
         self.check_if_fields_of_f_table_are_invalids(resource_json)
 
         self.can_current_user_create_or_delete(current_user_id, f_table_name)
@@ -1533,7 +1534,7 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
         if not layers["features"]:  # if list is empty
             raise HTTPError(404, "Not found layer " + f_table_name +
-                            ". It is needed to create a layer with the f_table_name before of using this function.")
+                            ". You need to create a layer with the f_table_name before of using this function.")
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 

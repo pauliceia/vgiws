@@ -384,59 +384,57 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a temporal_columns (without f_table_name)
-        resource = {
-            'type': 'FeatureTable',
-            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                           'address': 'text'},
-            'geometry': {
-                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-                'type': 'MULTIPOINT'
+        resources = [
+            # try to create a feature table (without f_table_name)
+            {
+                'type': 'FeatureTable',
+                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                            'address': 'text'},
+                'geometry': {
+                    'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                    'type': 'MULTIPOINT'
+                }
+            },
+            # try to create a feature table (without geometry)
+            {
+                'type': 'FeatureTable',
+                'f_table_name': 'layer_1003',
+                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                            'address': 'text'}
+            },
+            # try to create a feature table (without name)
+            {
+                'type': 'FeatureTable',
+                'f_table_name': 'layer_1003',
+                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                            'address': 'text'},
+                'geometry': {
+                    'crs': {'type': 'name', 'properties': {}},
+                    'type': 'MULTIPOINT'
+                }
+            },
+            # try to create a feature table (without type)
+            {
+                'type': 'FeatureTable',
+                'f_table_name': 'layer_1003',
+                'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
+                            'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                            'address': 'text'},
+                'geometry': {
+                    'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                }
             }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        ]
 
-        # try to create a temporal_columns (without geometry)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': 'layer_1003',
-            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                           'address': 'text'}
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
-
-        # try to create a temporal_columns (without name)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': 'layer_1003',
-            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                           'address': 'text'},
-            'geometry': {
-                'crs': {'type': 'name', 'properties': {}},
-                'type': 'MULTIPOINT'
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
-
-        # try to create a temporal_columns (without type)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': 'layer_1003',
-            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                           'address': 'text'},
-            'geometry': {
-                'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        for resource in resources:
+            self.tester.api_feature_table_create_error_400_bad_request(resource)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
         # try to do the test with a admin
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a temporal_columns (without crs)
+        # try to create a feature table (without crs)
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'layer_1003',
@@ -578,7 +576,7 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a temporal_columns with a f_table_name that already exist
+        # try to insert a feature table with a f_table_name that already exist
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'address',
@@ -683,7 +681,7 @@ class TestAPIFeatureTableErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a temporal_columns with a f_table_name that already exist
+        # try to insert a feature table with a f_table_name that already exist
         resource = {
             'type': 'FeatureTableColumn',
             'f_table_name': 'address',

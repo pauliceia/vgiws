@@ -20,7 +20,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 400 (Bad Request): f_table_name can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
     - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
-    - 404 (Not Found): Not found any layer with the passed f_table_name. It is needed to create a layer with the f_table_name before of using this function.
+    - 404 (Not Found): Not found any layer with the passed f_table_name. You need to create a layer with the f_table_name before of using this function.
     - 404 (Not Found): Not found .prj inside the zip.
     - 404 (Not Found): Invalid zip file! Not found a ShapeFile file (i.e. [.shp|.prj|.dbf|.shx]) inside de zip file.
     - 409 (Conflict): File is not a zip file.

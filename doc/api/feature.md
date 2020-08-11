@@ -63,7 +63,7 @@ This method creates a new feature described in a JSON.
      - 403 (Forbidden): Just the collaborator of the layer or administrator can manage a resource.
      - 403 (Forbidden): The changeset_id \<ID\> was not created by current user.
      - 404 (Not Found): Not found the changeset_id \<ID\>.
-     - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. It is needed to create a layer with the f_table_name before using this function.
+     - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. You need to create a layer with the f_table_name before using this function.
      - 409 (Conflict): The changeset_id \<ID\> was already closed at \<DATE\>.
      - 500 (Bad Request): Invalid field of feature. Please contact the administrator.
      - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
@@ -102,7 +102,7 @@ This method updates a feature described in a JSON.
     - 403 (Forbidden): The changeset_id \<ID\> was not created by current user.
     - 404 (Not Found): Not found feature \<ID\>.
     - 404 (Not Found): Not found the changeset_id \<ID\>.
-    - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. It is needed to create a layer with the f_table_name before using this function.
+    - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. You need to create a layer with the f_table_name before using this function.
     - 409 (Conflict): The changeset_id \<ID\> was already closed at \<DATE\>.
     - 409 (Conflict): Invalid version attribute. (version: \<ID\>)
     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
@@ -132,7 +132,7 @@ This method deletes one feature by id.
     - 404 (Not Found): Not found any resource.
     - 404 (Not Found): Not found feature \<ID\>.
     - 404 (Not Found): Not found the specified changeset_id.
-    - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. It is needed to create a layer with the f_table_name before using this function.
+    - 404 (Not Found): Not found layer \<F_TABLE_NAME\>. You need to create a layer with the f_table_name before using this function.
     - 409 (Conflict): The specified changeset_id was already closed.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
