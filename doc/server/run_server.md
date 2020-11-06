@@ -97,19 +97,19 @@ WARNING: you should create a [new database](db_connection.md) before running the
 Install a specific Python version using `pyenv`:
 
 ```
-$ pyenv install 3.7.4
+$ pyenv install 3.8.5
 ```
 
 Create a Python environment with the Python version above through `pyenv-virtualenv`:
 
 ```
-$ pyenv virtualenv 3.7.4 pauliceia-vgimws
+$ pyenv virtualenv 3.8.5 pauliceia_vgimws
 ```
 
 Activate the virtual environment:
 
 ```
-$ pyenv activate pauliceia-vgimws
+$ pyenv activate pauliceia_vgimws
 ```
 
 Install the requirements:
@@ -135,7 +135,7 @@ Now, on a console, get into the VGIMWS main folder, and run the production appli
 
 ```
 $ cd vgiws/
-$ workon pauliceia_webservice
+$ pyenv activate pauliceia_vgimws
 $ python main.py
 ```
 
@@ -150,7 +150,7 @@ Open another console (e.g. CTRL+T) and get into the VGIMWS main folder, turning 
 
 ```
 $ cd vgiws/
-$ workon pauliceia_webservice
+$ pyenv activate pauliceia_vgimws
 ```
 
 or

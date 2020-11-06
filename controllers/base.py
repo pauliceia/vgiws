@@ -20,7 +20,6 @@ from subprocess import check_call, CalledProcessError
 from shutil import make_archive
 from threading import Thread
 from time import sleep
-from unidecode import unidecode
 from traceback import format_exception
 from zipfile import ZipFile, BadZipFile
 
@@ -1709,8 +1708,12 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
 
         __DB_CONNECTION__ = self.PGSQLConn.get_db_connection()
 
-        postgresql_connection = '"host=' + __DB_CONNECTION__["HOSTNAME"] + ' dbname=' + __DB_CONNECTION__["DATABASE"] + \
-                                ' user=' + __DB_CONNECTION__["USERNAME"] + ' password=' + __DB_CONNECTION__["PASSWORD"] + '"'
+        postgresql_connection = (
+            f'"host={__DB_CONNECTION__["HOSTNAME"]} port={__DB_CONNECTION__["PORT"]}'
+            f' dbname={__DB_CONNECTION__["DATABASE"]}'
+            f' user={__DB_CONNECTION__["USERNAME"]} password={__DB_CONNECTION__["PASSWORD"]}"'
+        )
+
         try:
             # FEATURE TABLE
             command_to_import_shp_into_postgis = 'ogr2ogr -append -f "PostgreSQL" PG:' + postgresql_connection + ' ' + \

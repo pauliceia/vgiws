@@ -13,6 +13,7 @@ CREATE DATABASE pauliceia_test;
 
 -- active the extension
 CREATE EXTENSION postgis;
+CREATE EXTENSION unaccent;
 
 -- exit
 \q

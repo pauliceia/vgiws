@@ -82,8 +82,8 @@ def prepare_test_db_before_tests(arguments):
     # open the schema file and the insert file, both to edit the DB
     with open(__PATH_SQL_SCHEMA_FILE__, 'r') as schema_file, \
             open(__PATH_SQL_TRIGGER_FILE__, 'r') as trigger_file, \
-                open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file, \
-                    open(__PATH_SQL_INSERT_FILE_PRODUCTION__, 'r') as insert_file_production:
+            open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file, \
+            open(__PATH_SQL_INSERT_FILE_PRODUCTION__, 'r') as insert_file_production:
 
         # get the data of files
         schema_data = schema_file.read()
@@ -108,13 +108,13 @@ def prepare_test_db_before_tests(arguments):
             insert_data = remove_special_characters(insert_data)
 
         # executing the SQL files
-        print('\nCleaning and creating the schema of DB.')
+        print('\nCleaning and creating the schema of DB...')
         PGSQLConn.execute(schema_data, is_transaction=True, is_sql_file=True)
 
-        # print("Inserting the triggers in DB.")
+        # print("Inserting the triggers in DB...")
         # PGSQLConn.execute(trigger_data, is_transaction=True, is_sql_file=True)
 
-        print('Inserting the data in DB.')
+        print('Inserting the data in DB...')
         PGSQLConn.execute(insert_data, is_transaction=True, is_sql_file=True)
 
     print('\nCleaning the database was done successfully.\n')
