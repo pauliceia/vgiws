@@ -55,7 +55,9 @@ Hint: How to generate a new cookie secret: https://gist.github.com/didip/823887
     To debug, create the container with the VGIMWS:
 
     ```
-    $ docker run --rm -v $(pwd):/usr/src/vgiws -p 8888:8888 --name vgiws_debug vgiws python -u main.py --debug=True --publish_layers_in_geoserver=False
+    $ docker run --rm --name pauliceia_vgimws --net=host \
+        -v $(pwd):/app pauliceia/api-vgiws:test \
+        python main.py --debug=True --publish_layers_in_geoserver=False
     ```
 
     Or you can create the container with the VGIMWS in production mode:

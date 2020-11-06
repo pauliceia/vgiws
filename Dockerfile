@@ -1,26 +1,25 @@
-FROM python:3.7.4
-# FROM python:3.8.5-slim-buster
+FROM python:3.8.5-slim-buster
 
-WORKDIR /usr/src/vgiws
+# use it to avoid unnecessaries warnings
+ARG DEBIAN_FRONTEND=noninteractive
+
+WORKDIR /app
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    TZ=America/Sao_Paulo
 
 COPY ./requirements.txt ./
 
-# Lines to avoid problems related to build image (https://github.com/phusion/baseimage-docker/issues/319)
-# ENV DEBIAN_FRONTEND noninteractive
-# ENV DEBIAN_FRONTEND teletype
-# RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-
-# https://www.psycopg.org/install/
-# psycopg dependencies
-# sudo apt install python3-dev libpq-dev
-
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && \
-    apt-get install -qqy software-properties-common --no-install-recommends && \
-    apt-get install -y python-gdal python3-gdal gdal-bin
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-ENV TZ=America/Sao_Paulo
+RUN apt-get update && \
+    # install it to avoid unnecessaries warnings
+    apt-get install -y --no-install-recommends apt-utils && \
+    # psycopg dependencies
+    apt-get install -y --no-install-recommends gcc python3-dev libpq-dev && \
+    # GDAL
+    apt-get install -y --no-install-recommends python3-gdal gdal-bin && \
+    # service requirements
+    pip install -r requirements.txt
 
 EXPOSE 8888
 
