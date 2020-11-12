@@ -1,23 +1,19 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 
-class TestAPICurator(TestCase):
+class TestAPICurator(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/curator')
 
     # curator - get
 
-    def test_get_api_curator_return_all_curators(self):
+    def test__get_api_curator__return_all_curators(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -64,9 +60,9 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected)
+        self.get(expected)
 
-    def test_get_api_curator_return_curator_by_user_id(self):
+    def test__get_api_curator__return_curator_by_user_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -83,9 +79,9 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected, user_id="1003")
+        self.get(expected, user_id="1003")
 
-    def test_get_api_curator_return_curator_by_keyword_id(self):
+    def test__get_api_curator__return_curator_by_keyword_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -102,9 +98,9 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected, keyword_id="1002")
+        self.get(expected, keyword_id="1002")
 
-    def test_get_api_curator_return_curator_by_region(self):
+    def test__get_api_curator__return_curator_by_region(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -121,9 +117,9 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected, region="SÃo")
+        self.get(expected, region="SÃo")
 
-    def test_get_api_curator_return_curator_by_user_id_and_keyword_id(self):
+    def test__get_api_curator__return_curator_by_user_id_and_keyword_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -135,22 +131,22 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected, user_id="1002", keyword_id="1002")
+        self.get(expected, user_id="1002", keyword_id="1002")
 
-    def test_get_api_curator_return_zero_resources(self):
+    def test__get_api_curator__return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.tester.api_curator(expected, keyword_id="999")
-        self.tester.api_curator(expected, keyword_id="998")
+        self.get(expected, keyword_id="999")
+        self.get(expected, keyword_id="998")
 
-        self.tester.api_curator(expected, user_id="999")
-        self.tester.api_curator(expected, user_id="998")
+        self.get(expected, user_id="999")
+        self.get(expected, user_id="998")
 
     # curator - create, update and delete
 
-    def test_api_curator_create_update_and_delete(self):
+    def test__api_curator__create_update_and_delete(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
         # create curator
@@ -159,20 +155,20 @@ class TestAPICurator(TestCase):
             'properties': {'user_id': 1002, 'keyword_id': 1003, 'region': 'jorge'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create(resource)
+        self.post(resource, add_suffix_to_uri="/create")
 
         ##################################################
         # update curator
         ##################################################
         resource["properties"]["region"] = "cabral"
-        self.tester.api_curator_update(resource)
+        self.put(resource)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         p = resource["properties"]
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_curator(expected_at_least=expected_resource, user_id=p["user_id"], keyword_id=p["keyword_id"])
+        self.get(expected_at_least=expected_resource, user_id=p["user_id"], keyword_id=p["keyword_id"])
 
         ##################################################
         # remove curator
@@ -182,227 +178,276 @@ class TestAPICurator(TestCase):
         keyword_id = resource["properties"]["keyword_id"]
 
         # remove the user in layer
-        self.tester.api_curator_delete(user_id=user_id, keyword_id=keyword_id)
+        self.delete(user_id=user_id, keyword_id=keyword_id)
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_curator(expected, user_id=user_id, keyword_id=keyword_id)
+        self.get(expected, user_id=user_id, keyword_id=keyword_id)
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
-class TestAPIUserCuratorErrors(TestCase):
+class TestAPIUserCuratorErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/curator')
 
     # curator errors - get
 
-    def test_get_api_curator_error_400_bad_request(self):
-        self.tester.api_curator_error_400_bad_request(keyword_id="abc")
-        self.tester.api_curator_error_400_bad_request(keyword_id=0)
-        self.tester.api_curator_error_400_bad_request(keyword_id=-1)
-        self.tester.api_curator_error_400_bad_request(keyword_id="-1")
-        self.tester.api_curator_error_400_bad_request(keyword_id="0")
+    def test__get_api_curator__error__400_bad_request__invalid_parameter(self):
+        expected = {
+            "status_code": 400,
+            "text_message": "Invalid parameter."
+        }
 
-        self.tester.api_curator_error_400_bad_request(user_id="abc")
-        self.tester.api_curator_error_400_bad_request(user_id=0)
-        self.tester.api_curator_error_400_bad_request(user_id=-1)
-        self.tester.api_curator_error_400_bad_request(user_id="-1")
-        self.tester.api_curator_error_400_bad_request(user_id="0")
+        self.get(keyword_id="abc", **expected)
+        self.get(keyword_id=0, **expected)
+        self.get(keyword_id=-1, **expected)
+        self.get(keyword_id="-1", **expected)
+        self.get(keyword_id="0", **expected)
+
+        self.get(user_id="abc", **expected)
+        self.get(user_id=0, **expected)
+        self.get(user_id=-1, **expected)
+        self.get(user_id="-1", **expected)
+        self.get(user_id="0", **expected)
 
     # curator errors - create
 
-    def test_post_api_curator_create_error_400_bad_request_attribute_already_exist(self):
+    def test__post_api_curator__create__error__400_bad_request__attribute_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to insert a curator with user_id and keyword_id that already exist
+        # try to insert a curator with 'user_id' and 'keyword_id' that already exist
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            text_message="Attribute already exists. (error: Key (user_id, keyword_id)=(1003, 1010) already exists.)"
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_curator_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test__post_api_curator__create__error__400_bad_request__attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a curator (without user_id)
+        # try to create a curator without 'user_id' property
         resource = {
             'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
+        )
 
-        # try to create a curator (without keyword_id)
+        # try to create a curator without 'keyword_id' property
         resource = {
             'properties': {'user_id': 1003, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
+        )
 
-        # try to create a curator (without region)
+        # try to create a curator without 'region' property
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_curator_create_error_401_unauthorized_without_authorization_header(self):
+    def test__post_api_curator__create__error__401_unauthorized__without_authorization_header(self):
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_401_unauthorized(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=401,
+            text_message="A valid `Authorization` header is necessary!"
+        )
 
-    def test_post_api_curator_create_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+    def test__post_api_curator__create__error__403_forbidden__invalid_user_tries_to_manage_a_curator(self):
         # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         # add a user in a layer
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_create_error_403_forbidden(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=403,
+            text_message="The administrator is who can manage a curator."
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # curator errors - update
 
-    def test_put_api_curator_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test__put__api_curator__error__400_bad_request__attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a curator (without user_id)
+        # try to create a curator without 'user_id' property
         resource = {
             'properties': {'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
+        )
 
-        # try to create a curator (without keyword_id)
+        # try to create a curator (without 'keyword_id' property
         resource = {
             'properties': {'user_id': 1003, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
+        )
 
-        # try to create a curator (without region)
+        # try to create a curator (without 'region' property
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_curator_error_401_unauthorized_without_authorization_header(self):
+    def test__put__api_curator__error__401_unauthorized__without_authorization_header(self):
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_401_unauthorized(resource)
+        self.put(
+            resource, status_code=401,
+            text_message="A valid `Authorization` header is necessary!"
+        )
 
-    def test_put_api_curator_error_403_forbidden_invalid_user_tries_to_create_a_curator(self):
+    def test__put__api_curator__error__403_forbidden__invalid_user_tries_to_manage_a_curator(self):
         # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # add a user in a layer
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_403_forbidden(resource)
+        self.put(
+            resource, status_code=403,
+            text_message="The administrator is who can manage a curator."
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_curator_error_404_not_found_user_or_keyword(self):
+    def test__put__api_curator__error__404_not_found__not_found_any_resource(self):
         # DO LOGIN
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.auth_login("admin@admin.com", "admin")
 
-        # not found a user
+        # try to update with an invalid 'user_id' property
         resource = {
             'properties': {'user_id': 999, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_404_not_found(resource)
+        self.put(resource, status_code=404, text_message="Not found any resource.")
 
-        # not found a keyword
+        # try to update with an invalid 'keyword_id' property
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 999, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_404_not_found(resource)
+        self.put(resource, status_code=404, text_message="Not found any resource.")
 
-        # not found a user or keyword
+        # try to update with an invalid 'user_id' and 'keyword_id' properties
         resource = {
             'properties': {'user_id': 999, 'keyword_id': 999, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.tester.api_curator_update_error_404_not_found(resource)
+        self.put(resource, status_code=404, text_message="Not found any resource.")
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # curator errors - delete
 
-    def test_delete_api_curator_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
+    def test__delete__api_curator__error__400_bad_request(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_curator_delete_error_400_bad_request(user_id="abc", keyword_id="abc")
-        self.tester.api_curator_delete_error_400_bad_request(user_id=0, keyword_id=0)
-        self.tester.api_curator_delete_error_400_bad_request(user_id=-1, keyword_id=-1)
-        self.tester.api_curator_delete_error_400_bad_request(user_id="-1", keyword_id="-1")
-        self.tester.api_curator_delete_error_400_bad_request(user_id="0", keyword_id="0")
+        expected = {
+            "status_code": 400,
+            "text_message": "Invalid parameter."
+        }
+
+        self.delete(user_id="abc", keyword_id="abc", **expected)
+        self.delete(user_id=0, keyword_id=0, **expected)
+        self.delete(user_id=-1, keyword_id=-1, **expected)
+        self.delete(user_id="-1", keyword_id="-1", **expected)
+        self.delete(user_id="0", keyword_id="0", **expected)
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_curator_error_401_unauthorized_user_without_login(self):
-        self.tester.api_curator_delete_error_401_unauthorized(user_id=1001, keyword_id=1001)
-        self.tester.api_curator_delete_error_401_unauthorized(user_id=1001, keyword_id="1001")
-        self.tester.api_curator_delete_error_401_unauthorized(user_id=0, keyword_id=-1)
-        self.tester.api_curator_delete_error_401_unauthorized(user_id="0", keyword_id="-1")
+    def test__delete__api_curator__error__401_unauthorized(self):
+        expected = {
+            "status_code": 401,
+            "text_message": "A valid `Authorization` header is necessary!"
+        }
 
-    def test_delete_api_curator_error_403_forbidden_user_forbidden_to_delete_user_in_layer(self):
-        # login with user who is not an admin
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.delete(user_id=1001, keyword_id=1001, **expected)
+        self.delete(user_id=1001, keyword_id="1001", **expected)
+        self.delete(user_id=0, keyword_id=-1, **expected)
+        self.delete(user_id="0", keyword_id="-1", **expected)
+
+    def test__delete__api_curator__error__403_forbidden(self):
+        # login with a user who is NOT an administrator
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to remove the user in layer
-        self.tester.api_curator_delete_error_403_forbidden(user_id=1001, keyword_id=1001)
+        self.delete(
+            user_id=1001, keyword_id=1001, status_code=403,
+            text_message="The administrator is who can manage a curator."
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_curator_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
+    def test__delete__api_curator__error__404_not_found(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_curator_delete_error_404_not_found(user_id=1001, keyword_id=5000)
-        self.tester.api_curator_delete_error_404_not_found(user_id=5001, keyword_id=1001)
+        self.delete(
+            user_id=1001, keyword_id=5000, status_code=404,
+            text_message="Not found any resource."
+        )
+        self.delete(
+            user_id=5001, keyword_id=1001, status_code=404,
+            text_message="Not found any resource."
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,

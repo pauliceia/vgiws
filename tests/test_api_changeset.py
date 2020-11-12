@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
@@ -281,7 +280,7 @@ class TestAPIChangeset(RequestTester):
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
-        changeset_id = self.post_create(changeset)
+        changeset_id = self.post(changeset, add_suffix_to_uri="/create")
         changeset["properties"]["changeset_id"] = changeset_id
 
         ##################################################
@@ -325,7 +324,7 @@ class TestAPIChangeset(RequestTester):
             'properties': {'changeset_id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
-        changeset_id = self.post_create(changeset)
+        changeset_id = self.post(changeset, add_suffix_to_uri="/create")
         changeset["properties"]["changeset_id"] = changeset_id
 
         ##################################################
@@ -383,8 +382,8 @@ class TestAPIChangesetErrors(RequestTester):
             'properties': {'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
-        self.post_create(
-            resource,
+        self.post(
+            resource, add_suffix_to_uri="/create",
             status_code=400,
             text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'layer_id' is missing)"
         )
@@ -402,8 +401,8 @@ class TestAPIChangesetErrors(RequestTester):
             'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
-        self.post_create(
-            resource,
+        self.post(
+            resource, add_suffix_to_uri="/create",
             status_code=401,
             text_message="A valid `Authorization` header is necessary!"
         )

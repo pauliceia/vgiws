@@ -81,18 +81,24 @@ class RequestTester(TestCase):
     # UTILS
     ######################################################################
 
-    def get_headers(self, headers=None):
+    def __get_headers(self, headers=None):
         # if 'headers' is empty, then add the cached 'self.__headers__'
         if headers is None:
 	        headers = self.__headers__
         # else it returns the passed 'headers'
         return headers
 
-    def error_asserts(self, response, status_code, error_message):
+    def __error_asserts(self, response, status_code, error_message):
         # method to encapsulate the error asserts
 
         self.assertEqual(response.status_code, status_code)
         self.assertEqual(response.data, error_message)
+
+    def __compare_expected_at_least_with_result(self, expected_at_least, result):
+        for feature_at_least, feature_result in zip(expected_at_least["features"], result["features"]):
+            for key in feature_at_least["properties"]:
+                self.assertEqual(feature_result["properties"][key], feature_at_least["properties"][key])
+            self.assertEqual(result["type"], expected_at_least["type"])
 
     ######################################################################
     # LOGIN
@@ -126,11 +132,11 @@ class RequestTester(TestCase):
             # }
 
     def login_error(self, status_code=500, text_message="", headers=None):
-        headers = self.get_headers(headers=headers)
+        headers = self.__get_headers(headers=headers)
 
         response = self.app.post(self.get_uri_login(), headers=headers)
 
-        self.error_asserts(response, status_code, text_message)
+        self.__error_asserts(response, status_code, text_message)
 
     def auth_logout(self):
         # remove the JWT Token from the header
@@ -140,90 +146,86 @@ class RequestTester(TestCase):
     # GET, POST, DELETE METHODS
     ######################################################################
 
-    def get(self, expected={}, status_code=200, text_message="", **params):
+    def get(self, expected=None, status_code=200, text_message=None, expected_at_least=None, **params):
         response = self.app.get(self.get_uri(), params=params, headers=self.__headers__)
 
-        self.assertEqual(response.status_code, status_code)
+        self.assertEqual(status_code, response.status_code)
 
         # if I expect a `text_message` instead of a JSON
-        if text_message != "":
-            self.assertEqual(response.text, text_message)
+        if text_message is not None:
+            self.assertEqual(text_message, response.text)
 
         # if the response constains curly brackets, then it is a JSON
-        elif "{" in response.text and "}" in response.text:
-            self.assertEqual(loads(response.text), expected)
+        elif expected is not None and ("{" in response.text and "}" in response.text):
+            self.assertEqual(expected, loads(response.text))
 
-    def post(self, body, status_code=200, text_message=""):
-        response = self.app.post(self.get_uri(), data=dumps(body), headers=self.__headers__)
+        elif expected_at_least is not None:
+            self.__compare_expected_at_least_with_result(expected_at_least, loads(response.text))
+
+    def post(self, body, status_code=200, text_message=None, add_suffix_to_uri=""):
+        response = self.app.post(
+            self.get_uri() + add_suffix_to_uri, data=dumps(body), headers=self.__headers__
+        )
 
         self.assertEqual(response.status_code, status_code)
 
-        if response.text.isdigit():
+        if text_message is not None:
+            self.assertEqual(response.text, text_message)
+
+        elif response.text.isdigit():
             id = int(response.text)
 
             self.assertGreater(id, 0)
 
             return id
-        else:
-            self.assertEqual(response.text, text_message)
 
-    def post_create(self, body, status_code=200, text_message=""):
-        response = self.app.post(self.get_uri() + '/create', data=dumps(body), headers=self.__headers__)
-
-        self.assertEqual(response.status_code, status_code)
-
-        if response.text.isdigit():
-            id = int(response.text)
-
-            self.assertGreater(id, 0)
-
-            return id
-        else:
-            self.assertEqual(response.text, text_message)
-
-    def put(self, body, status_code=200, text_message=""):
+    def put(self, body, status_code=200, text_message=None):
         response = self.app.put(self.get_uri(), data=dumps(body), headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
-        self.assertEqual(response.text, text_message)
 
-    def delete(self, status_code=200, text_message="", **params):
+        if text_message is not None:
+            self.assertEqual(response.text, text_message)
+
+    def delete(self, status_code=200, text_message=None, **params):
         response = self.app.delete(self.get_uri(), params=params, headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
-        self.assertEqual(response.text, text_message)
+
+        if text_message is not None:
+            self.assertEqual(response.text, text_message)
 
     ######################################################################
     # GET, POST, DELETE ERROR METHODS
     ######################################################################
     '''
     def get_error(self, query_string="", status_code=500, error_message="", headers=None):
-        headers = self.get_headers(headers=headers)
+        headers = self.__get_headers(headers=headers)
 
         response = self.app.get(self.get_uri(), query_string=query_string, headers=headers)
 
-        self.error_asserts(response, status_code, error_message)
+        self.__error_asserts(response, status_code, error_message)
 
     def post_error(self, body, status_code=500, error_message="", headers=None):
-        headers = self.get_headers(headers=headers)
+        headers = self.__get_headers(headers=headers)
 
         response = self.app.post(self.get_uri(), data=dumps(body), headers=headers)
 
-        self.error_asserts(response, status_code, error_message)
+        self.__error_asserts(response, status_code, error_message)
 
     def put_error(self, body, status_code=500, error_message="", headers=None):
-        headers = self.get_headers(headers=headers)
+        headers = self.__get_headers(headers=headers)
 
         response = self.app.put(self.get_uri(), data=dumps(body), headers=headers)
 
-        self.error_asserts(response, status_code, error_message)
+        self.__error_asserts(response, status_code, error_message)
 
     def delete_error(self, query_string="", status_code=500, error_message="", headers=None):
-        headers = self.get_headers(headers=headers)
+        headers = self.__get_headers(headers=headers)
 
         response = self.app.delete(self.get_uri(), query_string=query_string, headers=headers)
 
-        self.error_asserts(response, status_code, error_message)
+        self.__error_asserts(response, status_code, error_message)
     '''
 
 
@@ -497,136 +499,6 @@ class UtilTester:
         response = self.session.get(self.URL + '/api/is_email_valid/{0}'.format(arguments))
 
         self.ut_self.assertEqual(response.status_code, 200)
-
-    ##################################################
-    # CURATOR
-    ##################################################
-
-    def api_curator(self, expected=None, expected_at_least=None, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        if expected is not None:
-            self.ut_self.assertEqual(expected, resulted)
-
-        elif expected_at_least is not None:
-            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
-
-    def api_curator_create(self, resource_json, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/curator/create/{0}'.format(arguments),
-                                     data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    def api_curator_update(self, resource_json):
-        response = self.session.put(self.URL + '/api/curator/',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    def api_curator_delete(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    # curator errors - get
-
-    def api_curator_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/curator/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    # curator errors - create
-
-    def api_curator_create_error_400_bad_request(self, feature_json):
-        response = self.session.post(self.URL + '/api/curator/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_curator_create_error_401_unauthorized(self, feature_json):
-        response = self.session.post(self.URL + '/api/curator/create/',
-                                     data=dumps(feature_json))
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_curator_create_error_403_forbidden(self, feature_json):
-        response = self.session.post(self.URL + '/api/curator/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    # curator errors - update
-
-    def api_curator_update_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/curator',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_curator_update_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/curator',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_curator_update_error_403_forbidden(self, feature_json):
-        response = self.session.put(self.URL + '/api/curator',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_curator_update_error_404_not_found(self, feature_json):
-        response = self.session.put(self.URL + '/api/curator',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    # curator errors - delete
-
-    def api_curator_delete_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_curator_delete_error_401_unauthorized(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_curator_delete_error_403_forbidden(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_curator_delete_error_404_not_found(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
     # LAYER

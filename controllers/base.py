@@ -572,7 +572,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except Error as error:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error).strip() + ")")
             elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
                 raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
@@ -580,6 +580,12 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except DataError as error:
             raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
+
+        # if None is returned, then I return to the client an empty string,
+        # in order to not return the following string: 'null'
+        if json_with_id is None:
+            # self.write()
+            return
 
         self.write(json_encode(json_with_id))
 
@@ -632,7 +638,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except Error as error:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists. (error: " + str(error).strip() + ")")
             elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
                 raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
@@ -775,7 +781,7 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The administrator is who can create/update/delete a curator")
+        raise HTTPError(403, "The administrator is who can manage a curator.")
 
 
 class LayerValidator(BaseHandler):

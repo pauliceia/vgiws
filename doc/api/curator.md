@@ -55,7 +55,7 @@ This method creates a new curator described in a JSON.
     - 400 (Bad Request): Attribute already exists.
     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 401 (Unauthorized): A valid `Authorization` header is necessary!
-    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
+    - 403 (Forbidden): The administrator is who can manage a curator.
     - 500 (Internal Server Error): Problem when create a resource. Please, contact the administrator.
 - Notes:
 
@@ -79,7 +79,7 @@ This method updates a new curator described in a JSON.
 - Error codes:
     - 400 (Bad Request): Some attribute in the JSON is missing. Look at the documentation!
     - 401 (Unauthorized): A valid `Authorization` header is necessary!
-    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
+    - 403 (Forbidden): The administrator is who can manage a curator.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when update a resource. Please, contact the administrator.
 - Notes:
@@ -100,7 +100,7 @@ This method deletes one curator.
 - Error codes:
     - 400 (Bad Request): Invalid parameter.
     - 401 (Unauthorized): A valid `Authorization` header is necessary!
-    - 403 (Forbidden): The administrator is who can create/update/delete a curator.
+    - 403 (Forbidden): The administrator is who can manage a curator.
     - 404 (Not Found): Not found any resource.
     - 500 (Internal Server Error): Problem when delete a resource. Please, contact the administrator.
 - Notes:
