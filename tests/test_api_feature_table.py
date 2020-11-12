@@ -1,22 +1,16 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
-class TestAPIFeatureTable(TestCase):
+class TestAPIFeatureTable(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/feature_table')
 
     # feature_table - get
 
-    def test_get_api_feature_table_return_all_feature_tables(self):
+    def test__get_api_feature_table__return_all_feature_tables(self):
         expected = {
             'features': [
                 {
@@ -86,9 +80,9 @@ class TestAPIFeatureTable(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_feature_table(expected)
+        self.get(expected)
 
-    def test_get_api_feature_table_return_feature_table_by_f_table_name(self):
+    def test__get_api_feature_table__return_feature_table_by_f_table_name(self):
         expected = {
             'features': [
                 {
@@ -106,20 +100,21 @@ class TestAPIFeatureTable(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_feature_table(expected, f_table_name="1003")
+        self.get(expected, f_table_name="1003")
 
-    def test_get_api_feature_table_return_zero_resources(self):
+    def test__get_api_feature_table__return_zero_resources(self):
         expected = {'features': [], 'type': 'FeatureCollection'}
-        self.tester.api_feature_table(expected, f_table_name="998")
-        self.tester.api_feature_table(expected, f_table_name="999")
+
+        self.get(expected, f_table_name="998")
+        self.get(expected, f_table_name="999")
 
     # feature table - create and update
 
-    def test_api_feature_table_create_and_update(self):
+    def test__api_feature_table_create_and_update(self):
         ####################################################################################################
         # login with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -132,7 +127,7 @@ class TestAPIFeatureTable(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.post(URI='/api/layer/create', body=layer)
 
         ####################################################################################################
 
@@ -149,7 +144,7 @@ class TestAPIFeatureTable(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create(feature_table)
+        self.post(feature_table, add_suffix_to_uri="/create")
 
         ##################################################
         # update the feature_table
@@ -159,8 +154,8 @@ class TestAPIFeatureTable(TestCase):
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create(feature_table_column)
-        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
+        self.post(URI="/api/feature_table_column/create", body=feature_table_column)
+        self.delete(URI="/api/feature_table_column", f_table_name=f_table_name, column_name="name")
 
         ##################################################
         # the feature_table is removed automatically when the layer is deleted
@@ -171,21 +166,19 @@ class TestAPIFeatureTable(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        layer_id = layer["properties"]["layer_id"]
-
-        self.tester.api_layer_delete(layer_id)
+        self.delete(URI="/api/layer", layer_id=layer_id)
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
+        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
 
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_api_feature_table_create_and_update_with_collaborator_user(self):
+    def test__api_feature_table_create_and_update__with_collaborator_user(self):
         ####################################################################################################
         # login with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -198,8 +191,7 @@ class TestAPIFeatureTable(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
-        layer_id = layer["properties"]["layer_id"]
+        layer_id = self.post(URI='/api/layer/create', body=layer)
 
         ##################################################
         # add a collaborator to the layer above
@@ -210,13 +202,13 @@ class TestAPIFeatureTable(TestCase):
             'properties': {'user_id': user_id_collaborator, 'layer_id': layer_id},
             'type': 'UserLayer'
         }
-        self.tester.api_user_layer_create(user_layer)
+        self.post(URI='/api/user_layer/create/', body=user_layer)
 
         ####################################################################################################
         # login with a collaborator user in order to try to create the feature table
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("rafael@admin.com", "rafael")
+        self.auth_logout()
+        self.auth_login("rafael@admin.com", "rafael")
 
         ##################################################
         # only the creator user can create the feature_table for the layer above
@@ -231,13 +223,16 @@ class TestAPIFeatureTable(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create_error_403_forbidden(feature_table)
+        self.post(
+            feature_table, add_suffix_to_uri="/create", status_code=403,
+            text_message="The layer owner or administrator user are who can create or delete this resource."
+        )
 
         ####################################################################################################
         # login with the creator user in order to create the feature table
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_logout()
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create the feature_table for the layer above
@@ -252,13 +247,13 @@ class TestAPIFeatureTable(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create(feature_table)
+        self.post(feature_table, add_suffix_to_uri="/create")
 
         ####################################################################################################
         # login with a collaborator user again in order to update the feature table
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("rafael@admin.com", "rafael")
+        self.auth_logout()
+        self.auth_login("rafael@admin.com", "rafael")
 
         ##################################################
         # update the feature_table with the collaborator user
@@ -268,8 +263,8 @@ class TestAPIFeatureTable(TestCase):
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create(feature_table_column)
-        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
+        self.post(URI="/api/feature_table_column/create", body=feature_table_column)
+        self.delete(URI="/api/feature_table_column", f_table_name=f_table_name, column_name="name")
 
         ##################################################
         # the feature_table is removed automatically when the layer is deleted
@@ -278,25 +273,25 @@ class TestAPIFeatureTable(TestCase):
         ####################################################################################################
         # login with a normal user again in order to delete the layer
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_logout()
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # delete the layer
         ##################################################
-        self.tester.api_layer_delete(layer_id)
+        self.delete(URI="/api/layer", layer_id=layer_id)
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
+        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
 
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_api_feature_table_create_and_update_with_admin_user(self):
+    def test__api_feature_table_create_and_update__with_admin_user(self):
         ####################################################################################################
         # login with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
@@ -309,12 +304,12 @@ class TestAPIFeatureTable(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.post(URI='/api/layer/create', body=layer)
 
         ####################################################################################################
 
-        self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.auth_logout()
+        self.auth_login("admin@admin.com", "admin")
 
         ##################################################
         # create the feature_table for the layer above
@@ -329,8 +324,7 @@ class TestAPIFeatureTable(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-
-        self.tester.api_feature_table_create(feature_table)
+        self.post(feature_table, add_suffix_to_uri="/create")
 
         ##################################################
         # update the feature_table
@@ -340,121 +334,212 @@ class TestAPIFeatureTable(TestCase):
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create(feature_table_column)
-
-        self.tester.api_feature_table_column_delete(f_table_name=f_table_name, column_name="name")
+        self.post(URI="/api/feature_table_column/create", body=feature_table_column)
+        self.delete(URI="/api/feature_table_column", f_table_name=f_table_name, column_name="name")
 
         ##################################################
         # the feature_table is automatically removed when delete its layer
         ##################################################
 
-        self.tester.auth_logout()
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        ####################################################################################################
+        # login with a normal user again in order to delete the layer
+        ####################################################################################################
+        self.auth_logout()
+        self.auth_login("miguel@admin.com", "miguel")
 
         ####################################################################################################
 
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
-        layer_id = layer["properties"]["layer_id"]
-
-        # REMOVE THE layer AFTER THE TESTS
-        self.tester.api_layer_delete(layer_id)
+        self.delete(URI="/api/layer", layer_id=layer_id)
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
 
 
-class TestAPIFeatureTableErrors(TestCase):
+        self.auth_logout()
+
+
+
+class TestAPIFeatureTableErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/feature_table')
 
     # feature_table errors - get
 
     # feature_table errors - create
 
-    def test_post_api_feature_table_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_feature_table_create__error__400_bad_request__attribute_in_JSON_is_missing(self):
 
+        self.auth_login("miguel@admin.com", "miguel")
+
+        # try to create a feature table without a mandatory property
         resources = [
-            # try to create a feature table (without f_table_name)
             {
-                'type': 'FeatureTable',
-                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                            'address': 'text'},
-                'geometry': {
-                    'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
-                    'type': 'MULTIPOINT'
-                }
+                'resource': {
+                    'type': 'FeatureTable',
+                    'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                                'address': 'text'},
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                'missing': 'f_table_name'
             },
-            # try to create a feature table (without geometry)
             {
-                'type': 'FeatureTable',
-                'f_table_name': 'layer_1003',
-                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                            'address': 'text'}
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                                'address': 'text'}
+                },
+                'missing': 'geometry'
             },
-            # try to create a feature table (without name)
             {
-                'type': 'FeatureTable',
-                'f_table_name': 'layer_1003',
-                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                            'address': 'text'},
-                'geometry': {
-                    'crs': {'type': 'name', 'properties': {}},
-                    'type': 'MULTIPOINT'
-                }
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {}},
+                        'type': 'MULTIPOINT'
+                    },
+                    'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                                'address': 'text'}
+                },
+                'missing': 'name'
             },
-            # try to create a feature table (without type)
             {
-                'type': 'FeatureTable',
-                'f_table_name': 'layer_1003',
-                'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                            'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
-                            'address': 'text'},
-                'geometry': {
-                    'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
-                }
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                                'address': 'text'},
+                },
+                'missing': 'type'
             }
         ]
 
-        for resource in resources:
-            self.tester.api_feature_table_create_error_400_bad_request(resource)
+        for item in resources:
+            # self.tester.api_feature_table_create_error_400_bad_request(resource)
+            self.post(
+                item['resource'], add_suffix_to_uri="/create", status_code=400,
+                text_message=("Some attribute in the JSON is missing. "
+                              f"Look at the documentation! (error: '{item['missing']}' is missing)")
+            )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+
+        self.auth_logout()
         # try to do the test with a admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a feature table (without crs)
+        # try to create a feature table without a mandatory property
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'layer_1003',
-            'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                           'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
                            'address': 'text'},
             'geometry': {
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            text_message=("Some attribute in the JSON is missing. "
+                          "Look at the documentation! (error: 'crs' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
 
-    def test_post_api_feature_table_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
 
-        # try to create a layer with invalid f_table_name
+    def test__post_api_feature_table_create__error__400_bad_request__property_is_a_reserved_word(self):
+
+        self.auth_login("miguel@admin.com", "miguel")
+
+        # try to create feature tables with reserved words
+        resources = [
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'id': 'integer', 'start_date': 'timestamp without time zone',
+                                   'end_date': 'timestamp without time zone', 'address': 'text'}
+                },
+                'reserved': 'id'
+            },
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'geom': 'geometry', 'start_date': 'timestamp without time zone',
+                                   'end_date': 'timestamp without time zone', 'address': 'text'}
+                },
+                'reserved': 'geom'
+            },
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'version': 'integer', 'start_date': 'timestamp without time zone',
+                                   'end_date': 'timestamp without time zone', 'address': 'text'}
+                },
+                'reserved': 'version'
+            },
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'changeset_id': 'integer', 'start_date': 'timestamp without time zone',
+                                   'end_date': 'timestamp without time zone', 'address': 'text'}
+                },
+                'reserved': 'changeset_id'
+            },
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': 'layer_1003',
+                    'geometry': {
+                        'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}}
+                    },
+                    'properties': {'abort': 'text', 'start_date': 'timestamp without time zone',
+                                   'end_date': 'timestamp without time zone', 'address': 'text'}
+                },
+                'reserved': 'abort'
+            }
+        ]
+
+        for item in resources:
+            self.post(
+                item['resource'], add_suffix_to_uri="/create", status_code=400,
+                text_message=("There is a field that is a reserved word. "
+                              f"Please, rename it. (field: `{item['reserved']}`)")
+            )
+
+
+        self.auth_logout()
+
+    def test__post_api_feature_table_create__error__400_bad_request__f_table_name_has_special_chars_or_it_starts_with_number(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
+
+        # try to create a layer with a invalid 'f_table_name' value
         list_invalid_f_table_name = [
             "*)layer", "lay+-er", "layer_(/", "837_layer", "0_layer",
             " new_layer", "new_layer ", "new layer"
@@ -471,75 +556,66 @@ class TestAPIFeatureTableErrors(TestCase):
                     'type': 'MULTIPOINT'
                 }
             }
+            self.post(
+                resource, add_suffix_to_uri="/create", status_code=400,
+                text_message=("`f_table_name` property can not have special characters. "
+                              f"(f_table_name: `{invalid_f_table_name}`)")
+            )
 
-            self.tester.api_feature_table_create_error_400_bad_request(resource)
+        self.auth_logout()
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    def test__post_api_feature_table_create__error__400_bad_request__invalid_fields(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-    def test_post_api_feature_table_create_error_400_bad_request_invalid_fields(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
-
-        # try to create a layer with invalid field (special chars)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': "layer_100X",
-            'properties': {'a(ddre*ss': 'text', 'end_date': 'timestamp without time zone'},
-            'geometry': {
-                'type': 'MULTIPOINT'
+        resources = [
+            # try to create a layer with invalid field (special chars)
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': "layer_100X",
+                    'properties': {'a(ddre*ss': 'text', 'end_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                'invalid_field': 'a(ddre*ss'
+            },
+            # try to create a layer with invalid field (starts with number)
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': "layer_100X",
+                    'properties': {'0address': 'text', 'end_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                'invalid_field': '0address'
+            },
+            # try to create a layer with invalid field (white space)
+            {
+                'resource': {
+                    'type': 'FeatureTable',
+                    'f_table_name': "layer_100X",
+                    'properties': {'address ': 'text', 'end_date': 'timestamp without time zone'},
+                    'geometry': {
+                        'type': 'MULTIPOINT'
+                    }
+                },
+                'invalid_field': 'address '
             }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        ]
 
-        # try to create a layer with invalid field (starts with number)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': "layer_100X",
-            'properties': {'0address': 'text', 'end_date': 'timestamp without time zone'},
-            'geometry': {
-                'type': 'MULTIPOINT'
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        for item in resources:
+            self.post(
+                item['resource'], add_suffix_to_uri="/create", status_code=400,
+                text_message=('There is a field with have special characters. '
+                              f"Please, rename it. (field: `{item['invalid_field']}`)")
+            )
 
-        # try to create a layer with invalid field (white space)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': "layer_100X",
-            'properties': {'address ': 'text', 'end_date': 'timestamp without time zone'},
-            'geometry': {
-                'type': 'MULTIPOINT'
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
+        self.auth_logout()
 
-        # try to create a layer with invalid field (db reserved word)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': "layer_100X",
-            'properties': {'abort': 'text', 'end_date': 'timestamp without time zone'},
-            'geometry': {
-                'type': 'MULTIPOINT'
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
-
-        # try to create a layer with invalid field (db reserved word)
-        resource = {
-            'type': 'FeatureTable',
-            'f_table_name': "layer_100X",
-            'properties': {'id': 'integer', 'end_date': 'timestamp without time zone'},
-            'geometry': {
-                'type': 'MULTIPOINT'
-            }
-        }
-        self.tester.api_feature_table_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_post_api_feature_table_create_error_401_unauthorized_without_authorization_header(self):
+    def test__post_api_feature_table_create__error__401_unauthorized(self):
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'layer_1003',
@@ -550,13 +626,15 @@ class TestAPIFeatureTableErrors(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create_error_401_unauthorized(resource)
 
-    def test_post_api_feature_table_create_error_403_forbidden_invalid_user_tries_to_create_a_feature_table(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=401,
+            text_message=("A valid `Authorization` header is necessary!")
+        )
 
-        # try to insert a curator with user_id and keyword_id that already exist
+    def test__post_api_feature_table_create__error__403_forbidden__invalid_user_tries_to_create_a_feature_table(self):
+        self.auth_login("miguel@admin.com", "miguel")
+
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'layer_1002',
@@ -567,16 +645,18 @@ class TestAPIFeatureTableErrors(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create_error_403_forbidden(resource)
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=403,
+            text_message=("The layer owner or administrator user are who can create or delete this resource.")
+        )
 
-    def test_post_api_feature_table_create_error_404_not_found_f_table_name_doesnt_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_logout()
 
-        # try to insert a feature table with a f_table_name that already exist
+    def test__post_api_feature_table_create__error__404_not_found__f_table_name_doesnt_exist(self):
+        self.auth_login("miguel@admin.com", "miguel")
+
+        # try to insert a feature table with a 'f_table_name' that does not exist
         resource = {
             'type': 'FeatureTable',
             'f_table_name': 'address',
@@ -587,84 +667,100 @@ class TestAPIFeatureTableErrors(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-        self.tester.api_feature_table_create_error_404_not_found(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=404,
+            text_message=("Not found any layer with the passed `f_table_name` property. "
+                          "You need to create a layer with the `f_table_name` property "
+                          "before using this function.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_feature_table_create_error_409_conflict_f_table_name_is_reserved_name(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_feature_table_create__error__409_conflict__f_table_name_is_reserved_name(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to create a layer with f_table_name that table that already exist or with reserved name
-        list_invalid_f_table_name = ["abort", "access"]
+        list_invalid_f_table_name = [ "abort", "access"]
 
         for invalid_f_table_name in list_invalid_f_table_name:
             resource = {
                 'type': 'FeatureTable',
                 'f_table_name': invalid_f_table_name,
-                'properties': {'id': 'integer', 'geom': 'geometry', 'version': 'integer', 'changeset_id': 'integer',
-                               'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+                'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
                                'address': 'text'},
                 'geometry': {
                     'type': 'MULTIPOINT'
                 }
             }
-            self.tester.api_feature_table_create_error_409_conflict(resource)
+            self.post(
+                resource, add_suffix_to_uri="/create", status_code=409,
+                text_message=("Conflict with `f_table_name` property. The table name is a reserved word. "
+                              f"Please, rename it. (table: `{invalid_f_table_name}`)")
+            )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # feature_table column errors - create
 
-    def test_post_api_feature_table_column_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_feature_table_column_create__error__400_bad_request__attribute_in_JSON_is_missing(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a feature_table_column without f_table_name
+        # try to create a feature table column without `f_table_name` property
         feature_table_column = {
             'type': 'FeatureTableColumn',
             'column_name': 'name',
             'column_type': 'text'
         }
-        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+        self.post(
+            URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
+            text_message=("Some attribute in the JSON is missing. "
+                          "Look at the documentation! (error: 'f_table_name' is missing)")
+        )
 
-        # try to create a feature_table_column without column_name
+        # try to create a feature table column without `column_name` property
         feature_table_column = {
             'type': 'FeatureTableColumn',
             'f_table_name': 'layer_1003',
             'column_type': 'text'
         }
-        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+        self.post(
+            URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
+            text_message=("Some attribute in the JSON is missing. "
+                          "Look at the documentation! (error: 'column_name' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-        # try to do the test with a admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
+        # try to do the test with an admin
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to create a feature_table_column without column_type
+        # try to create a feature table column without `column_type` property
         feature_table_column = {
             'type': 'FeatureTableColumn',
             'f_table_name': 'layer_1003',
             'column_name': 'name'
         }
-        self.tester.api_feature_table_column_create_error_400_bad_request(feature_table_column)
+        self.post(
+            URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
+            text_message=("Some attribute in the JSON is missing. "
+                          "Look at the documentation! (error: 'column_type' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_feature_table_column_create_error_401_unauthorized_without_authorization_header(self):
+    def test__post_api_feature_table_column_create__error__401_unauthorized(self):
         resource = {
             'type': 'FeatureTableColumn',
             'f_table_name': 'layer_1003',
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create_error_401_unauthorized(resource)
+        self.post(
+            URI="/api/feature_table_column/create", body=resource, status_code=401,
+            text_message="A valid `Authorization` header is necessary!"
+        )
 
-    def test_post_api_feature_table_column_create_error_403_forbidden_invalid_user_tries_to_create_a_resource(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_feature_table_column_create__error__403_forbidden__invalid_user_tries_to_create_a_resource(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         resource = {
             'type': 'FeatureTableColumn',
@@ -672,73 +768,88 @@ class TestAPIFeatureTableErrors(TestCase):
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create_error_403_forbidden(resource)
+        self.post(
+            URI="/api/feature_table_column/create", body=resource, status_code=403,
+            text_message=("The layer owner or collaborator user, or administrator one are "
+                          "who can update this resource.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_feature_table_column_create_error_404_not_found_f_table_name_doesnt_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_feature_table_column_create__error__404_not_found__f_table_name_doesnt_exist(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # try to insert a feature table with a f_table_name that already exist
         resource = {
             'type': 'FeatureTableColumn',
             'f_table_name': 'address',
             'column_name': 'name',
             'column_type': 'text',
         }
-        self.tester.api_feature_table_column_create_error_404_not_found(resource)
+        self.post(
+            URI="/api/feature_table_column/create", body=resource, status_code=404,
+            text_message=("Not found any layer with the passed `f_table_name` property. "
+                          "You need to create a layer with the `f_table_name` property before "
+                          "using this function.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # feature_table column errors - delete
 
-    def test_delete_api_feature_table_column_error_400_bad_request_invalid_column_name(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test__delete_api_feature_table_column__error__400_bad_request__invalid_column_name(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        items = [
+            {"f_table_name": 'layer_1003', "column_name": 'id'},
+            {"f_table_name": 'layer_1003', "column_name": 'geom'},
+            {"f_table_name": 'layer_1003', "column_name": 'changeset_id'},
+            {"f_table_name": 'layer_1003', "column_name": 'geom'}
+        ]
 
-        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='id')
-        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='geom')
-        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='changeset_id')
-        self.tester.api_feature_table_column_delete_error_400_bad_request(f_table_name='layer_1003', column_name='geom')
+        for item in items:
+            self.delete(
+                URI="/api/feature_table_column", **item, status_code=400,
+                text_message="Invalid parameter."
+            )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_feature_table_column_error_401_unauthorized_user_without_login(self):
-        self.tester.api_feature_table_column_delete_error_401_unauthorized(f_table_name='layer_1003',
-                                                                           column_name="start_date")
+    def test__delete_api_feature_table_column__error__401_unauthorized__user_without_login(self):
+        self.delete(
+            URI="/api/feature_table_column", f_table_name='layer_1003', column_name="start_date",
+            status_code=401, text_message="A valid `Authorization` header is necessary!"
+        )
 
-    def test_delete_api_feature_table_column_error_403_forbidden_invalid_user_tries_to_manage(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__delete_api_feature_table_column__error__403_forbidden__invalid_user_tries_to_manage(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
-        self.tester.api_feature_table_column_delete_error_403_forbidden(f_table_name='layer_1002',
-                                                                        column_name="start_date")
+        self.delete(
+            URI="/api/feature_table_column", f_table_name='layer_1002', column_name="start_date",
+            status_code=403, text_message=("The layer owner or collaborator user, or administrator one "
+                                           "are who can update this resource.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_feature_table_column_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    def test__delete_api_feature_table_column__error__404_not_found(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # invalid f_table_name
-        self.tester.api_feature_table_column_delete_error_404_not_found(f_table_name='addresses',
-                                                                        column_name="start_date")
-        # invalid column name
-        self.tester.api_feature_table_column_delete_error_404_not_found(f_table_name='layer_1002',
-                                                                        column_name="name")
+        self.delete(
+            URI="/api/feature_table_column", f_table_name='addresses', column_name="start_date",
+            status_code=404, text_message=("Not found any layer with the passed `f_table_name` property. "
+                                           "You need to create a layer with the `f_table_name` property "
+                                           "before using this function.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        # invalid column name
+        self.delete(
+            URI="/api/feature_table_column", f_table_name='layer_1002', column_name="name",
+            status_code=404, text_message=("Not found the specified column. (error: column `name` of "
+                                           "relation `layer_1002` does not exist)")
+        )
+
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,

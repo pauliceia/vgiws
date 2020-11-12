@@ -507,7 +507,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             result = self._get_resource(*args, **arguments)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute is missing. Look the documentation! (error: " +
+            raise HTTPError(400, "Some attribute is missing. Look at the documentation! (error: " +
                             str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): get_keywords() got an unexpected keyword argument 'parent_id'
@@ -661,13 +661,16 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         try:
             self._delete_resource(current_user_id, *args, **arguments)
+        except KeyError as error:
+            raise HTTPError(400, "Some parameter is missing. Look at the documentation! (error: " +
+                            str(error) + " is missing)")
         except TypeError as error:
             # example: - 400 (Bad Request): delete_keywords() got an unexpected keyword argument 'parent_id'
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
             if error.pgcode == "42703":  # 42703 - undefined_column
                 error = str(error).replace("\n", " ")
-                raise HTTPError(404, "Not found the specified column. (error: " + str(error) + ")")
+                raise HTTPError(404, f"Not found the specified column. (error: {error.strip()})".replace('"', '`'))
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
@@ -785,18 +788,18 @@ class BaseHandlerCurator(BaseHandlerTemplateMethod):
 
 
 class LayerValidator(BaseHandler):
-
     def check_if_f_table_name_starts_with_number_or_it_has_special_chars(self, f_table_name):
         if does_the_string_have_special_chars(f_table_name):
-            raise HTTPError(400, "f_table_name can not have special characters. (f_table_name: `" + f_table_name + "`)")
+            raise HTTPError(400, ("`f_table_name` property can not have special characters. "
+                                  f"(f_table_name: `{f_table_name}`)"))
 
         if f_table_name[0].isdigit():
             raise HTTPError(400, "f_table_name can not start with number. (f_table_name: " + f_table_name + ")")
 
     def check_if_f_table_name_is_a_reserved_word(self, f_table_name):
         if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
-            raise HTTPError(409, "Conflict of f_table_name. The table name is a reserved word. Please, rename it."
-                            + "(table: " + f_table_name + ")")
+            raise HTTPError(409, ("Conflict with `f_table_name` property. The table name is a reserved word. "
+                                  f"Please, rename it. (table: `{f_table_name}`)"))
 
     def check_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
@@ -839,7 +842,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
         self.check_if_layer_has_max_5_keywords(resource_json)
 
-        return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)['layer_id']
 
     # PUT
 
@@ -853,10 +856,9 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        layer_id = args[0]
-        self.can_current_user_delete(current_user_id, layer_id)
+        self.can_current_user_delete(current_user_id, kwargs['layer_id'])
 
-        self.PGSQLConn.delete_layer(*args)
+        self.PGSQLConn.delete_layer(kwargs['layer_id'])
 
     # VALIDATION
 
@@ -921,8 +923,9 @@ class FeatureTableValidator(BaseHandler):
         layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
 
         if not layers["features"]:  # if list is empty
-            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "You need to create a layer with the f_table_name before of using this function.")
+            raise HTTPError(404, ("Not found any layer with the passed `f_table_name` property. "
+                                  "You need to create a layer with the `f_table_name` property "
+                                  "before using this function."))
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -944,8 +947,9 @@ class FeatureTableValidator(BaseHandler):
         layers = self.PGSQLConn.get_layers(f_table_name=f_table_name)
 
         if not layers["features"]:  # if list is empty
-            raise HTTPError(404, "Not found any layer with the passed f_table_name. " +
-                            "You need to create a layer with the f_table_name before using this function.")
+            raise HTTPError(404, ("Not found any layer with the passed `f_table_name` property. "
+                                  "You need to create a layer with the `f_table_name` property "
+                                  "before using this function."))
 
         layer_id = layers["features"][0]["properties"]["layer_id"]
 
@@ -1006,22 +1010,22 @@ class BaseHandlerFeatureTable(BaseHandlerTemplateMethod, FeatureTableValidator, 
 
         for field in resource_json["properties"]:
             if does_the_string_have_special_chars(field):
-                raise HTTPError(400, "There is a field with have special characters. " +
-                                     "Please, rename it. (field: " + str(field) + ")")
+                raise HTTPError(400, ("There is a field with have special characters. "
+                                     f"Please, rename it. (field: `{field}`)"))
 
             if field[0].isdigit():
-                raise HTTPError(400, "There is a field that starts with number. " +
-                                "Please, rename it. (field: " + str(field) + ")")
+                raise HTTPError(400, ("There is a field that starts with number. "
+                                      f"Please, rename it. (field: `{field}`)"))
 
             if " " in field:
-                raise HTTPError(400, "There is a field with white spaces. " +
-                                "Please, rename it. (field: " + str(field) + ")")
+                raise HTTPError(400, ("There is a field with white spaces. "
+                                      f"Please, rename it. (field: `{field}`)"))
 
             # version is a reserved word that is allowed
             f = str(field).lower()
             if f in list_reserved_words:
-                raise HTTPError(400, "There is a field that is a reserved word. " +
-                                "Please, rename it. (field: " + str(field) + ")")
+                raise HTTPError(400, ("There is a field that is a reserved word. "
+                                      f"Please, rename it. (field: `{field}`)"))
 
 
 class BaseHandlerFeatureTableColumn(BaseHandlerTemplateMethod, FeatureTableValidator):
@@ -1304,8 +1308,7 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        changeset = self.PGSQLConn.create_changeset(resource_json, current_user_id)
-        return changeset['changeset_id']
+        return self.PGSQLConn.create_changeset(resource_json, current_user_id)['changeset_id']
 
     def _close_resource(self, resource_json, current_user_id):
         self.PGSQLConn.close_changeset(resource_json, current_user_id)

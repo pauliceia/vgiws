@@ -1,12 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 from unittest import TestCase
 from util.tester import UtilTester
-
-
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 
 class TestAPIIntegration(TestCase):
@@ -30,7 +25,7 @@ class TestAPIIntegration(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [], 'keyword': []}
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.tester.api_layer_create(layer)
 
         ##################################################
         # create the feature_table for the layer above
@@ -45,7 +40,6 @@ class TestAPIIntegration(TestCase):
                 'type': 'MULTIPOINT'
             }
         }
-
         self.tester.api_feature_table_create(feature_table)
 
         ##################################################
@@ -57,12 +51,12 @@ class TestAPIIntegration(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-
         self.tester.api_temporal_columns_create(temporal_columns)
 
         ##################################################
         # update the layer
         ##################################################
+        layer["properties"]["layer_id"] = layer_id
         layer["properties"]["name"] = "Some addresses"
         layer["properties"]["description"] = "Addresses"
         layer["properties"]["reference"] = [1050, 1052]
@@ -74,7 +68,6 @@ class TestAPIIntegration(TestCase):
         ##################################################
         expected_layer = {'type': 'FeatureCollection', 'features': [layer]}
         self.tester.api_layer(expected_at_least=expected_layer, f_table_name=f_table_name)
-
 
         feature_table["properties"]["id"] = "integer"
         feature_table["properties"]["geom"] = "geometry"
@@ -89,10 +82,6 @@ class TestAPIIntegration(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        # get the id of layer to SEARCH AND REMOVE it
-        layer_id = layer["properties"]["layer_id"]
-
-        # REMOVE THE layer AFTER THE TESTS
         self.tester.api_layer_delete(layer_id)
 
         # it is not possible to find the layer that just deleted

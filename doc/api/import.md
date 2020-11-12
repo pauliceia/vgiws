@@ -17,7 +17,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 400 (Bad Request): Invalid file name: \<FILE_NAME\>. It is necessary to be a zip.
     - 400 (Bad Request): `f_table_name`, `file_name` and `changeset_id` are required parameters in request.
     - 400 (Bad Request): A binary zip file is required in the body of the request.
-    - 400 (Bad Request): f_table_name can not have special characters.
+    - 400 (Bad Request): `f_table_name` property can not have special characters.
     - 400 (Bad Request): f_table_name can not start with number.
     - 403 (Forbidden): The layer owner or administrator user are who can create or delete this resource.
     - 404 (Not Found): Not found any layer with the passed f_table_name. You need to create a layer with the f_table_name before of using this function.
@@ -26,7 +26,7 @@ This method imports a ShapeFile as feature table of a layer.
     - 409 (Conflict): File is not a zip file.
     - 409 (Conflict): It was not possible to find one EPSG from the .prj.
     - 409 (Conflict): There is not a list of codes in the result. So it is an invalid .prj.
-    - 409 (Conflict): Conflict of f_table_name. The table name is a reserved word. Please, rename it.
+    - 409 (Conflict): Conflict with `f_table_name` property. The table name is a reserved word. Please, rename it.
     - 409 (Conflict): Shapefile is not inside the default city of the project.
     - 500 (Internal Server Error): Problem when importing the Shapefile file. OGR was not able to import it.
     - 500 (Internal Server Error): Problem when importing the Shapefile file. Fiona was not able to read it. One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file.

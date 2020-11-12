@@ -1,12 +1,8 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 from unittest import TestCase
 from util.tester import UtilTester
 
-
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 class TestAPILayer(TestCase):
 
@@ -141,14 +137,13 @@ class TestAPILayer(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        resource = self.tester.api_layer_create(resource)
-
         # get the layer id
-        resource_id = resource["properties"]["layer_id"]
+        resource_id = self.tester.api_layer_create(resource)
 
         ##################################################
         # creator user updates the layer
         ##################################################
+        resource["properties"]["layer_id"] = resource_id
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)
@@ -265,10 +260,8 @@ class TestAPILayer(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        resource = self.tester.api_layer_create(resource)
-
         # get the layer id
-        resource_id = resource["properties"]["layer_id"]
+        resource_id = self.tester.api_layer_create(resource)
 
         ##################################################
         # log in with an admin user in order to check if he can update and delete the layer
@@ -279,6 +272,7 @@ class TestAPILayer(TestCase):
         ##################################################
         # admin user updates the layer
         ##################################################
+        resource["properties"]["layer_id"] = resource_id
         resource["properties"]["name"] = "Some addresses"
         resource["properties"]["description"] = "Addresses"
         self.tester.api_layer_update(resource)

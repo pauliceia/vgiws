@@ -1,12 +1,8 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 from unittest import TestCase
 from util.tester import UtilTester
 
-
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 class TestAPITemporalColumns(TestCase):
 
@@ -227,7 +223,7 @@ class TestAPITemporalColumns(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.tester.api_layer_create(layer)
 
         ####################################################################################################
 
@@ -263,8 +259,6 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        layer_id = layer["properties"]["layer_id"]
-
         self.tester.api_layer_delete(layer_id)
 
         # finding the layer and temporal columns that just deleted are not possible
@@ -291,8 +285,7 @@ class TestAPITemporalColumns(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
-        layer_id = layer["properties"]["layer_id"]
+        layer_id = self.tester.api_layer_create(layer)
 
         ##################################################
         # create the temporal columns for the layer above with the normal user
@@ -374,7 +367,7 @@ class TestAPITemporalColumns(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.tester.api_layer_create(layer)
 
         ####################################################################################################
         # log in with an admin user in order to create and update the time columns
@@ -418,8 +411,6 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        layer_id = layer["properties"]["layer_id"]
-
         self.tester.api_layer_delete(layer_id)
 
         # finding the layer and temporal columns that just deleted is not possible
@@ -447,7 +438,7 @@ class TestAPITemporalColumns(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer = self.tester.api_layer_create(layer)
+        layer_id = self.tester.api_layer_create(layer)
 
         ####################################################################################################
 
@@ -483,8 +474,6 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        layer_id = layer["properties"]["layer_id"]
-
         self.tester.api_layer_delete(layer_id)
 
         # finding the layer and temporal columns that just deleted are not possible

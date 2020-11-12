@@ -33,8 +33,7 @@ class TestAPIImport(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        layer = self.tester.api_layer_create(layer)
-        self.layer_id = layer["properties"]["layer_id"]
+        self.layer_id = self.tester.api_layer_create(layer)
 
         ##################################################
         # create a new changeset
@@ -335,8 +334,7 @@ class TestAPIManualTests(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        layer = self.tester.api_layer_create(layer)
-        self.layer_id = layer["properties"]["layer_id"]
+        self.layer_id = self.tester.api_layer_create(layer)
 
         ##################################################
         # create a new changeset
@@ -479,8 +477,7 @@ class TestAPIImportError(TestCase):
                            'description': '', 'source_description': '',
                            'reference': [1050], 'keyword': [1041]}
         }
-        self.layer = self.tester.api_layer_create(self.layer)
-        self.layer_id = self.layer["properties"]["layer_id"]
+        self.layer_id = self.tester.api_layer_create(self.layer)
 
         ##################################################
         # create a new changeset
@@ -723,8 +720,7 @@ class TestAPIImportError(TestCase):
     #                        'description': '', 'source_description': '',
     #                        'reference': [1050], 'keyword': [1041]}
     #     }
-    #     layer = self.tester.api_layer_create(layer)
-    #     layer_id = layer["properties"]["layer_id"]
+    #     layer_id = self.tester.api_layer_create(layer)
     #
     #     ##################################################
     #     # create a new changeset

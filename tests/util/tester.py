@@ -1,5 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 from base64 import b64encode
 from copy import deepcopy
@@ -146,8 +147,14 @@ class RequestTester(TestCase):
     # GET, POST, DELETE METHODS
     ######################################################################
 
-    def get(self, expected=None, status_code=200, text_message=None, expected_at_least=None, **params):
-        response = self.app.get(self.get_uri(), params=params, headers=self.__headers__)
+    def get(self, expected=None, status_code=200, text_message=None, expected_at_least=None,
+            URI=None, **params):
+        if URI is None:
+            URI = self.get_uri()
+        else:
+            URI = self.get_url() + URI
+
+        response = self.app.get(URI, params=params, headers=self.__headers__)
 
         self.assertEqual(status_code, response.status_code)
 
@@ -162,10 +169,13 @@ class RequestTester(TestCase):
         elif expected_at_least is not None:
             self.__compare_expected_at_least_with_result(expected_at_least, loads(response.text))
 
-    def post(self, body, status_code=200, text_message=None, add_suffix_to_uri=""):
-        response = self.app.post(
-            self.get_uri() + add_suffix_to_uri, data=dumps(body), headers=self.__headers__
-        )
+    def post(self, body=None, status_code=200, text_message=None, add_suffix_to_uri="", URI=None):
+        if URI is None:
+            URI = self.get_uri() + add_suffix_to_uri
+        else:
+            URI = self.get_url() + URI
+
+        response = self.app.post(URI, data=dumps(body), headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
 
@@ -179,16 +189,26 @@ class RequestTester(TestCase):
 
             return id
 
-    def put(self, body, status_code=200, text_message=None):
-        response = self.app.put(self.get_uri(), data=dumps(body), headers=self.__headers__)
+    def put(self, body=None, status_code=200, text_message=None, URI=None):
+        if URI is None:
+            URI = self.get_uri()
+        else:
+            URI = self.get_url() + URI
+
+        response = self.app.put(URI, data=dumps(body), headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
 
         if text_message is not None:
             self.assertEqual(response.text, text_message)
 
-    def delete(self, status_code=200, text_message=None, **params):
-        response = self.app.delete(self.get_uri(), params=params, headers=self.__headers__)
+    def delete(self, status_code=200, text_message=None, URI=None, **params):
+        if URI is None:
+            URI = self.get_uri()
+        else:
+            URI = self.get_url() + URI
+
+        response = self.app.delete(URI, params=params, headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
 
@@ -529,13 +549,9 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("layer_id", resulted)
-        self.ut_self.assertNotEqual(resulted["layer_id"], -1)
+        self.ut_self.assertGreater(resulted, 0)
 
-        # put the id received in the original JSON
-        feature_json["properties"]["layer_id"] = resulted["layer_id"]
-
-        return feature_json
+        return resulted
 
     def api_layer_update(self, resource_json):
         response = self.session.put(self.URL + '/api/layer/',
@@ -544,7 +560,7 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
     def api_layer_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -619,25 +635,25 @@ class UtilTester:
     # layer errors - delete
 
     def api_layer_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_delete_error_401_unauthorized(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 
     def api_layer_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_layer_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/layer/{0}'.format(feature_id),
+        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
@@ -745,38 +761,6 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 404)
 
     # temporal_columns errors - delete
-
-    # def api_curator_delete_error_400_bad_request(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 400)
-    #
-    # def api_curator_delete_error_401_unauthorized(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 401)
-    #
-    # def api_curator_delete_error_403_forbidden(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 403)
-    #
-    # def api_curator_delete_error_404_not_found(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/curator/{0}'.format(arguments),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
     # FEATURE TABLE
