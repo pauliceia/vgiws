@@ -557,7 +557,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         arguments = self.get_aguments()
 
         try:
-            json_with_id = self._create_resource(resource_json, current_user_id, **arguments)
+            result = self._create_resource(resource_json, current_user_id, **arguments)
         except KeyError as error:
             raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation! (error: " +
                             str(error) + " is missing)")
@@ -583,11 +583,15 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
 
         # if None is returned, then I return to the client an empty string,
         # in order to not return the following string: 'null'
-        if json_with_id is None:
+        if result is None:
             # self.write()
             return
 
-        self.write(json_encode(json_with_id))
+        if isinstance(result, str):
+            self.write(result)
+            return
+
+        self.write(json_encode(result))
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         raise NotImplementedError
@@ -1256,7 +1260,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_keyword(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_keyword(resource_json, current_user_id, **kwargs)['keyword_id']
 
     # PUT
 

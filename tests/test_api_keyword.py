@@ -1,23 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from copy import deepcopy
-from unittest import TestCase
 
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
-class TestAPIKeyword(TestCase):
+class TestAPIKeyword(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/keyword')
 
     # keyword - get
 
-    def test_get_api_keyword_return_all_keywords(self):
+    def test__get_api_keyword__return_all_keywords(self):
         expected = {
             'features': [
                 {
@@ -94,9 +91,9 @@ class TestAPIKeyword(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected)
+        self.get(expected)
 
-    def test_get_api_keyword_return_keyword_by_keyword_id(self):
+    def test__get_api_keyword__return_keyword_by_keyword_id(self):
         expected = {
             'features': [
                 {
@@ -108,9 +105,9 @@ class TestAPIKeyword(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, keyword_id="1003")
+        self.get(expected, keyword_id="1003")
 
-    def test_get_api_keyword_return_keyword_by_user_id_creator(self):
+    def test__get_api_keyword__return_keyword_by_user_id_creator(self):
         expected = {
             'features': [
                 {
@@ -152,9 +149,9 @@ class TestAPIKeyword(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, user_id_creator="1001")
+        self.get(expected, user_id_creator="1001")
 
-    def test_get_api_keyword_return_keyword_by_name(self):
+    def test__get_api_keyword__return_keyword_by_name(self):
         expected = {
             'features': [
                 {
@@ -171,22 +168,22 @@ class TestAPIKeyword(TestCase):
             'type': 'FeatureCollection'
         }
 
-        self.tester.api_keyword(expected, name="As")
+        self.get(expected, name="As")
 
-    def test_get_api_keyword_return_zero_resources(self):
+    def test__get_api_keyword__return_zero_resources(self):
         expected = {'features': [], 'type': 'FeatureCollection'}
 
-        self.tester.api_keyword(expected, keyword_id="999")
-        self.tester.api_keyword(expected, keyword_id="998")
+        self.get(expected, keyword_id="999")
+        self.get(expected, keyword_id="998")
 
-        self.tester.api_keyword(expected, user_id_creator="999")
-        self.tester.api_keyword(expected, user_id_creator="998")
+        self.get(expected, user_id_creator="999")
+        self.get(expected, user_id_creator="998")
 
     # keyword - create, update and delete
 
-    def test_api_keyword_create_but_update_and_delete_with_admin_user(self):
+    def test__api_keyword_create_but_update_and_delete_with_admin_user(self):
         # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a keyword with user gabriel
@@ -195,110 +192,131 @@ class TestAPIKeyword(TestCase):
             'properties': {'keyword_id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
-        resource = self.tester.api_keyword_create(resource)
+        keyword_id = self.post(resource, add_suffix_to_uri="/create")
+        resource["properties"]["keyword_id"] = keyword_id
 
         # logout with gabriel and login with admin user
-        self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.auth_logout()
+        self.auth_login("admin@admin.com", "admin")
 
         ##################################################
         # update the keyword with admin
         ##################################################
         resource["properties"]["name"] = "newname"
-        self.tester.api_keyword_update(resource)
+        self.put(resource)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_keyword(expected_at_least=expected_resource, keyword_id=resource["properties"]["keyword_id"])
+        self.get(expected_at_least=expected_resource, keyword_id=keyword_id)
 
         ##################################################
         # remove the keyword with admin
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["keyword_id"]
-
         # remove the resource
-        self.tester.api_keyword_delete(resource_id)
+        self.delete(param=keyword_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'features': [], 'type': 'FeatureCollection'}
-        self.tester.api_keyword(expected, keyword_id=resource_id)
+        self.get(expected, keyword_id=keyword_id)
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
-class TestAPIKeywordErrors(TestCase):
+class TestAPIKeywordErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/keyword')
 
     # keyword errors - get
 
-    def test_get_api_keyword_error_400_bad_request(self):
-        # invalid parameter
-        self.tester.api_keyword_error_400_bad_request(keyword_id="abc")
-        self.tester.api_keyword_error_400_bad_request(keyword_id=0)
-        self.tester.api_keyword_error_400_bad_request(keyword_id=-1)
-        self.tester.api_keyword_error_400_bad_request(keyword_id="-1")
-        self.tester.api_keyword_error_400_bad_request(keyword_id="0")
+    def test__get_api_keyword__400_bad_request(self):
+        expected = {
+            "status_code": 400,
+            "expected_text": "Invalid parameter."
+        }
 
-        self.tester.api_keyword_error_400_bad_request(user_id_creator="abc")
-        self.tester.api_keyword_error_400_bad_request(user_id_creator=0)
-        self.tester.api_keyword_error_400_bad_request(user_id_creator=-1)
-        self.tester.api_keyword_error_400_bad_request(user_id_creator="-1")
-        self.tester.api_keyword_error_400_bad_request(user_id_creator="0")
+        # invalid parameter
+        self.get(keyword_id="abc", **expected)
+        self.get(keyword_id=0, **expected)
+        self.get(keyword_id=-1, **expected)
+        self.get(keyword_id="-1", **expected)
+        self.get(keyword_id="0", **expected)
+
+        self.get(user_id_creator="abc", **expected)
+        self.get(user_id_creator=0, **expected)
+        self.get(user_id_creator=-1, **expected)
+        self.get(user_id_creator="-1", **expected)
+        self.get(user_id_creator="0", **expected)
 
         # invalid argument
-        self.tester.api_keyword_error_400_bad_request(parent_id=1001)
-        self.tester.api_keyword_error_400_bad_request(usee_id=1001)
-        self.tester.api_keyword_error_400_bad_request(keyboard_id=1001)
+        self.get(
+            parent_id=1001, status_code=400,
+            expected_text="TypeError: get_keywords() got an unexpected keyword argument 'parent_id'"
+        )
+        self.get(
+            usee_id=1001, status_code=400,
+            expected_text="TypeError: get_keywords() got an unexpected keyword argument 'usee_id'"
+        )
+        self.get(
+            keyboard_id=1001, status_code=400,
+            expected_text="TypeError: get_keywords() got an unexpected keyword argument 'keyboard_id'"
+        )
 
     # keyword errors - create
 
-    def test_post_api_keyword_create_error_400_bad_request_attribute_already_exist(self):
+    def test__post_api_keyword__400_bad_request__attribute_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a keyword with a name that already exist
         resource = {
             'properties': {'name': 'event'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            expected_text="Attribute already exists. (error: Key (name)=(event) already exists.)"
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_keyword_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test__post_api_keyword__400_bad_request__attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer (without name)
         resource = {
             'properties': {},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'name' is missing)")
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_keyword_create_error_401_unauthorized_user_is_not_logged(self):
+    def test__post_api_keyword__401_unauthorized(self):
         resource = {
             'properties': {'keyword_id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_create_error_401_unauthorized(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
     # keyword errors - update
 
-    def test_put_api_keyword_error_400_bad_request_attribute_already_exist(self):
+    def test__put_api_keyword__400_bad_request__attribute_already_exist(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
         # try to update the keyword with a name that already exist, raising the 400
@@ -307,42 +325,56 @@ class TestAPIKeywordErrors(TestCase):
             'properties': {'keyword_id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text="Attribute already exists. (error: Key (name)=(street) already exists.)"
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_keyword_error_400_bad_request_attribute_in_JSON_is_missing(self):
+    def test__put_api_keyword__400_bad_request__attribute_in_JSON_is_missing(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to update the keyword without a keyword_id, raising the 400
         resource = {
             'properties': {'name': 'newkeyword'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'keyword_id' is missing)")
+        )
 
         # try to update the keyword without a name, raising the 400
         resource = {
             'properties': {'keyword_id': 1003},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'name' is missing)")
+        )
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_keyword_error_401_unauthorized_user_is_not_logged(self):
+    def test__put_api_keyword__401_unauthorized(self):
         resource = {
             'properties': {'keyword_id': 1001, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_401_unauthorized(resource)
+        self.put(
+            resource, status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
-    def test_put_api_keyword_error_403_forbidden_invalid_user_tries_to_manage(self):
+    def test__put_api_keyword__403_forbidden(self):
         # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # gabriel tries to update one keyword that doesn't belong to him
@@ -351,74 +383,89 @@ class TestAPIKeywordErrors(TestCase):
             'properties': {'keyword_id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_403_forbidden(resource)
+        self.put(
+            resource, status_code=403,
+            expected_text="The administrator is who can update/delete the keyword."
+        )
 
         # DO LOGOUT
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_keyword_error_404_not_found(self):
+    def test__put_api_keyword__404_not_found(self):
         # DO LOGIN
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.auth_login("admin@admin.com", "admin")
 
         resource = {
             'properties': {'keyword_id': 999, 'name': 'street'},
             'type': 'Keyword'
         }
-        self.tester.api_keyword_update_error_404_not_found(resource)
+        self.put(
+            resource, status_code=404,
+            expected_text="Not found any resource."
+        )
 
         # DO LOGOUT
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # keyword errors - delete
 
-    def test_delete_api_keyword_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
-
+    def test__delete_api_keyword__400_bad_request(self):
         # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_keyword_delete_error_400_bad_request("abc")
-        self.tester.api_keyword_delete_error_400_bad_request(0)
-        self.tester.api_keyword_delete_error_400_bad_request(-1)
-        self.tester.api_keyword_delete_error_400_bad_request("-1")
-        self.tester.api_keyword_delete_error_400_bad_request("0")
+        expected = {
+            "status_code": 400,
+            "expected_text": "Invalid parameter."
+        }
+
+        self.delete(param="abc", **expected)
+        self.delete(param=0, **expected)
+        self.delete(param=-1, **expected)
+        self.delete(param="-1", **expected)
+        self.delete(param="0", **expected)
 
         # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_keyword_error_401_unauthorized_user_is_not_logged(self):
-        self.tester.api_keyword_delete_error_401_unauthorized("abc")
-        self.tester.api_keyword_delete_error_401_unauthorized(0)
-        self.tester.api_keyword_delete_error_401_unauthorized(-1)
-        self.tester.api_keyword_delete_error_401_unauthorized("-1")
-        self.tester.api_keyword_delete_error_401_unauthorized("0")
-        self.tester.api_keyword_delete_error_401_unauthorized("1001")
+    def test__delete_api_keyword__401_unauthorized(self):
+        expected = {
+            "status_code": 401,
+            "expected_text": "A valid `Authorization` header is necessary!"
+        }
 
-    def test_delete_api_keyword_error_403_forbidden_invalid_user_tries_to_manage(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.delete(param="abc", **expected)
+        self.delete(param=0, **expected)
+        self.delete(param=-1, **expected)
+        self.delete(param="-1", **expected)
+        self.delete(param="0", **expected)
+        self.delete(param="1001", **expected)
+
+    def test__delete_api_keyword__403_forbidden(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the keyword with user miguel
         ########################################
-        # TRY TO REMOVE THE LAYER
-        self.tester.api_keyword_delete_error_403_forbidden(1001)
+        self.delete(
+            param=1001, status_code=403,
+            expected_text="The administrator is who can update/delete the keyword."
+        )
 
-        # logout with user rodrigo
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_keyword_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test__delete_api_keyword__404_not_found(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.delete(
+            param=5000, status_code=404,
+            expected_text="Not found any resource."
+        )
+        self.delete(
+            param=5001, status_code=404,
+            expected_text="Not found any resource."
+        )
 
-        self.tester.api_keyword_delete_error_404_not_found("5000")
-        self.tester.api_keyword_delete_error_404_not_found("5001")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,

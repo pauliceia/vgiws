@@ -198,7 +198,7 @@ class TestAPIUserCuratorErrors(RequestTester):
     def test__get_api_curator__error__400_bad_request__invalid_parameter(self):
         expected = {
             "status_code": 400,
-            "text_message": "Invalid parameter."
+            "expected_text": "Invalid parameter."
         }
 
         self.get(keyword_id="abc", **expected)
@@ -226,7 +226,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=400,
-            text_message="Attribute already exists. (error: Key (user_id, keyword_id)=(1003, 1010) already exists.)"
+            expected_text="Attribute already exists. (error: Key (user_id, keyword_id)=(1003, 1010) already exists.)"
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -243,7 +243,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
         )
 
         # try to create a curator without 'keyword_id' property
@@ -253,7 +253,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
         )
 
         # try to create a curator without 'region' property
@@ -263,7 +263,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -276,7 +276,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=401,
-            text_message="A valid `Authorization` header is necessary!"
+            expected_text="A valid `Authorization` header is necessary!"
         )
 
     def test__post_api_curator__create__error__403_forbidden__invalid_user_tries_to_manage_a_curator(self):
@@ -290,7 +290,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=403,
-            text_message="The administrator is who can manage a curator."
+            expected_text="The administrator is who can manage a curator."
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -309,7 +309,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.put(
             resource, status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'user_id' is missing)"
         )
 
         # try to create a curator (without 'keyword_id' property
@@ -319,7 +319,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.put(
             resource, status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'keyword_id' is missing)"
         )
 
         # try to create a curator (without 'region' property
@@ -329,7 +329,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.put(
             resource, status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'region' is missing)"
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -342,7 +342,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.put(
             resource, status_code=401,
-            text_message="A valid `Authorization` header is necessary!"
+            expected_text="A valid `Authorization` header is necessary!"
         )
 
     def test__put__api_curator__error__403_forbidden__invalid_user_tries_to_manage_a_curator(self):
@@ -355,7 +355,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         }
         self.put(
             resource, status_code=403,
-            text_message="The administrator is who can manage a curator."
+            expected_text="The administrator is who can manage a curator."
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -370,21 +370,21 @@ class TestAPIUserCuratorErrors(RequestTester):
             'properties': {'user_id': 999, 'keyword_id': 1010, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.put(resource, status_code=404, text_message="Not found any resource.")
+        self.put(resource, status_code=404, expected_text="Not found any resource.")
 
         # try to update with an invalid 'keyword_id' property
         resource = {
             'properties': {'user_id': 1003, 'keyword_id': 999, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.put(resource, status_code=404, text_message="Not found any resource.")
+        self.put(resource, status_code=404, expected_text="Not found any resource.")
 
         # try to update with an invalid 'user_id' and 'keyword_id' properties
         resource = {
             'properties': {'user_id': 999, 'keyword_id': 999, 'region': 'joana'},
             'type': 'Curator'
         }
-        self.put(resource, status_code=404, text_message="Not found any resource.")
+        self.put(resource, status_code=404, expected_text="Not found any resource.")
 
         # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
@@ -397,7 +397,7 @@ class TestAPIUserCuratorErrors(RequestTester):
 
         expected = {
             "status_code": 400,
-            "text_message": "Invalid parameter."
+            "expected_text": "Invalid parameter."
         }
 
         self.delete(user_id="abc", keyword_id="abc", **expected)
@@ -412,7 +412,7 @@ class TestAPIUserCuratorErrors(RequestTester):
     def test__delete__api_curator__error__401_unauthorized(self):
         expected = {
             "status_code": 401,
-            "text_message": "A valid `Authorization` header is necessary!"
+            "expected_text": "A valid `Authorization` header is necessary!"
         }
 
         self.delete(user_id=1001, keyword_id=1001, **expected)
@@ -427,7 +427,7 @@ class TestAPIUserCuratorErrors(RequestTester):
         # try to remove the user in layer
         self.delete(
             user_id=1001, keyword_id=1001, status_code=403,
-            text_message="The administrator is who can manage a curator."
+            expected_text="The administrator is who can manage a curator."
         )
 
         # DO LOGOUT AFTER THE TESTS
@@ -439,11 +439,11 @@ class TestAPIUserCuratorErrors(RequestTester):
 
         self.delete(
             user_id=1001, keyword_id=5000, status_code=404,
-            text_message="Not found any resource."
+            expected_text="Not found any resource."
         )
         self.delete(
             user_id=5001, keyword_id=1001, status_code=404,
-            text_message="Not found any resource."
+            expected_text="Not found any resource."
         )
 
         # DO LOGOUT AFTER THE TESTS

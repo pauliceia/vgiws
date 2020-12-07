@@ -10,7 +10,7 @@ import requests
 from requests import Session
 from unittest import TestCase
 
-from .common import by_multi_element_get_url_name, get_url_arguments
+from util.common import by_multi_element_get_url_name, get_url_arguments
 from modules.common import generate_encoded_jwt_token
 
 
@@ -105,7 +105,7 @@ class RequestTester(TestCase):
     # LOGIN
     ######################################################################
 
-    def auth_login(self, email="gabriel@admin.com", password="gabriel", status_code=200, text_message=""):
+    def auth_login(self, email="gabriel@admin.com", password="gabriel", status_code=200, expected_text=""):
         # method to sign the user on the app
 
         password = get_string_in_hash_sha512(password)
@@ -119,7 +119,7 @@ class RequestTester(TestCase):
         response = self.app.get(self.get_uri_login(), headers=headers)
 
         self.assertEqual(response.status_code, status_code)
-        self.assertEqual(response.text, text_message)
+        self.assertEqual(response.text, expected_text)
 
         # just save the token if the login was successfull (i.e. status_code == 200)
         if status_code == 200:
@@ -132,12 +132,12 @@ class RequestTester(TestCase):
             #     'Authorization': 'Basic ' + self.authorization
             # }
 
-    def login_error(self, status_code=500, text_message="", headers=None):
+    def login_error(self, status_code=500, expected_text="", headers=None):
         headers = self.__get_headers(headers=headers)
 
         response = self.app.post(self.get_uri_login(), headers=headers)
 
-        self.__error_asserts(response, status_code, text_message)
+        self.__error_asserts(response, status_code, expected_text)
 
     def auth_logout(self):
         # remove the JWT Token from the header
@@ -147,7 +147,7 @@ class RequestTester(TestCase):
     # GET, POST, DELETE METHODS
     ######################################################################
 
-    def get(self, expected=None, status_code=200, text_message=None, expected_at_least=None,
+    def get(self, expected=None, status_code=200, expected_text=None, expected_at_least=None,
             URI=None, **params):
         if URI is None:
             URI = self.get_uri()
@@ -158,9 +158,9 @@ class RequestTester(TestCase):
 
         self.assertEqual(status_code, response.status_code)
 
-        # if I expect a `text_message` instead of a JSON
-        if text_message is not None:
-            self.assertEqual(text_message, response.text)
+        # if I expect a `expected_text` instead of a JSON
+        if expected_text is not None:
+            self.assertEqual(expected_text, response.text)
 
         # if the response constains curly brackets, then it is a JSON
         elif expected is not None and ("{" in response.text and "}" in response.text):
@@ -169,7 +169,7 @@ class RequestTester(TestCase):
         elif expected_at_least is not None:
             self.__compare_expected_at_least_with_result(expected_at_least, loads(response.text))
 
-    def post(self, body=None, status_code=200, text_message=None, add_suffix_to_uri="", URI=None):
+    def post(self, body=None, status_code=200, expected_text=None, add_suffix_to_uri="", URI=None):
         if URI is None:
             URI = self.get_uri() + add_suffix_to_uri
         else:
@@ -179,17 +179,15 @@ class RequestTester(TestCase):
 
         self.assertEqual(response.status_code, status_code)
 
-        if text_message is not None:
-            self.assertEqual(response.text, text_message)
-
-        elif response.text.isdigit():
+        if response.text.isdigit():
             id = int(response.text)
-
             self.assertGreater(id, 0)
-
             return id
 
-    def put(self, body=None, status_code=200, text_message=None, URI=None):
+        elif expected_text is not None:
+            self.assertEqual(response.text, expected_text)
+
+    def put(self, body=None, status_code=200, expected_text=None, URI=None):
         if URI is None:
             URI = self.get_uri()
         else:
@@ -199,21 +197,21 @@ class RequestTester(TestCase):
 
         self.assertEqual(response.status_code, status_code)
 
-        if text_message is not None:
-            self.assertEqual(response.text, text_message)
+        if expected_text is not None:
+            self.assertEqual(response.text, expected_text)
 
-    def delete(self, status_code=200, text_message=None, URI=None, **params):
+    def delete(self, param="", status_code=200, expected_text=None, URI=None, **query):
         if URI is None:
-            URI = self.get_uri()
+            URI = self.get_uri() + "/" + str(param)
         else:
             URI = self.get_url() + URI
 
-        response = self.app.delete(URI, params=params, headers=self.__headers__)
+        response = self.app.delete(URI, params=query, headers=self.__headers__)
 
         self.assertEqual(response.status_code, status_code)
 
-        if text_message is not None:
-            self.assertEqual(response.text, text_message)
+        if expected_text is not None:
+            self.assertEqual(response.text, expected_text)
 
     ######################################################################
     # GET, POST, DELETE ERROR METHODS
@@ -1172,130 +1170,6 @@ class UtilTester:
 
     def api_reference_delete_error_404_not_found(self, feature_id):
         response = self.session.delete(self.URL + '/api/reference/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    ##################################################
-    # KEYWORD
-    ##################################################
-
-    def api_keyword(self, expected=None, expected_at_least=None, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/keyword/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        if expected is not None:
-            self.ut_self.assertEqual(expected, resulted)
-
-        elif expected_at_least is not None:
-            self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
-
-    def api_keyword_create(self, resource_json, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.post(self.URL + '/api/keyword/create/{0}'.format(arguments),
-                                     data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertIn("keyword_id", resulted)
-        self.ut_self.assertNotEqual(resulted["keyword_id"], -1)
-
-        # put the id received in the original JSON
-        resource_json["properties"]["keyword_id"] = resulted["keyword_id"]
-
-        return resource_json
-
-    def api_keyword_update(self, resource_json):
-        response = self.session.put(self.URL + '/api/keyword/',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    def api_keyword_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    # keyword errors - get
-
-    def api_keyword_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/keyword/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    # keyword errors - create
-
-    def api_keyword_create_error_400_bad_request(self, resource_json):
-        response = self.session.post(self.URL + '/api/keyword/create/',
-                                     data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_keyword_create_error_401_unauthorized(self, feature_json):
-        response = self.session.post(self.URL + '/api/keyword/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    # keyword errors - update
-
-    def api_keyword_update_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/keyword',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_keyword_update_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/keyword',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_keyword_update_error_403_forbidden(self, feature_json):
-        response = self.session.put(self.URL + '/api/keyword',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_keyword_update_error_404_not_found(self, feature_json):
-        response = self.session.put(self.URL + '/api/keyword',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    # keyword errors - delete
-
-    def api_keyword_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_keyword_delete_error_401_unauthorized(self, feature_id):
-        response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_keyword_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_keyword_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/keyword/{0}'.format(feature_id),
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)

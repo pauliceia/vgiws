@@ -363,13 +363,13 @@ class TestAPIChangesetErrors(RequestTester):
 
         for changeset_id in changesets_ids:
             self.get(
-                status_code=400, text_message="Invalid parameter.",
+                status_code=400, expected_text="Invalid parameter.",
                 changeset_id=changeset_id
             )
 
     # changeset errors - create
 
-    def test__post_api_changeset_create__400_bad_request(self):
+    def test__post_api_changeset__400_bad_request(self):
         ##################################################
         # Login
         ##################################################
@@ -385,7 +385,7 @@ class TestAPIChangesetErrors(RequestTester):
         self.post(
             resource, add_suffix_to_uri="/create",
             status_code=400,
-            text_message="Some attribute in the JSON is missing. Look at the documentation! (error: 'layer_id' is missing)"
+            expected_text="Some attribute in the JSON is missing. Look at the documentation! (error: 'layer_id' is missing)"
         )
 
         ##################################################
@@ -393,7 +393,7 @@ class TestAPIChangesetErrors(RequestTester):
         ##################################################
         self.auth_logout()
 
-    def test__post_api_changeset_create__401_unauthorized(self):
+    def test__post_api_changeset__401_unauthorized(self):
         ##################################################
         # Try to create a changeset without a logged user
         ##################################################
@@ -404,7 +404,7 @@ class TestAPIChangesetErrors(RequestTester):
         self.post(
             resource, add_suffix_to_uri="/create",
             status_code=401,
-            text_message="A valid `Authorization` header is necessary!"
+            expected_text="A valid `Authorization` header is necessary!"
         )
 
     # changeset errors - delete
@@ -423,7 +423,7 @@ class TestAPIChangesetErrors(RequestTester):
         for changeset_id in changesets_ids:
             self.delete(
                 status_code=400,
-                text_message="Invalid parameter.",
+                expected_text="Invalid parameter.",
                 changeset_id=changeset_id
             )
 
@@ -441,7 +441,7 @@ class TestAPIChangesetErrors(RequestTester):
         for changeset_id in changesets_ids:
             self.delete(
                 status_code=401,
-                text_message="A valid `Authorization` header is necessary!",
+                expected_text="A valid `Authorization` header is necessary!",
                 changeset_id=changeset_id
             )
 
@@ -459,7 +459,7 @@ class TestAPIChangesetErrors(RequestTester):
         for changeset_id in changesets_ids:
             self.delete(
                 status_code=403,
-                text_message="The administrator is who can use this resource.",
+                expected_text="The administrator is who can use this resource.",
                 changeset_id=changeset_id
             )
 
@@ -481,9 +481,8 @@ class TestAPIChangesetErrors(RequestTester):
 
         for changeset_id in changesets_ids:
             self.delete(
-                status_code=404,
-                text_message="Not found any resource.",
-                changeset_id=changeset_id
+                changeset_id=changeset_id,
+                status_code=404, expected_text="Not found any resource."
             )
 
         ##################################################
@@ -515,7 +514,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
                 'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
                 'type': 'ChangesetClose'
             }
-            self.post(close_changeset, status_code=400, text_message="Invalid parameter.")
+            self.post(close_changeset, status_code=400, expected_text="Invalid parameter.")
 
         ##################################################
         # Logout
@@ -534,7 +533,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
                 'type': 'ChangesetClose'
             }
             self.post(close_changeset,
-                      status_code=401, text_message="A valid `Authorization` header is necessary!")
+                      status_code=401, expected_text="A valid `Authorization` header is necessary!")
 
     def test__post_api_changeset_close__404_not_found(self):
         ##################################################
@@ -565,7 +564,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
                 'type': 'ChangesetClose'
             }
             self.post(close_changeset,
-                      status_code=404, text_message=invalid_changeset["error_message"])
+                      status_code=404, expected_text=invalid_changeset["error_message"])
 
         ##################################################
         # Logout
@@ -587,7 +586,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
         }
         self.post(close_changeset,
                   status_code=409,
-                  text_message="Changeset `1002` has already been closed at `2017-03-05 00:00:00`.")
+                  expected_text="Changeset `1002` has already been closed at `2017-03-05 00:00:00`.")
 
         ##################################################
         # Logout
@@ -609,7 +608,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
         }
         self.post(close_changeset,
                   status_code=409,
-                  text_message="The user `1003` didn't create the changeset `1011`.")
+                  expected_text="The user `1003` didn't create the changeset `1011`.")
 
         ##################################################
         # Logout

@@ -225,7 +225,7 @@ class TestAPIFeatureTable(RequestTester):
         }
         self.post(
             feature_table, add_suffix_to_uri="/create", status_code=403,
-            text_message="The layer owner or administrator user are who can create or delete this resource."
+            expected_text="The layer owner or administrator user are who can create or delete this resource."
         )
 
         ####################################################################################################
@@ -430,7 +430,7 @@ class TestAPIFeatureTableErrors(RequestTester):
             # self.tester.api_feature_table_create_error_400_bad_request(resource)
             self.post(
                 item['resource'], add_suffix_to_uri="/create", status_code=400,
-                text_message=("Some attribute in the JSON is missing. "
+                expected_text=("Some attribute in the JSON is missing. "
                               f"Look at the documentation! (error: '{item['missing']}' is missing)")
             )
 
@@ -451,7 +451,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=400,
-            text_message=("Some attribute in the JSON is missing. "
+            expected_text=("Some attribute in the JSON is missing. "
                           "Look at the documentation! (error: 'crs' is missing)")
         )
 
@@ -529,7 +529,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         for item in resources:
             self.post(
                 item['resource'], add_suffix_to_uri="/create", status_code=400,
-                text_message=("There is a field that is a reserved word. "
+                expected_text=("There is a field that is a reserved word. "
                               f"Please, rename it. (field: `{item['reserved']}`)")
             )
 
@@ -558,7 +558,7 @@ class TestAPIFeatureTableErrors(RequestTester):
             }
             self.post(
                 resource, add_suffix_to_uri="/create", status_code=400,
-                text_message=("`f_table_name` property can not have special characters. "
+                expected_text=("`f_table_name` property can not have special characters. "
                               f"(f_table_name: `{invalid_f_table_name}`)")
             )
 
@@ -609,7 +609,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         for item in resources:
             self.post(
                 item['resource'], add_suffix_to_uri="/create", status_code=400,
-                text_message=('There is a field with have special characters. '
+                expected_text=('There is a field with have special characters. '
                               f"Please, rename it. (field: `{item['invalid_field']}`)")
             )
 
@@ -629,7 +629,7 @@ class TestAPIFeatureTableErrors(RequestTester):
 
         self.post(
             resource, add_suffix_to_uri="/create", status_code=401,
-            text_message=("A valid `Authorization` header is necessary!")
+            expected_text=("A valid `Authorization` header is necessary!")
         )
 
     def test__post_api_feature_table_create__error__403_forbidden__invalid_user_tries_to_create_a_feature_table(self):
@@ -648,7 +648,7 @@ class TestAPIFeatureTableErrors(RequestTester):
 
         self.post(
             resource, add_suffix_to_uri="/create", status_code=403,
-            text_message=("The layer owner or administrator user are who can create or delete this resource.")
+            expected_text=("The layer owner or administrator user are who can create or delete this resource.")
         )
 
         self.auth_logout()
@@ -669,7 +669,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             resource, add_suffix_to_uri="/create", status_code=404,
-            text_message=("Not found any layer with the passed `f_table_name` property. "
+            expected_text=("Not found any layer with the passed `f_table_name` property. "
                           "You need to create a layer with the `f_table_name` property "
                           "before using this function.")
         )
@@ -694,7 +694,7 @@ class TestAPIFeatureTableErrors(RequestTester):
             }
             self.post(
                 resource, add_suffix_to_uri="/create", status_code=409,
-                text_message=("Conflict with `f_table_name` property. The table name is a reserved word. "
+                expected_text=("Conflict with `f_table_name` property. The table name is a reserved word. "
                               f"Please, rename it. (table: `{invalid_f_table_name}`)")
             )
 
@@ -713,7 +713,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
-            text_message=("Some attribute in the JSON is missing. "
+            expected_text=("Some attribute in the JSON is missing. "
                           "Look at the documentation! (error: 'f_table_name' is missing)")
         )
 
@@ -725,7 +725,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
-            text_message=("Some attribute in the JSON is missing. "
+            expected_text=("Some attribute in the JSON is missing. "
                           "Look at the documentation! (error: 'column_name' is missing)")
         )
 
@@ -741,7 +741,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=feature_table_column, status_code=400,
-            text_message=("Some attribute in the JSON is missing. "
+            expected_text=("Some attribute in the JSON is missing. "
                           "Look at the documentation! (error: 'column_type' is missing)")
         )
 
@@ -756,7 +756,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=resource, status_code=401,
-            text_message="A valid `Authorization` header is necessary!"
+            expected_text="A valid `Authorization` header is necessary!"
         )
 
     def test__post_api_feature_table_column_create__error__403_forbidden__invalid_user_tries_to_create_a_resource(self):
@@ -770,7 +770,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=resource, status_code=403,
-            text_message=("The layer owner or collaborator user, or administrator one are "
+            expected_text=("The layer owner or collaborator user, or administrator one are "
                           "who can update this resource.")
         )
 
@@ -787,7 +787,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         }
         self.post(
             URI="/api/feature_table_column/create", body=resource, status_code=404,
-            text_message=("Not found any layer with the passed `f_table_name` property. "
+            expected_text=("Not found any layer with the passed `f_table_name` property. "
                           "You need to create a layer with the `f_table_name` property before "
                           "using this function.")
         )
@@ -809,7 +809,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         for item in items:
             self.delete(
                 URI="/api/feature_table_column", **item, status_code=400,
-                text_message="Invalid parameter."
+                expected_text="Invalid parameter."
             )
 
         self.auth_logout()
@@ -817,7 +817,7 @@ class TestAPIFeatureTableErrors(RequestTester):
     def test__delete_api_feature_table_column__error__401_unauthorized__user_without_login(self):
         self.delete(
             URI="/api/feature_table_column", f_table_name='layer_1003', column_name="start_date",
-            status_code=401, text_message="A valid `Authorization` header is necessary!"
+            status_code=401, expected_text="A valid `Authorization` header is necessary!"
         )
 
     def test__delete_api_feature_table_column__error__403_forbidden__invalid_user_tries_to_manage(self):
@@ -825,7 +825,7 @@ class TestAPIFeatureTableErrors(RequestTester):
 
         self.delete(
             URI="/api/feature_table_column", f_table_name='layer_1002', column_name="start_date",
-            status_code=403, text_message=("The layer owner or collaborator user, or administrator one "
+            status_code=403, expected_text=("The layer owner or collaborator user, or administrator one "
                                            "are who can update this resource.")
         )
 
@@ -837,7 +837,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         # invalid f_table_name
         self.delete(
             URI="/api/feature_table_column", f_table_name='addresses', column_name="start_date",
-            status_code=404, text_message=("Not found any layer with the passed `f_table_name` property. "
+            status_code=404, expected_text=("Not found any layer with the passed `f_table_name` property. "
                                            "You need to create a layer with the `f_table_name` property "
                                            "before using this function.")
         )
@@ -845,7 +845,7 @@ class TestAPIFeatureTableErrors(RequestTester):
         # invalid column name
         self.delete(
             URI="/api/feature_table_column", f_table_name='layer_1002', column_name="name",
-            status_code=404, text_message=("Not found the specified column. (error: column `name` of "
+            status_code=404, expected_text=("Not found the specified column. (error: column `name` of "
                                            "relation `layer_1002` does not exist)")
         )
 

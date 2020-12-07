@@ -26,8 +26,10 @@ class TestAPIAuthLogin(RequestTester):
 class TestAPIAuthLoginError(RequestTester):
 
     def test__get_api_auth_login__409_conflict__the_email_was_not_validated(self):
-        self.auth_login("gabriel@admin.com", "gabriel",
-                   status_code=409, text_message="The email has not been validated.")
+        self.auth_login(
+            "gabriel@admin.com", "gabriel",
+            status_code=409, expected_text="The email has not been validated."
+        )
 
 
 class TestAPIAuthChangePassword(RequestTester):
@@ -79,14 +81,14 @@ class TestAPIAuthChangePasswordErrors(RequestTester):
             'type': 'ChangePassword'
         }
         self.put(resource, status_code=400,
-                 text_message="It is needed to pass the encrypted current_password and new_password.")
+                 expected_text="It is needed to pass the encrypted current_password and new_password.")
 
         resource = {
             'properties': {'current_password': 'ana'},
             'type': 'ChangePassword'
         }
         self.put(resource, status_code=400,
-                 text_message="It is needed to pass the encrypted current_password and new_password.")
+                 expected_text="It is needed to pass the encrypted current_password and new_password.")
 
         self.auth_logout()
 
@@ -97,7 +99,7 @@ class TestAPIAuthChangePasswordErrors(RequestTester):
         }
 
         self.put(resource, status_code=401,
-                 text_message="A valid `Authorization` header is necessary!")
+                 expected_text="A valid `Authorization` header is necessary!")
 
     # def test_post_api_change_password_error_409_conflict_email_is_not_validated(self):
     #     # the 409 is raised when try to log in the system
@@ -119,7 +121,7 @@ class TestAPIAuthChangePasswordErrors(RequestTester):
             'type': 'ChangePassword'
         }
 
-        self.put(resource, status_code=409, text_message="Current password is invalid.")
+        self.put(resource, status_code=409, expected_text="Current password is invalid.")
 
         self.auth_logout()
 
