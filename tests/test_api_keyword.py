@@ -182,7 +182,6 @@ class TestAPIKeyword(RequestTester):
     # keyword - create, update and delete
 
     def test__api_keyword_create_but_update_and_delete_with_admin_user(self):
-        # DO LOGIN
         self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
@@ -221,7 +220,6 @@ class TestAPIKeyword(RequestTester):
         expected = {'features': [], 'type': 'FeatureCollection'}
         self.get(expected, keyword_id=keyword_id)
 
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
 
@@ -238,18 +236,9 @@ class TestAPIKeywordErrors(RequestTester):
             "expected_text": "Invalid parameter."
         }
 
-        # invalid parameter
-        self.get(keyword_id="abc", **expected)
-        self.get(keyword_id=0, **expected)
-        self.get(keyword_id=-1, **expected)
-        self.get(keyword_id="-1", **expected)
-        self.get(keyword_id="0", **expected)
-
-        self.get(user_id_creator="abc", **expected)
-        self.get(user_id_creator=0, **expected)
-        self.get(user_id_creator=-1, **expected)
-        self.get(user_id_creator="-1", **expected)
-        self.get(user_id_creator="0", **expected)
+        for item in ["abc", 0, -1, "-1", "0"]:
+            self.get(keyword_id=item, **expected)
+            self.get(user_id_creator=item, **expected)
 
         # invalid argument
         self.get(
@@ -268,7 +257,6 @@ class TestAPIKeywordErrors(RequestTester):
     # keyword errors - create
 
     def test__post_api_keyword__400_bad_request__attribute_already_exist(self):
-        # DO LOGIN
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a keyword with a name that already exist
@@ -281,11 +269,9 @@ class TestAPIKeywordErrors(RequestTester):
             expected_text="Attribute already exists. (error: Key (name)=(event) already exists.)"
         )
 
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
     def test__post_api_keyword__400_bad_request__attribute_in_JSON_is_missing(self):
-        # DO LOGIN
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer (without name)
@@ -299,7 +285,6 @@ class TestAPIKeywordErrors(RequestTester):
                            "Look at the documentation! (error: 'name' is missing)")
         )
 
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
     def test__post_api_keyword__401_unauthorized(self):
@@ -315,7 +300,6 @@ class TestAPIKeywordErrors(RequestTester):
     # keyword errors - update
 
     def test__put_api_keyword__400_bad_request__attribute_already_exist(self):
-        # DO LOGIN
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
@@ -330,11 +314,9 @@ class TestAPIKeywordErrors(RequestTester):
             expected_text="Attribute already exists. (error: Key (name)=(street) already exists.)"
         )
 
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
     def test__put_api_keyword__400_bad_request__attribute_in_JSON_is_missing(self):
-        # DO LOGIN
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to update the keyword without a keyword_id, raising the 400
@@ -359,7 +341,6 @@ class TestAPIKeywordErrors(RequestTester):
                            "Look at the documentation! (error: 'name' is missing)")
         )
 
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
     def test__put_api_keyword__401_unauthorized(self):
@@ -373,7 +354,6 @@ class TestAPIKeywordErrors(RequestTester):
         )
 
     def test__put_api_keyword__403_forbidden(self):
-        # DO LOGIN
         self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
@@ -388,11 +368,9 @@ class TestAPIKeywordErrors(RequestTester):
             expected_text="The administrator is who can update/delete the keyword."
         )
 
-        # DO LOGOUT
         self.auth_logout()
 
     def test__put_api_keyword__404_not_found(self):
-        # DO LOGIN
         self.auth_login("admin@admin.com", "admin")
 
         resource = {
@@ -404,41 +382,24 @@ class TestAPIKeywordErrors(RequestTester):
             expected_text="Not found any resource."
         )
 
-        # DO LOGOUT
         self.auth_logout()
 
     # keyword errors - delete
 
     def test__delete_api_keyword__400_bad_request(self):
-        # DO LOGIN
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        expected = {
-            "status_code": 400,
-            "expected_text": "Invalid parameter."
-        }
+        for item in ["abc", 0, -1, "-1", "0"]:
+            self.delete(param=item, status_code=400, expected_text="Invalid parameter.")
 
-        self.delete(param="abc", **expected)
-        self.delete(param=0, **expected)
-        self.delete(param=-1, **expected)
-        self.delete(param="-1", **expected)
-        self.delete(param="0", **expected)
-
-        # DO LOGOUT AFTER THE TESTS
         self.auth_logout()
 
     def test__delete_api_keyword__401_unauthorized(self):
-        expected = {
-            "status_code": 401,
-            "expected_text": "A valid `Authorization` header is necessary!"
-        }
-
-        self.delete(param="abc", **expected)
-        self.delete(param=0, **expected)
-        self.delete(param=-1, **expected)
-        self.delete(param="-1", **expected)
-        self.delete(param="0", **expected)
-        self.delete(param="1001", **expected)
+        for item in ["abc", 0, -1, "-1", "0", "1001"]:
+            self.delete(
+                param=item, status_code=401,
+                expected_text="A valid `Authorization` header is necessary!"
+            )
 
     def test__delete_api_keyword__403_forbidden(self):
         self.auth_login("miguel@admin.com", "miguel")
@@ -456,14 +417,8 @@ class TestAPIKeywordErrors(RequestTester):
     def test__delete_api_keyword__404_not_found(self):
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.delete(
-            param=5000, status_code=404,
-            expected_text="Not found any resource."
-        )
-        self.delete(
-            param=5001, status_code=404,
-            expected_text="Not found any resource."
-        )
+        for item in [5000, 5001]:
+            self.delete(param=item, status_code=404, expected_text="Not found any resource.")
 
         self.auth_logout()
 

@@ -1181,7 +1181,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
+        return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)['reference_id']
 
     # PUT
 
@@ -1223,7 +1223,7 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         references = self.PGSQLConn.get_references(reference_id=reference_id)
 
         if not references["features"]:  # if the list is empty
-            raise HTTPError(404, "Not found the reference {0}.".format(reference_id))
+            raise HTTPError(404, "Not found any resource.")
 
         # if the current_user_id is the creator of the reference, then ok...
         if references["features"][0]["properties"]['user_id_creator'] == current_user_id:

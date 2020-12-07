@@ -1,23 +1,16 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
-# https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
-
-
-class TestAPIReference(TestCase):
+class TestAPIReference(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/reference')
 
     # reference - get
 
-    def test_get_api_reference_return_all_references(self):
+    def test__get_api_reference__return_all_references(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -60,9 +53,9 @@ class TestAPIReference(TestCase):
             ]
         }
 
-        self.tester.api_reference(expected)
+        self.get(expected)
 
-    def test_get_api_reference_return_reference_by_reference_id(self):
+    def test__get_api_reference__return_reference_by_reference_id(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -74,9 +67,9 @@ class TestAPIReference(TestCase):
             ]
         }
 
-        self.tester.api_reference(expected, reference_id="1001")
+        self.get(expected, reference_id="1001")
 
-    def test_get_api_reference_return_reference_by_user_id_creator(self):
+    def test__get_api_reference__return_reference_by_user_id_creator(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -101,9 +94,9 @@ class TestAPIReference(TestCase):
             ]
         }
 
-        self.tester.api_reference(expected, user_id_creator="1001")
+        self.get(expected, user_id_creator="1001")
 
-    def test_get_api_reference_return_reference_by_description(self):
+    def test__get_api_reference__return_reference_by_description(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -119,22 +112,21 @@ class TestAPIReference(TestCase):
             ]
         }
 
-        self.tester.api_reference(expected, description="marco")
+        self.get(expected, description="marco")
 
-    def test_get_api_reference_return_zero_resources(self):
+    def test__get_api_reference__return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.tester.api_reference(expected, reference_id="999")
-        self.tester.api_reference(expected, reference_id="998")
+        self.get(expected, reference_id="999")
+        self.get(expected, reference_id="998")
 
-        self.tester.api_reference(expected, user_id_creator="999")
-        self.tester.api_reference(expected, user_id_creator="998")
+        self.get(expected, user_id_creator="999")
+        self.get(expected, user_id_creator="998")
 
     # reference - create, update and delete
 
-    def test_api_reference_create_update_and_delete(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__api_reference_create_update_and_delete(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a reference
@@ -143,40 +135,35 @@ class TestAPIReference(TestCase):
             'type': 'Reference',
             'properties': {'description': 'ArticleA'}
         }
-        resource = self.tester.api_reference_create(resource)
+        resource_id = self.post(resource, add_suffix_to_uri="/create")
+        resource["properties"]["reference_id"] = resource_id
 
         ##################################################
         # update the reference
         ##################################################
         resource["properties"]["description"] = 'SomeArticleB'
-        self.tester.api_reference_update(resource)
+        self.put(resource)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_reference(expected_at_least=expected_resource,
-                                  reference_id=resource["properties"]["reference_id"])
+        self.get(expected_at_least=expected_resource, reference_id=resource_id)
 
         ##################################################
         # remove the reference
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
         # remove the resource
-        self.tester.api_reference_delete(resource_id)
+        self.delete(param=resource_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_reference(expected, reference_id=resource_id)
+        self.get(expected, reference_id=resource_id)
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_api_reference_create_but_update_and_delete_with_admin_user(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__api_reference_create_but_update_and_delete__with_admin_user(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # create a reference
@@ -185,68 +172,60 @@ class TestAPIReference(TestCase):
             'type': 'Reference',
             'properties': {'description': 'ArticleA'}
         }
-        resource = self.tester.api_reference_create(resource)
+        resource_id = self.post(resource, add_suffix_to_uri="/create")
+        resource["properties"]["reference_id"] = resource_id
 
         # logout with gabriel and login with admin user
-        self.tester.auth_logout()
-        self.tester.auth_login("admin@admin.com", "admin")
+        self.auth_logout()
+        self.auth_login("admin@admin.com", "admin")
 
         ##################################################
         # update the reference
         ##################################################
         resource["properties"]["description"] = 'SomeArticleB'
-        self.tester.api_reference_update(resource)
+        self.put(resource)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.tester.api_reference(expected_at_least=expected_resource,
-                                  reference_id=resource["properties"]["reference_id"])
+        self.get(expected_at_least=expected_resource, reference_id=resource_id)
 
         ##################################################
         # remove the reference
         ##################################################
-        # get the id of layer to REMOVE it
-        resource_id = resource["properties"]["reference_id"]
-
         # remove the resource
-        self.tester.api_reference_delete(resource_id)
+        self.delete(param=resource_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_reference(expected, reference_id=resource_id)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.get(expected, reference_id=resource_id)
 
 
-class TestAPIReferenceErrors(TestCase):
+        self.auth_logout()
+
+
+class TestAPIReferenceErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/reference')
 
     # reference errors - get
 
-    def test_get_api_reference_error_400_bad_request(self):
-        self.tester.api_reference_error_400_bad_request(reference_id="abc")
-        self.tester.api_reference_error_400_bad_request(reference_id=0)
-        self.tester.api_reference_error_400_bad_request(reference_id=-1)
-        self.tester.api_reference_error_400_bad_request(reference_id="-1")
-        self.tester.api_reference_error_400_bad_request(reference_id="0")
+    def test__get_api_reference__400_bad_request(self):
+        expected = {
+            "status_code": 400,
+            "expected_text": "Invalid parameter."
+        }
 
-        self.tester.api_reference_error_400_bad_request(user_id_creator="abc")
-        self.tester.api_reference_error_400_bad_request(user_id_creator=0)
-        self.tester.api_reference_error_400_bad_request(user_id_creator=-1)
-        self.tester.api_reference_error_400_bad_request(user_id_creator="-1")
-        self.tester.api_reference_error_400_bad_request(user_id_creator="0")
+        for item in ["abc", 0, -1, "-1", "0"]:
+            self.get(reference_id=item, **expected)
+            self.get(user_id_creator=item, **expected)
 
     # reference errors - create
 
-    # def test_post_api_reference_create_error_400_bad_request_attribute_already_exist(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    # def test__post_api_reference_create___400_bad_request__attribute_already_exist(self):
+    #     self.auth_login("rodrigo@admin.com", "rodrigo")
     #
     #     ##################################################
     #     # try to insert one reference that already exist, raising the 400
@@ -257,35 +236,38 @@ class TestAPIReferenceErrors(TestCase):
     #     }
     #     self.tester.api_reference_create_error_400_bad_request(resource)
     #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    #     self.auth_logout()
 
-    def test_post_api_reference_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    def test__post_api_reference_create__400_bad_request__attribute_in_JSON_is_missing(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer (without description)
         resource = {
             'type': 'Reference',
             'properties': {}
         }
-        self.tester.api_reference_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'description' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_reference_create_error_401_unauthorized_user_is_not_logged(self):
-        feature = {
+    def test__post_api_reference_create__401_unauthorized(self):
+        resource = {
             'properties': {'description': 'BookA'},
             'type': 'Reference'
         }
-        self.tester.api_reference_create_error_401_unauthorized(feature)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
     # reference errors - update
 
-    # def test_put_api_reference_error_400_bad_request_attribute_already_exist(self):
-    #     # DO LOGIN
-    #     self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    # def test__put_api_reference__400_bad_request__attribute_already_exist(self):
+    #     self.auth_login("rodrigo@admin.com", "rodrigo")
     #
     #     ##################################################
     #     # try to update a reference with a description that already exist, raising the 400
@@ -296,40 +278,47 @@ class TestAPIReferenceErrors(TestCase):
     #     }
     #     self.tester.api_reference_update_error_400_bad_request(resource)
     #
-    #     # DO LOGOUT AFTER THE TESTS
-    #     self.tester.auth_logout()
+    #     self.auth_logout()
 
-    def test_put_api_reference_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    def test__put_api_reference__400_bad_request__attribute_in_JSON_is_missing(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to update a layer (without reference_id)
         resource = {
             'type': 'Reference',
             'properties': {'description': 'BookA'}
         }
-        self.tester.api_reference_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'reference_id' is missing)")
+        )
 
         # try to update a layer (without description)
         resource = {
             'type': 'Reference',
             'properties': {'reference_id': 1001}
         }
-        self.tester.api_reference_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'description' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_reference_error_401_unauthorized_user_is_not_logged(self):
-        feature = {
+    def test__put_api_reference__401_unauthorized(self):
+        resource = {
             'properties': {'reference_id': 1001, 'description': 'BookA'},
             'type': 'Reference'
         }
-        self.tester.api_reference_update_error_401_unauthorized(feature)
+        self.put(
+            resource, status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
-    def test_put_api_reference_error_403_forbidden_invalid_user_tries_to_manage(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__put_api_reference__403_forbidden(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # gabriel tries to update one reference that doesn't belong to him
@@ -338,73 +327,66 @@ class TestAPIReferenceErrors(TestCase):
             'type': 'Reference',
             'properties': {'reference_id': 1051, 'description': 'SomeArticleB'}
         }
-        self.tester.api_reference_update_error_403_forbidden(resource)
+        self.put(
+            resource, status_code=403,
+            expected_text=("The layer owner or collaborator user, or administrator one "
+                           "are who can update or delete a reference.")
+        )
 
-        # DO LOGOUT
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_reference_error_404_not_found(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__put_api_reference__404_not_found(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         resource = {
             'type': 'Reference',
             'properties': {'reference_id': 999, 'description': 'SomeArticleB'}
         }
-        self.tester.api_reference_update_error_404_not_found(resource)
+        self.put(
+            resource, status_code=404,
+            expected_text="Not found any resource."
+        )
 
-        # DO LOGOUT
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # reference errors - delete
 
-    def test_delete_api_reference_error_400_bad_request(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test__delete_api_reference__400_bad_request(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        for item in ["abc", 0, -1, "-1", "0"]:
+            self.delete(param=item, status_code=400, expected_text="Invalid parameter.")
 
-        self.tester.api_reference_delete_error_400_bad_request("abc")
-        self.tester.api_reference_delete_error_400_bad_request(0)
-        self.tester.api_reference_delete_error_400_bad_request(-1)
-        self.tester.api_reference_delete_error_400_bad_request("-1")
-        self.tester.api_reference_delete_error_400_bad_request("0")
+        self.auth_logout()
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+    def test__delete_api_reference__401_unauthorized(self):
+        for item in ["abc", 0, -1, "-1", "0", "1001"]:
+            self.delete(
+                param=item, status_code=401,
+                expected_text="A valid `Authorization` header is necessary!"
+            )
 
-    def test_delete_api_reference_error_401_unauthorized_user_without_login(self):
-        self.tester.api_reference_delete_error_401_unauthorized("abc")
-        self.tester.api_reference_delete_error_401_unauthorized(0)
-        self.tester.api_reference_delete_error_401_unauthorized(-1)
-        self.tester.api_reference_delete_error_401_unauthorized("-1")
-        self.tester.api_reference_delete_error_401_unauthorized("0")
-        self.tester.api_reference_delete_error_401_unauthorized("1001")
-
-    def test_delete_api_reference_error_403_forbidden_invalid_user_tries_to_manage(self):
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__delete_api_reference__403_forbidden(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         ########################################
         # try to delete the reference with user miguel
         ########################################
-        self.tester.api_reference_delete_error_403_forbidden(1001)
+        self.delete(
+            param=1001, status_code=403,
+            expected_text=("The layer owner or collaborator user, or administrator one"
+                           " are who can update or delete a reference.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_delete_api_reference_error_404_not_found(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+    def test__delete_api_reference__404_not_found(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        for item in [5000, 5001]:
+            self.delete(param=item, status_code=404, expected_text="Not found any resource.")
 
-        self.tester.api_reference_delete_error_404_not_found("5000")
-        self.tester.api_reference_delete_error_404_not_found("5001")
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,
