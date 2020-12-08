@@ -369,9 +369,7 @@ class TestAPIReferenceErrors(RequestTester):
     def test__delete_api_reference__403_forbidden(self):
         self.auth_login("miguel@admin.com", "miguel")
 
-        ########################################
-        # try to delete the reference with user miguel
-        ########################################
+        # try to delete the reference with an invalid user
         self.delete(
             param=1001, status_code=403,
             expected_text=("The layer owner or collaborator user, or administrator one"

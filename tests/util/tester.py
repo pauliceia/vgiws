@@ -147,27 +147,36 @@ class RequestTester(TestCase):
     # GET, POST, DELETE METHODS
     ######################################################################
 
-    def get(self, expected=None, status_code=200, expected_text=None, expected_at_least=None,
-            URI=None, **params):
+    def _get(self, URI=None, **params):
         if URI is None:
             URI = self.get_uri()
         else:
             URI = self.get_url() + URI
 
-        response = self.app.get(URI, params=params, headers=self.__headers__)
+        return self.app.get(URI, params=params, headers=self.__headers__)
+
+    def get(self, expected=None, status_code=200, expected_text=None, expected_at_least=None,
+            URI=None, **params):
+        response = self._get(URI, **params)
 
         self.assertEqual(status_code, response.status_code)
 
         # if I expect a `expected_text` instead of a JSON
         if expected_text is not None:
             self.assertEqual(expected_text, response.text)
+            return
+
+        # result = loads(response.text)
+        result = response.json()
 
         # if the response constains curly brackets, then it is a JSON
-        elif expected is not None and ("{" in response.text and "}" in response.text):
-            self.assertEqual(expected, loads(response.text))
+        if expected is not None and ("{" in response.text and "}" in response.text):
+            self.assertEqual(expected, result)
 
         elif expected_at_least is not None:
-            self.__compare_expected_at_least_with_result(expected_at_least, loads(response.text))
+            self.__compare_expected_at_least_with_result(expected_at_least, result)
+
+        return result
 
     def post(self, body=None, status_code=200, expected_text=None, add_suffix_to_uri="", URI=None):
         if URI is None:
@@ -382,115 +391,6 @@ class UtilTester:
             self.compare_expected_at_least_with_resulted(expected_at_least, resulted)
 
         return resulted
-
-    def api_user_create(self, feature_json):
-        # create a copy to send to server (with the password encrypted)
-        feature_json_copy = deepcopy(feature_json)
-
-        # cryptography the password before to send
-        feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
-
-        response = self.session.post(self.URL + '/api/user/create/',
-                                     data=dumps(feature_json_copy), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-        resulted = loads(response.text)  # convert string to dict/JSON
-
-        self.ut_self.assertIn("user_id", resulted)
-        self.ut_self.assertNotEqual(resulted["user_id"], -1)
-
-        # put the id received in the original JSON
-        feature_json["properties"]["user_id"] = resulted["user_id"]
-
-        return feature_json
-
-    def api_user_update(self, resource_json):
-        response = self.session.put(self.URL + '/api/user/',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    def api_user_delete(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    # user errors - get
-
-    def api_user_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/user/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    # user errors - create
-
-    def api_user_error_create_400_bad_request(self, feature_json):
-        # create a copy to send to server (with the password encrypted)
-        feature_json_copy = deepcopy(feature_json)
-
-        # cryptography the password before to send
-        feature_json_copy["properties"]["password"] = get_string_in_hash_sha512(feature_json_copy["properties"]["password"])
-
-        response = self.session.post(self.URL + '/api/user/create/',
-                                    data=dumps(feature_json_copy), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    # user errors - update
-
-    def api_user_update_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/user',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_user_update_error_401_unauthorized(self, resource_json):
-        response = self.session.put(self.URL + '/api/user',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_user_update_error_403_forbidden(self, resource_json):
-        response = self.session.put(self.URL + '/api/user',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_user_update_error_404_not_found(self, resource_json):
-        response = self.session.put(self.URL + '/api/user',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    # user errors - delete
-
-    def api_user_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_user_delete_error_401_unauthorized(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_user_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_user_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + '/api/user/{0}'.format(feature_id),
-                                       headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
 
     ##################################################
     # VALIDATE EMAIL
