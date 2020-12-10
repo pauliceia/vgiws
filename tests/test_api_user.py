@@ -254,7 +254,7 @@ class TestAPIUser(RequestTester):
         # delete the user with an administrator
         ##################################################
         # remove the resource
-        self.delete(param=resource_id)
+        self.delete(argument=resource_id)
 
         # check if the user was deleted
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -443,7 +443,7 @@ class TestAPIUserErrors(RequestTester):
         self.auth_login("admin@admin.com", "admin")
 
         for item in ["abc", 0, -1, "-1", "0"]:
-            self.delete(param=item, status_code=400, expected_text="Invalid parameter.")
+            self.delete(argument=item, status_code=400, expected_text="Invalid parameter.")
 
         self.auth_logout()
 
@@ -469,7 +469,7 @@ class TestAPIUserErrors(RequestTester):
         self.auth_login("admin@admin.com", "admin")
 
         for item in [5000, 5001]:
-            self.delete(param=item, status_code=404, expected_text="Not found any resource.")
+            self.delete(argument=item, status_code=404, expected_text="Not found any resource.")
 
         self.auth_logout()
 

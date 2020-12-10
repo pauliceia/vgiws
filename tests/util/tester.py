@@ -209,11 +209,11 @@ class RequestTester(TestCase):
         if expected_text is not None:
             self.assertEqual(response.text, expected_text)
 
-    def delete(self, param="", status_code=200, expected_text=None, URI=None, **query):
+    def delete(self, argument="", status_code=200, expected_text=None, URI=None, **query):
         if URI is None:
-            URI = self.get_uri() + "/" + str(param)
+            URI = self.get_uri() + "/" + str(argument)
         else:
-            URI = self.get_url() + URI
+            URI = self.get_url() + URI + "/" + str(argument)
 
         response = self.app.delete(URI, params=query, headers=self.__headers__)
 
@@ -458,7 +458,7 @@ class UtilTester:
         self.ut_self.assertEqual(response.status_code, 200)
 
     def api_layer_delete(self, feature_id):
-        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
+        response = self.session.delete(self.URL + f'/api/layer/{feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
@@ -533,25 +533,25 @@ class UtilTester:
     # layer errors - delete
 
     def api_layer_delete_error_400_bad_request(self, feature_id):
-        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
+        response = self.session.delete(self.URL + f'/api/layer/{feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 400)
 
     def api_layer_delete_error_401_unauthorized(self, feature_id):
-        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
+        response = self.session.delete(self.URL + f'/api/layer/{feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 401)
 
     def api_layer_delete_error_403_forbidden(self, feature_id):
-        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
+        response = self.session.delete(self.URL + f'/api/layer/{feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 403)
 
     def api_layer_delete_error_404_not_found(self, feature_id):
-        response = self.session.delete(self.URL + f'/api/layer?layer_id={feature_id}',
+        response = self.session.delete(self.URL + f'/api/layer/{feature_id}',
                                        headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 404)
@@ -576,87 +576,6 @@ class UtilTester:
                                      data=dumps(resource_json), headers=self.headers)
 
         self.ut_self.assertEqual(response.status_code, 200)
-
-    def api_temporal_columns_update(self, resource_json):
-        response = self.session.put(self.URL + '/api/temporal_columns/',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 200)
-
-    # def api_temporal_columns_delete(self, **arguments):
-    #     arguments = get_url_arguments(**arguments)
-    #
-    #     response = self.session.delete(self.URL + '/api/temporal_columns/{0}'.format(arguments),
-    #                                    headers=self.headers)
-    #
-    #     self.ut_self.assertEqual(response.status_code, 200)
-
-    # temporal_columns errors - get
-
-    def api_temporal_columns_error_400_bad_request(self, **arguments):
-        arguments = get_url_arguments(**arguments)
-
-        response = self.session.get(self.URL + '/api/temporal_columns/{0}'.format(arguments))
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    # temporal_columns errors - create
-
-    def api_temporal_columns_create_error_400_bad_request(self, feature_json):
-        response = self.session.post(self.URL + '/api/temporal_columns/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_temporal_columns_create_error_401_unauthorized(self, feature_json):
-        response = self.session.post(self.URL + '/api/temporal_columns/create/',
-                                     data=dumps(feature_json))
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_temporal_columns_create_error_403_forbidden(self, feature_json):
-        response = self.session.post(self.URL + '/api/temporal_columns/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_temporal_columns_create_error_404_not_found(self, feature_json):
-        response = self.session.post(self.URL + '/api/temporal_columns/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
-
-    def api_temporal_columns_create_error_409_conflict(self, feature_json):
-        response = self.session.post(self.URL + '/api/temporal_columns/create/',
-                                     data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 409)
-
-    # temporal_columns errors - update
-
-    def api_temporal_columns_update_error_400_bad_request(self, resource_json):
-        response = self.session.put(self.URL + '/api/temporal_columns',
-                                    data=dumps(resource_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 400)
-
-    def api_temporal_columns_update_error_401_unauthorized(self, feature_json):
-        response = self.session.put(self.URL + '/api/temporal_columns',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 401)
-
-    def api_temporal_columns_update_error_403_forbidden(self, feature_json):
-        response = self.session.put(self.URL + '/api/temporal_columns',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 403)
-
-    def api_temporal_columns_update_error_404_not_found(self, feature_json):
-        response = self.session.put(self.URL + '/api/temporal_columns',
-                                    data=dumps(feature_json), headers=self.headers)
-
-        self.ut_self.assertEqual(response.status_code, 404)
 
     # temporal_columns errors - delete
 

@@ -514,7 +514,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(400, "TypeError: " + str(error))
         except Error as error:
             if error.pgcode == "22007":  # 22007 - invalid_datetime_format
-                raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
+                raise HTTPError(400, "Invalid date format.")
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
@@ -803,7 +803,7 @@ class LayerValidator(BaseHandler):
     def check_if_f_table_name_is_a_reserved_word(self, f_table_name):
         if f_table_name.lower() in self.PGSQLConn.get_reserved_words_of_postgresql():
             raise HTTPError(409, ("Conflict with `f_table_name` property. The table name is a reserved word. "
-                                  f"Please, rename it. (table: `{f_table_name}`)"))
+                                  f"Please, rename it. (`f_table_name`: `{f_table_name}`)"))
 
     def check_if_f_table_name_already_exist_in_db(self, f_table_name):
         if f_table_name in self.PGSQLConn.get_table_names_that_already_exist_in_db():
@@ -860,9 +860,10 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.can_current_user_delete(current_user_id, kwargs['layer_id'])
+        layer_id = args[0]
 
-        self.PGSQLConn.delete_layer(kwargs['layer_id'])
+        self.can_current_user_delete(current_user_id, layer_id)
+        self.PGSQLConn.delete_layer(layer_id)
 
     # VALIDATION
 

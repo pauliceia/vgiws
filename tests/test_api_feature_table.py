@@ -166,7 +166,7 @@ class TestAPIFeatureTable(RequestTester):
         ##################################################
         # delete the layer
         ##################################################
-        self.delete(URI="/api/layer", layer_id=layer_id)
+        self.delete(argument=layer_id, URI="/api/layer")
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -279,7 +279,7 @@ class TestAPIFeatureTable(RequestTester):
         ##################################################
         # delete the layer
         ##################################################
-        self.delete(URI="/api/layer", layer_id=layer_id)
+        self.delete(argument=layer_id, URI="/api/layer")
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -352,7 +352,7 @@ class TestAPIFeatureTable(RequestTester):
         ##################################################
         # delete the layer
         ##################################################
-        self.delete(URI="/api/layer", layer_id=layer_id)
+        self.delete(argument=layer_id, URI="/api/layer")
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -360,7 +360,6 @@ class TestAPIFeatureTable(RequestTester):
 
 
         self.auth_logout()
-
 
 
 class TestAPIFeatureTableErrors(RequestTester):
@@ -373,7 +372,6 @@ class TestAPIFeatureTableErrors(RequestTester):
     # feature_table errors - create
 
     def test__post_api_feature_table_create__error__400_bad_request__attribute_in_JSON_is_missing(self):
-
         self.auth_login("miguel@admin.com", "miguel")
 
         # try to create a feature table without a mandatory property
@@ -434,7 +432,6 @@ class TestAPIFeatureTableErrors(RequestTester):
                               f"Look at the documentation! (error: '{item['missing']}' is missing)")
             )
 
-
         self.auth_logout()
         # try to do the test with a admin
         self.auth_login("rodrigo@admin.com", "rodrigo")
@@ -455,11 +452,9 @@ class TestAPIFeatureTableErrors(RequestTester):
                           "Look at the documentation! (error: 'crs' is missing)")
         )
 
-
         self.auth_logout()
 
     def test__post_api_feature_table_create__error__400_bad_request__property_is_a_reserved_word(self):
-
         self.auth_login("miguel@admin.com", "miguel")
 
         # try to create feature tables with reserved words
@@ -532,7 +527,6 @@ class TestAPIFeatureTableErrors(RequestTester):
                 expected_text=("There is a field that is a reserved word. "
                               f"Please, rename it. (field: `{item['reserved']}`)")
             )
-
 
         self.auth_logout()
 
@@ -626,7 +620,6 @@ class TestAPIFeatureTableErrors(RequestTester):
                 'type': 'MULTIPOINT'
             }
         }
-
         self.post(
             resource, add_suffix_to_uri="/create", status_code=401,
             expected_text=("A valid `Authorization` header is necessary!")
@@ -645,7 +638,6 @@ class TestAPIFeatureTableErrors(RequestTester):
                 'type': 'MULTIPOINT'
             }
         }
-
         self.post(
             resource, add_suffix_to_uri="/create", status_code=403,
             expected_text=("The layer owner or administrator user are who can create or delete this resource.")
@@ -695,7 +687,7 @@ class TestAPIFeatureTableErrors(RequestTester):
             self.post(
                 resource, add_suffix_to_uri="/create", status_code=409,
                 expected_text=("Conflict with `f_table_name` property. The table name is a reserved word. "
-                              f"Please, rename it. (table: `{invalid_f_table_name}`)")
+                              f"Please, rename it. (`f_table_name`: `{invalid_f_table_name}`)")
             )
 
         self.auth_logout()

@@ -154,7 +154,7 @@ class TestAPIReference(RequestTester):
         # remove the reference
         ##################################################
         # remove the resource
-        self.delete(param=resource_id)
+        self.delete(argument=resource_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -195,7 +195,7 @@ class TestAPIReference(RequestTester):
         # remove the reference
         ##################################################
         # remove the resource
-        self.delete(param=resource_id)
+        self.delete(argument=resource_id)
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
@@ -355,7 +355,7 @@ class TestAPIReferenceErrors(RequestTester):
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         for item in ["abc", 0, -1, "-1", "0"]:
-            self.delete(param=item, status_code=400, expected_text="Invalid parameter.")
+            self.delete(argument=item, status_code=400, expected_text="Invalid parameter.")
 
         self.auth_logout()
 
@@ -382,7 +382,7 @@ class TestAPIReferenceErrors(RequestTester):
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
         for item in [5000, 5001]:
-            self.delete(param=item, status_code=404, expected_text="Not found any resource.")
+            self.delete(argument=item, status_code=404, expected_text="Not found any resource.")
 
         self.auth_logout()
 

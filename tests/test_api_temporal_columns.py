@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase
-from util.tester import UtilTester
+from util.tester import RequestTester
 
 
-class TestAPITemporalColumns(TestCase):
+class TestAPITemporalColumns(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.base_urn_tc = '/api/temporal_columns'
+        self.base_urn_layer = '/api/layer'
+        self.base_urn_ul = '/api/user_layer'
+        self.set_urn(self.base_urn_tc)
 
     # temporal_columns - get
 
-    def test_get_api_temporal_columns_return_all_temporal_columns(self):
+    def test__get_api_temporal_columns__return_all_temporal_columns(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -67,9 +68,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected)
+        self.get(expected)
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_f_table_name(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_f_table_name(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -84,9 +85,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, f_table_name="1003")
+        self.get(expected, f_table_name="1003")
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_temporal_bounding_box(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_temporal_bounding_box(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -101,9 +102,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
+        self.get(expected, start_date_gte='1890-01-01', end_date_lte='1920-12-31')
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_start_date_greater_than_or_equal(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_start_date_greater_than_or_equal(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -134,9 +135,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, start_date_gte="1910-01-01")
+        self.get(expected, start_date_gte="1910-01-01")
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_end_date_less_than_or_equal(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_end_date_less_than_or_equal(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -159,9 +160,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, end_date_lte="1920-12-31")
+        self.get(expected, end_date_lte="1920-12-31")
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_start_date(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_start_date(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -176,9 +177,9 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, start_date="1900-01-01")
+        self.get(expected, start_date="1900-01-01")
 
-    def test_get_api_temporal_columns_return_temporal_columns_by_end_date(self):
+    def test__get_api_temporal_columns__return_temporal_columns_by_end_date(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
@@ -193,62 +194,61 @@ class TestAPITemporalColumns(TestCase):
             ]
         }
 
-        self.tester.api_temporal_columns(expected, end_date="1920-12-31")
+        self.get(expected, end_date="1920-12-31")
 
-    def test_get_api_temporal_columns_return_zero_resources(self):
+    def test__get_api_temporal_columns__return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.tester.api_temporal_columns(expected, f_table_name="layer_x")
-        self.tester.api_temporal_columns(expected, start_date="1800-01-01")
-        self.tester.api_temporal_columns(expected, end_date="2000-01-01")
-        self.tester.api_temporal_columns(expected, start_date_gte="2000-01-01")
-        self.tester.api_temporal_columns(expected, end_date_lte="1800-01-01")
+        self.get(expected, f_table_name="layer_x")
+        self.get(expected, start_date="1800-01-01")
+        self.get(expected, end_date="2000-01-01")
+        self.get(expected, start_date_gte="2000-01-01")
+        self.get(expected, end_date_lte="1800-01-01")
 
     # temporal_columns - create and update
 
-    def test_api_temporal_columns_create_and_update(self):
-        ####################################################################################################
-        # log in with a normal user
-        ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_put_delete_api_temporal_columns(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
         ##################################################
         # create a layer
         ##################################################
+        self.set_urn(self.base_urn_layer)
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer_id = self.tester.api_layer_create(layer)
+        layer_id = self.post(layer, add_suffix_to_uri="/create")
 
         ####################################################################################################
 
         ##################################################
         # create the time columns for the layer above
         ##################################################
+        self.set_urn(self.base_urn_tc)
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create(temporal_columns)
+        self.post(temporal_columns, expected_text='', add_suffix_to_uri="/create")
 
         ##################################################
         # update the time columns
         ##################################################
         temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
+        self.put(temporal_columns)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
-        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+        self.get(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
         # the temporal columns table is removed automatically when its layer is deleted
@@ -259,144 +259,158 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        self.tester.api_layer_delete(layer_id)
+        self.set_urn(self.base_urn_layer)
+        self.delete(argument=layer_id)
 
-        # finding the layer and temporal columns that just deleted are not possible
+        # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
-        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
+        self.get(expected, layer_id=layer_id)
 
-        self.tester.auth_logout()
+        # check if the temporal columns does not exist
+        self.set_urn(self.base_urn_tc)
+        self.get(expected, f_table_name=f_table_name)
 
-    def test_api_temporal_columns_create_and_update_with_collaborator_user(self):
+        self.auth_logout()
+
+    def test__post_put_delete_api_temporal_columns___with_collaborator_user(self):
         ####################################################################################################
         # log in with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
         ##################################################
         # create a layer with the normal user
         ##################################################
+        self.set_urn(self.base_urn_layer)
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer_id = self.tester.api_layer_create(layer)
+        layer_id = self.post(layer, add_suffix_to_uri="/create")
 
         ##################################################
         # create the temporal columns for the layer above with the normal user
         ##################################################
+        self.set_urn(self.base_urn_tc)
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create(temporal_columns)
+        self.post(temporal_columns, expected_text='', add_suffix_to_uri="/create")
 
         ##################################################
         # add a collaborator to the layer
         ##################################################
         user_id_collaborator = 1004
 
-        self.tester.api_user_layer_create({
+        self.set_urn(self.base_urn_ul)
+        self.post({
             'properties': {'user_id': user_id_collaborator, 'layer_id': layer_id},
             'type': 'UserLayer'
-        })
+        }, add_suffix_to_uri="/create")
 
         ####################################################################################################
         # log in with the collaborator user in order to update the temporal columns
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("rafael@admin.com", "rafael")
+        self.auth_logout()
+        self.auth_login("rafael@admin.com", "rafael")
+
+        self.set_urn(self.base_urn_tc)
 
         ##################################################
         # update the temporal columns with the collaborator user
         ##################################################
         temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
+        self.put(temporal_columns)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
-        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+        self.get(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
         # the temporal columns table is removed automatically when its layer is deleted
         ##################################################
-
         # log out the collaborator user
-        self.tester.auth_logout()
+        self.auth_logout()
 
         ####################################################################################################
         # log in with the normal user again in order to delete the layer
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # delete the layer
         ##################################################
-        self.tester.api_layer_delete(layer_id)
+        self.set_urn(self.base_urn_layer)
+        self.delete(argument=layer_id)
 
-        # finding the layer and temporal columns that just deleted are not possible
+        # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
-        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
+        self.get(expected, layer_id=layer_id)
 
-        self.tester.auth_logout()
+        # check if the temporal columns does not exist
+        self.set_urn(self.base_urn_tc)
+        self.get(expected, f_table_name=f_table_name)
 
-    def test_api_temporal_columns_create_and_update_with_admin_user(self):
+        self.auth_logout()
+
+    def test__post_put_delete_api_temporal_columns___with_admin_user(self):
         ####################################################################################################
         # log in with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930'
 
         ##################################################
         # create a layer with a normal user
         ##################################################
+        self.set_urn(self.base_urn_layer)
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]},
         }
-        layer_id = self.tester.api_layer_create(layer)
+        layer_id = self.post(layer, add_suffix_to_uri="/create")
 
         ####################################################################################################
         # log in with an admin user in order to create and update the time columns
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         ##################################################
         # create the time columns for the layer above
         ##################################################
+        self.set_urn(self.base_urn_tc)
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create(temporal_columns)
+        self.post(temporal_columns, expected_text='', add_suffix_to_uri="/create")
 
         ##################################################
         # update the time columns
         ##################################################
         temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
+        self.put(temporal_columns)
 
         ##################################################
         # check if the resource has been modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
-        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+        self.get(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
         # the temporal columns table is removed automatically when its layer is deleted
@@ -405,65 +419,70 @@ class TestAPITemporalColumns(TestCase):
         ####################################################################################################
         # log in with the normal user again in order to delete the layer
         ####################################################################################################
-        self.tester.auth_logout()
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_logout()
+        self.auth_login("miguel@admin.com", "miguel")
 
         ##################################################
         # delete the layer
         ##################################################
-        self.tester.api_layer_delete(layer_id)
+        self.set_urn(self.base_urn_layer)
+        self.delete(argument=layer_id)
 
-        # finding the layer and temporal columns that just deleted is not possible
+        # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
-        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
+        self.get(expected, layer_id=layer_id)
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        # check if the temporal columns does not exist
+        self.set_urn(self.base_urn_tc)
+        self.get(expected, f_table_name=f_table_name)
 
-    def test_api_temporal_columns_create_and_update_not_fill_all_fields(self):
+        self.auth_logout()
+
+    def test__post_put_delete_api_temporal_columns___not_fill_all_fields(self):
         ####################################################################################################
         # log in with a normal user
         ####################################################################################################
-        self.tester.auth_login("miguel@admin.com", "miguel")
+        self.auth_login("miguel@admin.com", "miguel")
 
         f_table_name = 'addresses_1930_12'
 
         ##################################################
         # create a layer
         ##################################################
+        self.set_urn(self.base_urn_layer)
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
                            'description': '', 'source_description': '',
                            'reference': [1050, 1052], 'keyword': [1001, 1041]}
         }
-        layer_id = self.tester.api_layer_create(layer)
+        layer_id = self.post(layer, add_suffix_to_uri="/create")
 
         ####################################################################################################
 
         ##################################################
         # create the time columns for the layer above
         ##################################################
+        self.set_urn(self.base_urn_tc)
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': '', 'start_date_column_name': '',
                            'start_date_mask_id': None, 'end_date_mask_id': None},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create(temporal_columns)
+        self.post(temporal_columns, expected_text='', add_suffix_to_uri="/create")
 
         ##################################################
         # update the time columns
         ##################################################
         temporal_columns["properties"]["start_date"] = '1920-01-01'
-        self.tester.api_temporal_columns_update(temporal_columns)
+        self.put(temporal_columns)
 
         ##################################################
         # check if the resource was modified
         ##################################################
         expected_temporal_columns = {'type': 'FeatureCollection', 'features': [temporal_columns]}
-        self.tester.api_temporal_columns(expected_temporal_columns, f_table_name=f_table_name)
+        self.get(expected_temporal_columns, f_table_name=f_table_name)
 
         ##################################################
         # the temporal columns table is removed automatically when its layer is deleted
@@ -474,92 +493,111 @@ class TestAPITemporalColumns(TestCase):
         ##################################################
         # delete the layer
         ##################################################
-        self.tester.api_layer_delete(layer_id)
+        self.set_urn(self.base_urn_layer)
+        self.delete(argument=layer_id)
 
-        # finding the layer and temporal columns that just deleted are not possible
+        # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
-        self.tester.api_temporal_columns(expected, f_table_name=f_table_name)
+        self.get(expected, layer_id=layer_id)
 
-        self.tester.auth_logout()
+        # check if the temporal columns does not exist
+        self.set_urn(self.base_urn_tc)
+        self.get(expected, f_table_name=f_table_name)
+
+        self.auth_logout()
 
 
-class TestAPITemporalColumnsErrors(TestCase):
+class TestAPITemporalColumnsErrors(RequestTester):
 
     def setUp(self):
-        # create a tester passing the unittest self
-        self.tester = UtilTester(self)
+        self.set_urn('/api/temporal_columns')
 
     # temporal_columns errors - get
 
-    def test_get_api_temporal_columns_error_400_bad_request_invalid_date_format(self):
-        self.tester.api_temporal_columns_error_400_bad_request(start_date="1910/01-01")
-        self.tester.api_temporal_columns_error_400_bad_request(end_date="1910-01/01")
-        self.tester.api_temporal_columns_error_400_bad_request(start_date_gte="1910/01=01")
-        self.tester.api_temporal_columns_error_400_bad_request(end_date_lte="1910-01)01")
+    def test__get_api_temporal_columns__400_bad_request(self):
+        test_cases = [
+            {"start_date": "1910/01-01"},
+            {"end_date": "1910-01/01"},
+            {"start_date_gte": "1910/01=01"},
+            {"end_date_lte": "1910-01)01"}
+        ]
+
+        for item in test_cases:
+            self.get(**item, status_code=400, expected_text="Invalid date format.")
 
     # temporal_columns errors - create
 
-    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_already_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_temporal_columns__400_bad_request__attribute_already_exist(self):
+        self.auth_login("miguel@admin.com", "miguel")
+
+        f_table_name = 'layer_1003'
 
         # try to insert a temporal_columns with a f_table_name that already exist
         resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+            'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            expected_text=(f"Attribute already exists. (error: Key (f_table_name)=({f_table_name})"
+                            " already exists.)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_temporal_columns__400_bad_request__attribute_in_JSON_is_missing(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # try to create a temporal_columns (without f_table_name)
-        resource = {
-            'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        test_cases = [
+            {
+                'resource': {
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'f_table_name'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'start_date'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'end_date'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'end_date_column_name'
+            }
+        ]
+        for item in test_cases:
+            self.post(
+                item['resource'], add_suffix_to_uri="/create", status_code=400,
+                expected_text=("Some attribute in the JSON is missing. "
+                              f'Look at the documentation! (error: \'{item["missing"]}\' is missing)')
+            )
 
-        # try to create a temporal_columns (without start_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
-
-        # try to create a temporal_columns (without end_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
-
-        # try to create a temporal_columns (without end_date_column_name)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
         # try to do the test with a admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a temporal_columns (without start_date_column_name)
         resource = {
@@ -568,14 +606,16 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=400,
+            expected_text=("Some attribute in the JSON is missing. "
+                           "Look at the documentation! (error: 'start_date_column_name' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_400_bad_request_f_table_name_has_special_chars_or_it_starts_with_number(self):
-        # DO LOGIN
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+    def test__post_api_temporal_columns__400_bad_request__f_table_name_has_special_chars_or_it_starts_with_number(self):
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to create a layer with invalid f_table_name
         list_invalid_f_table_name = [
@@ -585,29 +625,34 @@ class TestAPITemporalColumnsErrors(TestCase):
 
         for invalid_f_table_name in list_invalid_f_table_name:
             resource = {
-                'properties': {'f_table_name': invalid_f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                               'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                'properties': {'f_table_name': invalid_f_table_name, 'start_date': '1900-01-01',
+                               'end_date': '1920-12-31', 'end_date_column_name': 'end_date',
+                               'start_date_column_name': 'start_date',
                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
                 'type': 'TemporalColumns'
             }
+            self.post(
+                resource, add_suffix_to_uri="/create", status_code=400,
+                expected_text=('`f_table_name` property can not have special characters.'
+                              f' (f_table_name: `{invalid_f_table_name}`)')
+            )
 
-            self.tester.api_temporal_columns_create_error_400_bad_request(resource)
+        self.auth_logout()
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-
-    def test_post_api_temporal_columns_create_error_401_unauthorized_user_is_not_logged(self):
+    def test__post_api_temporal_columns__401_unauthorized(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create_error_401_unauthorized(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
-    def test_post_api_temporal_columns_create_error_403_forbidden_invalid_user_tries_to_manage(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_temporal_columns__403_forbidden(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
@@ -616,14 +661,16 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create_error_403_forbidden(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=403,
+            expected_text=("The layer owner or administrator user are who can create or "
+                           "delete this resource.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_404_not_found_f_table_name_doesnt_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_temporal_columns__404_not_found(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to insert a curator with user_id and keyword_id that already exist
         resource = {
@@ -632,14 +679,17 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_create_error_404_not_found(resource)
+        self.post(
+            resource, add_suffix_to_uri="/create", status_code=404,
+            expected_text=("Not found any layer with the passed `f_table_name` property. "
+                           "You need to create a layer with the `f_table_name` property before "
+                           "using this function.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_post_api_temporal_columns_create_error_409_conflict_f_table_name_is_reserved_name(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__post_api_temporal_columns__409_conflict(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to create a layer with f_table_name that table that already exist or with reserved name
         list_invalid_f_table_name = ["abort", "access"]
@@ -651,57 +701,68 @@ class TestAPITemporalColumnsErrors(TestCase):
                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
                 'type': 'TemporalColumns'
             }
-            self.tester.api_temporal_columns_create_error_409_conflict(resource)
+            self.post(
+                resource, add_suffix_to_uri="/create", status_code=409,
+                expected_text=("Conflict with `f_table_name` property. The table name is a "
+                              f"reserved word. Please, rename it. (`f_table_name`: `{invalid_f_table_name}`)")
+            )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
     # temporal_columns errors - update
 
-    def test_put_api_temporal_columns_error_400_bad_request_attribute_in_JSON_is_missing(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__put_api_temporal_columns__400_bad_request(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
-        # try to update a temporal_columns (without f_table_name)
-        resource = {
-            'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+        # try to update a temporal_columns (without item['missing'])
+        test_cases = [
+            {
+                'resource': {
+                    'properties': {'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'f_table_name'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'start_date'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
+                                'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'end_date'
+            },
+            {
+                'resource': {
+                    'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
+                                'start_date_column_name': 'start_date',
+                                'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                    'type': 'TemporalColumns'
+                },
+                'missing': 'end_date_column_name'
+            }
+        ]
+        for item in test_cases:
+            self.put(
+                item['resource'], status_code=400,
+                expected_text=("Some attribute in the JSON is missing. Look at the documentation! "
+                              f"(error: '{item['missing']}' is missing)")
+            )
 
-        # try to update a temporal_columns (without start_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'end_date': '1920-12-31',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # try to update a temporal_columns (without end_date)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01',
-                           'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # try to update a temporal_columns (without end_date_column_name)
-        resource = {
-            'properties': {'f_table_name': 'layer_1003', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
-                           'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
-            'type': 'TemporalColumns'
-        }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
-
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
-        # try to do the test with an admin
-        self.tester.auth_login("rodrigo@admin.com", "rodrigo")
+        self.auth_logout()
+        # try to do the test case with an administrator user
+        self.auth_login("rodrigo@admin.com", "rodrigo")
 
         # try to update a temporal_columns (without start_date_column_name)
         resource = {
@@ -710,23 +771,28 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_update_error_400_bad_request(resource)
+        self.put(
+            resource, status_code=400,
+            expected_text=("Some attribute in the JSON is missing. Look at the documentation! "
+                           "(error: 'start_date_column_name' is missing)")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_temporal_columns_error_401_unauthorized_user_is_not_logged(self):
+    def test__put_api_temporal_columns__401_unauthorized(self):
         resource = {
             'properties': {'f_table_name': 'layer_1002', 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_update_error_401_unauthorized(resource)
+        self.put(
+            resource, status_code=401,
+            expected_text="A valid `Authorization` header is necessary!"
+        )
 
-    def test_put_api_temporal_columns_error_403_forbidden_invalid_user_tries_to_manage(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__put_api_temporal_columns__403_forbidden(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to update a temporal_columns with an invalid user
         resource = {
@@ -735,14 +801,16 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_update_error_403_forbidden(resource)
+        self.put(
+            resource, status_code=403,
+            expected_text=("The layer owner or collaborator user, or administrator one are who "
+                           "can update this resource.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
-    def test_put_api_temporal_columns_error_404_not_found_f_table_name_doesnt_exist(self):
-        # DO LOGIN
-        self.tester.auth_login("miguel@admin.com", "miguel")
+    def test__put_api_temporal_columns__404_not_found(self):
+        self.auth_login("miguel@admin.com", "miguel")
 
         # try to update a temporal_columns with an invalid user
         resource = {
@@ -751,10 +819,14 @@ class TestAPITemporalColumnsErrors(TestCase):
                            'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
             'type': 'TemporalColumns'
         }
-        self.tester.api_temporal_columns_update_error_404_not_found(resource)
+        self.put(
+            resource, status_code=404,
+            expected_text=("Not found any layer with the passed `f_table_name` property. "
+                           "You need to create a layer with the `f_table_name` property before "
+                           "using this function.")
+        )
 
-        # DO LOGOUT AFTER THE TESTS
-        self.tester.auth_logout()
+        self.auth_logout()
 
 
 # Putting the unittest main() function here is not necessary,
