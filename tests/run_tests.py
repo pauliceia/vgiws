@@ -22,7 +22,7 @@ ROOT_PATH = os_path.dirname(__file__)
 
 # Run the tests of the folder test/
 if __name__ == '__main__':
-    print("Running the tests \n")
+    print("Running the test cases \n")
 
     # Get all the files on current folder that has .py in the final
     tests = TestLoader().discover(ROOT_PATH, "*.py")
