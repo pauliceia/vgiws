@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
     Create a file named:
@@ -245,7 +243,9 @@ class PGSQLConnection:
         }
 
         try:
-            response = self.__SESSION__.post(self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body)
+            response = self.__SESSION__.post(
+                self.__URL_GEOSERVER_REST__ + '/layer/publish', data=request_body
+            )
         except ConnectionError as error:
             raise HTTPError(500, "It was not possible to connect with the geoserver-rest \n\n" + str(error))
 
@@ -257,9 +257,12 @@ class PGSQLConnection:
     @run_if_can_publish_layers_in_geoserver
     def unpublish_feature_table_in_geoserver(self, f_table_name):
         try:
-            response = self.__SESSION__.delete(self.__URL_GEOSERVER_REST__ + '/layer/remove/{0}/{1}/{2}'.format(self.__GEOSERVER_CONNECTION__["WORKSPACE"],
-                                                                                                                self.__GEOSERVER_CONNECTION__["DATASTORE"],
-                                                                                                                f_table_name))
+            response = self.__SESSION__.delete(
+                self.__URL_GEOSERVER_REST__ + '/layer/remove/{0}/{1}/{2}'.format(
+                    self.__GEOSERVER_CONNECTION__["WORKSPACE"],
+                    self.__GEOSERVER_CONNECTION__["DATASTORE"],
+                    f_table_name
+                ))
         except ConnectionError as error:
             raise HTTPError(500, "It was not possible to connect with the geoserver-rest \n\n" + str(error))
 
@@ -495,12 +498,12 @@ class PGSQLConnection:
     # LAYER
     ################################################################################
 
-    def get_layers(self, layer_id=None, f_table_name=None, is_published=None, keyword_id=None):
+    def get_layers(self, id=None, f_table_name=None, is_published=None, keyword_id=None):
         # the id have to be a int
-        if is_a_invalid_id(layer_id) or is_a_invalid_id(keyword_id):
+        if is_a_invalid_id(id) or is_a_invalid_id(keyword_id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_layer_table(layer_id=layer_id, f_table_name=f_table_name,
+        subquery = get_subquery_layer_table(layer_id=id, f_table_name=f_table_name,
                                             is_published=is_published, keyword_id=keyword_id)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -510,43 +513,72 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Layer',
                     'properties', json_build_object(
-                        'layer_id',             layer_id,
+                        'id',                   layer_id,
                         'f_table_name',         f_table_name,
                         'name',                 name,
                         'description',          description,
                         'source_description',   source_description,
                         'created_at',           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'reference',            reference_.jsontags,
-                        'keyword',              keyword.jsontags
+                        'references',           references_.jsontags,
+                        'keywords',             keywords.jsontags,
+                        'collaborators',        collaborators.jsontags
                     )
                 ))
             ) AS row_to_json
             FROM
             {0}
             CROSS JOIN LATERAL (
-                -- (3) get the references of some resource on JSON format
-                SELECT json_agg(reference_id) AS jsontags
-                FROM
-                (
-                    -- (2) get the references of some resource
-                    SELECT reference_id
-                    FROM layer_reference
-                    WHERE layer_id = layer.layer_id
-                    ORDER BY reference_id
+                -- (3) create a raw JSON object to add all references
+                -- When I use COALESCE, I return an empty list instead
+                -- of null when there are not items.
+                SELECT COALESCE(json_agg(json_build_object(
+                    'id', id, 'description', description
+                )), '[]'::json) AS jsontags
+                FROM (
+                    -- (2) get the references of a layer
+                    SELECT r.reference_id as id, r.description as description
+                    FROM layer_reference lr
+                    LEFT JOIN reference r
+                    	ON lr.reference_id = r.reference_id
+                    WHERE lr.layer_id = layer.layer_id
+                    ORDER BY r.description
                 ) subquery
-            ) AS reference_
+            ) AS references_
             CROSS JOIN LATERAL (
-                -- (3) get the keywords of some resource on JSON format
-                SELECT json_agg(keyword_id) AS jsontags
-                FROM
-                (
-                    -- (2) get the keywords of some resource
-                    SELECT keyword_id
-                    FROM layer_keyword
-                    WHERE layer_id = layer.layer_id
-                    ORDER BY keyword_id
+                -- (3) create a raw JSON object to add all keywords.
+                -- When I use COALESCE, I return an empty list instead
+                -- of null when there are not items.
+                SELECT COALESCE(json_agg(json_build_object(
+                    'id', id, 'name', name
+                )), '[]'::json) AS jsontags
+                FROM (
+                    -- (2) get the keywords of a layer
+                    SELECT k.keyword_id as id, k.name as name
+                    FROM layer_keyword lk
+                    LEFT JOIN keyword k
+                    	ON lk.keyword_id = k.keyword_id
+                    WHERE lk.layer_id = layer.layer_id
+                    ORDER BY k.name
                 ) subquery
-            ) AS keyword
+            ) AS keywords
+            CROSS JOIN LATERAL (
+                -- (3) create a raw JSON object to add all collaborators
+                -- When I use COALESCE, I return an empty list instead
+                -- of null when there are not items.
+                SELECT COALESCE(json_agg(json_build_object(
+                    'id', id, 'name', name, 'is_the_creator', is_the_creator
+                )), '[]'::json) AS jsontags
+                FROM (
+                    -- (2) get the collaborators names of the layer
+                    SELECT u.user_id as id, u.name as name,
+                        ul.is_the_creator as is_the_creator
+                    FROM user_layer ul
+                    LEFT JOIN pauliceia_user u
+                        ON ul.user_id = u.user_id
+                    WHERE ul.layer_id = layer.layer_id
+                    ORDER BY u.name
+                ) subquery
+            ) AS collaborators
         """.format(subquery)
 
         results_of_query = self.execute(query)
@@ -570,7 +602,7 @@ class PGSQLConnection:
 
         query = """
             INSERT INTO layer (f_table_name, name, description, source_description, created_at)
-            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id;
+            VALUES ('{0}', '{1}', '{2}', '{3}', LOCALTIMESTAMP) RETURNING layer_id as id;
         """.format(p["f_table_name"], p["name"], p["description"], p["source_description"])
 
         return self.execute(query, is_transaction=True)
@@ -581,47 +613,67 @@ class PGSQLConnection:
         ##################################################
         validate_feature_json(resource_json)
 
-        properties = resource_json["properties"]
+        p = resource_json["properties"]
 
-        # just can add reference/keyword that is a list
-        if (not isinstance(properties["reference"], list)) or (not isinstance(properties["keyword"], list)):
-            raise HTTPError(400, "The parameters reference and keyword need to be a list.")
-
-        ##################################################
-        # add the layer in db
-        ##################################################
-        id_in_json = self.add_layer_in_db(properties)
+        # the following parameters must be list
+        if (not isinstance(p["collaborators"], list)) or \
+                (not isinstance(p["keywords"], list)) or \
+                (not isinstance(p["references"], list)):
+            raise HTTPError(400, 'The parameters `collaborators`, `keywords`'
+                                 ' and `references` must be a list.')
 
         ##################################################
-        # add the list of reference in layer
+        # add the layer in the database and get its id
         ##################################################
-        for reference_id in properties["reference"]:
-            layer_keyword_json = {
-                "properties": {"layer_id": id_in_json["layer_id"], "reference_id": reference_id},
-                'type': 'LayerReference'
-            }
-            self.create_layer_reference(layer_keyword_json)
-
-        ##################################################
-        # add the list of keyword in layer
-        ##################################################
-        for keyword_id in properties["keyword"]:
-            layer_keyword_json = {
-                "properties": {"layer_id": id_in_json["layer_id"], "keyword_id": keyword_id},
-                'type': 'LayerKeyword'
-            }
-            self.create_layer_keyword(layer_keyword_json)
+        created_layer_id = self.add_layer_in_db(p)["id"]
 
         ##################################################
         # add the user as creator user
         ##################################################
         user_layer_json = {
-            'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': id_in_json["layer_id"]},
+            'properties': {'is_the_creator': True, 'user_id': user_id, 'layer_id': created_layer_id},
             'type': 'UserLayer'
         }
-        self.create_user_layer(user_layer_json, user_id)
+        self.create_user_layer(user_layer_json)
 
-        return id_in_json
+        ##################################################
+        # add the list of collaborators in the layer
+        ##################################################
+        for collaborator in p["collaborators"]:
+            if not isinstance(collaborator, dict) or 'id' not in collaborator:
+                raise HTTPError(400, 'List of collaborators does not contain a valid dict.')
+            # avoid to insert the creator user again
+            # add just the collaborators
+            if user_id != collaborator["id"]:
+                self.create_user_layer({
+                    'properties': {'is_the_creator': False, 'user_id': collaborator["id"],
+                                   'layer_id': created_layer_id},
+                    'type': 'UserLayer'
+                })
+
+        ##################################################
+        # add the list of keyword in the layer
+        ##################################################
+        for keyword in p["keywords"]:
+            if not isinstance(keyword, dict) or 'id' not in keyword:
+                raise HTTPError(400, 'List of keywords does not contain a valid dict.')
+            self.create_layer_keyword({
+                "properties": {"layer_id": created_layer_id, "keyword_id": keyword["id"]},
+                'type': 'LayerKeyword'
+            })
+
+        ##################################################
+        # add the list of references in the layer
+        ##################################################
+        for reference in p["references"]:
+            if not isinstance(reference, dict) or 'id' not in reference:
+                raise HTTPError(400, 'List of references does not contain a valid dict.')
+            self.create_layer_reference({
+                "properties": {"layer_id": created_layer_id, "reference_id": reference["id"]},
+                'type': 'LayerReference'
+            })
+
+        return created_layer_id
 
     def update_table_name(self, old_table_name, new_table_name):
         query = """
@@ -637,37 +689,76 @@ class PGSQLConnection:
         query = """
             UPDATE layer SET name = '{1}', description = '{2}', source_description = '{3}'
             WHERE layer_id = {0};
-        """.format(p["layer_id"], p["name"], p["description"], p["source_description"])
+        """.format(p["id"], p["name"], p["description"], p["source_description"])
 
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def update_layer(self, resource_json, user_id):
+    def update_layer(self, resource_json):
         ##################################################
         # pre-processing
         ##################################################
         new_layer_properties = resource_json["properties"]
+        layer_id = new_layer_properties["id"]
 
-        # just can add reference/keyword that is a list
-        if (not isinstance(new_layer_properties["reference"], list)) or (not isinstance(new_layer_properties["keyword"], list)):
-            raise HTTPError(400, "The parameters reference and keyword need to be a list.")
+        # the following parameters must be list
+        if (not isinstance(new_layer_properties["collaborators"], list)) or \
+                (not isinstance(new_layer_properties["keywords"], list)) or \
+                (not isinstance(new_layer_properties["references"], list)):
+            raise HTTPError(400, 'The parameters `collaborators`, `keywords`'
+                                 ' and `references` must be a list.')
 
-        # check if the references exist in the database before updating the layer
-        for reference_id in new_layer_properties['reference']:
-            reference = self.get_references(reference_id)
-            if not reference['features']:
-                raise HTTPError(404, "Not found the reference `{0}`.".format(reference_id))
+        # check if the collaborators have already been added database before updating the layer
+        for collaborator in new_layer_properties['collaborators']:
+            found_collaborator = self.get_users(user_id=collaborator['id'])
+            if not found_collaborator['features']:
+                raise HTTPError(404, f"Not found the collaborator `{collaborator['id']}`.")
 
-        # check if the keywords exist in the database before updating the layer
-        for keyword_id in new_layer_properties['keyword']:
-            keyword = self.get_keywords(keyword_id)
-            if not keyword['features']:
-                raise HTTPError(404, "Not found the keyword `{0}`.".format(keyword_id))
+        # get all creator users and check if there is only one creator user
+        found_creator_users = list(filter(
+            lambda c: c['is_the_creator'], new_layer_properties['collaborators']
+        ))
+        if not found_creator_users:
+            raise HTTPError(404, "Not found the creator user inside the list of collaborators.")
+        if len(found_creator_users) > 1:
+            raise HTTPError(404, "There are more than one creator user inside the list of collaborators.")
+
+        # check if the keywords have already been added database before updating the layer
+        for keyword in new_layer_properties['keywords']:
+            found_keywords = self.get_keywords(keyword_id=keyword['id'])
+            if not found_keywords['features']:
+                raise HTTPError(404, f"Not found the keyword `{keyword['id']}`.")
+
+        # check if the references have already been added in the database before updating the layer
+        for reference in new_layer_properties['references']:
+            found_references = self.get_references(reference_id=reference['id'])
+            if not found_references['features']:
+                raise HTTPError(404, f"Not found the reference `{reference['id']}`.")
 
         # get the old layer properties
-        old_layer_properties = self.get_layers(layer_id=new_layer_properties["layer_id"])["features"][0]["properties"]
+        # old_layer_properties = self.get_layers(id=layer_id)["features"][0]["properties"]
+
+        ##################################################
+        # get creator user id
+        ##################################################
+        # get the creator id from the new layer
+        new_creator_user_id = found_creator_users[0]['id']
+
+        # get all collaborators of the layer from the database
+        collaborators = self.get_user_layers(layer_id=layer_id)
+
+        # get the creator user id from the database
+        creator_user_id = list(filter(
+            lambda c: c['properties']['is_the_creator'], collaborators['features']
+        ))[0]['properties']['user_id']
+
+        # check if the creator user that was passed
+        # in the layer is the one available in the database
+        if new_creator_user_id != creator_user_id:
+            raise HTTPError(404, f'Invalid creator user `{new_creator_user_id}`'
+                                 f' to layer `{layer_id}`.')
 
         ##################################################
         # update the layer in db
@@ -675,43 +766,72 @@ class PGSQLConnection:
         self.update_layer_in_db(new_layer_properties)
 
         ##################################################
-        # remove the references and keywords from layer
+        # remove the collaborators, keywords and references from the layer
         ##################################################
         try:
-            self.delete_layer_reference(layer_id=new_layer_properties["layer_id"])
-        except HTTPError as error:
-            if error.status_code != 404:
-                raise error
-            # else:
-            # error 404 is expected, because when update a layer, may exist a layer without reference
-
-        try:
-            self.delete_layer_keyword(layer_id=new_layer_properties["layer_id"])
+            self.delete_user_layer(layer_id=layer_id)
         except HTTPError as error:
             if error.status_code != 404:
                 raise error
             # else:
             # error 404 is expected, because when update a layer, may exist a layer without keyword
 
-        ##################################################
-        # add the list of references in layer
-        ##################################################
-        for reference_id in new_layer_properties["reference"]:
-            layer_keyword_json = {
-                "properties": {"layer_id": new_layer_properties["layer_id"], "reference_id": reference_id},
-                'type': 'LayerReference'
-            }
-            self.create_layer_reference(layer_keyword_json)
+        try:
+            self.delete_layer_keyword(layer_id=layer_id)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            # error 404 is expected, because when update a layer, may exist a layer without keyword
+
+        try:
+            self.delete_layer_reference(layer_id=layer_id)
+        except HTTPError as error:
+            if error.status_code != 404:
+                raise error
+            # else:
+            # error 404 is expected, because when update a layer, may exist a layer without reference
 
         ##################################################
-        # add the list of keywords in layer
+        # add the updated list of collaborators in the layer
         ##################################################
-        for keyword_id in new_layer_properties["keyword"]:
-            layer_keyword_json = {
-                "properties": {"layer_id": new_layer_properties["layer_id"], "keyword_id": keyword_id},
+        for collaborator in new_layer_properties["collaborators"]:
+            if not isinstance(collaborator, dict) or 'id' not in collaborator:
+                raise HTTPError(400, 'List of collaborators does not contain a valid dict.')
+
+            is_creator = False
+            if collaborator["id"] == creator_user_id:
+                is_creator = True
+
+            self.create_user_layer({
+                'properties': {'is_the_creator': is_creator, 'user_id': collaborator["id"],
+                                'layer_id': layer_id},
+                'type': 'UserLayer'
+            })
+
+        collaborators = self.get_user_layers(layer_id=layer_id)
+
+        ##################################################
+        # add the updated list of keywords in the layer
+        ##################################################
+        for keyword in new_layer_properties["keywords"]:
+            if not isinstance(keyword, dict) or 'id' not in keyword:
+                raise HTTPError(400, 'List of keywords does not contain a valid dict.')
+            self.create_layer_keyword({
+                "properties": {"layer_id": layer_id, "keyword_id": keyword['id']},
                 'type': 'LayerKeyword'
-            }
-            self.create_layer_keyword(layer_keyword_json)
+            })
+
+        ##################################################
+        # add the updated list of references in the layer
+        ##################################################
+        for reference in new_layer_properties["references"]:
+            if not isinstance(reference, dict) or 'id' not in reference:
+                raise HTTPError(400, 'List of references does not contain a valid dict.')
+            self.create_layer_reference({
+                "properties": {"layer_id": layer_id, "reference_id": reference['id']},
+                'type': 'LayerReference'
+            })
 
         ##################################################
         # if the table_name was changed, so update the feature table name, version the f_table_name of temporal columns
@@ -726,7 +846,7 @@ class PGSQLConnection:
 
     def delete_layer_dependencies(self, layer_id):
         # get the layer information before to remove the layer
-        layer = self.get_layers(layer_id=layer_id)
+        layer = self.get_layers(id=layer_id)
 
         if not layer["features"]:  # if list is empty
             raise HTTPError(404, "Not found the layer `{0}`.".format(layer_id))
@@ -1121,7 +1241,7 @@ class PGSQLConnection:
 
         return results_of_query
 
-    def create_user_layer(self, resource_json, user_id):
+    def create_user_layer(self, resource_json):
         p = resource_json["properties"]
 
         query = """
