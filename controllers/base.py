@@ -10,11 +10,9 @@ from os.path import exists, isdir, isfile, getsize as get_file_size, join, sep a
 
 from abc import ABCMeta
 from copy import deepcopy
-from difflib import SequenceMatcher
 from geopandas import read_file as gp_read_file
 from json import loads
 import logging
-from requests import get as requests_get
 from shutil import rmtree as remove_folder_with_contents
 from subprocess import check_call, CalledProcessError
 from shutil import make_archive
@@ -28,7 +26,6 @@ from email.mime.text import MIMEText
 from smtplib import SMTP
 
 from psycopg2 import ProgrammingError, DataError, Error, InternalError
-# from psycopg2._psycopg import DataError
 
 from tornado.web import RequestHandler, HTTPError
 from tornado.escape import json_encode
@@ -824,7 +821,7 @@ class LayerValidator(BaseHandler):
         self.check_f_table_name_length(f_table_name)
 
     def check_if_layer_has_max_5_keywords(self, resource_json):
-        amount_of_keywords = len(resource_json["properties"]["keyword"])
+        amount_of_keywords = len(resource_json["properties"]["keywords"])
 
         if amount_of_keywords > 5:
             raise HTTPError(409, "The maximum of keywords allowed to a layer are 5.")
@@ -846,16 +843,16 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
 
         self.check_if_layer_has_max_5_keywords(resource_json)
 
-        return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)['layer_id']
+        return self.PGSQLConn.create_layer(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
         self.check_if_layer_has_max_5_keywords(resource_json)
 
-        self.can_current_user_update(current_user_id, resource_json["properties"]["layer_id"])
+        self.can_current_user_update(current_user_id, resource_json["properties"]["id"])
 
-        return self.PGSQLConn.update_layer(resource_json, current_user_id)
+        return self.PGSQLConn.update_layer(resource_json)
 
     # DELETE
 
@@ -879,7 +876,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         if self.is_current_user_an_administrator():
             return
 
-        layers = self.PGSQLConn.get_layers(layer_id=layer_id)
+        layers = self.PGSQLConn.get_layers(id=layer_id)
 
         if not layers["features"]:  # if list is empty:
             raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
@@ -906,7 +903,7 @@ class BaseHandlerLayer(BaseHandlerTemplateMethod, LayerValidator):
         if self.is_current_user_an_administrator():
             return
 
-        layers = self.PGSQLConn.get_layers(layer_id=layer_id)
+        layers = self.PGSQLConn.get_layers(id=layer_id)
 
         if not layers["features"]:  # if list is empty:
             raise HTTPError(404, "Not found the layer {0}.".format(layer_id))
@@ -932,7 +929,7 @@ class FeatureTableValidator(BaseHandler):
                                   "You need to create a layer with the `f_table_name` property "
                                   "before using this function."))
 
-        layer_id = layers["features"][0]["properties"]["layer_id"]
+        layer_id = layers["features"][0]["properties"]["id"]
 
         layer = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
@@ -956,7 +953,7 @@ class FeatureTableValidator(BaseHandler):
                                   "You need to create a layer with the `f_table_name` property "
                                   "before using this function."))
 
-        layer_id = layers["features"][0]["properties"]["layer_id"]
+        layer_id = layers["features"][0]["properties"]["id"]
 
         layer = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
@@ -1110,7 +1107,7 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         # the layer's creator is just who was added by create_layer function, the others are not
         resource_json["properties"]["is_the_creator"] = False
 
-        return self.PGSQLConn.create_user_layer(resource_json, current_user_id)
+        return self.PGSQLConn.create_user_layer(resource_json)
 
     # PUT
 
@@ -1134,15 +1131,16 @@ class BaseHandlerUserLayer(BaseHandlerTemplateMethod):
         :return:
         """
 
-        # if the current user is admin, so ok...
+        # if the current user is admin, then ok...
         if self.is_current_user_an_administrator():
             return
 
         user_layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
         for user_layer in user_layers["features"]:
-            if user_layer["properties"]['is_the_creator'] and user_layer["properties"]['user_id'] == current_user_id:
-                # if the current_user_id is the creator of the layer, so ok...
+            if user_layer["properties"]['is_the_creator'] and \
+                    user_layer["properties"]['user_id'] == current_user_id:
+                # if the current_user_id is the creator of the layer, then ok...
                 return
 
         # ... else, raise an exception.
@@ -1549,7 +1547,7 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
             raise HTTPError(404, "Not found layer " + f_table_name +
                             ". You need to create a layer with the f_table_name before of using this function.")
 
-        layer_id = layers["features"][0]["properties"]["layer_id"]
+        layer_id = layers["features"][0]["properties"]["id"]
 
         layers = self.PGSQLConn.get_user_layers(layer_id=str(layer_id))
 
