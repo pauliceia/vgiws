@@ -1,12 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_layer_table(**kwargs):
     # DEFAULT WHERE
     # by default, get all results that are visible (that exist)
     # conditions_of_where = ["removed_at is NULL"]  # visible=True
-    layer_keyword_subquery = ""
     conditions_of_where = []  # visible=True
 
     # conditions of WHERE CLAUSE
