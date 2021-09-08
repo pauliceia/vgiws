@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from util.tester import RequestTester
 
 
@@ -123,9 +121,10 @@ class TestAPIFeatureTable(RequestTester):
         ##################################################
         layer = {
             'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+            'properties': {'id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
+                           'description': '', 'source_description': '', 'collaborators': [],
+                           "keywords": [{"id": 1041, "name": "address"}],
+                           "references": [{"id": 1002, "description": "@Misc{ana2017article2"}]}
         }
         layer_id = self.post(URI='/api/layer/create', body=layer)
 
@@ -137,7 +136,8 @@ class TestAPIFeatureTable(RequestTester):
         feature_table = {
             'type': 'FeatureTable',
             'f_table_name': f_table_name,
-            'properties': {'start_date': 'timestamp without time zone', 'end_date': 'timestamp without time zone',
+            'properties': {'start_date': 'timestamp without time zone',
+                           'end_date': 'timestamp without time zone',
                            'address': 'text'},
             'geometry': {
                 'crs': {'type': 'name', 'properties': {'name': 'EPSG:4326'}},
@@ -170,7 +170,7 @@ class TestAPIFeatureTable(RequestTester):
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
+        self.get(URI='/api/layer', expected=expected, id=layer_id)
 
         self.auth_logout()
 
@@ -188,8 +188,9 @@ class TestAPIFeatureTable(RequestTester):
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+                           'description': '', 'source_description': '', 'collaborators': [],
+                           "keywords": [{"id": 1041, "name": "address"}],
+                           "references": [{"id": 1002, "description": "@Misc{ana2017article2"}]}
         }
         layer_id = self.post(URI='/api/layer/create', body=layer)
 
@@ -283,7 +284,7 @@ class TestAPIFeatureTable(RequestTester):
 
         # finding the layer that just deleted is not possible
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
+        self.get(URI='/api/layer', expected=expected, id=layer_id)
 
         self.auth_logout()
 
@@ -301,8 +302,9 @@ class TestAPIFeatureTable(RequestTester):
         layer = {
             'type': 'Layer',
             'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+                           'description': '', 'source_description': '', 'collaborators': [],
+                           "keywords": [{"id": 1041, "name": "address"}],
+                           "references": [{"id": 1002, "description": "@Misc{ana2017article2"}]}
         }
         layer_id = self.post(URI='/api/layer/create', body=layer)
 
@@ -356,8 +358,7 @@ class TestAPIFeatureTable(RequestTester):
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(URI='/api/layer', expected=expected, layer_id=layer_id)
-
+        self.get(URI='/api/layer', expected=expected, id=layer_id)
 
         self.auth_logout()
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from os import path as os_path
 
@@ -28,10 +26,17 @@ class TestAPIImport(TestCase):
         # create a new layer
         ##################################################
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': self.f_table_name, 'name': 'Points',
-                           'description': '', 'source_description': '',
-                           'reference': [1050], 'keyword': [1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": self.f_table_name,
+                "name": "Points", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [{"id": 1041, "name": "address"}],
+                "references": [{"id": 1050, "description": "BookA"}]
+            }
         }
         self.layer_id = self.tester.api_layer_create(layer)
 
@@ -63,7 +68,7 @@ class TestAPIImport(TestCase):
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=self.layer_id)
+        self.tester.api_layer(expected, id=self.layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -329,10 +334,17 @@ class TestAPIManualTests(TestCase):
         # create a new layer
         ##################################################
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': self.f_table_name, 'name': 'Points',
-                           'description': '', 'source_description': '',
-                           'reference': [1050], 'keyword': [1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": self.f_table_name,
+                "name": "Points", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [{"id": 1041, "name": "address"}],
+                "references": [{"id": 1050, "description": "BookA"}]
+            }
         }
         self.layer_id = self.tester.api_layer_create(layer)
 
@@ -364,7 +376,7 @@ class TestAPIManualTests(TestCase):
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=self.layer_id)
+        self.tester.api_layer(expected, id=self.layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -472,10 +484,17 @@ class TestAPIImportError(TestCase):
         # create a new layer
         ##################################################
         self.layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': self.f_table_name, 'name': 'Points',
-                           'description': '', 'source_description': '',
-                           'reference': [1050], 'keyword': [1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": self.f_table_name,
+                "name": "Points", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [{"id": 1041, "name": "address"}],
+                "references": [{"id": 1050, "description": "BookA"}]
+            }
         }
         self.layer_id = self.tester.api_layer_create(self.layer)
 
@@ -504,7 +523,7 @@ class TestAPIImportError(TestCase):
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=self.layer_id)
+        self.tester.api_layer(expected, id=self.layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -716,7 +735,7 @@ class TestAPIImportError(TestCase):
     #     ##################################################
     #     layer = {
     #         'type': 'Layer',
-    #         'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Points',
+    #         'properties': {'id': -1, 'f_table_name': f_table_name, 'name': 'Points',
     #                        'description': '', 'source_description': '',
     #                        'reference': [1050], 'keyword': [1041]}
     #     }
@@ -759,7 +778,7 @@ class TestAPIImportError(TestCase):
     #
     #     # it is not possible to find the layer that just deleted
     #     expected = {'type': 'FeatureCollection', 'features': []}
-    #     self.tester.api_layer(expected, layer_id=layer_id)
+    #     self.tester.api_layer(expected, id=layer_id)
 
 
 class TestAPIImportErrorWithoutLogin(TestCase):

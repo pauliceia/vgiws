@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
 
@@ -217,10 +216,23 @@ class TestAPITemporalColumns(RequestTester):
         ##################################################
         self.set_urn(self.base_urn_layer)
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": f_table_name,
+                "name": "Addresses in 1930", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [
+                    {"id": 1041, "name": "address"},
+                    {"id": 1001, "name": "generic"}
+                ],
+                "references": [
+                    {"id": 1050, "description": "BookA"},
+                    {"id": 1052, "description": "ThesisC"}
+                ]
+            }
         }
         layer_id = self.post(layer, add_suffix_to_uri="/create")
 
@@ -264,7 +276,7 @@ class TestAPITemporalColumns(RequestTester):
 
         # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, layer_id=layer_id)
+        self.get(expected, id=layer_id)
 
         # check if the temporal columns does not exist
         self.set_urn(self.base_urn_tc)
@@ -285,10 +297,23 @@ class TestAPITemporalColumns(RequestTester):
         ##################################################
         self.set_urn(self.base_urn_layer)
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": f_table_name,
+                "name": "Addresses in 1930", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [
+                    {"id": 1041, "name": "address"},
+                    {"id": 1001, "name": "generic"}
+                ],
+                "references": [
+                    {"id": 1050, "description": "BookA"},
+                    {"id": 1052, "description": "ThesisC"}
+                ]
+            }
         }
         layer_id = self.post(layer, add_suffix_to_uri="/create")
 
@@ -354,7 +379,7 @@ class TestAPITemporalColumns(RequestTester):
 
         # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, layer_id=layer_id)
+        self.get(expected, id=layer_id)
 
         # check if the temporal columns does not exist
         self.set_urn(self.base_urn_tc)
@@ -375,10 +400,23 @@ class TestAPITemporalColumns(RequestTester):
         ##################################################
         self.set_urn(self.base_urn_layer)
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]},
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": f_table_name,
+                "name": "Addresses in 1930", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [
+                    {"id": 1041, "name": "address"},
+                    {"id": 1001, "name": "generic"}
+                ],
+                "references": [
+                    {"id": 1050, "description": "BookA"},
+                    {"id": 1052, "description": "ThesisC"}
+                ]
+            }
         }
         layer_id = self.post(layer, add_suffix_to_uri="/create")
 
@@ -430,7 +468,7 @@ class TestAPITemporalColumns(RequestTester):
 
         # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, layer_id=layer_id)
+        self.get(expected, id=layer_id)
 
         # check if the temporal columns does not exist
         self.set_urn(self.base_urn_tc)
@@ -451,10 +489,23 @@ class TestAPITemporalColumns(RequestTester):
         ##################################################
         self.set_urn(self.base_urn_layer)
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [1050, 1052], 'keyword': [1001, 1041]}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": f_table_name,
+                "name": "Addresses in 1930", "description": "", "source_description": "",
+                "collaborators": [
+                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                ],
+                "keywords": [
+                    {"id": 1041, "name": "address"},
+                    {"id": 1001, "name": "generic"}
+                ],
+                "references": [
+                    {"id": 1050, "description": "BookA"},
+                    {"id": 1052, "description": "ThesisC"}
+                ]
+            }
         }
         layer_id = self.post(layer, add_suffix_to_uri="/create")
 
@@ -498,7 +549,7 @@ class TestAPITemporalColumns(RequestTester):
 
         # check if the layer does not exist
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, layer_id=layer_id)
+        self.get(expected, id=layer_id)
 
         # check if the temporal columns does not exist
         self.set_urn(self.base_urn_tc)

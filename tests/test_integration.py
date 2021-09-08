@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from unittest import TestCase
 from util.tester import UtilTester
@@ -14,18 +13,27 @@ class TestAPIIntegration(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        f_table_name = "addresses_1930"
+        f_table_name = "test_addresses_1930"
 
         ##################################################
         # create a layer
         ##################################################
         layer = {
-            'type': 'Layer',
-            'properties': {'layer_id': -1, 'f_table_name': f_table_name, 'name': 'Addresses in 1930',
-                           'description': '', 'source_description': '',
-                           'reference': [], 'keyword': []}
+            "type": "Layer",
+            "properties": {
+                "id": -1, "f_table_name": f_table_name,
+                "name": "Addresses in 1930", "description": "", "source_description": "",
+                "collaborators": [],
+                "keywords": [],
+                "references": []
+            }
         }
         layer_id = self.tester.api_layer_create(layer)
+
+        # I add myself as a collaborator user
+        layer["properties"]["collaborators"].append(
+            {"id": 1003, "name": "Miguel", 'is_the_creator': True}
+        )
 
         ##################################################
         # create the feature_table for the layer above
@@ -56,11 +64,11 @@ class TestAPIIntegration(TestCase):
         ##################################################
         # update the layer
         ##################################################
-        layer["properties"]["layer_id"] = layer_id
+        layer["properties"]["id"] = layer_id
         layer["properties"]["name"] = "Some addresses"
         layer["properties"]["description"] = "Addresses"
-        layer["properties"]["reference"] = [1050, 1052]
-        layer["properties"]["keyword"] = [1001, 1041]
+        layer["properties"]["references"] = [{"id": 1050, "description": "BookA"}]
+        layer["properties"]["keywords"] = [{"id": 1001, "name": "generic"}]
         self.tester.api_layer_update(layer)
 
         ##################################################
@@ -86,7 +94,7 @@ class TestAPIIntegration(TestCase):
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_layer(expected, layer_id=layer_id)
+        self.tester.api_layer(expected, id=layer_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
