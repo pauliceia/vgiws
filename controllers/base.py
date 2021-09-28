@@ -1,9 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-"""
-    Responsible module to create base handlers.
-"""
+"""Module to create base handlers."""
 
 from os import listdir, makedirs, remove as remove_file
 from os.path import exists, isdir, isfile, getsize as get_file_size, join, sep as os_separator
@@ -269,7 +265,7 @@ class BaseHandler(RequestHandler):
         if not user_in_db["features"]:  # if the list is empty
             # ... because I expected a 404 to create a new user
             id_in_json = self.PGSQLConn.create_user(user_json, verified_social_login_email=verified_social_login_email)
-            user_in_db = self.PGSQLConn.get_users(user_id=str(id_in_json["user_id"]))
+            user_in_db = self.PGSQLConn.get_users(id=str(id_in_json["user_id"]))
 
         encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
 
@@ -297,7 +293,7 @@ class BaseHandler(RequestHandler):
     def get_current_user_id(self):
         try:
             current_user = self.get_current_user_()
-            return current_user["properties"]["user_id"]
+            return current_user["properties"]["id"]
         except KeyError:
             return None
             # raise HTTPError(500, "Problem when get the current user. Please, contact the administrator.")
@@ -357,7 +353,7 @@ Please, click on under URL to validate your email:
             #
             # # get the user information of the collaborators
             # for user_layer in users_layer["features"]:
-            #     user = self.PGSQLConn.get_users(user_id=user_layer["properties"]["user_id"])["features"][0]
+            #     user = self.PGSQLConn.get_users(id=user_layer["properties"]["user_id"])["features"][0]
             #     users["features"].append(user)
 
             # (2.1) everybody who follows the layer, will receive a notification by email
@@ -366,7 +362,7 @@ Please, click on under URL to validate your email:
 
             # get the user information of the collaborators
             for user_follow_layer in users_follow_layer["features"]:
-                user = self.PGSQLConn.get_users(user_id=user_follow_layer["properties"]["user_id"])["features"][0]
+                user = self.PGSQLConn.get_users(id=user_follow_layer["properties"]["user_id"])["features"][0]
                 users["features"].append(user)
 
         # TODO: (3) notification by keyword: everybody who follows the keyword, will receive a notification by email
@@ -376,7 +372,7 @@ Please, click on under URL to validate your email:
         return users
 
     def send_email_to_selected_users(self, users_to_send_email, current_user_id, resource_json):
-        user_that_is_sending_email = self.PGSQLConn.get_users(user_id=current_user_id)["features"][0]
+        user_that_is_sending_email = self.PGSQLConn.get_users(id=current_user_id)["features"][0]
 
         subject = "Notification - Not reply"
         body = """
@@ -475,7 +471,7 @@ class BaseHandlerSocialLogin(BaseHandler):
 
         user_json = {
             'type': 'User',
-            'properties': {'user_id': -1, 'email': user["email"], 'password': '', 'username': user["email"],
+            'properties': {'id': -1, 'email': user["email"], 'password': '', 'username': user["email"],
                            'name': user['name'], 'terms_agreed': True, 'receive_notification_by_email': False,
                            'picture': picture, 'social_id': user['id'], 'social_account': social_account}
         }
@@ -706,7 +702,14 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _put_resource(self, resource_json, current_user_id, **kwargs):
         self.can_current_user_update(current_user_id, resource_json)
 
-        return self.PGSQLConn.update_user(resource_json, current_user_id, **kwargs)
+        self.PGSQLConn.update_user(resource_json, current_user_id, **kwargs)
+
+        # get updated user information in order to return an updated token
+        user_in_db = self.PGSQLConn.get_users(email=resource_json['properties']['email'])
+        # create new token with updated user information
+        encoded_jwt_token = generate_encoded_jwt_token(user_in_db["features"][0])
+
+        self.set_header('Authorization', encoded_jwt_token)
 
     # DELETE
 
@@ -725,7 +728,7 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
         :return:
         """
 
-        if current_user_id == resource_json["properties"]["user_id"]:
+        if current_user_id == resource_json["properties"]["id"]:
             return
 
         if self.is_current_user_an_administrator():
@@ -1180,12 +1183,12 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)['reference_id']
+        return self.PGSQLConn.create_reference(resource_json, current_user_id, **kwargs)
 
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_update_or_delete(current_user_id, resource_json["properties"]["reference_id"])
+        self.can_current_user_update_or_delete(current_user_id, resource_json["properties"]["id"])
 
         return self.PGSQLConn.update_reference(resource_json, current_user_id, **kwargs)
 
@@ -1215,17 +1218,17 @@ class BaseHandlerReference(BaseHandlerTemplateMethod):
         :return:
         """
 
-        # if the current user is admin, so ok...
-        if self.is_current_user_an_administrator():
-            return
-
-        references = self.PGSQLConn.get_references(reference_id=reference_id)
+        references = self.PGSQLConn.get_references(id=reference_id)
 
         if not references["features"]:  # if the list is empty
             raise HTTPError(404, "Not found any resource.")
 
         # if the current_user_id is the creator of the reference, then ok...
         if references["features"][0]["properties"]['user_id_creator'] == current_user_id:
+            return
+
+        # if the current user is admin, so ok...
+        if self.is_current_user_an_administrator():
             return
 
         try:
@@ -1264,7 +1267,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        keyword_id = resource_json["properties"]["keyword_id"]
+        keyword_id = resource_json["properties"]["id"]
         self.can_current_user_update_or_delete(current_user_id, keyword_id)
 
         return self.PGSQLConn.update_keyword(resource_json, current_user_id, **kwargs)
@@ -1291,7 +1294,7 @@ class BaseHandlerKeyword(BaseHandlerTemplateMethod):
         if self.is_current_user_an_administrator():
             return
 
-        # keywords = self.PGSQLConn.get_keywords(keyword_id=keyword_id)
+        # keywords = self.PGSQLConn.get_keywords(id=keyword_id)
         #
         # # if the current user is the creator of the reference, so ok...
         # if keywords["features"][0]["properties"]['user_id_creator'] == current_user_id:
@@ -1325,7 +1328,10 @@ class BaseHandlerChangeset(BaseHandlerTemplateMethod):
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
         self.can_current_user_delete()
-        self.PGSQLConn.delete_changeset(**kwargs)
+
+        changeset_id = kwargs['id'] if 'id' in kwargs else None
+
+        self.PGSQLConn.delete_changeset(changeset_id=changeset_id)
 
     # VALIDATION
 
@@ -1364,16 +1370,20 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # PUT
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
-        self.can_current_user_update_or_delete_notification(current_user_id, resource_json["properties"]["notification_id"])
+        self.can_current_user_update_or_delete_notification(
+            current_user_id, resource_json["properties"]["id"]
+        )
 
         return self.PGSQLConn.update_notification(resource_json, current_user_id, **kwargs)
 
     # DELETE
 
     def _delete_resource(self, current_user_id, *args, **kwargs):
-        self.can_current_user_update_or_delete_notification(current_user_id, **kwargs)
+        notification_id = kwargs['id'] if 'id' in kwargs else None
 
-        self.PGSQLConn.delete_notification(**kwargs)
+        self.can_current_user_update_or_delete_notification(current_user_id, notification_id)
+
+        self.PGSQLConn.delete_notification(id=notification_id)
 
     # VALIDATION
 
@@ -1383,18 +1393,22 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
         :return:
         """
 
+        notifications = self.PGSQLConn.get_notification(id=notification_id)
+
+        if not notifications["features"]:  # if list is empty
+            raise HTTPError(404, f"Not found notification `{notification_id}`.")
+
         # if current user is an administrator, so ok ...
         if self.is_current_user_an_administrator():
             return
 
-        notification = self.PGSQLConn.get_notification(notification_id=notification_id)
-
         # if the current_user_id is the creator of the notification, so ok...
-        if notification["features"][0]["properties"]['user_id_creator'] == current_user_id:
+        if notifications["features"][0]["properties"]['user_id_creator'] == current_user_id:
             return
 
         # ... else, raise an exception.
-        raise HTTPError(403, "The owner of notification or administrator are who can update/delete a notification.")
+        raise HTTPError(403, "The owner of notification or administrator are "
+                             "who can update/delete a notification.")
 
 
 class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
@@ -1441,7 +1455,7 @@ class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
     #     if self.is_current_user_an_administrator():
     #         return
     #
-    #     notification = self.PGSQLConn.get_notification(notification_id=notification_id)
+    #     notification = self.PGSQLConn.get_notification(id=notification_id)
     #
     #     # if the current_user_id is the creator of the notification, so ok...
     #     if notification["features"][0]["properties"]['user_id_creator'] == current_user_id:
