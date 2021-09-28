@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from os import listdir, rename
 from os.path import isfile, join
@@ -51,18 +49,18 @@ def auth_non_browser_based(method):
         if "Authorization" in self.request.headers:
             try:
                 token = self.request.headers["Authorization"]
-                decoded_token = get_decoded_jwt_token(token)
+                decoded_token = get_decoded_jwt_token(token)['properties']
 
                 # try to search by the logged user in order to check if he exists
                 users = self.PGSQLConn.get_users(
-                    user_id=decoded_token['properties']['user_id'],
-                    username=decoded_token['properties']['username'],
-                    name=decoded_token['properties']['name'],
-                    email=decoded_token['properties']['email']
+                    id=decoded_token['id'],
+                    username=decoded_token['username'],
+                    name=decoded_token['name'],
+                    email=decoded_token['email']
                 )
 
                 if not users["features"]:  # if list is empty:
-                    raise HTTPError(404, "Not found the user `{0}`.".format(decoded_token['properties']['user_id']))
+                    raise HTTPError(404, f"Not found the user `{decoded_token['email']}`.")
             except HTTPError as error:
                 raise error
             except Exception as error:
