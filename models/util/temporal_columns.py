@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_temporal_columns_table(**kwargs):
     # DEFAULT WHERE
@@ -31,10 +28,17 @@ def get_subquery_temporal_columns_table(**kwargs):
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
     # default get all features
-    subquery_table = """
+    subquery_table = f"""
         (
-            SELECT * FROM temporal_columns {0} ORDER BY f_table_name
-        ) AS temporal_columns
-    """.format(where_clause)
+            SELECT tc.*, m1.mask as start_date_mask, m2.mask as end_date_mask
+            FROM temporal_columns tc
+            LEFT JOIN mask m1
+                ON tc.start_date_mask_id = m1.mask_id
+            LEFT JOIN mask m2
+                ON tc.end_date_mask_id = m2.mask_id
+            {where_clause}
+            ORDER BY tc.f_table_name
+        ) AS tc
+    """
 
     return subquery_table

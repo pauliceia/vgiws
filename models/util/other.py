@@ -1,14 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_mask_table(**kwargs):
     # DEFAULT WHERE
     conditions_of_where = []
 
     # conditions of WHERE CLAUSE
-    if "mask_id" in kwargs and kwargs["mask_id"] is not None:
-        conditions_of_where.append("mask_id = {0}".format(kwargs["mask_id"]))
+    if "id" in kwargs and kwargs["id"] is not None:
+        conditions_of_where.append("mask_id = {0}".format(kwargs["id"]))
 
     # default get all resources, without where clause
     where_clause = ""
@@ -18,10 +15,10 @@ def get_subquery_mask_table(**kwargs):
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
     # default get all resources, ordering by id
-    subquery_table = """
+    subquery_table = f"""
         (
-            SELECT * FROM mask {0} ORDER BY mask_id
+            SELECT mask_id as id, mask FROM mask {where_clause} ORDER BY mask_id
         ) AS mask
-    """.format(where_clause)
+    """
 
     return subquery_table

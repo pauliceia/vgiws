@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_changeset_table(**kwargs):
     # DEFAULT WHERE
@@ -8,8 +5,8 @@ def get_subquery_changeset_table(**kwargs):
     conditions_of_where = []
 
     # conditions of WHERE CLAUSE
-    if "changeset_id" in kwargs and kwargs["changeset_id"] is not None:
-        conditions_of_where.append("changeset_id = {0}".format(kwargs["changeset_id"]))
+    if "id" in kwargs and kwargs["id"] is not None:
+        conditions_of_where.append("changeset_id = {0}".format(kwargs["id"]))
     if "layer_id" in kwargs and kwargs["layer_id"] is not None:
         conditions_of_where.append("layer_id = {0}".format(kwargs["layer_id"]))
     if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
@@ -28,10 +25,10 @@ def get_subquery_changeset_table(**kwargs):
     if conditions_of_where:
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
-    subquery_table = """
+    subquery_table = f"""
         (
-            SELECT * FROM changeset {0} ORDER BY changeset_id 
+            SELECT * FROM changeset {where_clause} ORDER BY changeset_id
         ) AS changeset
-    """.format(where_clause)
+    """
 
     return subquery_table

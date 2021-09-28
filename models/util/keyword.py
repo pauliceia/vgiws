@@ -1,17 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_keyword_table(**kwargs):
     # DEFAULT WHERE
     conditions_of_where = []
 
     # conditions of WHERE CLAUSE
-    if "keyword_id" in kwargs and kwargs["keyword_id"] is not None:
-        conditions_of_where.append("keyword_id = {0}".format(kwargs["keyword_id"]))
+    if "id" in kwargs and kwargs["id"] is not None:
+        conditions_of_where.append("keyword_id = {0}".format(kwargs["id"]))
 
     if "name" in kwargs and kwargs["name"] is not None:
-        conditions_of_where.append("unaccent(LOWER(name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["name"]))
+        conditions_of_where.append("unaccent(LOWER(k.name)) LIKE '%' || unaccent(LOWER('{0}')) || '%'".format(kwargs["name"]))
 
     if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
         conditions_of_where.append("user_id_creator = {0}".format(kwargs["user_id_creator"]))
@@ -24,10 +21,15 @@ def get_subquery_keyword_table(**kwargs):
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
     # default get all resources, ordering by id
-    subquery_table = """
+    subquery_table = f"""
         (
-            SELECT * FROM keyword {0} ORDER BY keyword_id
+            SELECT k.*, u.name as user_name, u.username
+            FROM keyword k
+            LEFT JOIN pauliceia_user u
+                ON k.user_id_creator = u.user_id
+            {where_clause}
+            ORDER BY keyword_id
         ) AS keyword
-    """.format(where_clause)
+    """
 
     return subquery_table

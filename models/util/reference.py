@@ -1,14 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 def get_subquery_reference_table(**kwargs):
     # DEFAULT WHERE
     conditions_of_where = []
 
     # conditions of WHERE CLAUSE
-    if "reference_id" in kwargs and kwargs["reference_id"] is not None:
-        conditions_of_where.append("reference_id = {0}".format(kwargs["reference_id"]))
+    if "id" in kwargs and kwargs["id"] is not None:
+        conditions_of_where.append("reference_id = {0}".format(kwargs["id"]))
 
     if "user_id_creator" in kwargs and kwargs["user_id_creator"] is not None:
         conditions_of_where.append("user_id_creator = {0}".format(kwargs["user_id_creator"]))
@@ -24,10 +21,10 @@ def get_subquery_reference_table(**kwargs):
         where_clause = "WHERE " + " AND ".join(conditions_of_where)
 
     # default get all resources, ordering by id
-    subquery_table = """
+    subquery_table = f"""
         (
-            SELECT * FROM reference {0} ORDER BY reference_id
+            SELECT * FROM reference {where_clause} ORDER BY reference_id
         ) AS reference
-    """.format(where_clause)
+    """
 
     return subquery_table
