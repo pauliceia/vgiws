@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester, get_string_in_hash_sha512
 

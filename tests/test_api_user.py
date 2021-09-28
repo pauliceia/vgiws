@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from modules import generate_random_string
 from modules.common import generate_encoded_jwt_token
@@ -20,7 +19,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
-                                   'username': 'admin', 'user_id': 1001, 'email': 'admin@admin.com',
+                                   'username': 'admin', 'id': 1001, 'email': 'admin@admin.com',
                                    'name': 'Administrator', 'is_the_admin': True,
                                    'created_at': '2017-01-01 00:00:00', 'login_date': '2017-01-01T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -28,7 +27,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
-                                   'username': 'rodrigo', 'user_id': 1002, 'email': 'rodrigo@admin.com',
+                                   'username': 'rodrigo', 'id': 1002, 'email': 'rodrigo@admin.com',
                                    'name': 'Rodrigo', 'is_the_admin': True,
                                    'created_at': '2017-03-03 00:00:00', 'login_date': '2017-03-03T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -36,7 +35,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
-                                   'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
+                                   'username': 'miguel', 'id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -44,7 +43,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
+                                   'username': 'rafael', 'id': 1004, 'email': 'rafael@admin.com',
                                    'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -52,7 +51,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
+                                   'username': 'gabriel', 'id': 1005, 'email': 'gabriel@admin.com',
                                    'name': 'Gabriel', 'is_the_admin': False,
                                    'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
                                    'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -60,7 +59,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'fernanda', 'user_id': 1006, 'email': 'fernanda@admin.com',
+                                   'username': 'fernanda', 'id': 1006, 'email': 'fernanda@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-19 00:00:00', 'login_date': '2017-01-19T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -68,7 +67,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': True,
-                                   'username': 'ana', 'user_id': 1007, 'email': 'ana@admin.com',
+                                   'username': 'ana', 'id': 1007, 'email': 'ana@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-18 00:00:00', 'login_date': '2017-01-18T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -76,7 +75,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': False, 'terms_agreed': False,
-                                   'username': 'bea', 'user_id': 1008, 'email': 'bea@admin.com',
+                                   'username': 'bea', 'id': 1008, 'email': 'bea@admin.com',
                                    'name': None, 'is_the_admin': False,
                                    'created_at': '2017-01-30 00:00:00', 'login_date': '2017-01-30T00:00:00',
                                    'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -90,7 +89,7 @@ class TestAPIUser(RequestTester):
         expected = {
             'features': [
                 {'properties': {'name': 'Rodrigo', 'login_date': '2017-03-03T00:00:00', 'terms_agreed': True,
-                                'receive_notification_by_email': True, 'user_id': 1002, 'username': 'rodrigo',
+                                'receive_notification_by_email': True, 'id': 1002, 'username': 'rodrigo',
                                 'is_email_valid': True, 'is_the_admin': True, 'email': 'rodrigo@admin.com',
                                 'created_at': '2017-03-03 00:00:00', 'picture': '', 'social_id': '', 'social_account': ''},
                  'type': 'User'}
@@ -98,7 +97,7 @@ class TestAPIUser(RequestTester):
             'type': 'FeatureCollection'
         }
 
-        self.get(expected, user_id="1002")
+        self.get(expected, id="1002")
 
     def test__get_api_user__return_users_by_name(self):
         expected = {
@@ -107,7 +106,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
-                                   'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
+                                   'username': 'miguel', 'id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -115,7 +114,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
+                                   'username': 'rafael', 'id': 1004, 'email': 'rafael@admin.com',
                                    'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -123,7 +122,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'gabriel', 'user_id': 1005, 'email': 'gabriel@admin.com',
+                                   'username': 'gabriel', 'id': 1005, 'email': 'gabriel@admin.com',
                                    'name': 'Gabriel', 'is_the_admin': False,
                                    'created_at': '2017-09-20 00:00:00', 'login_date': '2017-09-20T00:00:00',
                                    'is_email_valid': False, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -140,7 +139,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': False,
-                                   'username': 'rafael', 'user_id': 1004, 'email': 'rafael@admin.com',
+                                   'username': 'rafael', 'id': 1004, 'email': 'rafael@admin.com',
                                    'name': 'Rafael', 'is_the_admin': False,
                                    'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -157,7 +156,7 @@ class TestAPIUser(RequestTester):
                 {
                     'type': 'User',
                     'properties': {'receive_notification_by_email': True, 'terms_agreed': True,
-                                   'username': 'miguel', 'user_id': 1003, 'email': 'miguel@admin.com',
+                                   'username': 'miguel', 'id': 1003, 'email': 'miguel@admin.com',
                                    'name': 'Miguel', 'is_the_admin': False,
                                    'created_at': '2017-05-08 00:00:00', 'login_date': '2017-05-08T00:00:00',
                                    'is_email_valid': True, 'picture': '', 'social_id': '', 'social_account': ''}
@@ -170,8 +169,8 @@ class TestAPIUser(RequestTester):
     def test__get_api_user__return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.get(expected, user_id="999")
-        self.get(expected, user_id="998")
+        self.get(expected, id="999")
+        self.get(expected, id="998")
 
     # user - create, update and delete
 
@@ -187,13 +186,13 @@ class TestAPIUser(RequestTester):
         resource = {
             'type': 'User',
             'properties': {
-                'user_id': None, 'email': email, 'password': get_string_in_hash_sha512(password),
+                'id': None, 'email': email, 'password': get_string_in_hash_sha512(password),
                 'username': username, 'name': 'Roger',
                 'terms_agreed': True, 'receive_notification_by_email': False
             }
         }
         resource_id = self.post(resource, add_suffix_to_uri="/create")
-        resource["properties"]["user_id"] = resource_id
+        resource["properties"]["id"] = resource_id
 
         ##################################################
         # validate the email
@@ -201,14 +200,14 @@ class TestAPIUser(RequestTester):
         token = generate_encoded_jwt_token({'user_id': resource_id})
 
         # check if the user is with an invalidated email
-        user = self.get(user_id=resource_id)
+        user = self.get(id=resource_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
         # then, the user validate his email
         self._get(URI=f'/api/validate_email/{token}')
 
         # check if the user is with an validated email
-        user = self.get(user_id=resource_id)
+        user = self.get(id=resource_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
 
         ##################################################
@@ -229,7 +228,7 @@ class TestAPIUser(RequestTester):
         del resource["properties"]["password"]  # remove the password, because it is not needed to compare
 
         expected = {'type': 'FeatureCollection', 'features': [resource]}
-        self.get(expected_at_least=expected, user_id=resource_id)
+        self.get(expected_at_least=expected, id=resource_id)
 
         ##################################################
         # logout with the created user and log in with a admin user (who can update/delete a user)
@@ -248,7 +247,7 @@ class TestAPIUser(RequestTester):
         # check if the resource was modified
         ##################################################
         expected = {'type': 'FeatureCollection', 'features': [resource]}
-        self.get(expected_at_least=expected, user_id=resource_id)
+        self.get(expected_at_least=expected, id=resource_id)
 
         ##################################################
         # delete the user with an administrator
@@ -258,7 +257,7 @@ class TestAPIUser(RequestTester):
 
         # check if the user was deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, user_id=resource_id)
+        self.get(expected, id=resource_id)
 
         self.auth_logout()
 
@@ -272,7 +271,7 @@ class TestAPIUserErrors(RequestTester):
 
     def test__get_api_user__400_bad_request(self):
         for item in ["abc", 0, -1, "-1", "0"]:
-            self.get(user_id=item, status_code=400, expected_text="Invalid parameter.")
+            self.get(id=item, status_code=400, expected_text="Invalid parameter.")
 
     # user errors - create
 
@@ -332,7 +331,7 @@ class TestAPIUserErrors(RequestTester):
         # try to create a resource with email that already exists
         resource = {
             'type': 'User',
-            'properties': {'user_id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+            'properties': {'id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
         self.put(
@@ -343,7 +342,7 @@ class TestAPIUserErrors(RequestTester):
         # try to create a resource with username that already exists
         resource = {
             'type': 'User',
-            'properties': {'user_id': 1005, 'username': 'admin', 'email': "gabriel@admin.com", 'name': 'Gabriel',
+            'properties': {'id': 1005, 'username': 'admin', 'email': "gabriel@admin.com", 'name': 'Gabriel',
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
         self.put(
@@ -356,7 +355,7 @@ class TestAPIUserErrors(RequestTester):
     def test__put_api_user__400_bad_request__attribute_in_JSON_is_missing(self):
         self.auth_login("admin@admin.com", "admin")
 
-        # try to update a user without user_id
+        # try to update a user without user id
         resource = {
             'type': 'User',
             'properties': {'email': "gabriel@admin.com", 'name': 'Gabriel',
@@ -365,13 +364,13 @@ class TestAPIUserErrors(RequestTester):
         self.put(
             resource, status_code=400,
             expected_text=("Some attribute in the JSON is missing. "
-                           "Look at the documentation! (error: 'user_id' is missing)")
+                           "Look at the documentation! (error: 'id' is missing)")
         )
 
         # try to update a user without username
         resource = {
             'type': 'User',
-            'properties': {'user_id': 1005, 'email': "gabriel@admin.com", 'name': 'Gabriel',
+            'properties': {'id': 1005, 'email': "gabriel@admin.com", 'name': 'Gabriel',
                            'receive_notification_by_email': False}
         }
         self.put(
@@ -383,7 +382,7 @@ class TestAPIUserErrors(RequestTester):
         # try to update a user without email
         resource = {
             'type': 'User',
-            'properties': {'user_id': 1005, 'username': 'gabriel', 'name': 'Gabriel',
+            'properties': {'id': 1005, 'username': 'gabriel', 'name': 'Gabriel',
                            'receive_notification_by_email': False}
         }
         self.put(
@@ -411,7 +410,7 @@ class TestAPIUserErrors(RequestTester):
         # try to update a user with an invalid user
         resource = {
             'type': 'User',
-            'properties': {'user_id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+            'properties': {'id': 1005, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
         self.put(
@@ -427,7 +426,7 @@ class TestAPIUserErrors(RequestTester):
         # try to update a non-existent user
         resource = {
             'type': 'User',
-            'properties': {'user_id': 999, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
+            'properties': {'id': 999, 'email': "admin@admin.com", 'username': 'gabriel', 'name': 'Gabriel',
                            'terms_agreed': True, 'receive_notification_by_email': False}
         }
         self.put(

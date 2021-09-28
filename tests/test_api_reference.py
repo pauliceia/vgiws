@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
 
@@ -16,39 +15,39 @@ class TestAPIReference(RequestTester):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'id': 1001, 'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'id': 1002, 'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1005, 'reference_id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1005, 'id': 1010, 'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1007, 'reference_id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1007, 'id': 1025, 'description': '@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                    'properties': {'user_id_creator': 1001, 'id': 1050, 'description': 'BookA'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1002, 'reference_id': 1051, 'description': 'ArticleB'}
+                    'properties': {'user_id_creator': 1002, 'id': 1051, 'description': 'ArticleB'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1003, 'reference_id': 1052, 'description': 'ThesisC'}
+                    'properties': {'user_id_creator': 1003, 'id': 1052, 'description': 'ThesisC'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1003, 'reference_id': 1053, 'description': 'DissertationD'}
+                    'properties': {'user_id_creator': 1003, 'id': 1053, 'description': 'DissertationD'}
                 }
             ]
         }
@@ -61,13 +60,13 @@ class TestAPIReference(RequestTester):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1001,
+                    'properties': {'user_id_creator': 1001, 'id': 1001,
                                    'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 }
             ]
         }
 
-        self.get(expected, reference_id="1001")
+        self.get(expected, id="1001")
 
     def test__get_api_reference__return_reference_by_user_id_creator(self):
         expected = {
@@ -75,21 +74,21 @@ class TestAPIReference(RequestTester):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1001,
+                    'properties': {'user_id_creator': 1001, 'id': 1001,
                                    'description': '@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1002,
+                    'properties': {'user_id_creator': 1001, 'id': 1002,
                                    'description': '@Misc{ana2017article2,\nauthor = {Ana},\ntitle = {Article2},\nhowpublished = {\\url{http://www.myhost.org/}},\nnote = {Accessed on 05/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1050, 'description': 'BookA'}
+                    'properties': {'user_id_creator': 1001, 'id': 1050, 'description': 'BookA'}
                 }
             ]
         }
@@ -102,11 +101,11 @@ class TestAPIReference(RequestTester):
             'features': [
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1001, 'reference_id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
+                    'properties': {'user_id_creator': 1001, 'id': 1005, 'description': '@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 },
                 {
                     'type': 'Reference',
-                    'properties': {'user_id_creator': 1005, 'reference_id': 1010,
+                    'properties': {'user_id_creator': 1005, 'id': 1010,
                                    'description': '@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}'}
                 }
             ]
@@ -117,8 +116,8 @@ class TestAPIReference(RequestTester):
     def test__get_api_reference__return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.get(expected, reference_id="999")
-        self.get(expected, reference_id="998")
+        self.get(expected, id="999")
+        self.get(expected, id="998")
 
         self.get(expected, user_id_creator="999")
         self.get(expected, user_id_creator="998")
@@ -136,7 +135,7 @@ class TestAPIReference(RequestTester):
             'properties': {'description': 'ArticleA'}
         }
         resource_id = self.post(resource, add_suffix_to_uri="/create")
-        resource["properties"]["reference_id"] = resource_id
+        resource["properties"]["id"] = resource_id
 
         ##################################################
         # update the reference
@@ -148,7 +147,7 @@ class TestAPIReference(RequestTester):
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.get(expected_at_least=expected_resource, reference_id=resource_id)
+        self.get(expected_at_least=expected_resource, id=resource_id)
 
         ##################################################
         # remove the reference
@@ -158,7 +157,7 @@ class TestAPIReference(RequestTester):
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, reference_id=resource_id)
+        self.get(expected, id=resource_id)
 
         self.auth_logout()
 
@@ -173,7 +172,7 @@ class TestAPIReference(RequestTester):
             'properties': {'description': 'ArticleA'}
         }
         resource_id = self.post(resource, add_suffix_to_uri="/create")
-        resource["properties"]["reference_id"] = resource_id
+        resource["properties"]["id"] = resource_id
 
         # logout with gabriel and login with admin user
         self.auth_logout()
@@ -189,7 +188,7 @@ class TestAPIReference(RequestTester):
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.get(expected_at_least=expected_resource, reference_id=resource_id)
+        self.get(expected_at_least=expected_resource, id=resource_id)
 
         ##################################################
         # remove the reference
@@ -199,7 +198,7 @@ class TestAPIReference(RequestTester):
 
         # it is not possible to find the resource that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.get(expected, reference_id=resource_id)
+        self.get(expected, id=resource_id)
 
 
         self.auth_logout()
@@ -219,7 +218,7 @@ class TestAPIReferenceErrors(RequestTester):
         }
 
         for item in ["abc", 0, -1, "-1", "0"]:
-            self.get(reference_id=item, **expected)
+            self.get(id=item, **expected)
             self.get(user_id_creator=item, **expected)
 
     # reference errors - create
@@ -274,7 +273,7 @@ class TestAPIReferenceErrors(RequestTester):
     #     ##################################################
     #     resource = {
     #         'type': 'Reference',
-    #         'properties': {'reference_id': 1051, 'description': 'ThesisC'}
+    #         'properties': {'id': 1051, 'description': 'ThesisC'}
     #     }
     #     self.tester.api_reference_update_error_400_bad_request(resource)
     #
@@ -283,7 +282,7 @@ class TestAPIReferenceErrors(RequestTester):
     def test__put_api_reference__400_bad_request__attribute_in_JSON_is_missing(self):
         self.auth_login("rodrigo@admin.com", "rodrigo")
 
-        # try to update a layer (without reference_id)
+        # try to update a layer (without reference id)
         resource = {
             'type': 'Reference',
             'properties': {'description': 'BookA'}
@@ -291,13 +290,13 @@ class TestAPIReferenceErrors(RequestTester):
         self.put(
             resource, status_code=400,
             expected_text=("Some attribute in the JSON is missing. "
-                           "Look at the documentation! (error: 'reference_id' is missing)")
+                           "Look at the documentation! (error: 'id' is missing)")
         )
 
         # try to update a layer (without description)
         resource = {
             'type': 'Reference',
-            'properties': {'reference_id': 1001}
+            'properties': {'id': 1001}
         }
         self.put(
             resource, status_code=400,
@@ -309,7 +308,7 @@ class TestAPIReferenceErrors(RequestTester):
 
     def test__put_api_reference__401_unauthorized(self):
         resource = {
-            'properties': {'reference_id': 1001, 'description': 'BookA'},
+            'properties': {'id': 1001, 'description': 'BookA'},
             'type': 'Reference'
         }
         self.put(
@@ -325,7 +324,7 @@ class TestAPIReferenceErrors(RequestTester):
         ##################################################
         resource = {
             'type': 'Reference',
-            'properties': {'reference_id': 1051, 'description': 'SomeArticleB'}
+            'properties': {'id': 1051, 'description': 'SomeArticleB'}
         }
         self.put(
             resource, status_code=403,
@@ -340,7 +339,7 @@ class TestAPIReferenceErrors(RequestTester):
 
         resource = {
             'type': 'Reference',
-            'properties': {'reference_id': 999, 'description': 'SomeArticleB'}
+            'properties': {'id': 999, 'description': 'SomeArticleB'}
         }
         self.put(
             resource, status_code=404,

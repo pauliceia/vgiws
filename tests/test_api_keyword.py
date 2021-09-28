@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
 
@@ -14,79 +13,163 @@ class TestAPIKeyword(RequestTester):
 
     def test__get_api_keyword__return_all_keywords(self):
         expected = {
-            'features': [
+            "features": [
                 {
-                    'properties': {'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1001,
+                        "name": "generic",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'event', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1002,
+                        "name": "event",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'crime', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1003,
+                        "name": "crime",
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1002
+                    }
                 },
                 {
-                    'properties': {'name': 'assault', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1004,
+                        "name": "assault",
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1002
+                    }
                 },
                 {
-                    'properties': {'name': 'robbery', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1005},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1005,
+                        "name": "robbery",
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1002
+                    }
                 },
                 {
-                    'properties': {'name': 'disease', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1010,
+                        "name": "disease",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'object', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1020,
+                        "name": "object",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'building', 'user_id_creator': 1003,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1021},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1021,
+                        "name": "building",
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1003
+                    }
                 },
                 {
-                    'properties': {'name': 'school', 'user_id_creator': 1003,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1022},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1022,
+                        "name": "school",
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1003
+                    }
                 },
                 {
-                    'properties': {'name': 'hospital', 'user_id_creator': 1003,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1023},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1023,
+                        "name": "hospital",
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1003
+                    }
                 },
                 {
-                    'properties': {'name': 'cultural place', 'user_id_creator': 1003,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1030},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1030,
+                        "name": "cultural place",
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1003
+                    }
                 },
                 {
-                    'properties': {'name': 'cinema', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1031,
+                        "name": "cinema",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'street', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1040,
+                        "name": "street",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'address', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1041,
+                        "name": "address",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 }
             ],
-            'type': 'FeatureCollection'
+            "type": "FeatureCollection"
         }
 
         self.get(expected)
@@ -95,75 +178,135 @@ class TestAPIKeyword(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'name': 'crime', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1003},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1003,
+                        "name": "crime",
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1002
+                    }
                 },
             ],
             'type': 'FeatureCollection'
         }
 
-        self.get(expected, keyword_id="1003")
+        self.get(expected, id="1003")
 
     def test__get_api_keyword__return_keyword_by_user_id_creator(self):
         expected = {
-            'features': [
+            "type": "FeatureCollection",
+            "features": [
                 {
-                    'properties': {'name': 'generic', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1001},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1001,
+                        "name": "generic",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'event', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1002},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1002,
+                        "name": "event",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'disease', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1010,
+                        "name": "disease",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'object', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1020},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1020,
+                        "name": "object",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'cinema', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1031},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1031,
+                        "name": "cinema",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'street', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1040},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1040,
+                        "name": "street",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 },
                 {
-                    'properties': {'name': 'address', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1041},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1041,
+                        "name": "address",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.get(expected, user_id_creator="1001")
 
     def test__get_api_keyword__return_keyword_by_name(self):
         expected = {
-            'features': [
+            "type": "FeatureCollection",
+            "features": [
                 {
-                    'properties': {'name': 'assault', 'user_id_creator': 1002,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1004},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1004,
+                        "name": "assault",
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1002
+                    }
                 },
                 {
-                    'properties': {'name': 'disease', 'user_id_creator': 1001,
-                                   'created_at': '2017-01-01 00:00:00', 'keyword_id': 1010},
-                    'type': 'Keyword'
+                    "type": "Keyword",
+                    "properties": {
+                        "id": 1010,
+                        "name": "disease",
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "user_id_creator": 1001
+                    }
                 }
-            ],
-            'type': 'FeatureCollection'
+            ]
         }
 
         self.get(expected, name="As")
@@ -171,8 +314,8 @@ class TestAPIKeyword(RequestTester):
     def test__get_api_keyword__return_zero_resources(self):
         expected = {'features': [], 'type': 'FeatureCollection'}
 
-        self.get(expected, keyword_id="999")
-        self.get(expected, keyword_id="998")
+        self.get(expected, id="999")
+        self.get(expected, id="998")
 
         self.get(expected, user_id_creator="999")
         self.get(expected, user_id_creator="998")
@@ -186,11 +329,11 @@ class TestAPIKeyword(RequestTester):
         # create a keyword with user gabriel
         ##################################################
         resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword'},
+            'properties': {'id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         keyword_id = self.post(resource, add_suffix_to_uri="/create")
-        resource["properties"]["keyword_id"] = keyword_id
+        resource["properties"]["id"] = keyword_id
 
         # logout with gabriel and login with admin user
         self.auth_logout()
@@ -206,7 +349,7 @@ class TestAPIKeyword(RequestTester):
         # check if the resource was modified
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
-        self.get(expected_at_least=expected_resource, keyword_id=keyword_id)
+        self.get(expected_at_least=expected_resource, id=keyword_id)
 
         ##################################################
         # remove the keyword with admin
@@ -216,7 +359,7 @@ class TestAPIKeyword(RequestTester):
 
         # it is not possible to find the resource that just deleted
         expected = {'features': [], 'type': 'FeatureCollection'}
-        self.get(expected, keyword_id=keyword_id)
+        self.get(expected, id=keyword_id)
 
         self.auth_logout()
 
@@ -235,7 +378,7 @@ class TestAPIKeywordErrors(RequestTester):
         }
 
         for item in ["abc", 0, -1, "-1", "0"]:
-            self.get(keyword_id=item, **expected)
+            self.get(id=item, **expected)
             self.get(user_id_creator=item, **expected)
 
         # invalid argument
@@ -287,7 +430,7 @@ class TestAPIKeywordErrors(RequestTester):
 
     def test__post_api_keyword__401_unauthorized(self):
         resource = {
-            'properties': {'keyword_id': -1, 'name': 'newkeyword'},
+            'properties': {'id': -1, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         self.post(
@@ -304,7 +447,7 @@ class TestAPIKeywordErrors(RequestTester):
         # try to update the keyword with a name that already exist, raising the 400
         ##################################################
         resource = {
-            'properties': {'keyword_id': 1003, 'name': 'street'},
+            'properties': {'id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
         self.put(
@@ -325,12 +468,12 @@ class TestAPIKeywordErrors(RequestTester):
         self.put(
             resource, status_code=400,
             expected_text=("Some attribute in the JSON is missing. "
-                           "Look at the documentation! (error: 'keyword_id' is missing)")
+                           "Look at the documentation! (error: 'id' is missing)")
         )
 
         # try to update the keyword without a name, raising the 400
         resource = {
-            'properties': {'keyword_id': 1003},
+            'properties': {'id': 1003},
             'type': 'Keyword'
         }
         self.put(
@@ -343,7 +486,7 @@ class TestAPIKeywordErrors(RequestTester):
 
     def test__put_api_keyword__401_unauthorized(self):
         resource = {
-            'properties': {'keyword_id': 1001, 'name': 'newkeyword'},
+            'properties': {'id': 1001, 'name': 'newkeyword'},
             'type': 'Keyword'
         }
         self.put(
@@ -358,7 +501,7 @@ class TestAPIKeywordErrors(RequestTester):
         # gabriel tries to update one keyword that doesn't belong to him
         ##################################################
         resource = {
-            'properties': {'keyword_id': 1003, 'name': 'street'},
+            'properties': {'id': 1003, 'name': 'street'},
             'type': 'Keyword'
         }
         self.put(
@@ -372,7 +515,7 @@ class TestAPIKeywordErrors(RequestTester):
         self.auth_login("admin@admin.com", "admin")
 
         resource = {
-            'properties': {'keyword_id': 999, 'name': 'street'},
+            'properties': {'id': 999, 'name': 'street'},
             'type': 'Keyword'
         }
         self.put(

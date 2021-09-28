@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from copy import deepcopy
 from unittest import TestCase
 
 from util.tester import UtilTester
@@ -174,7 +171,7 @@ class TestAPIFeature(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -259,7 +256,7 @@ class TestAPIFeature(TestCase):
         # CLOSE THE CHANGESET
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
+            'properties': {'id': changeset_id, 'description': 'Inserting feature in layer_1003'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -270,7 +267,7 @@ class TestAPIFeature(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         ##################################################
 
@@ -285,7 +282,7 @@ class TestAPIFeature(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003},
+            'properties': {'id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -373,7 +370,7 @@ class TestAPIFeature(TestCase):
         # CLOSE THE CHANGESET
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1003'},
+            'properties': {'id': changeset_id, 'description': 'Inserting feature in layer_1003'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -384,7 +381,7 @@ class TestAPIFeature(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         ####################################################################################################
 
@@ -399,7 +396,7 @@ class TestAPIFeature(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1006},
+            'properties': {'id': -1, 'layer_id': 1006},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -484,7 +481,7 @@ class TestAPIFeature(TestCase):
         # CLOSE THE CHANGESET
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Inserting feature in layer_1006'},
+            'properties': {'id': changeset_id, 'description': 'Inserting feature in layer_1006'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -495,7 +492,7 @@ class TestAPIFeature(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         ####################################################################################################
 
@@ -510,19 +507,19 @@ class TestAPIFeature(TestCase):
         # create a changeset to each action related to the feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id_insert = self.tester.api_changeset_create(changeset)
 
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id_update = self.tester.api_changeset_create(changeset)
 
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id_delete = self.tester.api_changeset_create(changeset)
@@ -610,19 +607,19 @@ class TestAPIFeature(TestCase):
         # CLOSE THE CHANGESETS
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': changeset_id_insert, 'description': 'Inserting feature in layer_1002'},
+            'properties': {'id': changeset_id_insert, 'description': 'Inserting feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
 
         close_changeset = {
-            'properties': {'changeset_id': changeset_id_update, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id_update, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
 
         close_changeset = {
-            'properties': {'changeset_id': changeset_id_delete, 'description': 'Deleting feature in layer_1002'},
+            'properties': {'id': changeset_id_delete, 'description': 'Deleting feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -633,11 +630,11 @@ class TestAPIFeature(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESETS
-        self.tester.api_changeset_delete(changeset_id=changeset_id_insert)
+        self.tester.api_changeset_delete(id=changeset_id_insert)
 
-        self.tester.api_changeset_delete(changeset_id=changeset_id_update)
+        self.tester.api_changeset_delete(id=changeset_id_update)
 
-        self.tester.api_changeset_delete(changeset_id=changeset_id_delete)
+        self.tester.api_changeset_delete(id=changeset_id_delete)
 
         ####################################################################################################
 
@@ -833,7 +830,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -851,7 +848,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -862,7 +859,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -940,7 +937,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -960,7 +957,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -971,7 +968,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -984,7 +981,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1004,7 +1001,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1015,7 +1012,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -1038,7 +1035,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1058,7 +1055,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1069,7 +1066,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -1099,7 +1096,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1119,7 +1116,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1130,7 +1127,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -1162,7 +1159,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1182,7 +1179,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1193,7 +1190,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -1225,7 +1222,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1245,7 +1242,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1256,7 +1253,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -1338,7 +1335,7 @@ class TestAPIFeatureError(TestCase):
         # create a changeset to create a feature
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1002},
+            'properties': {'id': -1, 'layer_id': 1002},
             'type': 'Changeset'
         }
         changeset_id = self.tester.api_changeset_create(changeset)
@@ -1350,7 +1347,7 @@ class TestAPIFeatureError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Updating feature in layer_1002'},
+            'properties': {'id': changeset_id, 'description': 'Updating feature in layer_1002'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -1361,7 +1358,7 @@ class TestAPIFeatureError(TestCase):
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
         # DELETE THE CHANGESET
-        self.tester.api_changeset_delete(changeset_id=changeset_id)
+        self.tester.api_changeset_delete(id=changeset_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()

@@ -44,7 +44,7 @@ class TestAPIImport(TestCase):
         # create a new changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
+            'properties': {'id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
         self.changeset_id = self.tester.api_changeset_create(changeset)
@@ -55,7 +55,7 @@ class TestAPIImport(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': self.changeset_id, 'description': 'Import points.shp'},
+            'properties': {'id': self.changeset_id, 'description': 'Import points.shp'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)
@@ -316,7 +316,6 @@ class TestAPIImport(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
     #                                           file_name=file_name, changeset_id=self.changeset_id)
 
-
 """
 class TestAPIManualTests(TestCase):
 
@@ -468,7 +467,6 @@ class TestAPIManualTests(TestCase):
     #                                           changeset_id=self.changeset_id)
 """
 
-
 class TestAPIImportError(TestCase):
 
     def setUp(self):
@@ -502,7 +500,7 @@ class TestAPIImportError(TestCase):
         # create a new changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': self.layer_id},
+            'properties': {'id': -1, 'layer_id': self.layer_id},
             'type': 'Changeset'
         }
         self.changeset_id = self.tester.api_changeset_create(changeset)
@@ -513,7 +511,7 @@ class TestAPIImportError(TestCase):
         ##################################################
         # CLOSE THE CHANGESET
         close_changeset = {
-            'properties': {'changeset_id': self.changeset_id, 'description': 'Import'},
+            'properties': {'id': self.changeset_id, 'description': 'Import'},
             'type': 'ChangesetClose'
         }
         self.tester.api_changeset_close(close_changeset)

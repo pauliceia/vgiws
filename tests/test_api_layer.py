@@ -19,23 +19,7 @@ class TestAPILayer(TestCase):
                     "type": "Layer",
                     "properties": {
                         "id": 1001,
-                        "f_table_name": "layer_1001",
                         "name": "Addresses in 1869",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-01-01 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1002,
-                                "name": "Rodrigo",
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1041,
@@ -46,6 +30,7 @@ class TestAPILayer(TestCase):
                                 "name": "generic"
                             }
                         ],
+                        "created_at": "2017-01-01 00:00:00",
                         "references": [
                             {
                                 "id": 1002,
@@ -55,75 +40,68 @@ class TestAPILayer(TestCase):
                                 "id": 1001,
                                 "description": "@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1001",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1002,
+                                "name": "Rodrigo",
+                                "username": "rodrigo",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1002,
-                        "f_table_name": "layer_1002",
                         "name": "Robberies between 1880 to 1900",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-03-05 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1004,
-                                "name": "Rafael",
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1010,
                                 "name": "disease"
                             }
                         ],
+                        "created_at": "2017-03-05 00:00:00",
                         "references": [
                             {
                                 "id": 1005,
                                 "description": "@Misc{marco2017articleB,\nauthor = {Marco},\ntitle = {ArticleB},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1002",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1004,
+                                "name": "Rafael",
+                                "username": "rafael",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1003,
-                        "f_table_name": "layer_1003",
                         "name": "Streets in 1930",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-04-10 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1003,
-                                "name": "Miguel",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1006,
-                                "name": None,
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1001,
@@ -134,107 +112,143 @@ class TestAPILayer(TestCase):
                                 "name": "street"
                             }
                         ],
+                        "created_at": "2017-04-10 00:00:00",
                         "references": [
                             {
                                 "id": 1010,
                                 "description": "@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1003",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1003,
+                                "name": "Miguel",
+                                "username": "miguel",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1006,
+                                "name": None,
+                                "username": "fernanda",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1004,
-                        "f_table_name": "layer_1004",
                         "name": "Streets in 1920",
-                        "description": "streets",
-                        "source_description": "",
-                        "created_at": "2017-06-15 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1003,
-                                "name": "Miguel",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1008,
-                                "name": None,
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1040,
                                 "name": "street"
                             }
                         ],
-                        "references": []
+                        "created_at": "2017-06-15 00:00:00",
+                        "references": [],
+                        "description": "streets",
+                        "f_table_name": "layer_1004",
+                        "collaborators": [
+                            {
+                                "id": 1003,
+                                "name": "Miguel",
+                                "username": "miguel",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1008,
+                                "name": None,
+                                "username": "bea",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1005,
-                        "description": "some hospitals",
                         "name": "Hospitals between 1800 to 1950",
-                        "f_table_name": "layer_1005",
-                        "source_description": None,
-                        "created_at": "2017-08-04 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": True
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1023,
                                 "name": "hospital"
                             }
                         ],
-                        "references": []
+                        "created_at": "2017-08-04 00:00:00",
+                        "references": [],
+                        "description": "some hospitals",
+                        "f_table_name": "layer_1005",
+                        "collaborators": [
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": True
+                            }
+                        ],
+                        "source_description": None
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1006,
-                        "f_table_name": "layer_1006",
                         "name": "Cinemas between 1900 to 1950",
-                        "description": "",
-                        "source_description": None,
-                        "created_at": "2017-09-04 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1008,
-                                "name": None,
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1031,
                                 "name": "cinema"
                             }
                         ],
+                        "created_at": "2017-09-04 00:00:00",
                         "references": [
                             {
                                 "id": 1025,
                                 "description": "@Misc{frisina2017bookZ,\nauthor = {Frisina},\ntitle = {BookZ},\nhowpublished = {\\url{http://www.school.com/}},\nnote = {Accessed on 03/04/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1006",
+                        "collaborators": [
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1008,
+                                "name": None,
+                                "username": "bea",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": None
                     }
                 }
             ]
@@ -250,23 +264,7 @@ class TestAPILayer(TestCase):
                     "type": "Layer",
                     "properties": {
                         "id": 1001,
-                        "f_table_name": "layer_1001",
                         "name": "Addresses in 1869",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-01-01 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1002,
-                                "name": "Rodrigo",
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1041,
@@ -277,6 +275,7 @@ class TestAPILayer(TestCase):
                                 "name": "generic"
                             }
                         ],
+                        "created_at": "2017-01-01 00:00:00",
                         "references": [
                             {
                                 "id": 1002,
@@ -286,7 +285,24 @@ class TestAPILayer(TestCase):
                                 "id": 1001,
                                 "description": "@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1001",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1002,
+                                "name": "Rodrigo",
+                                "username": "rodrigo",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 }
             ]
@@ -302,33 +318,7 @@ class TestAPILayer(TestCase):
                     "type": "Layer",
                     "properties": {
                         "id": 1003,
-                        "f_table_name": "layer_1003",
                         "name": "Streets in 1930",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-04-10 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1003,
-                                "name": "Miguel",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1006,
-                                "name": None,
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1001,
@@ -339,12 +329,42 @@ class TestAPILayer(TestCase):
                                 "name": "street"
                             }
                         ],
+                        "created_at": "2017-04-10 00:00:00",
                         "references": [
                             {
                                 "id": 1010,
                                 "description": "@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1003",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1003,
+                                "name": "Miguel",
+                                "username": "miguel",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1006,
+                                "name": None,
+                                "username": "fernanda",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 }
             ]
@@ -354,29 +374,13 @@ class TestAPILayer(TestCase):
 
     def test_get_api_layer_return_layer_by_keyword_id(self):
         expected = {
-            'type': 'FeatureCollection',
-            'features': [
+            "type": "FeatureCollection",
+            "features": [
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1001,
-                        "f_table_name": "layer_1001",
                         "name": "Addresses in 1869",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-01-01 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1002,
-                                "name": "Rodrigo",
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1041,
@@ -387,6 +391,7 @@ class TestAPILayer(TestCase):
                                 "name": "generic"
                             }
                         ],
+                        "created_at": "2017-01-01 00:00:00",
                         "references": [
                             {
                                 "id": 1002,
@@ -396,40 +401,31 @@ class TestAPILayer(TestCase):
                                 "id": 1001,
                                 "description": "@Misc{jorge2017book1,\nauthor = {Jorge},\ntitle = {Book1},\nhowpublished = {\\url{http://www.link.org/}},\nnote = {Accessed on 01/01/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1001",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1002,
+                                "name": "Rodrigo",
+                                "username": "rodrigo",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 },
                 {
                     "type": "Layer",
                     "properties": {
                         "id": 1003,
-                        "f_table_name": "layer_1003",
                         "name": "Streets in 1930",
-                        "description": "",
-                        "source_description": "",
-                        "created_at": "2017-04-10 00:00:00",
-                        "collaborators": [
-                            {
-                                "id": 1001,
-                                "name": "Administrator",
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1003,
-                                "name": "Miguel",
-                                "is_the_creator": True
-                            },
-                            {
-                                "id": 1006,
-                                "name": None,
-                                "is_the_creator": False
-                            },
-                            {
-                                "id": 1007,
-                                "name": None,
-                                "is_the_creator": False
-                            }
-                        ],
                         "keywords": [
                             {
                                 "id": 1001,
@@ -440,12 +436,42 @@ class TestAPILayer(TestCase):
                                 "name": "street"
                             }
                         ],
+                        "created_at": "2017-04-10 00:00:00",
                         "references": [
                             {
                                 "id": 1010,
                                 "description": "@Misc{marco2017articleC,\nauthor = {Marco},\ntitle = {ArticleC},\nhowpublished = {\\url{http://www.link_to_document.org/}},\nnote = {Accessed on 02/02/2017},\nyear={2017}\n}"
                             }
-                        ]
+                        ],
+                        "description": "",
+                        "f_table_name": "layer_1003",
+                        "collaborators": [
+                            {
+                                "id": 1001,
+                                "name": "Administrator",
+                                "username": "admin",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1003,
+                                "name": "Miguel",
+                                "username": "miguel",
+                                "is_the_creator": True
+                            },
+                            {
+                                "id": 1006,
+                                "name": None,
+                                "username": "fernanda",
+                                "is_the_creator": False
+                            },
+                            {
+                                "id": 1007,
+                                "name": None,
+                                "username": "ana",
+                                "is_the_creator": False
+                            }
+                        ],
+                        "source_description": ""
                     }
                 }
             ]
@@ -471,7 +497,7 @@ class TestAPILayer(TestCase):
         # get creator user id
         ##################################################
         user = self.tester.function_api_user_by_token()
-        creator_user_id = user["properties"]["user_id"]
+        creator_user_id = user["properties"]["id"]
 
         ##################################################
         # create a layer with a normal user
@@ -482,8 +508,8 @@ class TestAPILayer(TestCase):
                 "id": -1, "f_table_name": "addresses_1930",
                 "name": "Addresses in 1930", "description": "", "source_description": "",
                 "collaborators": [
-                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
-                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                    {"id": 1001, "name": "Administrator", 'username': 'admin', 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'username': 'gabriel', 'is_the_creator': False}
                 ],
                 "keywords": [
                     {"id": 1041, "name": "address"},
@@ -500,7 +526,7 @@ class TestAPILayer(TestCase):
 
         # I add myself as a collaborator user
         resource["properties"]["collaborators"].append(
-            {"id": 1003, "name": "Miguel", 'is_the_creator': True}
+            {"id": 1003, "name": "Miguel", 'username': 'miguel', 'is_the_creator': True}
         )
 
         ##################################################
@@ -524,7 +550,7 @@ class TestAPILayer(TestCase):
 
         # add new collaborator to the list of collaborators
         resource["properties"]["collaborators"].append(
-            {"id": user_id_collaborator, "name": "Rafael", 'is_the_creator': False}
+            {"id": user_id_collaborator, "name": "Rafael", 'username': 'rafael', 'is_the_creator': False}
         )
 
         ##################################################
@@ -626,8 +652,8 @@ class TestAPILayer(TestCase):
                 "id": -1, "f_table_name": f_table_name,
                 "name": "Addresses in 1930", "description": "", "source_description": "",
                 "collaborators": [
-                    {"id": 1001, "name": "Administrator", 'is_the_creator': False},
-                    {"id": 1005, "name": "Gabriel", 'is_the_creator': False}
+                    {"id": 1001, "name": "Administrator", 'username': 'admin', 'is_the_creator': False},
+                    {"id": 1005, "name": "Gabriel", 'username': 'gabriel', 'is_the_creator': False}
                 ],
                 "keywords": [
                     {"id": 1041, "name": "address"},
@@ -644,7 +670,7 @@ class TestAPILayer(TestCase):
 
         # I add myself as a collaborator user
         resource["properties"]["collaborators"].append(
-            {"id": 1003, "name": "Miguel", 'is_the_creator': True}
+            {"id": 1003, "name": "Miguel", 'username': 'miguel', 'is_the_creator': True}
         )
 
         ##################################################

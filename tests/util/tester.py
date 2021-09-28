@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # https://realpython.com/blog/python/testing-third-party-apis-with-mocks/
 
 from base64 import b64encode
@@ -300,7 +298,11 @@ class UtilTester:
         # create an `Authorization` header to a non-existing user
         self.headers["Authorization"] = generate_encoded_jwt_token({
             'type': 'User',
-            'properties': {'name': 'Non-existing user', 'email': 'no_user@admin.com', 'picture': '', 'user_id': 543, 'username': 'no_user', 'social_id': '', 'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00', 'is_the_admin': False, 'terms_agreed': False, 'is_email_valid': True, 'social_account': '', 'receive_notification_by_email': True}
+            'properties': {'name': 'Non-existing user', 'email': 'no_user@admin.com', 'picture': '',
+                            'id': 543, 'username': 'no_user', 'social_id': '',
+                            'created_at': '2017-06-09 00:00:00', 'login_date': '2017-06-09T00:00:00',
+                            'is_the_admin': False, 'terms_agreed': False, 'is_email_valid': True,
+                            'social_account': '', 'receive_notification_by_email': True}
         })
 
     # auth_login error
@@ -1040,13 +1042,9 @@ class UtilTester:
 
         resulted = loads(response.text)  # convert string to dict/JSON
 
-        self.ut_self.assertIn("notification_id", resulted)
-        self.ut_self.assertNotEqual(resulted["notification_id"], -1)
+        self.ut_self.assertNotEqual(resulted, -1)
 
-        # put the id received in the original JSON
-        resource_json["properties"]["notification_id"] = resulted["notification_id"]
-
-        return resource_json
+        return resulted
 
     def api_notification_update(self, resource_json):
         response = self.session.put(self.URL + '/api/notification/',

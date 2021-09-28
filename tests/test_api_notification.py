@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 from unittest import TestCase
+
 from util.tester import UtilTester
 
 
@@ -16,61 +14,152 @@ class TestAPINotification(TestCase):
 
     def test_get_api_notification_return_all_notifications(self):
         expected = {
-            'type': 'FeatureCollection',
-            'features': [
+            "type": "FeatureCollection",
+            "features": [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1015, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': 1002,
-                                   'description': 'Muito boa camada. Parabéns.',
-                                   'created_at': '2017-04-05 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1015,
+                        "layer_id": 1002,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-04-05 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": "Robberies between 1880 to 1900",
+                        "description": "Muito boa camada. Parabéns.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Ações estão sendo tomadas.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1012,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Ações estão sendo tomadas.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1011,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Obrigado pelo aviso.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
-                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
-                                   'description': 'A camada contêm dados inapropriados.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1010,
+                        "layer_id": 1004,
+                        "username": "gabriel",
+                        "user_name": "Gabriel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": "Streets in 1920",
+                        "description": "A camada contêm dados inapropriados.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": True,
+                        "user_id_creator": 1005,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
-                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1006,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Muito bom",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1005
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Evento Y no dia 24/06/2018',
-                                   'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1005,
+                        "layer_id": None,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Evento Y no dia 24/06/2018",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1020,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": 1001,
+                        "layer_name": None,
+                        "description": "Uma keyword genérica",
+                        "keyword_name": "generic",
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Congresso X acontecerá em 2018/03/25',
-                                   'created_at': '2017-01-01 00:00:00'}
-                },
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1001,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Congresso X acontecerá em 2018/03/25",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
+                }
             ]
         }
 
@@ -81,33 +170,68 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Evento Y no dia 24/06/2018',
-                                   'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1005,
+                        "layer_id": None,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Evento Y no dia 24/06/2018",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 }
             ]
         }
 
-        self.tester.api_notification(expected, notification_id="1005")
+        self.tester.api_notification(expected, id="1005")
 
     def test_get_api_notification_return_notification_by_user_id_creator(self):
         expected = {
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1011,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Obrigado pelo aviso.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
-                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
-                },
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1006,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Muito bom",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1005
+                    }
+                }
             ]
         }
 
@@ -118,11 +242,22 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
-                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
-                                   'description': 'A camada contêm dados inapropriados.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1010,
+                        "layer_id": 1004,
+                        "username": "gabriel",
+                        "user_name": "Gabriel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": "Streets in 1920",
+                        "description": "A camada contêm dados inapropriados.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": True,
+                        "user_id_creator": 1005,
+                        "notification_id_parent": None
+                    }
                 }
             ]
         }
@@ -134,10 +269,22 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1020,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": 1001,
+                        "layer_name": None,
+                        "description": "Uma keyword genérica",
+                        "keyword_name": "generic",
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
                 }
             ]
         }
@@ -149,17 +296,40 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Ações estão sendo tomadas.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1012,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Ações estão sendo tomadas.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1011,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Obrigado pelo aviso.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1010
+                    }
                 }
             ]
         }
@@ -171,18 +341,40 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Evento Y no dia 24/06/2018',
-                                   'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1005,
+                        "layer_id": None,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Evento Y no dia 24/06/2018",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Congresso X acontecerá em 2018/03/25',
-                                   'created_at': '2017-01-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1001,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Congresso X acontecerá em 2018/03/25",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
                 }
             ]
         }
@@ -194,11 +386,22 @@ class TestAPINotification(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1010, 'is_denunciation': True, 'keyword_id': None,
-                                   'user_id_creator': 1005, 'notification_id_parent': None, 'layer_id': 1004,
-                                   'description': 'A camada contêm dados inapropriados.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1010,
+                        "layer_id": 1004,
+                        "username": "gabriel",
+                        "user_name": "Gabriel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": "Streets in 1920",
+                        "description": "A camada contêm dados inapropriados.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": True,
+                        "user_id_creator": 1005,
+                        "notification_id_parent": None
+                    }
                 }
             ]
         }
@@ -206,54 +409,134 @@ class TestAPINotification(TestCase):
         self.tester.api_notification(expected, is_denunciation=True)
 
         expected = {
-            'type': 'FeatureCollection',
-            'features': [
+            "type": "FeatureCollection",
+            "features": [
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1015, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': 1002,
-                                   'description': 'Muito boa camada. Parabéns.',
-                                   'created_at': '2017-04-05 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1015,
+                        "layer_id": 1002,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-04-05 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": "Robberies between 1880 to 1900",
+                        "description": "Muito boa camada. Parabéns.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1012, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Ações estão sendo tomadas.',
-                                   'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1012,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Ações estão sendo tomadas.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1011, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1010, 'layer_id': None,
-                                   'description': 'Obrigado pelo aviso.', 'created_at': '2017-03-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1011,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-03-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Obrigado pelo aviso.",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1010
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None,
-                                   'description': 'Muito bom', 'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1006,
+                        "layer_id": None,
+                        "username": "miguel",
+                        "user_name": "Miguel",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Muito bom",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1003,
+                        "notification_id_parent": 1005
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1005, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1002, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Evento Y no dia 24/06/2018',
-                                   'created_at': '2017-02-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1005,
+                        "layer_id": None,
+                        "username": "rodrigo",
+                        "user_name": "Rodrigo",
+                        "created_at": "2017-02-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Evento Y no dia 24/06/2018",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1002,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1020, 'is_denunciation': False, 'keyword_id': 1001,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Uma keyword genérica', 'created_at': '2017-01-01 00:00:00'}
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1020,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": 1001,
+                        "layer_name": None,
+                        "description": "Uma keyword genérica",
+                        "keyword_name": "generic",
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
                 },
                 {
-                    'type': 'Notification',
-                    'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
-                                   'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
-                                   'description': 'Congresso X acontecerá em 2018/03/25',
-                                   'created_at': '2017-01-01 00:00:00'}
-                },
+                    "type": "Notification",
+                    "properties": {
+                        "id": 1001,
+                        "layer_id": None,
+                        "username": "admin",
+                        "user_name": "Administrator",
+                        "created_at": "2017-01-01 00:00:00",
+                        "keyword_id": None,
+                        "layer_name": None,
+                        "description": "Congresso X acontecerá em 2018/03/25",
+                        "keyword_name": None,
+                        "user_picture": "",
+                        "is_denunciation": False,
+                        "user_id_creator": 1001,
+                        "notification_id_parent": None
+                    }
+                }
             ]
         }
 
@@ -262,7 +545,7 @@ class TestAPINotification(TestCase):
     def test_get_api_notification_error_404_not_found(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.tester.api_notification(expected, notification_id="999")
+        self.tester.api_notification(expected, id="999")
         self.tester.api_notification(expected, user_id_creator="998")
         self.tester.api_notification(expected, layer_id="999")
         self.tester.api_notification(expected, keyword_id="998")
@@ -279,10 +562,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': None, 'layer_id': None, 'description': 'Congresso de HD no RJ'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         ##################################################
         # update notification
@@ -295,20 +579,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the notification that was just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -322,10 +603,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': None, 'layer_id': 1001, 'description': 'Ótimos dados'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         ##################################################
         # update notification
@@ -338,20 +620,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the layer that was just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -365,10 +644,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': 1001,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': 1001,
                            'notification_id_parent': None, 'layer_id': None, 'description': 'Ótima keyword'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         ##################################################
         # update notification
@@ -381,20 +661,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the layer that was just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -408,10 +685,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': True, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': True, 'keyword_id': None,
                            'notification_id_parent': None, 'layer_id': 1001, 'description': 'Problema com dados'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         ##################################################
         # update notification
@@ -424,20 +702,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the layer that was just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -451,10 +726,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         ##################################################
         # update notification
@@ -467,20 +743,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -494,10 +767,11 @@ class TestAPINotification(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
         }
-        resource = self.tester.api_notification_create(resource)
+        notification_id = self.tester.api_notification_create(resource)
+        resource["properties"]["id"] = notification_id
 
         # login with admin
         self.tester.auth_logout()
@@ -514,20 +788,17 @@ class TestAPINotification(TestCase):
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [resource]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=resource["properties"]["notification_id"])
+                                     id=notification_id)
 
         ##################################################
         # remove notification
         ##################################################
-        # get the id of layer to REMOVE it
-        notification_id = resource["properties"]["notification_id"]
-
         # remove the user in layer
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the layer that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -541,51 +812,49 @@ class TestAPINotification(TestCase):
         ##################################################
         notification = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': None, 'layer_id': None, 'description': 'Congresso de HD no RJ'}
         }
-        notification = self.tester.api_notification_create(notification)
-
-        notification_id = notification["properties"]["notification_id"]
+        notification_id = self.tester.api_notification_create(notification)
+        notification["properties"]["id"] = notification_id
 
         ##################################################
         # create reply
         ##################################################
         reply = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': notification_id, 'layer_id': None, 'description': 'Legal!'}
         }
-        reply = self.tester.api_notification_create(reply)
-
-        reply_id = reply["properties"]["notification_id"]
+        reply_id = self.tester.api_notification_create(reply)
+        reply["properties"]["id"] = reply_id
 
         ##################################################
         # check if the notification was added
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [notification]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=notification_id)
+                                     id=notification_id)
 
         ##################################################
         # check if the reply was added
         ##################################################
         expected_resource = {'type': 'FeatureCollection', 'features': [reply]}
         self.tester.api_notification(expected_at_least=expected_resource,
-                                     notification_id=reply["properties"]["notification_id"])
+                                     id=reply_id)
 
         ##################################################
         # remove notification
         ##################################################
         # remove the notification (and together the reply)
-        self.tester.api_notification_delete(notification_id=notification_id)
+        self.tester.api_notification_delete(id=notification_id)
 
         # it is not possible to find the notification that just deleted
         expected = {'type': 'FeatureCollection', 'features': []}
-        self.tester.api_notification(expected, notification_id=notification_id)
+        self.tester.api_notification(expected, id=notification_id)
 
         # it is not possible to find the reply that just deleted
-        self.tester.api_notification(expected, notification_id=reply_id)
+        self.tester.api_notification(expected, id=reply_id)
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -600,11 +869,11 @@ class TestAPINotificationErrors(TestCase):
     # notification errors - get
 
     def test_get_api_notification_error_400_bad_request(self):
-        self.tester.api_notification_error_400_bad_request(notification_id="abc")
-        self.tester.api_notification_error_400_bad_request(notification_id=0)
-        self.tester.api_notification_error_400_bad_request(notification_id=-1)
-        self.tester.api_notification_error_400_bad_request(notification_id="-1")
-        self.tester.api_notification_error_400_bad_request(notification_id="0")
+        self.tester.api_notification_error_400_bad_request(id="abc")
+        self.tester.api_notification_error_400_bad_request(id=0)
+        self.tester.api_notification_error_400_bad_request(id=-1)
+        self.tester.api_notification_error_400_bad_request(id="-1")
+        self.tester.api_notification_error_400_bad_request(id="0")
 
         self.tester.api_notification_error_400_bad_request(user_id_creator="abc")
         self.tester.api_notification_error_400_bad_request(user_id_creator=0)
@@ -682,7 +951,7 @@ class TestAPINotificationErrors(TestCase):
     def test_post_api_notification_create_error_401_unauthorized_user_is_not_logged(self):
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': -1, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': -1, 'is_denunciation': False, 'keyword_id': None,
                            'notification_id_parent': 1005, 'layer_id': None, 'description': 'Muito bom'}
         }
         self.tester.api_notification_create_error_401_unauthorized(resource)
@@ -704,7 +973,7 @@ class TestAPINotificationErrors(TestCase):
         # try to update a notification (without description)
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': 1006, 'is_denunciation': False, 'keyword_id': None,
                            'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
@@ -712,7 +981,7 @@ class TestAPINotificationErrors(TestCase):
         # try to update a notification (without keyword_id)
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 1006, 'is_denunciation': False, 'description': 'Muito bom',
+            'properties': {'id': 1006, 'is_denunciation': False, 'description': 'Muito bom',
                            'user_id_creator': 1003, 'notification_id_parent': 1005, 'layer_id': None}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
@@ -720,7 +989,7 @@ class TestAPINotificationErrors(TestCase):
         # try to update a notification (without notification_id_parent)
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': 1006, 'is_denunciation': False, 'keyword_id': None,
                            'user_id_creator': 1003, 'layer_id': None, 'description': 'Muito bom'}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
@@ -728,7 +997,7 @@ class TestAPINotificationErrors(TestCase):
         # try to update a notification (without layer_id)
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 1006, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': 1006, 'is_denunciation': False, 'keyword_id': None,
                            'user_id_creator': 1003, 'notification_id_parent': 1005, 'description': 'Muito bom'}
         }
         self.tester.api_notification_update_error_400_bad_request(resource)
@@ -753,7 +1022,7 @@ class TestAPINotificationErrors(TestCase):
         ##################################################
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 1001, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': 1001, 'is_denunciation': False, 'keyword_id': None,
                            'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
                            'description': 'Congresso Z 2018/03/25'}
         }
@@ -768,7 +1037,7 @@ class TestAPINotificationErrors(TestCase):
 
         resource = {
             'type': 'Notification',
-            'properties': {'notification_id': 999, 'is_denunciation': False, 'keyword_id': None,
+            'properties': {'id': 999, 'is_denunciation': False, 'keyword_id': None,
                            'user_id_creator': 1001, 'notification_id_parent': None, 'layer_id': None,
                            'description': 'Congresso Z 2018/03/25'}
         }
@@ -786,22 +1055,22 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("miguel@admin.com", "miguel")
 
-        self.tester.api_notification_delete_error_400_bad_request(notification_id="abc")
-        self.tester.api_notification_delete_error_400_bad_request(notification_id=0)
-        self.tester.api_notification_delete_error_400_bad_request(notification_id=-1)
-        self.tester.api_notification_delete_error_400_bad_request(notification_id="-1")
-        self.tester.api_notification_delete_error_400_bad_request(notification_id="0")
+        self.tester.api_notification_delete_error_400_bad_request(id="abc")
+        self.tester.api_notification_delete_error_400_bad_request(id=0)
+        self.tester.api_notification_delete_error_400_bad_request(id=-1)
+        self.tester.api_notification_delete_error_400_bad_request(id="-1")
+        self.tester.api_notification_delete_error_400_bad_request(id="0")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
 
     def test_delete_api_notification_error_401_unauthorized_user_is_not_logged(self):
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id="abc")
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id=0)
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id=-1)
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id="-1")
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id="0")
-        self.tester.api_notification_delete_error_401_unauthorized(notification_id="1001")
+        self.tester.api_notification_delete_error_401_unauthorized(id="abc")
+        self.tester.api_notification_delete_error_401_unauthorized(id=0)
+        self.tester.api_notification_delete_error_401_unauthorized(id=-1)
+        self.tester.api_notification_delete_error_401_unauthorized(id="-1")
+        self.tester.api_notification_delete_error_401_unauthorized(id="0")
+        self.tester.api_notification_delete_error_401_unauthorized(id="1001")
 
     def test_delete_api_notification_error_403_forbidden_invalid_user_tries_to_manage(self):
         self.tester.auth_login("miguel@admin.com", "miguel")
@@ -809,7 +1078,7 @@ class TestAPINotificationErrors(TestCase):
         ########################################
         # try to delete the notification with user gabriel
         ########################################
-        self.tester.api_notification_delete_error_403_forbidden(notification_id="1001")
+        self.tester.api_notification_delete_error_403_forbidden(id="1001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -821,8 +1090,8 @@ class TestAPINotificationErrors(TestCase):
         # DO LOGIN
         self.tester.auth_login("rodrigo@admin.com", "rodrigo")
 
-        self.tester.api_notification_delete_error_404_not_found(notification_id="5000")
-        self.tester.api_notification_delete_error_404_not_found(notification_id="5001")
+        self.tester.api_notification_delete_error_404_not_found(id="5000")
+        self.tester.api_notification_delete_error_404_not_found(id="5001")
 
         # DO LOGOUT AFTER THE TESTS
         self.tester.auth_logout()
@@ -845,7 +1114,7 @@ class TestAPINotificationRelatedToUser(TestCase):
                 {
                     'type': 'Notification',
                     'properties': {
-                        'notification_id': 1015, 'notification_id_parent': None, 'created_at': '2017-04-05 00:00:00',
+                        'id': 1015, 'notification_id_parent': None, 'created_at': '2017-04-05 00:00:00',
                         'layer_id': 1002, 'description': 'Muito boa camada. Parabéns.', 'user_id_creator': 1002,
                         'keyword_id': None, 'is_denunciation': False
                     }
@@ -853,7 +1122,7 @@ class TestAPINotificationRelatedToUser(TestCase):
                 {
                     'type': 'Notification',
                     'properties': {
-                        'notification_id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
+                        'id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
                         'layer_id': None, 'description': 'Evento Y no dia 24/06/2018', 'user_id_creator': 1002,
                         'keyword_id': None, 'is_denunciation': False
                     }
@@ -861,7 +1130,7 @@ class TestAPINotificationRelatedToUser(TestCase):
                 {
                     'type': 'Notification',
                     'properties': {
-                        'notification_id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
+                        'id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
                         'layer_id': None, 'description': 'Congresso X acontecerá em 2018/03/25', 'user_id_creator': 1001,
                         'keyword_id': None, 'is_denunciation': False
                     }
@@ -878,7 +1147,7 @@ class TestAPINotificationRelatedToUser(TestCase):
                 {
                     'type': 'Notification',
                     'properties': {
-                        'notification_id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
+                        'id': 1005, 'notification_id_parent': None, 'created_at': '2017-02-01 00:00:00',
                         'layer_id': None, 'description': 'Evento Y no dia 24/06/2018', 'user_id_creator': 1002,
                         'keyword_id': None, 'is_denunciation': False
                     }
@@ -886,7 +1155,7 @@ class TestAPINotificationRelatedToUser(TestCase):
                 {
                     'type': 'Notification',
                     'properties': {
-                        'notification_id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
+                        'id': 1001, 'notification_id_parent': None, 'created_at': '2017-01-01 00:00:00',
                         'layer_id': None, 'description': 'Congresso X acontecerá em 2018/03/25',
                         'user_id_creator': 1001, 'keyword_id': None, 'is_denunciation': False
                     }

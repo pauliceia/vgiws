@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
 

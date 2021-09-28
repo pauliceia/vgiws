@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from os import remove as remove_file
 
@@ -7,7 +5,6 @@ from unittest import TestCase
 
 from util.tester import UtilTester
 from util.common import FILES_PATH
-
 
 
 class TestAPICurrentUser(TestCase):
@@ -23,7 +20,7 @@ class TestAPICurrentUser(TestCase):
         # do not put the "login_date" and "created_at" attributes, because they are created dynamically
         expected_at_least = {
             'properties': {
-                'username': 'rodrigo', 'is_the_admin': True, 'user_id': 1002,
+                'username': 'rodrigo', 'is_the_admin': True, 'id': 1002,
                 'email': 'rodrigo@admin.com', 'terms_agreed': True, 'name': 'Rodrigo',
                 'is_email_valid': True, 'receive_notification_by_email': True
             },
@@ -48,21 +45,21 @@ class TestAPIValidateEmail(TestCase):
         token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMDA1fQ.XbibygDhgaF0x3w50wI8UWfK8u1I2vrMlfPBa5y-Z4o'
         user_id = 1005
 
-        # a user is with a invalidated email
-        user = self.tester.api_user(user_id=user_id)
+        # a user is with an invalidated email
+        user = self.tester.api_user(id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
         # so the user validate his/her email
         self.tester.api_validate_email(token)
 
         # now the user is with the validated email
-        user = self.tester.api_user(user_id=user_id)
+        user = self.tester.api_user(id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], True)
 
         # change the is_email_valid to False again, for it doesn't break the tests
         self.tester.api_is_email_valid(user_id=user_id, is_email_valid=False)
 
-        user = self.tester.api_user(user_id=user_id)
+        user = self.tester.api_user(id=user_id)
         self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
 
@@ -105,15 +102,15 @@ class TestAPIMask(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'mask_id': 1001, 'mask': 'YYYY-MM-DD'},
+                    'properties': {'id': 1001, 'mask': 'YYYY-MM-DD'},
                     'type': 'Mask'
                 },
                 {
-                    'properties': {'mask_id': 1002, 'mask': 'YYYY-MM'},
+                    'properties': {'id': 1002, 'mask': 'YYYY-MM'},
                     'type': 'Mask'
                 },
                 {
-                    'properties': {'mask_id': 1003, 'mask': 'YYYY'},
+                    'properties': {'id': 1003, 'mask': 'YYYY'},
                     'type': 'Mask'
                 }
             ]
@@ -126,19 +123,19 @@ class TestAPIMask(TestCase):
             'type': 'FeatureCollection',
             'features': [
                 {
-                    'properties': {'mask_id': 1001, 'mask': 'YYYY-MM-DD'},
+                    'properties': {'id': 1001, 'mask': 'YYYY-MM-DD'},
                     'type': 'Mask'
-                },
+                }
             ]
         }
 
-        self.tester.api_mask(expected, mask_id="1001")
+        self.tester.api_mask(expected, id="1001")
 
     def test_get_api_mask_return_zero_resources(self):
         expected = {'type': 'FeatureCollection', 'features': []}
 
-        self.tester.api_mask(expected, mask_id="999")
-        self.tester.api_mask(expected, mask_id="998")
+        self.tester.api_mask(expected, id="999")
+        self.tester.api_mask(expected, id="998")
 
 
 class TestAPIMaskErrors(TestCase):
@@ -150,11 +147,11 @@ class TestAPIMaskErrors(TestCase):
     # mask errors - get
 
     def test_get_api_mask_error_400_bad_request(self):
-        self.tester.api_mask_error_400_bad_request(mask_id="abc")
-        self.tester.api_mask_error_400_bad_request(mask_id=0)
-        self.tester.api_mask_error_400_bad_request(mask_id=-1)
-        self.tester.api_mask_error_400_bad_request(mask_id="-1")
-        self.tester.api_mask_error_400_bad_request(mask_id="0")
+        self.tester.api_mask_error_400_bad_request(id="abc")
+        self.tester.api_mask_error_400_bad_request(id=0)
+        self.tester.api_mask_error_400_bad_request(id=-1)
+        self.tester.api_mask_error_400_bad_request(id="-1")
+        self.tester.api_mask_error_400_bad_request(id="0")
 
 
 # CONVERT GEOJSON TO SHAPEFILE

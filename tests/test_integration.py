@@ -23,16 +23,14 @@ class TestAPIIntegration(TestCase):
             "properties": {
                 "id": -1, "f_table_name": f_table_name,
                 "name": "Addresses in 1930", "description": "", "source_description": "",
-                "collaborators": [],
-                "keywords": [],
-                "references": []
+                "collaborators": [], "keywords": [], "references": []
             }
         }
         layer_id = self.tester.api_layer_create(layer)
 
         # I add myself as a collaborator user
         layer["properties"]["collaborators"].append(
-            {"id": 1003, "name": "Miguel", 'is_the_creator': True}
+            {"id": 1003, "name": "Miguel", "username": "miguel", 'is_the_creator': True}
         )
 
         ##################################################
@@ -56,7 +54,8 @@ class TestAPIIntegration(TestCase):
         temporal_columns = {
             'properties': {'f_table_name': f_table_name, 'start_date': '1900-01-01', 'end_date': '1920-12-31',
                            'end_date_column_name': 'end_date', 'start_date_column_name': 'start_date',
-                           'start_date_mask_id': 1001, 'end_date_mask_id': 1001},
+                           "end_date_mask": {"id": 1001, "mask": "YYYY-MM-DD"},
+                           "start_date_mask": {"id": 1001, "mask": "YYYY-MM-DD"}},
             'type': 'TemporalColumns'
         }
         self.tester.api_temporal_columns_create(temporal_columns)

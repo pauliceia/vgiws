@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from util.tester import RequestTester
 
@@ -14,53 +13,53 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1001,
+                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'id': 1001,
                                    'closed_at': '2017-01-05 00:00:00', 'layer_id': 1001,
                                    'description': 'Creating layer_1001'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1002,
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'id': 1002,
                                    'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
                                    'description': 'Creating layer_1002'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'id': 1003,
                                    'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
                                    'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1005,
+                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'id': 1005,
                                    'closed_at': '2017-08-05 00:00:00', 'layer_id': 1005,
                                    'description': 'Creating layer_1005'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1006,
+                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'id': 1006,
                                    'closed_at': '2017-09-04 00:00:00', 'layer_id': 1006,
                                    'description': 'Creating layer_1006'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'id': 1011,
                                    'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1014,
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'id': 1014,
                                    'closed_at': None, 'layer_id': 1002, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 }
@@ -74,22 +73,22 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005,
                                    'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
-                                   'description': 'Creating layer_1003'},
+                                   'id': 1003, 'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 }
             ],
             'type': 'FeatureCollection'
         }
 
-        self.get(expected, changeset_id="1003")
+        self.get(expected, id="1003")
 
     def test__get_api_changeset__return_changeset_by_layer_id(self):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
@@ -104,19 +103,19 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'id': 1003,
                                    'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
                                    'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 }
@@ -130,17 +129,17 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'id': 1011,
                                    'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1014,
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1004, 'id': 1014,
                                    'closed_at': None, 'layer_id': 1002, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 }
@@ -154,37 +153,37 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1001,
+                    'properties': {'created_at': '2017-01-05 00:00:00', 'user_id_creator': 1001, 'id': 1001,
                                    'closed_at': '2017-01-05 00:00:00', 'layer_id': 1001,
                                    'description': 'Creating layer_1001'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'changeset_id': 1002,
+                    'properties': {'created_at': '2017-03-05 00:00:00', 'user_id_creator': 1004, 'id': 1002,
                                    'closed_at': '2017-03-05 00:00:00', 'layer_id': 1002,
                                    'description': 'Creating layer_1002'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'id': 1003,
                                    'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
                                    'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1005,
+                    'properties': {'created_at': '2017-08-05 00:00:00', 'user_id_creator': 1007, 'id': 1005,
                                    'closed_at': '2017-08-05 00:00:00', 'layer_id': 1005,
                                    'description': 'Creating layer_1005'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'changeset_id': 1006,
+                    'properties': {'created_at': '2017-09-04 00:00:00', 'user_id_creator': 1007, 'id': 1006,
                                    'closed_at': '2017-09-04 00:00:00', 'layer_id': 1006,
                                    'description': 'Creating layer_1006'},
                     'type': 'Changeset'
@@ -199,7 +198,7 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1013,
+                    'properties': {'created_at': '2017-04-13 00:00:00', 'user_id_creator': 1005, 'id': 1013,
                                    'closed_at': None, 'layer_id': 1003, 'description': 'Creating an open changeset'},
                     'type': 'Changeset'
                 }
@@ -213,7 +212,7 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
@@ -228,7 +227,7 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'changeset_id': 1011,
+                    'properties': {'created_at': '2017-01-08 00:00:00', 'user_id_creator': 1001, 'id': 1011,
                                    'closed_at': None, 'layer_id': 1001, 'description': 'An open changeset'},
                     'type': 'Changeset'
                 },
@@ -242,13 +241,13 @@ class TestAPIChangeset(RequestTester):
         expected = {
             'features': [
                 {
-                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1003,
+                    'properties': {'created_at': '2017-04-12 00:00:00', 'user_id_creator': 1005, 'id': 1003,
                                    'closed_at': '2017-04-12 00:00:00', 'layer_id': 1003,
                                    'description': 'Creating layer_1003'},
                     'type': 'Changeset'
                 },
                 {
-                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'changeset_id': 1004,
+                    'properties': {'created_at': '2017-06-28 00:00:00', 'user_id_creator': 1005, 'id': 1004,
                                    'closed_at': '2017-06-28 00:00:00', 'layer_id': 1004,
                                    'description': 'Creating layer_1004'},
                     'type': 'Changeset'
@@ -262,8 +261,8 @@ class TestAPIChangeset(RequestTester):
     def test__get_api_changeset__return_zero_resources(self):
         expected = {'features': [], 'type': 'FeatureCollection'}
 
-        self.get(expected, changeset_id="999")
-        self.get(expected, changeset_id="998")
+        self.get(expected, id="999")
+        self.get(expected, id="998")
 
     # changeset - create, close and delete
 
@@ -277,11 +276,11 @@ class TestAPIChangeset(RequestTester):
         # Create the changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003},
+            'properties': {'id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
         changeset_id = self.post(changeset, add_suffix_to_uri="/create")
-        changeset["properties"]["changeset_id"] = changeset_id
+        changeset["properties"]["id"] = changeset_id
 
         ##################################################
         # Close the changeset
@@ -289,7 +288,7 @@ class TestAPIChangeset(RequestTester):
         self.set_urn('/api/changeset/close')
 
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Creating layer_1003'},
+            'properties': {'id': changeset_id, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
         self.post(close_changeset)
@@ -304,7 +303,7 @@ class TestAPIChangeset(RequestTester):
 
         self.set_urn('/api/changeset')
 
-        self.delete(changeset_id=changeset_id)
+        self.delete(id=changeset_id)
 
         ##################################################
         # Logout
@@ -321,11 +320,11 @@ class TestAPIChangeset(RequestTester):
         # Create the changeset
         ##################################################
         changeset = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003},
+            'properties': {'id': -1, 'layer_id': 1003},
             'type': 'Changeset'
         }
         changeset_id = self.post(changeset, add_suffix_to_uri="/create")
-        changeset["properties"]["changeset_id"] = changeset_id
+        changeset["properties"]["id"] = changeset_id
 
         ##################################################
         # Close the changeset
@@ -333,7 +332,7 @@ class TestAPIChangeset(RequestTester):
         self.set_urn('/api/changeset/close')
 
         close_changeset = {
-            'properties': {'changeset_id': changeset_id, 'description': 'Creating layer_1003'},
+            'properties': {'id': changeset_id, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
         self.post(close_changeset)
@@ -343,7 +342,7 @@ class TestAPIChangeset(RequestTester):
         ##################################################
         self.set_urn('/api/changeset')
 
-        self.delete(changeset_id=changeset_id)
+        self.delete(id=changeset_id)
 
         ##################################################
         # Logout
@@ -364,7 +363,7 @@ class TestAPIChangesetErrors(RequestTester):
         for changeset_id in changesets_ids:
             self.get(
                 status_code=400, expected_text="Invalid parameter.",
-                changeset_id=changeset_id
+                id=changeset_id
             )
 
     # changeset errors - create
@@ -398,7 +397,7 @@ class TestAPIChangesetErrors(RequestTester):
         # Try to create a changeset without a logged user
         ##################################################
         resource = {
-            'properties': {'changeset_id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
+            'properties': {'id': -1, 'layer_id': 1003, 'description': 'Creating layer_1003'},
             'type': 'Changeset'
         }
         self.post(
@@ -424,7 +423,7 @@ class TestAPIChangesetErrors(RequestTester):
             self.delete(
                 status_code=400,
                 expected_text="Invalid parameter.",
-                changeset_id=changeset_id
+                id=changeset_id
             )
 
         ##################################################
@@ -442,7 +441,7 @@ class TestAPIChangesetErrors(RequestTester):
             self.delete(
                 status_code=401,
                 expected_text="A valid `Authorization` header is necessary!",
-                changeset_id=changeset_id
+                id=changeset_id
             )
 
     def test__delete_api_changeset__403_forbidden(self):
@@ -460,7 +459,7 @@ class TestAPIChangesetErrors(RequestTester):
             self.delete(
                 status_code=403,
                 expected_text="The administrator is who can use this resource.",
-                changeset_id=changeset_id
+                id=changeset_id
             )
 
         ##################################################
@@ -481,7 +480,7 @@ class TestAPIChangesetErrors(RequestTester):
 
         for changeset_id in changesets_ids:
             self.delete(
-                changeset_id=changeset_id,
+                id=changeset_id,
                 status_code=404, expected_text="Not found any resource."
             )
 
@@ -511,7 +510,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
 
         for invalid_changeset_id in invalid_changesets_ids:
             close_changeset = {
-                'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
+                'properties': {'id': invalid_changeset_id, 'description': 'Creating layer_1003'},
                 'type': 'ChangesetClose'
             }
             self.post(close_changeset, status_code=400, expected_text="Invalid parameter.")
@@ -529,7 +528,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
 
         for invalid_changeset_id in invalid_changesets_ids:
             close_changeset = {
-                'properties': {'changeset_id': invalid_changeset_id, 'description': 'Creating layer_1003'},
+                'properties': {'id': invalid_changeset_id, 'description': 'Creating layer_1003'},
                 'type': 'ChangesetClose'
             }
             self.post(close_changeset,
@@ -546,11 +545,11 @@ class TestAPIChangesetCloseErrors(RequestTester):
         ##################################################
         invalid_changesets_ids = [
             {
-                "changeset_id": "5000",
+                "id": "5000",
                 "error_message": "Not found the changeset `5000`."
             },
             {
-                "changeset_id": "5001",
+                "id": "5001",
                 "error_message": "Not found the changeset `5001`."
             }
         ]
@@ -558,7 +557,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
         for invalid_changeset in invalid_changesets_ids:
             close_changeset = {
                 'properties': {
-                    'changeset_id': invalid_changeset["changeset_id"],
+                    'id': invalid_changeset["id"],
                     'description': 'Creating layer_1003'
                 },
                 'type': 'ChangesetClose'
@@ -581,7 +580,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
         # Try to close a changeset
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': 1002, 'description': 'Creating layer_1003'},
+            'properties': {'id': 1002, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
         self.post(close_changeset,
@@ -603,7 +602,7 @@ class TestAPIChangesetCloseErrors(RequestTester):
         # Try to close a changeset
         ##################################################
         close_changeset = {
-            'properties': {'changeset_id': 1011, 'description': 'Creating layer_1003'},
+            'properties': {'id': 1011, 'description': 'Creating layer_1003'},
             'type': 'ChangesetClose'
         }
         self.post(close_changeset,

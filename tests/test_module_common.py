@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-
-from unittest import TestCase
 
 from random import randint
+from unittest import TestCase
 
 from modules import does_the_string_have_special_chars
 
