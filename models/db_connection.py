@@ -275,12 +275,12 @@ class PGSQLConnection:
     # USER
     ################################################################################
 
-    def get_users(self, user_id=None, username=None, name=None, email=None, password=None):
+    def get_users(self, id=None, username=None, name=None, email=None, password=None):
         # the id have to be a int
-        if is_a_invalid_id(user_id):
+        if is_a_invalid_id(id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_user_table(user_id=user_id, username=username, name=name,
+        subquery = get_subquery_user_table(id=id, username=username, name=name,
                                            email=email, password=password)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -290,19 +290,19 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'User',
                     'properties', json_build_object(
-                        'user_id',        user_id,
-                        'email',          email,
-                        'username',       username,
-                        'name',           name,
-                        'created_at',     to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_email_valid', is_email_valid,
-                        'terms_agreed',   terms_agreed,
-                        'login_date',     login_date,
-                        'is_the_admin',   is_the_admin,
+                        'id',                 user_id,
+                        'email',              email,
+                        'username',           username,
+                        'name',               name,
+                        'created_at',         to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_email_valid',     is_email_valid,
+                        'terms_agreed',       terms_agreed,
+                        'login_date',         login_date,
+                        'is_the_admin',       is_the_admin,
                         'receive_notification_by_email',   receive_notification_by_email,
-                        'picture',        picture,
-                        'social_id',      social_id,
-                        'social_account', social_account
+                        'picture',             picture,
+                        'social_id',           social_id,
+                        'social_account',      social_account
                     )
                 ))
             ) AS row_to_json
@@ -382,7 +382,7 @@ class PGSQLConnection:
             UPDATE pauliceia_user SET email = '{1}', username = '{2}', name = '{3}',
                                         terms_agreed = {4}, receive_notification_by_email = {5}
             WHERE user_id = {0};
-        """.format(p["user_id"], p["email"], p["username"], p["name"],
+        """.format(p["id"], p["email"], p["username"], p["name"],
                    p["terms_agreed"], p["receive_notification_by_email"])
 
         rows_affected = self.execute(query, is_transaction=True)
@@ -390,13 +390,13 @@ class PGSQLConnection:
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def delete_user(self, feature_id):
-        if is_a_invalid_id(feature_id):
+    def delete_user(self, id):
+        if is_a_invalid_id(id):
             raise HTTPError(400, "Invalid parameter.")
 
-        query = """
-            DELETE FROM pauliceia_user WHERE user_id={0};
-        """.format(feature_id)
+        query = f"""
+            DELETE FROM pauliceia_user WHERE user_id={id};
+        """
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -566,11 +566,12 @@ class PGSQLConnection:
                 -- When I use COALESCE, I return an empty list instead
                 -- of null when there are not items.
                 SELECT COALESCE(json_agg(json_build_object(
-                    'id', id, 'name', name, 'is_the_creator', is_the_creator
+                    'id', id, 'name', name, 'username', username,
+                    'is_the_creator', is_the_creator
                 )), '[]'::json) AS jsontags
                 FROM (
                     -- (2) get the collaborators names of the layer
-                    SELECT u.user_id as id, u.name as name,
+                    SELECT u.user_id as id, u.name as name, u.username as username,
                         ul.is_the_creator as is_the_creator
                     FROM user_layer ul
                     LEFT JOIN pauliceia_user u
@@ -712,13 +713,13 @@ class PGSQLConnection:
 
         # check if the collaborators have already been added database before updating the layer
         for collaborator in new_layer_properties['collaborators']:
-            found_collaborator = self.get_users(user_id=collaborator['id'])
+            found_collaborator = self.get_users(id=collaborator['id'])
             if not found_collaborator['features']:
                 raise HTTPError(404, f"Not found the collaborator `{collaborator['id']}`.")
 
         # get all creator users and check if there is only one creator user
         found_creator_users = list(filter(
-            lambda c: c['is_the_creator'], new_layer_properties['collaborators']
+            lambda c: 'is_the_creator' in c and c['is_the_creator'], new_layer_properties['collaborators']
         ))
         if not found_creator_users:
             raise HTTPError(404, "Not found the creator user inside the list of collaborators.")
@@ -727,13 +728,13 @@ class PGSQLConnection:
 
         # check if the keywords have already been added database before updating the layer
         for keyword in new_layer_properties['keywords']:
-            found_keywords = self.get_keywords(keyword_id=keyword['id'])
+            found_keywords = self.get_keywords(id=keyword['id'])
             if not found_keywords['features']:
                 raise HTTPError(404, f"Not found the keyword `{keyword['id']}`.")
 
         # check if the references have already been added in the database before updating the layer
         for reference in new_layer_properties['references']:
-            found_references = self.get_references(reference_id=reference['id'])
+            found_references = self.get_references(id=reference['id'])
             if not found_references['features']:
                 raise HTTPError(404, f"Not found the reference `{reference['id']}`.")
 
@@ -809,7 +810,7 @@ class PGSQLConnection:
                 'type': 'UserLayer'
             })
 
-        collaborators = self.get_user_layers(layer_id=layer_id)
+        # collaborators = self.get_user_layers(layer_id=layer_id)
 
         ##################################################
         # add the updated list of keywords in the layer
@@ -1087,16 +1088,17 @@ class PGSQLConnection:
     # TEMPORAL COLUMNS
     ################################################################################
 
-    def get_temporal_columns(self, f_table_name=None, start_date=None, end_date=None, start_date_gte=None, end_date_lte=None):
+    def get_temporal_columns(self, f_table_name=None, start_date=None, end_date=None,
+                             start_date_gte=None, end_date_lte=None):
         # the id have to be a int
         # if is_a_invalid_id(user_id) or is_a_invalid_id(keyword_id):
         #     raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_temporal_columns_table(f_table_name=f_table_name, start_date=start_date, end_date=end_date,
-                                                       start_date_gte=start_date_gte, end_date_lte=end_date_lte)
-
+        subquery = get_subquery_temporal_columns_table(f_table_name=f_table_name, start_date=start_date,
+                                                       end_date=end_date, start_date_gte=start_date_gte,
+                                                       end_date_lte=end_date_lte)
         # CREATE THE QUERY AND EXECUTE IT
-        query = """
+        query = f"""
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
@@ -1107,14 +1109,20 @@ class PGSQLConnection:
                         'end_date_column_name',    end_date_column_name,
                         'start_date',              to_char(start_date, 'YYYY-MM-DD'),
                         'end_date',                to_char(end_date, 'YYYY-MM-DD'),
-                        'start_date_mask_id',      start_date_mask_id,
-                        'end_date_mask_id',        end_date_mask_id
+                        'start_date_mask',         json_build_object(
+                            'id',           start_date_mask_id,
+                            'mask',         start_date_mask
+                        ),
+                        'end_date_mask',           json_build_object(
+                            'id',           end_date_mask_id,
+                            'mask',         end_date_mask
+                        )
                     )
                 ))
             ) AS row_to_json
             FROM
-            {0}
-        """.format(subquery)
+            {subquery}
+        """
 
         results_of_query = self.execute(query)
 
@@ -1138,15 +1146,23 @@ class PGSQLConnection:
         p["start_date_column_name"] = p["start_date_column_name"] if p["start_date_column_name"] is not None else ""
         p["end_date_column_name"] = p["end_date_column_name"] if p["end_date_column_name"] is not None else ""
 
-        p["start_date_mask_id"] = p["start_date_mask_id"] if p["start_date_mask_id"] is not None else "NULL"
-        p["end_date_mask_id"] = p["end_date_mask_id"] if p["end_date_mask_id"] is not None else "NULL"
+        start_date_mask_id = "NULL"
+        end_date_mask_id = "NULL"
+
+        if p["start_date_mask"] is not None and 'id' in p["start_date_mask"] and \
+                p["start_date_mask"]['id'] is not None:
+            start_date_mask_id = p["start_date_mask"]['id']
+
+        if p["end_date_mask"] is not None and 'id' in p["end_date_mask"] and \
+                p["end_date_mask"]['id'] is not None:
+            end_date_mask_id = p["end_date_mask"]['id']
 
         query = """
             INSERT INTO temporal_columns (f_table_name, start_date_column_name, end_date_column_name,
                                           start_date, end_date, start_date_mask_id, end_date_mask_id)
             VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6});
         """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
-                   p["start_date"], p["end_date"], p["start_date_mask_id"], p["end_date_mask_id"])
+                   p["start_date"], p["end_date"], start_date_mask_id, end_date_mask_id)
 
         self.execute(query, is_transaction=True)
 
@@ -1161,18 +1177,26 @@ class PGSQLConnection:
     def update_temporal_columns(self, resource_json, user_id):
         p = resource_json["properties"]
 
-        if p["start_date_mask_id"] is None:
-            p["start_date_mask_id"] = "NULL"
+        p["start_date_column_name"] = p["start_date_column_name"] if p["start_date_column_name"] is not None else ""
+        p["end_date_column_name"] = p["end_date_column_name"] if p["end_date_column_name"] is not None else ""
 
-        if p["end_date_mask_id"] is None:
-            p["end_date_mask_id"] = "NULL"
+        start_date_mask_id = "NULL"
+        end_date_mask_id = "NULL"
+
+        if p["start_date_mask"] is not None and 'id' in p["start_date_mask"] and \
+                p["start_date_mask"]['id'] is not None:
+            start_date_mask_id = p["start_date_mask"]['id']
+
+        if p["end_date_mask"] is not None and 'id' in p["end_date_mask"] and \
+                p["end_date_mask"]['id'] is not None:
+            end_date_mask_id = p["end_date_mask"]['id']
 
         query = """
-            UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}', end_date='{4}',
-                                        start_date_mask_id={5}, end_date_mask_id={6}
+            UPDATE temporal_columns SET start_date_column_name='{1}', end_date_column_name='{2}', start_date='{3}',
+                                        end_date='{4}', start_date_mask_id={5}, end_date_mask_id={6}
             WHERE f_table_name = '{0}';
-        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"], p["start_date"], p["end_date"],
-                   p["start_date_mask_id"], p["end_date_mask_id"])
+        """.format(p["f_table_name"], p["start_date_column_name"], p["end_date_column_name"],
+                   p["start_date"], p["end_date"], start_date_mask_id, end_date_mask_id)
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -1305,12 +1329,12 @@ class PGSQLConnection:
     # REFERENCE
     ################################################################################
 
-    def get_references(self, reference_id=None, user_id_creator=None, description=None):
+    def get_references(self, id=None, user_id_creator=None, description=None):
         # the id have to be a int
-        if is_a_invalid_id(reference_id) or is_a_invalid_id(user_id_creator):
+        if is_a_invalid_id(id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_reference_table(reference_id=reference_id, description=description,
+        subquery = get_subquery_reference_table(id=id, description=description,
                                                 user_id_creator=user_id_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -1320,7 +1344,7 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Reference',
                     'properties', json_build_object(
-                        'reference_id',     reference_id,
+                        'id',               reference_id,
                         'description',      description,
                         'user_id_creator',  user_id_creator
                     )
@@ -1357,7 +1381,7 @@ class PGSQLConnection:
             VALUES ('{0}', {1}) RETURNING reference_id;
         """.format(p["description"], p["user_id"])
 
-        return self.execute(query, is_transaction=True)
+        return self.execute(query, is_transaction=True)['reference_id']
 
     def update_reference(self, resource_json, user_id):
         p = resource_json["properties"]
@@ -1365,7 +1389,7 @@ class PGSQLConnection:
         query = """
             UPDATE reference SET description = '{1}'
             WHERE reference_id={0};
-        """.format(p["reference_id"], p["description"])
+        """.format(p["id"], p["description"])
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -1464,30 +1488,32 @@ class PGSQLConnection:
     # KEYWORD
     ################################################################################
 
-    def get_keywords(self, keyword_id=None, name=None, user_id_creator=None):
+    def get_keywords(self, id=None, name=None, user_id_creator=None):
         # the id have to be a int
-        if is_a_invalid_id(keyword_id) or is_a_invalid_id(user_id_creator):
+        if is_a_invalid_id(id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_keyword_table(keyword_id=keyword_id, name=name, user_id_creator=user_id_creator)
+        subquery = get_subquery_keyword_table(id=id, name=name, user_id_creator=user_id_creator)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query = """
+        query = f"""
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Keyword',
                     'properties', json_build_object(
-                        'keyword_id',      keyword_id,
+                        'id',              keyword_id,
                         'name',            name,
+                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'user_id_creator', user_id_creator,
-                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS')
+                        'user_name',       user_name,
+                        'username',        username
                     )
                 ))
             ) AS row_to_json
             FROM
-            {0}
-        """.format(subquery)
+            {subquery}
+        """
 
         results_of_query = self.execute(query)
 
@@ -1524,7 +1550,7 @@ class PGSQLConnection:
         query = """
             UPDATE keyword SET name = '{1}'
             WHERE keyword_id={0};
-        """.format(p["keyword_id"], p["name"])
+        """.format(p["id"], p["name"])
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -1629,12 +1655,12 @@ class PGSQLConnection:
     # CHANGESET
     ################################################################################
 
-    def get_changesets(self, changeset_id=None, layer_id=None, user_id_creator=None, open=None, closed=None):
+    def get_changesets(self, id=None, layer_id=None, user_id_creator=None, open=None, closed=None):
         # the id have to be a int
-        if is_a_invalid_id(changeset_id) or is_a_invalid_id(user_id_creator):
+        if is_a_invalid_id(id) or is_a_invalid_id(user_id_creator):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_changeset_table(changeset_id=changeset_id, layer_id=layer_id,
+        subquery = get_subquery_changeset_table(id=id, layer_id=layer_id,
                                                 user_id_creator=user_id_creator, open=open, closed=closed)
 
         # CREATE THE QUERY AND EXECUTE IT
@@ -1644,7 +1670,7 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Changeset',
                     'properties', json_build_object(
-                        'changeset_id',    changeset_id,
+                        'id',              changeset_id,
                         'description',     description,
                         'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
                         'closed_at',       to_char(closed_at, 'YYYY-MM-DD HH24:MI:SS'),
@@ -1689,17 +1715,17 @@ class PGSQLConnection:
         return self.execute(query, is_transaction=True)
 
     def close_changeset(self, resource_json, current_user_id):
-        changeset_id = resource_json["properties"]["changeset_id"]
+        changeset_id = resource_json["properties"]["id"]
 
         if is_a_invalid_id(changeset_id):
             raise HTTPError(400, "Invalid parameter.")
 
         # check if the changeset is closed or not, if it is closed, raise 409 exception
-        list_changesets = self.get_changesets(changeset_id=changeset_id)
+        list_changesets = self.get_changesets(id=changeset_id)
 
         # if the list is empty, so raise an exception
         if not list_changesets['features']:
-            raise HTTPError(404, "Not found the changeset `{0}`.".format(changeset_id))
+            raise HTTPError(404, f"Not found the changeset `{changeset_id}`.")
 
         closed_at = list_changesets['features'][0]['properties']['closed_at']
         if closed_at is not None:
@@ -1708,7 +1734,7 @@ class PGSQLConnection:
         # check if the user created the changeset
         user_id_creator = list_changesets['features'][0]['properties']['user_id_creator']
         if user_id_creator != current_user_id:
-            raise HTTPError(409, "The user `{0}` didn't create the changeset `{1}`.".format(current_user_id, changeset_id))
+            raise HTTPError(409, f"The user `{current_user_id}` didn't create the changeset `{changeset_id}`.")
 
         description = resource_json["properties"]["description"]
         query = """
@@ -1744,38 +1770,43 @@ class PGSQLConnection:
     # NOTIFICATION
     ################################################################################
 
-    def get_notification(self, notification_id=None, is_denunciation=None, user_id_creator=None,
+    def get_notification(self, id=None, is_denunciation=None, user_id_creator=None,
                          layer_id=None, keyword_id=None, notification_id_parent=None):
         # the id have to be a int
-        if is_a_invalid_id(notification_id) or is_a_invalid_id(user_id_creator) or is_a_invalid_id(layer_id) or \
+        if is_a_invalid_id(id) or is_a_invalid_id(user_id_creator) or is_a_invalid_id(layer_id) or \
                 is_a_invalid_id(keyword_id) or is_a_invalid_id(notification_id_parent):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_notification_table(notification_id=notification_id, is_denunciation=is_denunciation,
+        subquery = get_subquery_notification_table(id=id, is_denunciation=is_denunciation,
                                                    user_id_creator=user_id_creator, layer_id=layer_id,
                                                    keyword_id=keyword_id, notification_id_parent=notification_id_parent)
 
         # CREATE THE QUERY AND EXECUTE IT
-        query = """
+        query = f"""
             SELECT jsonb_build_object(
                 'type', 'FeatureCollection',
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Notification',
                     'properties', json_build_object(
-                        'notification_id',     notification_id,
-                        'description',      description,
-                        'created_at',   to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_denunciation',  is_denunciation,
-                        'user_id_creator',     user_id_creator,
-                        'layer_id',      layer_id,
-                        'keyword_id',  keyword_id,
-                        'notification_id_parent',  notification_id_parent
+                        'id',                      notification_id,
+                        'description',             description,
+                        'is_denunciation',         is_denunciation,
+                        'notification_id_parent',  notification_id_parent,
+                        'created_at',              to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'user_id_creator',         user_id_creator,
+                        'user_name',               user_name,
+                        'username',                username,
+                        'user_picture',            user_picture,
+                        'layer_id',                layer_id,
+                        'layer_name',              layer_name,
+                        'keyword_id',              keyword_id,
+                        'keyword_name',            keyword_name
                     )
                 ))
             ) AS row_to_json
             FROM
-            {0}
-        """.format(subquery)
+            {subquery}
+        """
 
         results_of_query = self.execute(query)
 
@@ -1815,7 +1846,7 @@ class PGSQLConnection:
         """.format(p["description"], p["is_denunciation"], p["user_id_creator"], p["layer_id"],
                    p["keyword_id"], p["notification_id_parent"])
 
-        return self.execute(query, is_transaction=True)
+        return self.execute(query, is_transaction=True)['notification_id']
 
     def update_notification(self, resource_json, user_id):
         p = resource_json["properties"]
@@ -1832,21 +1863,21 @@ class PGSQLConnection:
         query = """
             UPDATE notification SET description = '{1}', layer_id = {2}, keyword_id = {3}, notification_id_parent = {4}
             WHERE notification_id={0};
-        """.format(p["notification_id"], p["description"], p["layer_id"], p["keyword_id"], p["notification_id_parent"])
+        """.format(p["id"], p["description"], p["layer_id"], p["keyword_id"], p["notification_id_parent"])
 
         rows_affected = self.execute(query, is_transaction=True)
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
 
-    def delete_notification(self, notification_id):
-        if is_a_invalid_id(notification_id):
+    def delete_notification(self, id):
+        if is_a_invalid_id(id):
             raise HTTPError(400, "Invalid parameter.")
 
         # delete the reference
-        query = """
-            DELETE FROM notification WHERE notification_id={0};
-        """.format(notification_id)
+        query = f"""
+            DELETE FROM notification WHERE notification_id={id};
+        """
 
         rows_affected = self.execute(query, is_transaction=True)
 
@@ -1859,9 +1890,9 @@ class PGSQLConnection:
             raise HTTPError(400, "Invalid parameter.")
 
         # if the code don't find the user, raise a 404 exception
-        user = self.get_users(user_id=user_id)
+        user = self.get_users(id=user_id)
         if not user["features"]:  # if the list is empty
-            raise HTTPError(404, "Not found the user {0}.".format(user_id))
+            raise HTTPError(404, "Not found the user id `{0}`.".format(user_id))
 
         subquery = get_subquery_notification_table_related_to_user(user_id=user_id)
 
@@ -1872,13 +1903,13 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Notification',
                     'properties', json_build_object(
-                        'notification_id', notification_id,
-                        'description',     description,
-                        'created_at',      to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
-                        'is_denunciation', is_denunciation,
-                        'user_id_creator', user_id_creator,
-                        'layer_id',        layer_id,
-                        'keyword_id',      keyword_id,
+                        'id',                      notification_id,
+                        'description',             description,
+                        'created_at',              to_char(created_at, 'YYYY-MM-DD HH24:MI:SS'),
+                        'is_denunciation',         is_denunciation,
+                        'user_id_creator',         user_id_creator,
+                        'layer_id',                layer_id,
+                        'keyword_id',              keyword_id,
                         'notification_id_parent',  notification_id_parent
                     )
                 ))
@@ -2122,12 +2153,12 @@ class PGSQLConnection:
     # MASK
     ################################################################################
 
-    def get_mask(self, mask_id=None):
+    def get_mask(self, id=None):
         # the id have to be a int
-        if is_a_invalid_id(mask_id):
+        if is_a_invalid_id(id):
             raise HTTPError(400, "Invalid parameter.")
 
-        subquery = get_subquery_mask_table(mask_id=mask_id)
+        subquery = get_subquery_mask_table(id=id)
 
         # CREATE THE QUERY AND EXECUTE IT
         query = """
@@ -2136,8 +2167,8 @@ class PGSQLConnection:
                 'features',   jsonb_agg(jsonb_build_object(
                     'type',       'Mask',
                     'properties',  json_build_object(
-                        'mask_id', mask_id,
-                        'mask',    mask
+                        'id',    id,
+                        'mask',  mask
                     )
                 ))
             ) AS row_to_json
