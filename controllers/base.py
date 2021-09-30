@@ -5,7 +5,6 @@ from os import listdir, makedirs, remove as remove_file
 from os.path import exists, isdir, isfile, getsize as get_file_size, join, sep as os_separator
 
 from abc import ABCMeta
-from copy import deepcopy
 from geopandas import read_file as gp_read_file
 from json import loads
 import logging
@@ -336,76 +335,76 @@ Please, click on under URL to validate your email:
 
         send_email(to_email_address, subject=subject, body=body)
 
-    def get_users_to_send_email(self, resource_json):
-        users = {"features": []}
+    # def get_users_to_send_email(self, resource_json):
+    #     users = {"features": []}
 
-        # (1) general notification, everybody receives a notification by email
-        if resource_json["properties"]["layer_id"] is None and resource_json["properties"]["keyword_id"] is None \
-                and resource_json["properties"]["notification_id_parent"] is None:
-            users = self.PGSQLConn.get_users()
+    #     # (1) general notification, everybody receives a notification by email
+    #     if resource_json["properties"]["layer_id"] is None and resource_json["properties"]["keyword_id"] is None \
+    #             and resource_json["properties"]["notification_id_parent"] is None:
+    #         users = self.PGSQLConn.get_users()
 
-        # (2) notification by layer
-        elif resource_json["properties"]["layer_id"] is not None:
-            # (2.1) everybody who is collaborator of the layer, will receive a not. by email
+    #     # (2) notification by layer
+    #     elif resource_json["properties"]["layer_id"] is not None:
+    #         # (2.1) everybody who is collaborator of the layer, will receive a not. by email
 
-            # get all the collaborators of the layer
-            # users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
-            #
-            # # get the user information of the collaborators
-            # for user_layer in users_layer["features"]:
-            #     user = self.PGSQLConn.get_users(id=user_layer["properties"]["user_id"])["features"][0]
-            #     users["features"].append(user)
+    #         # get all the collaborators of the layer
+    #         # users_layer = self.PGSQLConn.get_user_layers(layer_id=resource_json["properties"]["layer_id"])
+    #         #
+    #         # # get the user information of the collaborators
+    #         # for user_layer in users_layer["features"]:
+    #         #     user = self.PGSQLConn.get_users(id=user_layer["properties"]["user_id"])["features"][0]
+    #         #     users["features"].append(user)
 
-            # (2.1) everybody who follows the layer, will receive a notification by email
+    #         # (2.1) everybody who follows the layer, will receive a notification by email
 
-            users_follow_layer = self.PGSQLConn.get_layer_follower(layer_id=resource_json["properties"]["layer_id"])
+    #         users_follow_layer = self.PGSQLConn.get_layer_follower(layer_id=resource_json["properties"]["layer_id"])
 
-            # get the user information of the collaborators
-            for user_follow_layer in users_follow_layer["features"]:
-                user = self.PGSQLConn.get_users(id=user_follow_layer["properties"]["user_id"])["features"][0]
-                users["features"].append(user)
+    #         # get the user information of the collaborators
+    #         for user_follow_layer in users_follow_layer["features"]:
+    #             user = self.PGSQLConn.get_users(id=user_follow_layer["properties"]["user_id"])["features"][0]
+    #             users["features"].append(user)
 
-        # TODO: (3) notification by keyword: everybody who follows the keyword, will receive a notification by email
-        # elif resource_json["properties"]["keyword_id"] is not None:
-        #     pass
+    #     # TODO: (3) notification by keyword: everybody who follows the keyword, will receive a notification by email
+    #     # elif resource_json["properties"]["keyword_id"] is not None:
+    #     #     pass
 
-        return users
+    #     return users
 
-    def send_email_to_selected_users(self, users_to_send_email, current_user_id, resource_json):
-        user_that_is_sending_email = self.PGSQLConn.get_users(id=current_user_id)["features"][0]
+#     def send_email_to_selected_users(self, users_to_send_email, current_user_id, resource_json):
+#         user_that_is_sending_email = self.PGSQLConn.get_users(id=current_user_id)["features"][0]
 
-        subject = "Notification - Not reply"
-        body = """
-Hello,
+#         subject = "Notification - Not reply"
+#         body = """
+# Hello,
 
-Please, not reply this message.
+# Please, not reply this message.
 
-{0} has sent a new notification:
+# {0} has sent a new notification:
 
-"{1}"
+# "{1}"
 
-Enter on the Pauliceia platform to visualize or reply this notification.
+# Enter on the Pauliceia platform to visualize or reply this notification.
 
-{2}
-        """.format(user_that_is_sending_email["properties"]["name"],
-                   resource_json["properties"]["description"],
-                   __EMAIL_SIGNATURE__)
+# {2}
+#         """.format(user_that_is_sending_email["properties"]["name"],
+#                    resource_json["properties"]["description"],
+#                    __EMAIL_SIGNATURE__)
 
-        for user in users_to_send_email["features"]:
-            if user["properties"]["receive_notification_by_email"] and user["properties"]["is_email_valid"]:
-                send_email(user["properties"]["email"], subject=subject, body=body)
+#         for user in users_to_send_email["features"]:
+#             if user["properties"]["receive_notification_by_email"] and user["properties"]["is_email_valid"]:
+#                 send_email(user["properties"]["email"], subject=subject, body=body)
 
-    def send_notification_by_email(self, resource_json, current_user_id):
-        try:
-            users_to_send_email = self.get_users_to_send_email(resource_json)
-        except HTTPError as error:
-            # if not found users, send to 0 users the notifications
-            if error.status_code == 404:
-                users_to_send_email = {"features": []}
-            else:
-                raise error
+    # def send_notification_by_email(self, resource_json, current_user_id):
+    #     try:
+    #         users_to_send_email = self.get_users_to_send_email(resource_json)
+    #     except HTTPError as error:
+    #         # if not found users, send to 0 users the notifications
+    #         if error.status_code == 404:
+    #             users_to_send_email = {"features": []}
+    #         else:
+    #             raise error
 
-        self.send_email_to_selected_users(users_to_send_email, current_user_id, resource_json)
+    #     self.send_email_to_selected_users(users_to_send_email, current_user_id, resource_json)
 
     # URLS
 
@@ -1359,11 +1358,11 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
     # POST
 
     def _create_resource(self, resource_json, current_user_id, **kwargs):
-        resource_json_copy = deepcopy(resource_json)
+        # resource_json_copy = deepcopy(resource_json)
 
         result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
 
-        self.send_notification_by_email(resource_json_copy, current_user_id)
+        # self.send_notification_by_email(resource_json_copy, current_user_id)
 
         return result
 
@@ -1421,11 +1420,11 @@ class BaseHandlerNotificationRelatedToUser(BaseHandlerTemplateMethod):
     # POST
 
     # def _create_resource(self, resource_json, current_user_id, **kwargs):
-    #     resource_json_copy = deepcopy(resource_json)
+    #     # resource_json_copy = deepcopy(resource_json)
     #
     #     result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
     #
-    #     self.send_notification_by_email(resource_json_copy, current_user_id)
+    #     # self.send_notification_by_email(resource_json_copy, current_user_id)
     #
     #     return result
     #
