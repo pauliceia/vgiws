@@ -316,6 +316,20 @@ class TestAPIImport(TestCase):
     #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
     #                                           file_name=file_name, changeset_id=self.changeset_id)
 
+    # Luanna's Shapefile files
+
+    # def test_post_import_shp_luanna_corticos_atuais(self):
+    #     ##################################################
+    #     # import the shapefile with the created layer (the feature table will be the shapefile)
+    #     ##################################################
+    #     file_name = "corticos_test.zip"
+    #     file_name_path = "shp_originals/luanna/" + file_name
+    #     with open(os_path_sep_join([FILES_PATH, file_name_path]), mode='rb') as file:  # rb = read binary
+    #         binary_file_content = file.read()
+
+    #         self.tester.api_import_shp_create(binary_file_content, f_table_name=self.f_table_name,
+    #                                           file_name=file_name, changeset_id=self.changeset_id)
+
 """
 class TestAPIManualTests(TestCase):
 
