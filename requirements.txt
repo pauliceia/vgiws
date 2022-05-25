@@ -24,7 +24,7 @@ pip-autoremove==0.9.1
 psycopg2==2.7.3
 pyasn1==0.4.3
 pyasn1-modules==0.2.1
-PyJWT==1.7.1
+PyJWT==2.4.0
 pylint==2.4.4
 pymongo==3.10.1
 pyproj==2.6.1.post1
