@@ -47,17 +47,17 @@ __TEMP_FOLDER__ = "/tmp/vgiws"
 ####################################################################################################
 
 # redirect uri google (production and debug)
-__REDIRECT_URI_GOOGLE__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/auth/google"  # production
+__REDIRECT_URI_GOOGLE__ = "https://pauliceia.unifesp.br/api/vgi/api/auth/google"  # production
 # __REDIRECT_URI_GOOGLE__ = "http://localhost/api/vgi/api/auth/google"  # test the platform offline
 __REDIRECT_URI_GOOGLE_DEBUG__ = "http://localhost:8888/api/auth/google"  # debug VGIMWS
 
 # redirect uri facebook (production and debug)
-__REDIRECT_URI_FACEBOOK__ = "http://www.pauliceia.dpi.inpe.br/api/vgi/api/auth/facebook"  # production
+__REDIRECT_URI_FACEBOOK__ = "https://pauliceia.unifesp.br/api/vgi/api/auth/facebook"  # production
 # __REDIRECT_URI_FACEBOOK__ = "http://localhost/api/vgi/api/auth/facebook"  # test the platform offline
 __REDIRECT_URI_FACEBOOK_DEBUG__ = "http://localhost:8888/api/auth/facebook"  # debug VGIMWS
 
 # after login with social login, redirect to... (production and debug)
-__AFTER_LOGIN_REDIRECT_TO__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/social"  # production
+__AFTER_LOGIN_REDIRECT_TO__ = "https://pauliceia.unifesp.br/portal/valid/social"  # production
 # __AFTER_LOGIN_REDIRECT_TO__ = "http://localhost/portal/valid/social"  # test the platform offline
 __AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social"  # debug VGIMWS
 
@@ -67,7 +67,7 @@ __AFTER_LOGIN_REDIRECT_TO_DEBUG__ = "http://localhost:8081/portal/valid/social" 
 ####################################################################################################
 
 # URL to validate the email (production and debug)
-__VALIDATE_EMAIL__ = "http://www.pauliceia.dpi.inpe.br/portal/valid/email"  # production
+__VALIDATE_EMAIL__ = "https://pauliceia.unifesp.br/portal/valid/email"  # production
 # __VALIDATE_EMAIL__ = "http://localhost/portal/valid/email"  # test the platform offline
 __VALIDATE_EMAIL_DEBUG__ = "http://localhost:8081/portal/valid/email"  # debug VGIMWS
 
