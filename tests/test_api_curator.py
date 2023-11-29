@@ -121,7 +121,7 @@ class TestAPICurator(TestCase):
             ]
         }
 
-        self.tester.api_curator(expected, region="SÃo")
+        self.tester.api_curator(expected, region="São")
 
     def test_get_api_curator_return_curator_by_user_id_and_keyword_id(self):
         expected = {
