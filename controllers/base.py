@@ -687,8 +687,10 @@ class BaseHandlerUser(BaseHandlerTemplateMethod):
     def _create_resource(self, resource_json, current_user_id, **kwargs):
         result = self.PGSQLConn.create_user(resource_json)
 
-        # if is alright about register a new user, so send to him/her an email
-        self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
+        # TODO: temporarily all users will be registered with is_email_valid=True.
+        #       after it returns to normal, undo the changes
+        # if a new user is registered, then send him an email
+        # self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
 
         return result
 

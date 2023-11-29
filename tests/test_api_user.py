@@ -200,9 +200,11 @@ class TestAPIUser(TestCase):
         user_id = resource["properties"]["user_id"]
         token = generate_encoded_jwt_token({'user_id': user_id})
 
-        # a user is with a invalidated email
-        user = self.tester.api_user(user_id=user_id)
-        self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
+        # a user is with an invalidated email
+        # TODO: temporarily all users will be registered with is_email_valid=True.
+        #       after it returns to normal, undo the changes
+        # user = self.tester.api_user(user_id=user_id)
+        # self.assertEqual(user["features"][0]["properties"]["is_email_valid"], False)
 
         # so the user validate his/her email
         self.tester.api_validate_email(token)

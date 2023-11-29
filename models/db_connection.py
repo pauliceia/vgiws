@@ -326,10 +326,13 @@ class PGSQLConnection:
     def create_user(self, resource_json, verified_social_login_email=False):
         p = resource_json["properties"]
 
-        if verified_social_login_email:
-            p["is_email_valid"] = True
-        else:
-            p["is_email_valid"] = False
+        # TODO: temporarily all users will be registered with is_email_valid=True.
+        #       after it returns to normal, undo the changes
+        # if verified_social_login_email:
+        #     p["is_email_valid"] = True
+        # else:
+        #     p["is_email_valid"] = False
+        p["is_email_valid"] = True
 
         if "picture" not in p:
             p["picture"] = ""
