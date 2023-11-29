@@ -1348,7 +1348,7 @@ class BaseHandlerNotification(BaseHandlerTemplateMethod):
 
         result = self.PGSQLConn.create_notification(resource_json, current_user_id, **kwargs)
 
-        self.send_notification_by_email(resource_json_copy, current_user_id)
+        # self.send_notification_by_email(resource_json_copy, current_user_id)
 
         return result
 
