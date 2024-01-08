@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS pauliceia_user (
   PRIMARY KEY (user_id)
 );
 
+DROP EXTENSION postgis_topology;
 
 -- -----------------------------------------------------
 -- Table layer
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS layer (
   PRIMARY KEY (layer_id)
 );
 
+CREATE EXTENSION postgis_topology;
 
 -- -----------------------------------------------------
 -- Table changeset

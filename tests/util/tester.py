@@ -45,7 +45,7 @@ class RequestTester(TestCase):
         self.__url__ = "http://localhost:8888"
         self.__urn__ = "/api/user"
 
-        self.__urn__login__ = '/api/auth/login/'
+        self.__urn__login__ = '/api/auth/login'
 
         self.__headers__ = {
             'Content-type': 'application/json',
@@ -260,10 +260,10 @@ class UtilTester:
     def auth_login(self, email, password):
         headers = self.prepare_header(email, password)
 
-        response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
+        response = self.session.get(self.URL + '/api/auth/login', headers=headers)
 
         # Save the JWT token of the server in Authorization header
-        self.headers["Authorization"] = response.headers["Authorization"]
+        self.headers["Authorization"] = response.headers.get("Authorization")
 
         self.ut_self.assertEqual(response.status_code, 200)
 
@@ -279,7 +279,7 @@ class UtilTester:
     def auth_login_409_conflict(self, email, password):
         headers = self.prepare_header(email, password)
 
-        response = self.session.get(self.URL + '/api/auth/login/', headers=headers)
+        response = self.session.get(self.URL + '/api/auth/login', headers=headers)
 
         self.ut_self.assertEqual(response.status_code, 409)
 

@@ -36,7 +36,7 @@ from tornado.escape import json_encode
 
 from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
                                 __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
-                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__, DEBUG_MODE
 from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__, \
                                 __TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__
 from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
@@ -174,11 +174,18 @@ class BaseHandler(RequestHandler):
                 self.finish()
 
         else:
-            self.finish(
-                "<html><title>%(code)d: %(message)s</title>"
-                "<body>%(code)d: %(message)s</body></html>"
-                % {"code": status_code, "message": self._reason}
-            )
+            error_message = kwargs["exc_info"][1].log_message
+
+            if status_code > 500:
+                self.finish("There was an internal server error, please contact the administrator or try again later.")
+            
+            if error_message:
+                self.finish(error_message)
+            else:
+                self.finish(
+                    "%(code)d: %(message)s"
+                    % {"code": status_code, "message": self._reason}
+                )
 
     ##################################################
     # HEADERS
@@ -517,10 +524,8 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             if error.pgcode == "22007":  # 22007 - invalid_datetime_format
                 raise HTTPError(400, "Invalid date format. (error: " + str(error) + ")")
             else:
-                raise error  # if is other error, so raise it up
-        except DataError as error:
-            raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
-                                 "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
+                raise HTTPError(500, "Problem when get a resource. Please, contact the administrator. " +
+                                    "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
         # Default: self.set_header('Content-Type', 'application/json')
         self.write(json_encode(result))
@@ -567,19 +572,17 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
             raise HTTPError(400, "TypeError: " + str(error))
         except ProgrammingError as error:
             if error.pgcode == "42703":  # 42703 - undefined_column
-                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
+                raise HTTPError(400, "One specified attribute is invalid." + (" error: " + str(error) if DEBUG_MODE else ""))
             else:
-                raise error  # if is other error, so raise it up
+                raise error  # if is other error, so raise it up  
         except Error as error:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists." + (" (error: " + str(error) + ")" if DEBUG_MODE else ""))
             elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
-                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
+                raise HTTPError(400, "One specified attribute is invalid." + (" (error: " + str(error) + ")" if DEBUG_MODE else ""))
             else:
-                raise error  # if is other error, so raise it up
-        except DataError as error:
-            raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
+                raise HTTPError(500, "Problem when create a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
         self.write(json_encode(json_with_id))
@@ -625,21 +628,19 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         try:
             self._put_resource(resource_json, current_user_id, **arguments)
         except KeyError as error:
-            raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation! (error: " +
-                            str(error) + " is missing)")
+            raise HTTPError(400, "Some attribute in the JSON is missing. Look at the documentation!" + (" (error: " +
+                            str(error) + " is missing)" if DEBUG_MODE else ""))
         except TypeError as error:
             # example: - 400 (Bad Request): update_keywords() got an unexpected keyword argument 'parent_id'
-            raise HTTPError(400, "TypeError: " + str(error))
+            raise HTTPError(400, "TypeError: " + str(error))       
         except Error as error:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+                raise HTTPError(400, "Attribute already exists." + (" (error: " + str(error) + ")" if DEBUG_MODE else ""))
             elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
-                raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
+                raise HTTPError(400, "One specified attribute is invalid." + (" (error: " + str(error) + ")" if DEBUG_MODE else ""))
             else:
-                raise error  # if is other error, so raise it up
-        except DataError as error:
-            raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
+                raise HTTPError(500, "Problem when update a resource. Please, contact the administrator. " +
                             "(error: " + str(error) + " - pgcode " + str(error.pgcode) + " ).")
 
     def _put_resource(self, resource_json, current_user_id, **kwargs):
@@ -662,7 +663,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except ProgrammingError as error:
             if error.pgcode == "42703":  # 42703 - undefined_column
                 error = str(error).replace("\n", " ")
-                raise HTTPError(404, "Not found the specified column. (error: " + str(error) + ")")
+                raise HTTPError(404, "Not found the specified column." + (" (error: " + str(error) + ")" if DEBUG_MODE else ""))
             else:
                 raise error  # if is other error, so raise it up
         except DataError as error:
@@ -1686,7 +1687,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                     raise HTTPError(status, message)
 
         except BadZipFile as error:
-            raise HTTPError(409, "File is not a zip file. (" + str(error) + ")")
+            raise HTTPError(409, "File is not a zip file. " + ("(" + str(error) + ")" if DEBUG_MODE else ""))
 
     def check_if_the_shapefile_files_are_empty(self):
         # get only the files inside the directory
@@ -1741,7 +1742,7 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
             is_shapefile_intersects_default_city = self.PGSQLConn.bounding_box_of_shapefile_intersects_with_bounding_box_of_default_city(bbox, EPSG)
         except InternalError as error:
             raise HTTPError(500, "Some geometries of the Shapefile are with problem. Please, check them and try to " + \
-                                 "import again later. \nError: " + str(error))
+                                 "import again later." + (" \nError: " + str(error)) if DEBUG_MODE else "")
 
         if not is_shapefile_intersects_default_city:
             raise HTTPError(409, "Shapefile is not inside the default city of the project.")
@@ -1803,9 +1804,9 @@ class BaseHandlerImportShapeFile(BaseHandlerTemplateMethod, FeatureTableValidato
                 self.check_if_the_gdf_is_inside_the_default_city(gdf, EPSG)
 
             except ValueError as error:
-                raise HTTPError(500, "Problem when importing the Shapefile file. Fiona was not able to read it. \n" + \
+                raise HTTPError(500, "Problem when importing the Shapefile file. \n" + \
                                 "One reason can be that the Shapefile file has an empty column name, then name it inside the `.dbf` file. \n" +
-                                "Hint: " + str(error))
+                                ("Hint: " + str(error) if DEBUG_MODE else "") )
 
             self.import_shp_file_into_postgis(f_table_name, SHAPEFILE_PATH, EPSG)
 
