@@ -573,7 +573,7 @@ class BaseHandlerTemplateMethod(BaseHandler, metaclass=ABCMeta):
         except Error as error:
             if error.pgcode == "23505":  # 23505 - unique_violation
                 error = str(error).replace("\n", " ").split("DETAIL: ")[1]
-                raise HTTPError(400, "Attribute already exists. (error: " + str(error) + ")")
+                raise HTTPError(409, "Attribute already exists. (error: " + str(error) + ")")
             elif error.pgcode == "22023":  # 22023 - invalid_parameter_value
                 raise HTTPError(400, "One specified attribute is invalid. (error: " + str(error) + ")")
             else:
