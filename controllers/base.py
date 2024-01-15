@@ -137,7 +137,7 @@ class BaseHandler(RequestHandler):
     ##################################################
     # OVERRIDED METHODS
     ##################################################
-
+            
     def write_error(self, status_code, **kwargs):
         """Override to implement custom error pages.
 
@@ -264,6 +264,16 @@ class BaseHandler(RequestHandler):
         # try to update the user's password by id
         current_user_id = self.get_current_user_id()
         self.PGSQLConn.update_user_password(current_user_id, new_password)
+
+    @catch_generic_exception
+    def change_password_by_user_id(self, current_user_id, new_password, verification_code):
+        # try to update the user's password by id
+        self.PGSQLConn.change_forgotten_password_from_user(current_user_id, new_password, verification_code)
+
+    @catch_generic_exception
+    def save_verification_code(self, user_email, verification_code):
+        # try to update the user's password by id
+        self.PGSQLConn.save_verification_code(user_email, verification_code)
 
     @catch_generic_exception
     def login(self, user_json, verified_social_login_email=False):

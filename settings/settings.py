@@ -18,7 +18,7 @@ VERSION = "0.0.5"
 TITLE_APP = "VGI Web Service for Historical Data"
 
 # All public IP
-IP_APP = "0.0.0.0"
+IP_APP = "localhost"
 PORT_APP = int(getenv("PORT", 8888))
 
 URL_APP = "http://" + IP_APP + ":" + str(PORT_APP)

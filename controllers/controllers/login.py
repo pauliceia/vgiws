@@ -5,6 +5,9 @@
     Responsible module to create controllers.
 """
 
+import random
+import string
+
 from base64 import b64decode
 from os import path as os_path
 
@@ -12,6 +15,20 @@ from tornado.auth import GoogleOAuth2Mixin, FacebookGraphMixin
 from tornado.gen import coroutine
 from tornado.escape import json_encode
 from tornado.web import HTTPError
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from smtplib import SMTP
+from threading import Thread
+from time import sleep
+
+from settings.settings import __REDIRECT_URI_GOOGLE__, __REDIRECT_URI_GOOGLE_DEBUG__, \
+                                __REDIRECT_URI_FACEBOOK__, __REDIRECT_URI_FACEBOOK_DEBUG__, \
+                                __AFTER_LOGIN_REDIRECT_TO__, __AFTER_LOGIN_REDIRECT_TO_DEBUG__
+from settings.settings import __TEMP_FOLDER__, __VALIDATE_EMAIL__, __VALIDATE_EMAIL_DEBUG__, \
+                                __TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__
+from settings.accounts import __TO_MAIL_ADDRESS__, __PASSWORD_MAIL_ADDRESS__, __SMTP_ADDRESS__, __SMTP_PORT__, \
+                                __EMAIL_SIGNATURE__
 
 from ..base import BaseHandler, BaseHandlerSocialLogin
 from settings.accounts import __GOOGLE_SETTINGS__, __FACEBOOK_SETTINGS__
@@ -52,6 +69,31 @@ PROJECT_PATH = os_path.sep.join(os_path.abspath(__file__).split(os_path.sep)[:-3
 #         # Default: self.set_header('Content-Type', 'application/json')
 #         self.write(json_encode({}))
 
+def send_email(to_email_address, subject="", body=""):
+
+    def __thread_send_email__(__to_email_address__, __subject__, __body__):
+        __from_mail_address__ = __TO_MAIL_ADDRESS__
+
+        msg = MIMEMultipart()
+        msg['From'] = __from_mail_address__
+        msg['To'] = __to_email_address__
+        msg['Subject'] = __subject__
+
+        msg.attach(MIMEText(__body__, 'plain'))
+
+        server = SMTP(__SMTP_ADDRESS__, __SMTP_PORT__)
+        server.starttls()
+        server.login(__from_mail_address__, __PASSWORD_MAIL_ADDRESS__)
+        server.sendmail(__from_mail_address__, __to_email_address__, msg.as_string())
+        server.quit()
+
+        # print("\n\n -----> Sent email to: " + __to_email_address__ + "\n\n")
+
+    thread = Thread(target=__thread_send_email__, args=(to_email_address, subject, body,))
+    thread.start()
+
+    # wait X second(s) after sending an e-mail in order to avoid blocking the SMTP server
+    sleep(__TIME_TO_WAIT_AFTER_SENDING_AN_EMAIL_IN_SECONDS__)
 
 class AuthLoginHandler(BaseHandler):
 
@@ -96,6 +138,59 @@ class AuthChangePasswordHandler(BaseHandler):
 
         # try to change the password
         self.change_password(email, p["current_password"], p["new_password"])
+
+class AuthSendVerificationCodeToUserEmail(BaseHandler):
+
+    urls = [r"/api/auth/password_forgot/", r"/api/auth/password_forgot"]
+
+    def put(self):
+        # get the body of the request
+        resource_json = self.get_the_json_validated()
+
+        p = resource_json["data"]
+
+        # check is exist the parameters inside the body
+        if "user_email" not in p:
+            raise HTTPError(400, "It is needed to pass the user_email.")
+
+        # function to generate random text
+        def generate_random_text(length):
+            characters = string.ascii_letters + string.digits
+            random_text = ''.join(random.choice(characters) for _ in range(length))
+            return random_text
+
+        # Verification Code
+        verification_code = generate_random_text(30)
+
+        subject = "Recuperação de senha - Pauliceia 2.0"
+        body = """
+Aqui está seu código: {0}
+        """.format(verification_code)
+
+        # Send email with verification Code
+        send_email(p["user_email"], subject=subject, body=body)
+
+        # save verification code on database
+        self.save_verification_code(p["user_email"], verification_code)
+
+class AuthChangePasswordWithUserIdHandler(BaseHandler):
+
+    urls = [r"/api/auth/change_password_with_user_id/", r"/api/auth/change_password_with_user_id"]
+
+    def put(self):
+        # get the body of the request
+        resource_json = self.get_the_json_validated()
+
+        p = resource_json["data"]
+
+        print(p)
+
+        # check is exist the parameters inside the body
+        if "new_password" not in p or "user_id" not in p:
+            raise HTTPError(400, "It is needed to pass the user_id and the encrypted new_password.")
+
+        # try to change the password
+        self.change_password_by_user_id(p["user_id"], p["new_password"], p["verification_code"])
 
 
 # class GoogleLoginHandler(BaseHandlerSocialLogin):

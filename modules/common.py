@@ -114,7 +114,7 @@ def just_run_on_debug_mode(method):
 # JWT
 
 def generate_encoded_jwt_token(json_dict):
-    return jwt_encode(json_dict, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__).decode("utf-8")
+    return jwt_encode(json_dict, __JWT_SECRET__, algorithm=__JWT_ALGORITHM__)
 
 
 def get_decoded_jwt_token(token):
