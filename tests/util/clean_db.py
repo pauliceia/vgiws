@@ -82,14 +82,12 @@ def prepare_test_db_before_tests(arguments):
     # open the schema file and the insert file, both to edit the DB
     with open(__PATH_SQL_SCHEMA_FILE__, 'r') as schema_file, \
             open(__PATH_SQL_TRIGGER_FILE__, 'r') as trigger_file, \
-                open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file, \
-                    open(__PATH_SQL_INSERT_FILE_PRODUCTION__, 'r') as insert_file_production:
+                open(__PATH_SQL_INSERT_FILE__, 'r') as insert_file:
 
         # get the data of files
         schema_data = schema_file.read()
         trigger_data = trigger_file.read()
         insert_data = insert_file.read()
-        insert_file_production = insert_file_production.read()
 
         # cleaning and arranging the files
         schema_data = remove_comments_from_sql_file(schema_data)
@@ -104,7 +102,6 @@ def prepare_test_db_before_tests(arguments):
             insert_data = remove_special_characters(insert_data)
         # if in production mode, so insert initial/real data
         else:
-            insert_data = remove_comments_from_sql_file(insert_file_production)
             insert_data = remove_special_characters(insert_data)
 
         # executing the SQL files

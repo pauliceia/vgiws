@@ -2,7 +2,7 @@ FROM python:3.7.4
 
 WORKDIR /usr/src/vgiws
 
-COPY ./requirements.txt ./
+COPY . ./
 
 # Lines to avoid problems related to build image (https://github.com/phusion/baseimage-docker/issues/319)
 # ENV DEBIAN_FRONTEND noninteractive

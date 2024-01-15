@@ -11,6 +11,9 @@ from os.path import exists, isdir, isfile, getsize as get_file_size, join, sep a
 from abc import ABCMeta
 from copy import deepcopy
 from difflib import SequenceMatcher
+
+
+import tornado
 from geopandas import read_file as gp_read_file
 from json import loads
 import logging
@@ -190,7 +193,7 @@ class BaseHandler(RequestHandler):
 
         # how solve the CORS problem: https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
         self.set_header("Access-Control-Allow-Origin", "*")
-        self.set_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+        self.set_header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers")
         self.set_header('Access-Control-Allow-Methods', ' POST, GET, PUT, DELETE, OPTIONS')
         self.set_header('Access-Control-Expose-Headers', 'Authorization')
         self.set_header("Access-Control-Allow-Credentials", "true")
@@ -1549,6 +1552,49 @@ class BaseHandlerFeature(BaseHandlerTemplateMethod):
 
         # ... else, raise an exception.
         raise HTTPError(403, "Just the collaborator of the layer or administrator can manage a resource.")
+    
+    
+class RequestPasswordResetHandler(tornado.web.RequestHandler):
+      
+    # GET
+
+    def _get_resource(self, *args, **kwargs):
+        return self.PGSQLConn.get_users(**kwargs)
+
+    # POST
+
+    def _create_resource(self, resource_json, current_user_id, **kwargs):
+        result = self.PGSQLConn.create_user(resource_json)
+
+        # TODO: temporarily all users will be registered with is_email_valid=True.
+        #       after it returns to normal, undo the changes
+        # if a new user is registered, then send him an email
+        # self.send_validation_email_to(resource_json["properties"]["email"], result["user_id"])
+
+        return result
+
+    # PUT
+
+    def _put_resource(self, resource_json, current_user_id, **kwargs):
+        self.can_current_user_update(current_user_id, resource_json)
+
+        return self.PGSQLConn.update_user(resource_json, current_user_id, **kwargs)
+
+    # DELETE
+
+    def _delete_resource(self, current_user_id, *args, **kwargs):
+        self.can_current_user_delete()
+
+        user_id = args[0]
+
+        self.PGSQLConn.delete_user(user_id)
+        
+    def options(self, *args, **kwargs):
+        
+        self.set_status(204)
+        self.finish()    
+
+
 
 
 class BaseHandlerLayerFollower(BaseHandlerTemplateMethod):
