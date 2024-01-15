@@ -374,6 +374,28 @@ class PGSQLConnection:
 
         if rows_affected == 0:
             raise HTTPError(404, "Not found any resource.")
+        
+    def save_verification_code(self, user_email, verification_code):
+        query = """
+            UPDATE pauliceia_user SET verification_code = '{1}'
+            WHERE email = '{0}';
+        """.format(user_email, verification_code)
+
+        rows_affected = self.execute(query, is_transaction=True)
+
+        if rows_affected == 0:
+            raise HTTPError(404, "Not found any resource.")
+
+    def change_forgotten_password_from_user(self, user_id, new_password, verification_code):
+            query = """
+                UPDATE pauliceia_user SET password = '{1}'
+                WHERE user_id = {0} AND verification_code = '{2}';
+            """.format(user_id, new_password, verification_code)
+
+            rows_affected = self.execute(query, is_transaction=True)
+
+            if rows_affected == 0:
+                raise HTTPError(404, "Not found any resource.")
 
     def update_user(self, resource_json, user_id):
         p = resource_json["properties"]

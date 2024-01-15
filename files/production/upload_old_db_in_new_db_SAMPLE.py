@@ -44,7 +44,7 @@ def remove_special_characters(text):
 
 
 def arrange_the_relationship_of_feature_tables():
-    __PATH_SQL_RELATIONSHIP_FILE__ = PROJECT_PATH + "/files/db/sql/secreto/05_arrange_relationship_production_values.sql"
+    __PATH_SQL_RELATIONSHIP_FILE__ = PROJECT_PATH + "/files/db/sql/05_arrange_relationship_production_values.sql"
 
     PGSQLConn = PGSQLConnection.get_instance(False, True)
 
